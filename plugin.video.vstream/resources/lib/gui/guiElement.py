@@ -196,18 +196,18 @@ class cGuiElement:
 
             if not isMatrix():
                 sTitle = sTitle.decode('utf-8')
-        except:
+        except BaseException:
             pass
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
-        string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
+        string = re.search('([^\\w ][0-9]{4}[^\\w ])', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Year = str(string.group(0)[1:5])
             self.addItemValues('year', self.__Year)
 
         # recherche une date
-        string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
+        string = re.search('([\\d]{2}[\\/|-]\\d{2}[\\/|-]\\d{4})', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Date = str(string.group(0))
@@ -215,7 +215,7 @@ class cGuiElement:
 
         # Recherche saison et episode a faire pr serie uniquement
         if True:
-            m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
+            m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\\wpisode\\s?))([0-9]+(?:[\\-\\.][0-9\\?]+)*))', sTitle, re.UNICODE)
             if m:
                 # ok y a des episodes
                 sTitle = sTitle.replace(m.group(1), '')
@@ -226,7 +226,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
 
                 # pour les saisons
-                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\\-[0-9\\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -237,7 +237,7 @@ class cGuiElement:
 
             else:
                 # pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\\-[0-9\\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -259,7 +259,8 @@ class cGuiElement:
 
         # recherche les Tags restant : () ou [] sauf tag couleur
         sDecoColor = self.addons.getSetting('deco_color')
-        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\\(|\\[](?!\\/*COLOR)[^\\)\\(\\]\\[]+?[\\]|\\)])',
+                        '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
 
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -290,20 +291,20 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         # Nom en clair sans les langues, qualités, et autres décorations
-        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
+        self.__sCleanTitle = re.sub('\\[.*\\]|\\(.*\\)', '', sTitle)
         if not self.__sCleanTitle:
-            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
+            self.__sCleanTitle = re.sub('\\[.+?\\]|\\(.+?\\)', '', sTitle)
 
         if isMatrix():
             # Python 3 decode sTitle
             try:
                 sTitle = str(sTitle.encode('latin-1'), 'utf-8')
-            except:
+            except BaseException:
                 pass
         else:
             try:
                 sTitle = str(sTitle.strip().decode('utf-8'))
-            except:
+            except BaseException:
                 pass
 
         if not sTitle.startswith('[COLOR'):
@@ -331,7 +332,7 @@ class cGuiElement:
                     self.__sDescription = str(sDescription.encode('latin-1'), 'utf-8')
                 else:
                     self.__sDescription = sDescription
-            except:
+            except BaseException:
                 self.__sDescription = sDescription
         else:
             self.__sDescription = sDescription
@@ -376,7 +377,7 @@ class cGuiElement:
             return
         try:
             self.__sIcon = unicode(sIcon, 'utf-8')
-        except:
+        except BaseException:
             self.__sIcon = sIcon
         self.__sIcon = self.__sIcon.encode('utf-8')
         self.__sIcon = QuoteSafe(self.__sIcon)
@@ -533,7 +534,7 @@ class cGuiElement:
                     return
             else:
                 return
-        except:
+        except BaseException:
             return
 
         if 'media_type' in meta:
@@ -676,7 +677,7 @@ class cGuiElement:
             if sCat and int(sCat) in (1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
                 if self.getWatched():
                     self.addItemValues('playcount', 1)
-        except:
+        except BaseException:
             sCat = False
 
         self.addItemProperties('siteUrl', self.getSiteUrl())

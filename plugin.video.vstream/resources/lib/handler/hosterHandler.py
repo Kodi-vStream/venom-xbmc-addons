@@ -15,7 +15,7 @@ class cHosterHandler:
             sContent = oRequest.request()
 
             aMediaLink = cParser().parse(sContent, oHoster.getPattern())
-            if (aMediaLink[0] == True):
+            if (aMediaLink[0]):
                 return True, aMediaLink[1][0]
         return False, ''
 

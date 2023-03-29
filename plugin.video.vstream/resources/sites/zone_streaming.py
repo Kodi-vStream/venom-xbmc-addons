@@ -76,7 +76,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -227,7 +227,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -252,7 +252,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -265,7 +265,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'pages\'>Page.+?sur ([^<]+?)<.+?href="([^"]+?)">>><'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -291,7 +291,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             if 'videoseries?list=' in aEntry:
@@ -317,7 +317,7 @@ def showHosters():
                     sTitle = sTitle.replace('|', '-')
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -327,7 +327,7 @@ def showHosters():
                 link = link.replace('?rel=0', '')
                 sHosterUrl = 'https://www.youtube.com/watch?v=' + link
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

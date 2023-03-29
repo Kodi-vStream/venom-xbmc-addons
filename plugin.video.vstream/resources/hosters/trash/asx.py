@@ -1,23 +1,24 @@
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.hosterHandler import cHosterHandler
 
+
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Stream File'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'asx'
@@ -43,9 +44,9 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
         oHosterHandler = cHosterHandler()
-        aResult = oHosterHandler.getUrl(self)        
-        if (aResult[0] == True):
+        aResult = oHosterHandler.getUrl(self)
+        if (aResult[0]):
             return True, 'mms://' + aResult[1]
         return False, ''

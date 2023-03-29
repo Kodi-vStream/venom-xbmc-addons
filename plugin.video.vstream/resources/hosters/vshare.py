@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
 #         http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
 #         http://vshare.eu/embed-cxmr4o8l2waa703x405.html erreur code streambb
 
@@ -8,7 +8,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-import re, xbmcgui
+import re
+import xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -18,7 +20,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -43,7 +45,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = re.sub('-*\d{3,4}x\d{3,4}', '', self.__sUrl)
+        self.__sUrl = re.sub('-*\\d{3,4}x\\d{3,4}', '', self.__sUrl)
         self.__sUrl = self.__sUrl.replace('https', 'http')
 
     def checkUrl(self, sUrl):
@@ -68,16 +70,16 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = '<source src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
         else:
-            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
                 sPattern = '{file:"(http.+?vid.mp4)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     api_call = aResult[1][0]
 
         if (api_call):

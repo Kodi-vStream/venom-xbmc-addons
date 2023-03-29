@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.comaddon import progress
+from resources.lib.util import urlEncode
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import re
 return False  # 01/10/21 WAAW en hoster
 
-import re
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import urlEncode
-from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
@@ -57,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -98,7 +97,8 @@ def showMovies(sSearch=''):
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
         if nextPageSearch:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', nextPageSearch), ('story', sSearch))
+            query_args = (('do', 'search'), ('subaction', 'search'),
+                          ('search_start', nextPageSearch), ('story', sSearch))
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch))
 
@@ -119,13 +119,13 @@ def showMovies(sSearch=''):
         sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?</*strong>'
     else:
         sPattern = 'class="fullstream fullstreaming".+?src="([^"]+).+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?>(.+?)</a>.+?</*strong>.+?xfsearch.+?>([^<]+).+?itemprop="description".+?;">([^<]+).+?<a href="([^"]+)'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -140,7 +140,7 @@ def showMovies(sSearch=''):
                 if sThumb.startswith('/'):
                     sThumb = URL_MAIN[:-1] + sThumb
 
-                siteUrl = re.sub('www\.', '', aEntry[1])
+                siteUrl = re.sub('www\\.', '', aEntry[1])
                 sTitle = aEntry[2]
                 sQual = aEntry[3]
                 sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
@@ -157,12 +157,12 @@ def showMovies(sSearch=''):
 
                 # Certain film n'ont pas de date.
                 try:
-                    sYear = re.search('(\d{4})', aEntry[3]).group(1)
-                except:
+                    sYear = re.search('(\\d{4})', aEntry[3]).group(1)
+                except BaseException:
                     pass
 
                 sDesc = aEntry[4]
-                siteUrl = re.sub('www\.', '', aEntry[5])
+                siteUrl = re.sub('www\\.', '', aEntry[5])
 
             sDisplayTitle = '%s [%s]' % (sTitle, sQual)
 
@@ -171,14 +171,21 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(
+                SITE_IDENTIFIER,
+                'showHosters',
+                sDisplayTitle,
+                'films.png',
+                sThumb,
+                sDesc,
+                oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         if sSearch:
-            sPattern = '<a name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
+            sPattern = '<a name="nextlink" id="nextlink" onclick="javascript:list_submit\\(([0-9]+)\\); return\\(false\\)" href="#">Suivant'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sSearch)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
@@ -187,7 +194,7 @@ def showMovies(sSearch=''):
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
+            if (sNextPage):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 number = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -205,8 +212,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        return re.sub('www\.', '', aResult[1][0])
+    if (aResult[0]):
+        return re.sub('www\\.', '', aResult[1][0])
 
     return False
 
@@ -226,7 +233,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sethost = set()
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -237,10 +244,10 @@ def showHosters():
             if sHosterUrl not in sethost:
                 sethost.add(sHosterUrl)
             else:
-                continue 
+                continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

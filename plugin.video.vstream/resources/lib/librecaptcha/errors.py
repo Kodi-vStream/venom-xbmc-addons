@@ -21,6 +21,7 @@ class UserError(Exception):
     user-supplied data). When librecaptcha is run as a program, exceptions of
     this type are shown without a traceback unless --debug is passed.
     """
+
     def __init__(self, message):
         super().__init__(message)
 
@@ -33,6 +34,7 @@ class UserExit(UserError):
     """When librecaptcha is run as a program, throwing this exception causes
     the program to terminate. The exception message is not shown by default.
     """
+
     def __init__(self, message="Program terminated."):
         super().__init__(message)
 

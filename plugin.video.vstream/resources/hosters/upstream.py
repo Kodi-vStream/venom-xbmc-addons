@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -9,6 +9,7 @@ import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -17,7 +18,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -51,29 +52,29 @@ class cHoster(iHoster):
         api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry("User-Agent",UA)
+        oRequest.addHeaderEntry("User-Agent", UA)
         sHtmlContent = oRequest.request()
 
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         aResult_1 = re.findall(sPattern, sHtmlContent)
 
         if (aResult_1):
             sUnpacked = cPacker().unpack(aResult_1[0])
             sHtmlContent = sUnpacked
 
-        sPattern = 'sources: *\[\{file:"([^"]+)"'
+        sPattern = 'sources: *\\[\\{file:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
-        elif len(aResult_1) > 1 :
+        elif len(aResult_1) > 1:
             sUnpacked = cPacker().unpack(aResult_1[1])
             sHtmlContent = sUnpacked
-            sPattern = 'sources: *\[\{file:"([^"]+)"'
+            sPattern = 'sources: *\\[\\{file:"([^"]+)"'
             oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 api_call = aResult[1][0]
 
         if (api_call):

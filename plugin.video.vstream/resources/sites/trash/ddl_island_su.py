@@ -1,18 +1,20 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# Recaptcha 
-return False
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
-from resources.lib.config import GestionCookie
-
-import re, urllib, urllib2
+# Recaptcha
+import urllib2
+import urllib
+import re
 import random
+from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+return False
+
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -27,36 +29,43 @@ URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Recherche
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_ANIMES = (URL_MAIN + 'recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_MANGAS = (URL_MAIN + 'recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_EMISSIONS_TV = (URL_MAIN + 'recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_SPECTACLES = (URL_MAIN + 'recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_EMISSIONS_TV = (
+    URL_MAIN +
+    'recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=',
+    'showMovies')
+URL_SEARCH_SPECTACLES = (
+    URL_MAIN +
+    'recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=',
+    'showMovies')
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_SD = (URL_MAIN + 'telechargement/films-1.html&order=2', 'showMovies') # derniers films en SD
-MOVIE_HD = (URL_MAIN + 'telechargement/films-hd-13.html&order=2', 'showMovies') # derniers films en HD
-MOVIE_3D = (URL_MAIN + 'telechargement/films-3d-21.html&order=2', 'showMovies') # derniers films en 3D
-MOVIE_SD_VIEWS = (URL_MAIN + 'telechargement/films-1.html&order=3', 'showMovies') # derniers films en SD
-MOVIE_HD_VIEWS = (URL_MAIN + 'telechargement/films-hd-13.html&order=3', 'showMovies') # derniers films en HD
-MOVIE_3D_VIEWS = (URL_MAIN + 'telechargement/films-3d-21.html&order=3', 'showMovies') # derniers films en 3D
-MOVIE_TOP = (URL_MAIN + 'telechargement-top-films', 'showMovies') # derniers films en 3D
+MOVIE_SD = (URL_MAIN + 'telechargement/films-1.html&order=2', 'showMovies')  # derniers films en SD
+MOVIE_HD = (URL_MAIN + 'telechargement/films-hd-13.html&order=2', 'showMovies')  # derniers films en HD
+MOVIE_3D = (URL_MAIN + 'telechargement/films-3d-21.html&order=2', 'showMovies')  # derniers films en 3D
+MOVIE_SD_VIEWS = (URL_MAIN + 'telechargement/films-1.html&order=3', 'showMovies')  # derniers films en SD
+MOVIE_HD_VIEWS = (URL_MAIN + 'telechargement/films-hd-13.html&order=3', 'showMovies')  # derniers films en HD
+MOVIE_3D_VIEWS = (URL_MAIN + 'telechargement/films-3d-21.html&order=3', 'showMovies')  # derniers films en 3D
+MOVIE_TOP = (URL_MAIN + 'telechargement-top-films', 'showMovies')  # derniers films en 3D
 MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
 MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 
-ANIMES = (URL_MAIN + 'telechargement/dessins-animes-5.html&order=2', 'showMovies') # derniers dessins animés
+ANIMES = (URL_MAIN + 'telechargement/dessins-animes-5.html&order=2', 'showMovies')  # derniers dessins animés
 
-ANIM_ANIMS = (URL_MAIN + 'telechargement/mangas-3.html&order=2', 'showMovies') # derniers dessins animés
+ANIM_ANIMS = (URL_MAIN + 'telechargement/mangas-3.html&order=2', 'showMovies')  # derniers dessins animés
 
-EMISSIONS_TV = (URL_MAIN + 'telechargement/emissions-tv-17.html&order=2', 'showMovies') # dernieres émissions TV
+EMISSIONS_TV = (URL_MAIN + 'telechargement/emissions-tv-17.html&order=2', 'showMovies')  # dernieres émissions TV
 
-SPECTACLES = (URL_MAIN + 'telechargement/comedies-spectacles-2.html&order=2', 'showMovies') # dernieres émissions TV
+SPECTACLES = (URL_MAIN + 'telechargement/comedies-spectacles-2.html&order=2', 'showMovies')  # dernieres émissions TV
 
-SERIES_SD = (URL_MAIN + 'telechargement/series-tv-6.html&order=2', 'showMovies') # derniers films en SD
-SERIES_HD = (URL_MAIN + 'telechargement/series-hd-20.html&order=2', 'showMovies') # derniers films en HD
-SERIES_SD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en SD
-SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en HD
-SERIES_TOP = (URL_MAIN + 'telechargement-top-series', 'showMovies') # derniers films en 3D
+SERIES_SD = (URL_MAIN + 'telechargement/series-tv-6.html&order=2', 'showMovies')  # derniers films en SD
+SERIES_HD = (URL_MAIN + 'telechargement/series-hd-20.html&order=2', 'showMovies')  # derniers films en HD
+SERIES_SD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies')  # derniers films en SD
+SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies')  # derniers films en HD
+SERIES_TOP = (URL_MAIN + 'telechargement-top-series', 'showMovies')  # derniers films en 3D
 SERIES_GENRES_SD = (True, 'showGenreSeriesSD')
 SERIES_GENRES_HD = (True, 'showGenreSeriesHD')
+
 
 def load():
     oGui = cGui()
@@ -86,6 +95,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuEmissionsTV', 'Emissions TV', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -132,6 +142,7 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -169,18 +180,25 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuDessinsAnimes():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnimes', 'Recherche de Dessins Animés', 'search.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showSearchAnimes',
+        'Recherche de Dessins Animés',
+        'search.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIMES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIMES[1], 'Dessins Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMangas():
     oGui = cGui()
@@ -195,12 +213,18 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSpectacles():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSpectacles', 'Recherche de Spectacles', 'search.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showSearchSpectacles',
+        'Recherche de Spectacles',
+        'search.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPECTACLES[0])
@@ -208,12 +232,18 @@ def showMenuSpectacles():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuEmissionsTV():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d\'émissions TV', 'search.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showSearchEmissionsTV',
+        'Recherche d\'émissions TV',
+        'search.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
@@ -221,125 +251,136 @@ def showMenuEmissionsTV():
 
     oGui.setEndOfDirectory()
 
+
 def showSearchMovies():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchSeries():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchAnimes():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_ANIMES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchMangas():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MANGAS[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchSpectacles():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SPECTACLES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchEmissionsTV():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_EMISSIONS_TV[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
+
 def showGenreMoviesSD():
     showGenres("films-1.html&order=2")
+
 
 def showGenreMoviesHD():
     showGenres("films-hd-13.html&order=2")
 
+
 def showGenreSeriesSD():
     showGenres("series-tv-6.html")
 
+
 def showGenreSeriesHD():
     showGenres("series-hd-20.html")
+
 
 def showGenres(basePath):
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'telechargement+5/' + basePath] )
-    liste.append( ['Animation', URL_MAIN + 'telechargement+4/' + basePath] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'telechargement+64/' + basePath] )
-    liste.append( ['Aventure', URL_MAIN + 'telechargement+20/' + basePath] )
-    liste.append( ['Biographie', URL_MAIN + 'telechargement+38/' + basePath] )
-    liste.append( ['Biopic', URL_MAIN + 'telechargement+28/' + basePath] )
-    liste.append( ['Combat', URL_MAIN + 'telechargement+35/' + basePath] )
-    liste.append( ['Comédie', URL_MAIN + 'telechargement+1/' + basePath] )
-    liste.append( ['Comédie dramatique', URL_MAIN + 'telechargement+12/' + basePath] )
-    liste.append( ['Comédie musicale', URL_MAIN + 'telechargement+33/' + basePath] )
-    liste.append( ['Comédie romantique', URL_MAIN + 'telechargement+53/' + basePath] )
-    liste.append( ['Comique', URL_MAIN + 'telechargement+51/' + basePath] )
-    liste.append( ['Court métrage', URL_MAIN + 'telechargement+45/' + basePath] )
-    liste.append( ['Criminalité', URL_MAIN + 'telechargement+40/' + basePath] )
-    liste.append( ['Dessin animé', URL_MAIN + 'telechargement+27/' + basePath] )
-    liste.append( ['Divers', URL_MAIN + 'telechargement+34/' + basePath] )
-    liste.append( ['Divertissement', URL_MAIN + 'telechargement+66/' + basePath] )
-    liste.append( ['Documentaire', URL_MAIN + 'telechargement+9/' + basePath] )
-    liste.append( ['Drame', URL_MAIN + 'telechargement+3/' + basePath] )
-    liste.append( ['Epouvante', URL_MAIN + 'telechargement+41/' + basePath] )
-    liste.append( ['Epouvante-horreur', URL_MAIN + 'telechargement+17/' + basePath] )
-    liste.append( ['Erotique', URL_MAIN + 'telechargement+24/' + basePath] )
-    liste.append( ['Espionnage', URL_MAIN + 'telechargement+13/' + basePath] )
-    liste.append( ['Famille', URL_MAIN + 'telechargement+31/' + basePath] )
-    liste.append( ['Fantastique', URL_MAIN + 'telechargement+16/' + basePath] )
-    liste.append( ['Football', URL_MAIN + 'telechargement+32/' + basePath] )
-    liste.append( ['Guerre', URL_MAIN + 'telechargement+22/' + basePath] )
-    liste.append( ['Historique', URL_MAIN + 'telechargement+21/' + basePath] )
-    liste.append( ['Horreur', URL_MAIN + 'telechargement+15/' + basePath] )
-    liste.append( ['Humour', URL_MAIN + 'telechargement+44/' + basePath] )
-    liste.append( ['Jeunesse', URL_MAIN + 'telechargement+19/' + basePath] )
-    liste.append( ['Judiciaire', URL_MAIN + 'telechargement+67/' + basePath] )
-    liste.append( ['Karaté', URL_MAIN + 'telechargement+23/' + basePath] )
-    liste.append( ['Manga', URL_MAIN + 'telechargement+58/' + basePath] )
-    liste.append( ['Médical', URL_MAIN + 'telechargement+47/' + basePath] )
-    liste.append( ['Musical', URL_MAIN + 'telechargement+10/' + basePath] )
-    liste.append( ['Mystère', URL_MAIN + 'telechargement+26/' + basePath] )
-    liste.append( ['Péplum', URL_MAIN + 'telechargement+54/' + basePath] )
-    liste.append( ['Policier', URL_MAIN + 'telechargement+2/' + basePath] )
-    liste.append( ['Reportage', URL_MAIN + 'telechargement+57/' + basePath] )
-    liste.append( ['Romance', URL_MAIN + 'telechargement+6/' + basePath] )
-    liste.append( ['Science fiction', URL_MAIN + 'telechargement+7/' + basePath] )
-    liste.append( ['Sketches', URL_MAIN + 'telechargement+14/' + basePath] )
-    liste.append( ['Spectacle', URL_MAIN + 'telechargement+39/' + basePath] )
-    liste.append( ['Sport', URL_MAIN + 'telechargement+68/' + basePath] )
-    liste.append( ['Suspense', URL_MAIN + 'telechargement+42/' + basePath] )
-    liste.append( ['Téléréalité', URL_MAIN + 'telechargement+18/' + basePath] )
-    liste.append( ['Thriller', URL_MAIN + 'telechargement+8/' + basePath] )
-    liste.append( ['Western', URL_MAIN + 'telechargement+11/' + basePath] )
+    liste.append(['Action', URL_MAIN + 'telechargement+5/' + basePath])
+    liste.append(['Animation', URL_MAIN + 'telechargement+4/' + basePath])
+    liste.append(['Arts Martiaux', URL_MAIN + 'telechargement+64/' + basePath])
+    liste.append(['Aventure', URL_MAIN + 'telechargement+20/' + basePath])
+    liste.append(['Biographie', URL_MAIN + 'telechargement+38/' + basePath])
+    liste.append(['Biopic', URL_MAIN + 'telechargement+28/' + basePath])
+    liste.append(['Combat', URL_MAIN + 'telechargement+35/' + basePath])
+    liste.append(['Comédie', URL_MAIN + 'telechargement+1/' + basePath])
+    liste.append(['Comédie dramatique', URL_MAIN + 'telechargement+12/' + basePath])
+    liste.append(['Comédie musicale', URL_MAIN + 'telechargement+33/' + basePath])
+    liste.append(['Comédie romantique', URL_MAIN + 'telechargement+53/' + basePath])
+    liste.append(['Comique', URL_MAIN + 'telechargement+51/' + basePath])
+    liste.append(['Court métrage', URL_MAIN + 'telechargement+45/' + basePath])
+    liste.append(['Criminalité', URL_MAIN + 'telechargement+40/' + basePath])
+    liste.append(['Dessin animé', URL_MAIN + 'telechargement+27/' + basePath])
+    liste.append(['Divers', URL_MAIN + 'telechargement+34/' + basePath])
+    liste.append(['Divertissement', URL_MAIN + 'telechargement+66/' + basePath])
+    liste.append(['Documentaire', URL_MAIN + 'telechargement+9/' + basePath])
+    liste.append(['Drame', URL_MAIN + 'telechargement+3/' + basePath])
+    liste.append(['Epouvante', URL_MAIN + 'telechargement+41/' + basePath])
+    liste.append(['Epouvante-horreur', URL_MAIN + 'telechargement+17/' + basePath])
+    liste.append(['Erotique', URL_MAIN + 'telechargement+24/' + basePath])
+    liste.append(['Espionnage', URL_MAIN + 'telechargement+13/' + basePath])
+    liste.append(['Famille', URL_MAIN + 'telechargement+31/' + basePath])
+    liste.append(['Fantastique', URL_MAIN + 'telechargement+16/' + basePath])
+    liste.append(['Football', URL_MAIN + 'telechargement+32/' + basePath])
+    liste.append(['Guerre', URL_MAIN + 'telechargement+22/' + basePath])
+    liste.append(['Historique', URL_MAIN + 'telechargement+21/' + basePath])
+    liste.append(['Horreur', URL_MAIN + 'telechargement+15/' + basePath])
+    liste.append(['Humour', URL_MAIN + 'telechargement+44/' + basePath])
+    liste.append(['Jeunesse', URL_MAIN + 'telechargement+19/' + basePath])
+    liste.append(['Judiciaire', URL_MAIN + 'telechargement+67/' + basePath])
+    liste.append(['Karaté', URL_MAIN + 'telechargement+23/' + basePath])
+    liste.append(['Manga', URL_MAIN + 'telechargement+58/' + basePath])
+    liste.append(['Médical', URL_MAIN + 'telechargement+47/' + basePath])
+    liste.append(['Musical', URL_MAIN + 'telechargement+10/' + basePath])
+    liste.append(['Mystère', URL_MAIN + 'telechargement+26/' + basePath])
+    liste.append(['Péplum', URL_MAIN + 'telechargement+54/' + basePath])
+    liste.append(['Policier', URL_MAIN + 'telechargement+2/' + basePath])
+    liste.append(['Reportage', URL_MAIN + 'telechargement+57/' + basePath])
+    liste.append(['Romance', URL_MAIN + 'telechargement+6/' + basePath])
+    liste.append(['Science fiction', URL_MAIN + 'telechargement+7/' + basePath])
+    liste.append(['Sketches', URL_MAIN + 'telechargement+14/' + basePath])
+    liste.append(['Spectacle', URL_MAIN + 'telechargement+39/' + basePath])
+    liste.append(['Sport', URL_MAIN + 'telechargement+68/' + basePath])
+    liste.append(['Suspense', URL_MAIN + 'telechargement+42/' + basePath])
+    liste.append(['Téléréalité', URL_MAIN + 'telechargement+18/' + basePath])
+    liste.append(['Thriller', URL_MAIN + 'telechargement+8/' + basePath])
+    liste.append(['Western', URL_MAIN + 'telechargement+11/' + basePath])
 
     for sTitle, sUrl in liste:
 
@@ -349,26 +390,28 @@ def showGenres(basePath):
 
     oGui.setEndOfDirectory()
 
+
 def getIdFromUrl(sUrl):
-    sPattern = "\/(telechargemen.+?\/)"
+    sPattern = "\\/(telechargemen.+?\\/)"
     oParser = cParser()
     aResult = oParser.parse(sUrl, sPattern)
-    if (aResult[0] == True):
-       return aResult[1][0]
+    if (aResult[0]):
+        return aResult[1][0]
     return
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     bGlobal_Search = False
     if sSearch:
 
-        #par defaut
+        # par defaut
         sUrl = sSearch.replace(' ', '+')
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
 
-        #partie en test
+        # partie en test
         oInputParameterHandler = cInputParameterHandler()
         sType = oInputParameterHandler.getValue('type')
 
@@ -384,30 +427,30 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    #print sUrl
+    # print sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #print sHtmlContent
+    # print sHtmlContent
     sDesc = ''
     sQual = ''
     sSaison = ''
     sLang = ''
-    #sEpisode = ''
+    # sEpisode = ''
     if 'top' in sUrl:
-        sPattern = '<div class="fiche_top20"><a class="top20" href="([^"]+)"><img src="([^"]+)" title="([^\|]+)\|\|[^\|]+?\|\|([^\|]+)\|\|[^\|]+?\|\|([^"]+)" /></a></div>'
+        sPattern = '<div class="fiche_top20"><a class="top20" href="([^"]+)"><img src="([^"]+)" title="([^\\|]+)\\|\\|[^\\|]+?\\|\\|([^\\|]+)\\|\\|[^\\|]+?\\|\\|([^"]+)" /></a></div>'
     elif 'series' in sUrl:
-        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?\| *Qualit&eacute; : ([^<]+)<br /><br />([^<]+)<br /><br />'
+        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\\|]+?\\| *Qualit&eacute; : ([^<]+)<br /><br />([^<]+)<br /><br />'
     else:
-        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?".+?Cat&eacute;gorie :([^<]+)<br /><br />([^<]+)<br /><br />'
+        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\\|]+?".+?Cat&eacute;gorie :([^<]+)<br /><br />([^<]+)<br /><br />'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    # print aResult
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -424,19 +467,27 @@ def showMovies(sSearch = ''):
                     sQual = '3D'
             else:
                 sQual = aEntry[3].replace('&eacute;', 'é')
-            sDesc = aEntry[4].replace('&rsquo;', '\'').replace('&ldquo;', '"').replace('&rdquo;', '"').replace('&hellip;', '...')
+            sDesc = aEntry[4].replace(
+                '&rsquo;',
+                '\'').replace(
+                '&ldquo;',
+                '"').replace(
+                '&rdquo;',
+                '"').replace(
+                '&hellip;',
+                '...')
             sTitle = aEntry[2]
-            #print sUrl2
+            # print sUrl2
             sThumb = aEntry[1]
-            #Reformatage sDisplayTitle
+            # Reformatage sDisplayTitle
             sSaison = ''
             sLang = ''
-            #sEpisode = ''
+            # sEpisode = ''
             sTitle2 = sTitle.split(" - ")
             sTitle = sTitle2[0]
             if 'top' in sUrl:
                 sTitle = ' ' + sTitle2[0]
-            #on vire le titre pour rechercher saison dans sTitle2
+            # on vire le titre pour rechercher saison dans sTitle2
             del sTitle2[0]
             a = filter(lambda x: 'Saison' in x, sTitle2)
             if a:
@@ -453,7 +504,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-
             if 'series' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
@@ -462,17 +512,18 @@ def showMovies(sSearch = ''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
+    # tPassage en mode vignette sauf en cas de recherche globale
     # if not bGlobal_Search:
         # xbmc.executebuiltin('Container.SetViewMode(500)')
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oInputParameterHandler = cInputParameterHandler()
@@ -481,8 +532,8 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<div class="page">.+?</div></td><td align="center"><a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        #print aResult
+    if (aResult[0]):
+        # print aResult
         if 'recherche.php' in aResult[1][0]:
             return URL_MAIN + aResult[1][0]
         else:
@@ -490,6 +541,7 @@ def __checkForNextPage(sHtmlContent):
             return URL_MAIN + id + aResult[1][0]
 
     return False
+
 
 def showMoviesReleases():
     oGui = cGui()
@@ -510,7 +562,7 @@ def showMoviesReleases():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -534,6 +586,7 @@ def showMoviesReleases():
 
     oGui.setEndOfDirectory()
 
+
 def showSaisons():
     oGui = cGui()
 
@@ -546,18 +599,18 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    # fh = open('c:\\test.txt', "w")
+    # fh.write(sHtmlContent)
+    # fh.close()
 
     oParser = cParser()
-    sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a>(?:&nbsp;<img src=.+?title=(.+?) width|)"
+    sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\\/a>(?:&nbsp;<img src=.+?title=(.+?) width|)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -579,6 +632,7 @@ def showSaisons():
 
     oGui.setEndOfDirectory()
 
+
 def showSeriesReleases():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -593,24 +647,24 @@ def showSeriesReleases():
     oGui = cGui()
 
     oParser = cParser()
-    #cut de la zone des releases
+    # cut de la zone des releases
     sPattern = 'Episode :</span>(.+?)>Hébergeur :'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0]==False:
+    if not aResult[0]:
         sPattern = 'Release :</span>(.+?)>Hébergeur :'
         aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult[1][0]
 
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    # print aResult
 
-    #Affichage du menu
+    # Affichage du menu
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles:[/COLOR]')
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -629,17 +683,18 @@ def showSeriesReleases():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = sUrl.replace('.html', '')
 
-    #print sUrl
+    # print sUrl
     sUrl = sUrl.replace(' & ', '+%26+').replace(' ', '+')
-    #VSlog(sUrl)
+    # VSlog(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
@@ -648,7 +703,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -660,15 +715,15 @@ def showHosters():
             sUrl = aEntry[1]
             sTitle = aEntry[2].replace('.mkv', '')
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
-            if sTitle.startswith('Telecharger ') :
+            if sTitle.startswith('Telecharger '):
                 sTitle = sTitle.replace('Telecharger ', '')
-			
-            #test si le host est supporte par vstream.
+
+            # test si le host est supporte par vstream.
             oHoster = cHosterGui().checkHoster(sHost.lower())
-            if  sHost == 'Revivelink':
+            if sHost == 'Revivelink':
                 oHoster = True
 
-            if (oHoster != False):
+            if (oHoster):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -679,16 +734,17 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def Display_protected_link():
-    #VSlog('Display_protected_link')
+    # VSlog('Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
-    #Ne marche pas
+    # Ne marche pas
     if (False):
         code = {
             '123455600123455602123455610123455615': 'http://uptobox.com/',
@@ -705,19 +761,19 @@ def Display_protected_link():
                 sHosterUrl = code[k] + match.group(1)
                 sHosterUrl = sHosterUrl.replace('123455615', '/')
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 oGui.setEndOfDirectory()
                 return
 
-    #Est ce un lien dl-protect ?
+    # Est ce un lien dl-protect ?
     if URL_DECRYPT in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
-            #Si redirection
+            # Si redirection
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
@@ -728,13 +784,13 @@ def Display_protected_link():
             oDialog = dialog().VSok('Erreur décryptage du lien')
             aResult_dlprotecte = (False, False)
 
-    #Si lien normal
+    # Si lien normal
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
         aResult_dlprotecte = (True, [sUrl])
 
-    #print aResult_dlprotecte
+    # print aResult_dlprotecte
 
     if (aResult_dlprotecte[0]):
 
@@ -742,14 +798,13 @@ def Display_protected_link():
 
         for aEntry in aResult_dlprotecte[1]:
             sHosterUrl = aEntry
-            #print sHosterUrl
+            # print sHosterUrl
 
             sTitle = sMovieTitle
             if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + episode
 
-
-            episode+=1
+            episode += 1
 
             if 'stream' in sHosterUrl:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -759,12 +814,13 @@ def Display_protected_link():
                 oGui.addMovie(SITE_IDENTIFIER, 'showStreamingHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def DecryptDlProtecte(url):
 
@@ -774,14 +830,14 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
-    #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
-    #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
+    # url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
+    # url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
     url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
 
-    #VSlog(url2)
+    # VSlog(url2)
 
-    #Make random key
-    s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
+    # Make random key
+    s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@"
     RandomKey = ''.join(random.choice(s) for i in range(32))
 
     oRequestHandler = cRequestHandler(url2)
@@ -792,7 +848,7 @@ def DecryptDlProtecte(url):
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-    oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
     oRequestHandler.addParameters('action', 'qaptcha')
     oRequestHandler.addParameters('qaptcha_key', RandomKey)
 
@@ -800,34 +856,34 @@ def DecryptDlProtecte(url):
 
     cookies = oRequestHandler.GetCookies()
     GestionCookie().SaveCookie('dl_protect.ru', cookies)
-    #VSlog( 'result'  + sHtmlContent)
+    # VSlog( 'result'  + sHtmlContent)
 
-    if not '"error":false' in sHtmlContent:
+    if '"error":false' not in sHtmlContent:
         VSlog('Captcha rate')
         VSlog(sHtmlContent)
         return
 
-    #tempo pas necessaire
-    #cGui().showInfo("Patientez", 'Décodage en cours', 2)
-    #xbmc.sleep(1000)
+    # tempo pas necessaire
+    # cGui().showInfo("Patientez", 'Décodage en cours', 2)
+    # xbmc.sleep(1000)
 
-    #Ancienne methode avec POST
-    #query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS', '' ) , ('submit', 'Valider' ) )
-    #data = urllib.urlencode(query_args)
+    # Ancienne methode avec POST
+    # query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS', '' ) , ('submit', 'Valider' ) )
+    # data = urllib.urlencode(query_args)
 
-    #Nouvelle methode avec multipart
-    #multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
+    # Nouvelle methode avec multipart
+    # multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
 
     import string
     _BOUNDARY_CHARS = string.digits + string.ascii_letters
     boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
 
-    multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
+    multipart_form_data = {RandomKey: '', 'submit': 'Valider'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
-    #VSlog( 'header 2'  + str(headersMulti))
-    #VSlog( 'data 2'  + str(data))
+    # VSlog( 'header 2'  + str(headersMulti))
+    # VSlog( 'data 2'  + str(data))
 
-    #2 eme requete pour avoir le lien
+    # 2 eme requete pour avoir le lien
     cookies = GestionCookie().Readcookie('dl_protect.ru')
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -845,18 +901,20 @@ def DecryptDlProtecte(url):
 
     sHtmlContent = oRequestHandler.request()
 
-    #fh = open('d:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    # fh = open('d:\\test.txt', "w")
+    # fh.write(sHtmlContent)
+    # fh.close()
 
     return sHtmlContent
 
-#******************************************************************************
-#from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/
+# ******************************************************************************
+# from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/
+
 
 """Encode multipart form data to upload files via POST."""
 
-def encode_multipart(fields, files, boundary = None):
+
+def encode_multipart(fields, files, boundary=None):
     r"""Encode dict of form fields and dict of files as multipart/form-data.
     Return tuple of (body_string, headers_dict). Each value in files is a dict
     with required keys 'filename' and 'content', and optional 'mimetype' (if
@@ -913,7 +971,7 @@ def encode_multipart(fields, files, boundary = None):
         lines.extend((
             '--{0}'.format(boundary),
             'Content-Disposition: form-data; name="{0}"; filename="{1}"'.format(
-                    escape_quote(name), escape_quote(filename)),
+                escape_quote(name), escape_quote(filename)),
             'Content-Type: {0}'.format(mimetype),
             '',
             value['content'],

@@ -1,15 +1,16 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://video.sibnet.ru/shell.php?videoid=xxxxxx
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://video.sibnet.ru/shell.php?videoid=xxxxxx
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 
-#from resources.lib.comaddon import #,VSlog
+# from resources.lib.comaddon import #,VSlog
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
+
 
 class cHoster(iHoster):
 
@@ -19,7 +20,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -66,9 +67,8 @@ class cHoster(iHoster):
         sPattern = 'src:.+?"([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
-            api_call= urlmain + aResult[1][0] + '|Referer=' + url
-
+        if (aResult[0]):
+            api_call = urlmain + aResult[1][0] + '|Referer=' + url
 
         if (api_call):
             return True, api_call

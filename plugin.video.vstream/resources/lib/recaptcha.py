@@ -17,7 +17,7 @@ try:
     from http.cookiejar import CookieJar
 except ImportError:
     from cookielib import CookieJar
-    
+
 import os
 import random
 import re
@@ -52,32 +52,121 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl(self.ctrlBackground)
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Veuillez sélectionnez les images correspondants au thème.\nIl devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            250,
+            20,
+            724,
+            400,
+            'Veuillez sélectionnez les images correspondants au thème.\nIl devrait y en avoir 3 ou 4 à sélectionner.',
+            'font40',
+            '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.msg = kwargs.get('msg')
         self.roundnum = kwargs.get('roundnum')
-        self.strActionInfo = xbmcgui.ControlLabel(250, 70, 700, 300, 'Le thème est: ' + self.msg, 'font13', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            250, 70, 700, 300, 'Le thème est: ' + self.msg, 'font13', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.addControl(self.img)
 
-        self.chk = [0]*9
-        self.chkbutton = [0]*9
-        self.chkstate = [False]*9
+        self.chk = [0] * 9
+        self.chkbutton = [0] * 9
+        self.chkstate = [False] * 9
 
         if 1 == 2:
-            self.chk[0] = xbmcgui.ControlCheckMark(250, 110, 260, 166, '1', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[1] = xbmcgui.ControlCheckMark(250 + 260, 110, 260, 166, '2', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[2] = xbmcgui.ControlCheckMark(250 + 520, 110, 260, 166, '3', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[0] = xbmcgui.ControlCheckMark(
+                250,
+                110,
+                260,
+                166,
+                '1',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[1] = xbmcgui.ControlCheckMark(
+                250 + 260,
+                110,
+                260,
+                166,
+                '2',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[2] = xbmcgui.ControlCheckMark(
+                250 + 520,
+                110,
+                260,
+                166,
+                '3',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
-            self.chk[3] = xbmcgui.ControlCheckMark(250, 110 + 166, 260, 166, '4', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[4] = xbmcgui.ControlCheckMark(250 + 260, 110 + 166, 260, 166, '5', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[5] = xbmcgui.ControlCheckMark(250 + 520, 110 + 166, 260, 166, '6', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[3] = xbmcgui.ControlCheckMark(
+                250,
+                110 + 166,
+                260,
+                166,
+                '4',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[4] = xbmcgui.ControlCheckMark(
+                250 + 260,
+                110 + 166,
+                260,
+                166,
+                '5',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[5] = xbmcgui.ControlCheckMark(
+                250 + 520,
+                110 + 166,
+                260,
+                166,
+                '6',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
-            self.chk[6] = xbmcgui.ControlCheckMark(250, 110 + 332, 260, 166, '7', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[7] = xbmcgui.ControlCheckMark(250 + 260, 110 + 332, 260, 166, '8', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[8] = xbmcgui.ControlCheckMark(250 + 520, 110 + 332, 260, 166, '9', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[6] = xbmcgui.ControlCheckMark(
+                250,
+                110 + 332,
+                260,
+                166,
+                '7',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[7] = xbmcgui.ControlCheckMark(
+                250 + 260,
+                110 + 332,
+                260,
+                166,
+                '8',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[8] = xbmcgui.ControlCheckMark(
+                250 + 520,
+                110 + 332,
+                260,
+                166,
+                '9',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
         else:
             self.chk[0] = xbmcgui.ControlImage(250, 110, 260, 166, check_image)
@@ -115,36 +204,58 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
-        self.chkbutton[6].controlDown(self.cancelbutton);  self.chkbutton[6].controlUp(self.chkbutton[3])
-        self.chkbutton[7].controlDown(self.cancelbutton);  self.chkbutton[7].controlUp(self.chkbutton[4])
-        self.chkbutton[8].controlDown(self.okbutton);      self.chkbutton[8].controlUp(self.chkbutton[5])
+        self.chkbutton[6].controlDown(self.cancelbutton)
+        self.chkbutton[6].controlUp(self.chkbutton[3])
+        self.chkbutton[7].controlDown(self.cancelbutton)
+        self.chkbutton[7].controlUp(self.chkbutton[4])
+        self.chkbutton[8].controlDown(self.okbutton)
+        self.chkbutton[8].controlUp(self.chkbutton[5])
 
-        self.chkbutton[6].controlLeft(self.chkbutton[8]);  self.chkbutton[6].controlRight(self.chkbutton[7]);
-        self.chkbutton[7].controlLeft(self.chkbutton[6]);  self.chkbutton[7].controlRight(self.chkbutton[8]);
-        self.chkbutton[8].controlLeft(self.chkbutton[7]);  self.chkbutton[8].controlRight(self.chkbutton[6]);
+        self.chkbutton[6].controlLeft(self.chkbutton[8])
+        self.chkbutton[6].controlRight(self.chkbutton[7])
+        self.chkbutton[7].controlLeft(self.chkbutton[6])
+        self.chkbutton[7].controlRight(self.chkbutton[8])
+        self.chkbutton[8].controlLeft(self.chkbutton[7])
+        self.chkbutton[8].controlRight(self.chkbutton[6])
 
-        self.chkbutton[3].controlDown(self.chkbutton[6]);  self.chkbutton[3].controlUp(self.chkbutton[0])
-        self.chkbutton[4].controlDown(self.chkbutton[7]);  self.chkbutton[4].controlUp(self.chkbutton[1])
-        self.chkbutton[5].controlDown(self.chkbutton[8]);  self.chkbutton[5].controlUp(self.chkbutton[2])
+        self.chkbutton[3].controlDown(self.chkbutton[6])
+        self.chkbutton[3].controlUp(self.chkbutton[0])
+        self.chkbutton[4].controlDown(self.chkbutton[7])
+        self.chkbutton[4].controlUp(self.chkbutton[1])
+        self.chkbutton[5].controlDown(self.chkbutton[8])
+        self.chkbutton[5].controlUp(self.chkbutton[2])
 
-        self.chkbutton[3].controlLeft(self.chkbutton[5]);  self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[5]);
-        self.chkbutton[5].controlLeft(self.chkbutton[4]);  self.chkbutton[5].controlRight(self.chkbutton[3]);
+        self.chkbutton[3].controlLeft(self.chkbutton[5])
+        self.chkbutton[3].controlRight(self.chkbutton[4])
+        self.chkbutton[4].controlLeft(self.chkbutton[3])
+        self.chkbutton[4].controlRight(self.chkbutton[5])
+        self.chkbutton[5].controlLeft(self.chkbutton[4])
+        self.chkbutton[5].controlRight(self.chkbutton[3])
 
-        self.chkbutton[0].controlDown(self.chkbutton[3]);  self.chkbutton[0].controlUp(self.cancelbutton)
-        self.chkbutton[1].controlDown(self.chkbutton[4]);  self.chkbutton[1].controlUp(self.cancelbutton)
-        self.chkbutton[2].controlDown(self.chkbutton[5]);  self.chkbutton[2].controlUp(self.okbutton)
+        self.chkbutton[0].controlDown(self.chkbutton[3])
+        self.chkbutton[0].controlUp(self.cancelbutton)
+        self.chkbutton[1].controlDown(self.chkbutton[4])
+        self.chkbutton[1].controlUp(self.cancelbutton)
+        self.chkbutton[2].controlDown(self.chkbutton[5])
+        self.chkbutton[2].controlUp(self.okbutton)
 
-        self.chkbutton[0].controlLeft(self.chkbutton[2]);  self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);  self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);  self.chkbutton[2].controlRight(self.chkbutton[0]);
+        self.chkbutton[0].controlLeft(self.chkbutton[2])
+        self.chkbutton[0].controlRight(self.chkbutton[1])
+        self.chkbutton[1].controlLeft(self.chkbutton[0])
+        self.chkbutton[1].controlRight(self.chkbutton[2])
+        self.chkbutton[2].controlLeft(self.chkbutton[1])
+        self.chkbutton[2].controlRight(self.chkbutton[0])
 
         self.cancelled = False
         self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);      self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton);      self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[2]);      self.okbutton.controlUp(self.chkbutton[8]);
-        self.cancelbutton.controlDown(self.chkbutton[0]);  self.cancelbutton.controlUp(self.chkbutton[6]);
+        self.okbutton.controlLeft(self.cancelbutton)
+        self.okbutton.controlRight(self.cancelbutton)
+        self.cancelbutton.controlLeft(self.okbutton)
+        self.cancelbutton.controlRight(self.okbutton)
+        self.okbutton.controlDown(self.chkbutton[2])
+        self.okbutton.controlUp(self.chkbutton[8])
+        self.cancelbutton.controlDown(self.chkbutton[0])
+        self.cancelbutton.controlUp(self.chkbutton[6])
 
     def get(self):
         self.doModal()
@@ -176,10 +287,10 @@ class cInputWindow(xbmcgui.WindowDialog):
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
                 if index.isnumeric():
-                    self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
-                    self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
+                    self.chkstate[int(index) - 1] = not self.chkstate[int(index) - 1]
+                    self.chk[int(index) - 1].setVisible(self.chkstate[int(index) - 1])
 
-        except:
+        except BaseException:
             pass
 
     def onAction(self, action):
@@ -261,7 +372,11 @@ def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None, noredir=Fal
     cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
 
     if noredir:
-        opener = urllib2.build_opener(Noredirection, cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
+        opener = urllib2.build_opener(
+            Noredirection,
+            cookie_handler,
+            urllib2.HTTPBasicAuthHandler(),
+            urllib2.HTTPHandler())
     else:
         opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
     # opener = urllib2.install_opener(opener)
@@ -271,7 +386,9 @@ def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None, noredir=Fal
         for h, hv in headers:
             req.add_header(h, hv)
     else:
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+        req.add_header(
+            'User-Agent',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
         req.add_header('Accept-Language', __sLang__)
 
     VSlog('post : ' + str(post))
@@ -389,7 +506,7 @@ class UnCaptchaReCaptcha:
 
             responses = base64.b64encode('{"response":[%s]}' % retArg)
             # VSlog(responses)
-            responses=responses.replace('=', '.')
+            responses = responses.replace('=', '.')
 
             if retArg is not None and len(retArg) and retArg[0]:
                 post_data = urlEncode({'c': cval, 'response': responses}, doseq=True)
@@ -402,7 +519,11 @@ class UnCaptchaReCaptcha:
 
                 postdata = urlEncode({'c': cval, 'response': responses, 'v': vers,
                                       't': timeToSolve, 'bg': botguardstring, 'ct': timeToSolveMore})
-                html = getUrl('https://www.google.com/recaptcha/api2/userverify?k=' + key, post=postdata, headers=headers)
+                html = getUrl(
+                    'https://www.google.com/recaptcha/api2/userverify?k=' +
+                    key,
+                    post=postdata,
+                    headers=headers)
                 # fh = open('c:\\test.txt', 'w')
                 # fh.write(html)
                 # fh.close()
@@ -415,7 +536,7 @@ def getg():
     cookieJar = cookielib.LWPCookieJar()
     try:
         cookieJar.load("./gsite.jwl")
-    except:
+    except BaseException:
         pass
 
 

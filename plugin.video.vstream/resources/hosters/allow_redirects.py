@@ -3,6 +3,7 @@
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -70,7 +71,7 @@ class cHoster(iHoster):
             oHoster.setUrl(sHosterUrl)
             api_call = oHoster.getMediaLink()
 
-            if (api_call[0] == True):
+            if (api_call[0]):
                 return True, api_call[1]
 
         else:

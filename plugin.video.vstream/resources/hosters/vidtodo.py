@@ -1,15 +1,16 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#http://vidtodo.com/embed-xxx.html
-#http://vidtodo.com/xxx
-#http://vidtodo.com/xxx.html
-#com,me
+# coding: utf-8
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# http://vidtodo.com/embed-xxx.html
+# http://vidtodo.com/xxx
+# http://vidtodo.com/xxx.html
+# com,me
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-#from resources.lib.comaddon import VSlog
+# from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:69.0) Gecko/20100101 Firefox/69.0'
+
 
 class cHoster(iHoster):
 
@@ -18,7 +19,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -38,7 +39,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         if 'embed-' in self.__sUrl:
-            self.__sUrl = self.__sUrl.replace('embed-','')
+            self.__sUrl = self.__sUrl.replace('embed-', '')
 #        if not 'embed-' in self.__sUrl:
 #            self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
 
@@ -54,7 +55,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def extractSmil(self,smil):
+    def extractSmil(self, smil):
         import re
         oRequest = cRequestHandler(smil)
         oRequest.addParameters('referer', self.__sUrl)
@@ -65,34 +66,34 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = ''
-        
+
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer', self.__sUrl)
         oRequest.addParameters('User-Agent', UA)
         sHtmlContent = oRequest.request()
 
-        sPattern = 'sources:* \[(?:{file:)*"([^"]+)"'
+        sPattern = 'sources:* \\[(?:{file:)*"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
 
         else:
-            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 from resources.lib.packer import cPacker
                 sHtmlContent = cPacker().unpack(aResult[1][0])
 
                 sPattern = '{file: *"([^"]+smil)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     api_call = self.extractSmil(aResult[1][0])
                 else:
                     sPattern = 'src:"([^"]+.mp4)"'
                     aResult = oParser.parse(sHtmlContent, sPattern)
-                    if (aResult[0] == True):
-                        api_call = aResult[1][0] #.decode('rot13')
+                    if (aResult[0]):
+                        api_call = aResult[1][0]  # .decode('rot13')
 
         if (api_call):
             return True, api_call

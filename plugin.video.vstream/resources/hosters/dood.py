@@ -1,25 +1,29 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Votre pseudo
-#Ne pas passer par la version de téléchargement.
-#Tout les liens ne sont pas téléchargeable.
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Votre pseudo
+# Ne pas passer par la version de téléchargement.
+# Tout les liens ne sont pas téléchargeable.
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog, isMatrix, xbmc
 
-import time, random, base64
+import time
+import random
+import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
+
 def compute(s):
-    a = s.replace("/","1")
+    a = s.replace("/", "1")
     a = base64.b64decode(a)
-    a = a.replace("/","Z")
+    a = a.replace("/", "Z")
     a = base64.b64decode(a)
-    a = a.replace("@","a")
+    a = a.replace("@", "a")
     a = base64.b64decode(a)
     return a
+
 
 class cHoster(iHoster):
 
@@ -30,7 +34,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -63,13 +67,13 @@ class cHoster(iHoster):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl).replace('/d/','/e/').replace('doodstream.com','dood.la')
+        self.__sUrl = str(sUrl).replace('/d/', '/e/').replace('doodstream.com', 'dood.la')
 
     def checkUrl(self, sUrl):
         return True
@@ -83,7 +87,7 @@ class cHoster(iHoster):
     def __getHost(self):
         parts = self.__sUrl.split('//', 1)
         host = parts[0] + '//' + parts[1].split('/', 1)[0]
-        return host        
+        return host
 
     def __getMediaLinkForGuest(self):
         api_call = False
@@ -97,25 +101,25 @@ class cHoster(iHoster):
 
         req = urllib.Request(self.__sUrl, None, headers)
         with urllib.urlopen(req) as response:
-           sHtmlContent = response.read()
-           urlDonwload = response.geturl()
+            sHtmlContent = response.read()
+            urlDonwload = response.geturl()
 
         try:
             sHtmlContent = sHtmlContent.decode('utf8')
-        except:
+        except BaseException:
             pass
 
         oParser = cParser()
-        
+
         possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         fin_url = ''.join(random.choice(possible) for _ in range(10))
-        
-        sPattern = 'return a\+"(\?token=[^"]+)"'
+
+        sPattern = 'return a\\+"(\\?token=[^"]+)"'
         d = oParser.parse(sHtmlContent, sPattern)[1][0]
-        
-        fin_url = fin_url + d + str(int(1000*time.time()))
-        
-        sPattern = "\$\.get\('(\/pass_md5[^']+)"
+
+        fin_url = fin_url + d + str(int(1000 * time.time()))
+
+        sPattern = "\\$\\.get\\('(\\/pass_md5[^']+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
 
@@ -123,16 +127,16 @@ class cHoster(iHoster):
 
         req = urllib.Request(url2, None, headers)
         with urllib.urlopen(req) as response:
-           sHtmlContent = response.read()
+            sHtmlContent = response.read()
 
         try:
             sHtmlContent = sHtmlContent.decode('utf8')
-        except:
+        except BaseException:
             pass
 
         api_call = sHtmlContent + fin_url
-        
-        #VSlog(api_call)
+
+        # VSlog(api_call)
 
         if (api_call):
             api_call = api_call + '|Referer=' + urlDonwload

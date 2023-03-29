@@ -50,7 +50,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -80,7 +80,7 @@ def showGenres():
     sPattern = '<li><a href="([^>]+)">([^<]+)</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -99,14 +99,15 @@ def showMovies(sSearch=''):
 
     if sSearch:
         idx = sSearch.rfind("/") + 1
-        sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "-") + '-s0-r1.html'.replace(' ', '+')
+        sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]
+                                       ).replace(" ", "-") + '-s0-r1.html'.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('&gt;&gt;' , 'suivante')
+    sHtmlContent = sHtmlContent.replace('&gt;&gt;', 'suivante')
 
     sPattern = 'class="blockthumb">.+?class="imageitem" src="([^"]+)".+?class="titleitem"><a href="([^"]+)">(.+?)</a>'
 
@@ -115,7 +116,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -136,7 +137,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sPaging = re.search('-([0-9]+).html', sNextPage).group(1)
@@ -150,7 +151,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)">suivante</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -173,10 +174,10 @@ def showHosters():
 
     # lien dailymotion
     if (aResult[0] == False):
-        sPattern = 'src="([^"]+)\?.+?" allowfullscreen></iframe>'
+        sPattern = 'src="([^"]+)\\?.+?" allowfullscreen></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -185,7 +186,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -195,13 +196,13 @@ def showHosters():
         if vidpremium != -1:
             sPattern = "window.location.href = '([^']+)';"
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sHosterUrl = aResult[1][0].replace('download-', '').replace('.html', '')
 
                 sHosterUrl = 'http://videos.lesdebiles.com/' + sHosterUrl + '.mp4'
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

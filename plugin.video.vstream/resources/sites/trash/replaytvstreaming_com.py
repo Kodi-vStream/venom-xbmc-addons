@@ -1,17 +1,17 @@
-return False # Désactivé le 08/04/2020
+from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.util import cUtil
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+return False  # Désactivé le 08/04/2020
 
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 
-from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'replaytvstreaming_com'
 SITE_NAME = 'Replay Tv Streaming'
@@ -25,8 +25,14 @@ REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showGenres')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
+URL_SEARCH = (
+    URL_MAIN +
+    'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=',
+    'showMovies')
+URL_SEARCH_MISC = (
+    URL_MAIN +
+    'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=',
+    'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -55,7 +61,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sSearchText = sSearchText.replace(' ', '+')
 
         sUrl = URL_SEARCH[0] + sSearchText
@@ -101,14 +107,14 @@ def showMovies(sSearch=''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)">.+?<img src="([^"]+)".+?<div class="item-title">([^<]+)<\/div><div class="item-info clearfix">([^<]+)<\/div>'
+        sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)">.+?<img src="([^"]+)".+?<div class="item-title">([^<]+)<\\/div><div class="item-info clearfix">([^<]+)<\\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -136,7 +142,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -146,10 +152,10 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class="pnext"><a href="([^"]+)">SUIVANT<\/a>'
+    sPattern = '<span class="pnext"><a href="([^"]+)">SUIVANT<\\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -181,7 +187,7 @@ def showHosters():
 
     sTest = ''
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sPage = aEntry[1]
@@ -191,12 +197,12 @@ def showHosters():
 
             sTitle = aEntry[2]
 
-            if not 'Lecteur' in sTitle and sTest != sTitle:
+            if 'Lecteur' not in sTitle and sTest != sTitle:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + sTitle + '[/COLOR]')
                 sTest = sTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -204,12 +210,12 @@ def showHosters():
         sPattern = '<div class="playe.+?" data-show_player="video"><iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHosterUrl = aResult[1][0]
             sHosterUrl = cUtil().unescape(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

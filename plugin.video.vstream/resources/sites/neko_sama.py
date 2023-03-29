@@ -29,6 +29,7 @@ URL_SEARCH_VF = (ANIM_VFS[0], 'showSearchResult')
 
 FUNCTION_SEARCH = 'showSearchResult'
 
+
 def load():
     oGui = cGui()
 
@@ -54,7 +55,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showSearchResult(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -99,7 +100,6 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-
 def showSearchResult(sSearch):
     oGui = cGui()
 
@@ -123,7 +123,8 @@ def showSearchResult(sSearch):
 
     oOutputParameterHandler = cOutputParameterHandler()
     for dicts in data:
-        if sSearch in dicts['title'].lower() or sSearch in dicts['title_english'].lower() or sSearch in dicts['others'].lower():
+        if sSearch in dicts['title'].lower() or sSearch in dicts['title_english'].lower(
+        ) or sSearch in dicts['others'].lower():
             sTitle = dicts['title']
             sUrl2 = URL_MAIN[:-1] + dicts['url']
             sThumb = dicts['url_image']
@@ -154,7 +155,7 @@ def showLastEp():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -177,6 +178,7 @@ def showLastEp():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -193,7 +195,7 @@ def showMovies():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -215,7 +217,7 @@ def showMovies():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -227,7 +229,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a href="([^"]+)" class=""><svg'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -246,12 +248,12 @@ def showSaisonEpisodes():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     if sUrl.endswith("vostfr"):
-        oRequestHandler = cRequestHandler(sUrl.replace('vostfr','vf'))
+        oRequestHandler = cRequestHandler(sUrl.replace('vostfr', 'vf'))
         sHtmlContent = oRequestHandler.request()
-        if not "404 Not Found" in sHtmlContent:
+        if "404 Not Found" not in sHtmlContent:
             oOutputParameterHandler = cOutputParameterHandler()
             sTitle = "[COLOR red]Cliquez ici pour acceder à la version VF[/COLOR]"
-            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('vostfr','vf'))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('vostfr', 'vf'))
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', oOutputParameterHandler)
 
@@ -264,16 +266,16 @@ def showSaisonEpisodes():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-    except:
+    except BaseException:
         pass
-        
+
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -304,11 +306,11 @@ def showSeriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "video\[\d+\] = \'([^']+)\'"
+    sPattern = "video\\[\\d+\\] = \'([^']+)\'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -318,7 +320,7 @@ def showSeriesHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

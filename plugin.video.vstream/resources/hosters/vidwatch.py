@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-#from resources.lib.comaddon import VSlog
+# from resources.lib.comaddon import VSlog
 
 
 class cHoster(iHoster):
@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -60,9 +60,9 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        api_call =''
+        api_call = ''
 
-        #VSlog(self.__sUrl)
+        # VSlog(self.__sUrl)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -71,11 +71,11 @@ class cHoster(iHoster):
         sPattern = 'file:"([^"]+.mp4)",label:"([0-9]+)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        #VSlog(str(aResult))
-        if (aResult[0] == True):
+        # VSlog(str(aResult))
+        if (aResult[0]):
             api_call = aResult[1][0][0]
 
-        #VSlog(api_call)
+        # VSlog(api_call)
 
         if (api_call):
             return True, api_call

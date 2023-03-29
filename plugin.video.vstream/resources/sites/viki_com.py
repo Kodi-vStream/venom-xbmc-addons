@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 05 10072020
 # update 15012021 - uniquement format mpd disponible
-#Based on https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/extractor/viki.py
+# Based on https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/extractor/viki.py
 
 import re
 import time
@@ -53,6 +53,7 @@ URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
 se = 'true'
 
+
 def load():
     oGui = cGui()
 
@@ -67,6 +68,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMovies():
     oGui = cGui()
@@ -83,6 +85,7 @@ def showMenuMovies():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuSeries():
     oGui = cGui()
@@ -108,14 +111,16 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -151,40 +156,41 @@ def showMovies(sSearch=''):
             if jsonrsp['response'][movie]['type'] == "movie":
                 try:
                     sTitle = jsonrsp['response'][movie]['container']['titles']['fr']
-                except:
+                except BaseException:
                     sTitle = jsonrsp['response'][movie]['container']['titles']['en']
 
                 try:
                     sThumb = jsonrsp['response'][movie]['container']['images']['atv_cover']['url']
-                except:
-                    sThumb = jsonrsp['response'][movie]['container']['images']['poster']['url'] 
+                except BaseException:
+                    sThumb = jsonrsp['response'][movie]['container']['images']['poster']['url']
 
                 sUrl2 = jsonrsp['response'][movie]['id']
 
             else:
-                sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=' + _APP + '&t=' + str(timestamp)
+                sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + \
+                    '/episodes.json?page=1&per_page=50&app=' + _APP + '&t=' + str(timestamp)
 
                 try:
                     sTitle = jsonrsp['response'][movie]['titles']['fr']
-                except:
+                except BaseException:
                     sTitle = jsonrsp['response'][movie]['titles']['en']
 
                 try:
                     sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']
-                except:
-                    sThumb = jsonrsp['response'][movie]['images']['poster']['url']   
+                except BaseException:
+                    sThumb = jsonrsp['response'][movie]['images']['poster']['url']
 
             try:
                 sDesc = jsonrsp['response'][movie]['descriptions']['fr']
-            except:
+            except BaseException:
                 sDesc = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                
+
             if not isMatrix():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))
             else:
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -197,7 +203,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        if (jsonrsp['more'] == True):
+        if (jsonrsp['more']):
             getpage = re.compile('(.+?)&page=(.+?)&per_page=(.+?)&t=').findall(url)
             for frontUrl, page, backurl in getpage:
                 iNumberPage = int(page) + 1
@@ -207,6 +213,7 @@ def showMovies(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(iNumberPage), oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def showSaisons():
     oGui = cGui()
@@ -231,10 +238,11 @@ def showSaisons():
                 et = ''
                 try:
                     et = jsonrsp['response'][episode]['titles']['en']
-                except:
+                except BaseException:
                     pass
 
-                sTitle = jsonrsp['response'][episode]['container']['titles']['en'] + ' Episode ' + str(jsonrsp['response'][episode]['number'])
+                sTitle = jsonrsp['response'][episode]['container']['titles']['en'] + \
+                    ' Episode ' + str(jsonrsp['response'][episode]['number'])
                 sUrl = jsonrsp['response'][episode]['id']
                 sThumb = jsonrsp['response'][episode]['images']['poster']['url'] + '@' + et
 
@@ -246,13 +254,13 @@ def showSaisons():
             else:
                 pass
 
-        except:
+        except BaseException:
             pass
 
     if len(jsonrsp['response']) == 0:
         pass
 
-    if (jsonrsp['more'] == True):
+    if (jsonrsp['more']):
         getpage = re.compile('(.+?)page=(.+?)&per_page').findall(url)
         for frontUrl, page in getpage:
             newPage = int(page) + 1
@@ -262,6 +270,7 @@ def showSaisons():
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieGenre():
     oGui = cGui()
@@ -276,12 +285,14 @@ def showMovieGenre():
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
         typeGenre = jsonrsp[genre]['name']['fr']  # or jsonrsp[genre]['name']['en']
-        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
+        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + \
+            _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
 
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', typeGenre.capitalize(), 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSerieGenre():
     oGui = cGui()
@@ -295,7 +306,8 @@ def showSerieGenre():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
-        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
+        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + \
+            _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
         typeGenre = jsonrsp[genre]['name']['fr']
 
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
@@ -303,11 +315,14 @@ def showSerieGenre():
 
     oGui.setEndOfDirectory()
 
+
 def showMoviePays():
     showPays('movies')
 
+
 def showSeriePays():
     showPays('series')
+
 
 def showPays(genre):
 
@@ -328,6 +343,8 @@ def showPays(genre):
     oGui.setEndOfDirectory()
 
 # Signature des demandes au nom de Flash player
+
+
 def SIGN(pth, version=4):
     timestamp = int(time.time())
     rawtxt = f'/v{version}/{pth}?drms=dt1,dt2&device_id={_DEVICE_ID}&app={_APP}'
@@ -335,11 +352,12 @@ def SIGN(pth, version=4):
         _APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
     return Base_API % rawtxt, timestamp, sig
 
+
 def GET_URLS_STREAM(url):
     streamUrlList = []
     validq = []
 
-    urlreq, timestamp, sig = SIGN('playback_streams/'+url+'.json',5)
+    urlreq, timestamp, sig = SIGN('playback_streams/' + url + '.json', 5)
     oRequestHandler = cRequestHandler(urlreq)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('X-Viki-manufacturer', 'vivo')
@@ -356,7 +374,7 @@ def GET_URLS_STREAM(url):
 
     try:
         jsonrsp = jsonrsp['main']
-    except:
+    except BaseException:
         dialog().VSinfo("Contenu payant", 'An error occurred')
         return False
 
@@ -383,11 +401,11 @@ def showLinks():
     for item in streamList2:
         dataList.append(item)
 
-    #Conversion en str pour pouvoir facilement le manipuler dans le hoster.
+    # Conversion en str pour pouvoir facilement le manipuler dans le hoster.
     dataList = ','.join(dataList)
 
     oHoster = cHosterGui().checkHoster('viki')
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, dataList, sThumb)

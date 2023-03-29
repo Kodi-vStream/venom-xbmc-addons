@@ -5,6 +5,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 import xbmcgui
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -48,10 +49,8 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-
-    
     def __getMediaLinkForGuest(self, api_call=None):
-        
+
         # lesite ne fournit plus que du Mdp plus de format ['480p','360p','240p',
         sUrl = self.__sUrl
         # srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
@@ -66,7 +65,7 @@ class cHoster(iHoster):
             qual = []
             for a in sUrl:
                 url.append(a)
-                qu = re.search('max_res=(\d+)',a).group(1)
+                qu = re.search('max_res=(\\d+)', a).group(1)
                 qual.append(qu)
             api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
 

@@ -58,10 +58,10 @@ class cHoster(iHoster):
             sHtmlContent = oRequestHandler.request()
 
             oParser = cParser()
-            sPattern = 'src:\s+"([^"]+)'
+            sPattern = 'src:\\s+"([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
                 url2 = aResult[1][0]
                 oRequestHandler = cRequestHandler(url2)
                 sHtmlContent2 = oRequestHandler.request()
@@ -70,7 +70,7 @@ class cHoster(iHoster):
                 # sPattern = 'RESOLUTION=(\w+).+?(https.+?m3u8)'
 
                 # limite les formats
-                sPattern = 'PROGRAM-ID.+?RESOLUTION=(\w+).+?(https.+?m3u8)'
+                sPattern = 'PROGRAM-ID.+?RESOLUTION=(\\w+).+?(https.+?m3u8)'
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 for aEntry in aResult[1]:
                     list_q.append(aEntry[0])
@@ -86,10 +86,10 @@ class cHoster(iHoster):
             sHtmlContent = oRequestHandler.request()
 
             oParser = cParser()
-            sPattern = 'file_code=(\w+)&hash=([^&]+)'
+            sPattern = 'file_code=(\\w+)&hash=([^&]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
                 id = aResult[1][0][0]
                 hash = aResult[1][0][1]
                 url = 'https://aparat.cam/dl?op=download_orig&id=' + id + '&mode=0&hash=' + hash  # + '&embed=1&adb=0'
@@ -102,7 +102,7 @@ class cHoster(iHoster):
 
                 sPattern = 'href="([^"]+.mp4)'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     api_call = aResult[1][0]
                     if api_call:
                         return True, api_call

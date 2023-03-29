@@ -67,13 +67,13 @@ class cViewing:
 
                 try:
                     title = data['title'].encode('utf-8')
-                except:
+                except BaseException:
                     title = data['title']
 
                 try:
                     try:
                         siteurl = data['siteurl'].encode('utf-8')
-                    except:
+                    except BaseException:
                         siteurl = data['siteurl']
 
                     if isMatrix():
@@ -106,11 +106,13 @@ class cViewing:
                     oOutputParameterHandler.addParameter('TotalTime', totaltime)
 
                     if cat == '1':
-                        oListItem = oGui.addMovie(site, function, title, 'films.png', '', title, oOutputParameterHandler)
+                        oListItem = oGui.addMovie(site, function, title, 'films.png',
+                                                  '', title, oOutputParameterHandler)
                     elif cat == '5':
                         oListItem = oGui.addMisc(site, function, title, 'films.png', '', title, oOutputParameterHandler)
                     elif cat == '4':
-                        oListItem = oGui.addSeason(site, function, title, 'series.png', '', title, oOutputParameterHandler)
+                        oListItem = oGui.addSeason(site, function, title, 'series.png',
+                                                   '', title, oOutputParameterHandler)
                     else:
                         oListItem = oGui.addTV(site, function, title, 'series.png', '', title, oOutputParameterHandler)
 

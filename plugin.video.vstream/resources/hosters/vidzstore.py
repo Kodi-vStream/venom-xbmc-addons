@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+
 
 class cHoster(iHoster):
 
@@ -13,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -46,7 +47,7 @@ class cHoster(iHoster):
         sPattern = '<iframe src="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -63,7 +64,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    #Extraction du lien et decodage si besoin
+    # Extraction du lien et decodage si besoin
     def __getMediaLinkForGuest(self):
         api_call = False
 
@@ -71,9 +72,8 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'file: "([^"]+)\"'
+        sPattern = 'file: "([^"]+)\"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
 
         if (aResult[0]):
             api_call = aResult[1][0]
@@ -84,11 +84,11 @@ class cHoster(iHoster):
         return False, False
 
 
-#Attention : Pour fonctionner le nouvel hebergeur doit etre rajoute dans le corps de Vstream, fichier Hosters.py.
-#----------------------------------------------------------------------------------------------------------------
+# Attention : Pour fonctionner le nouvel hebergeur doit etre rajoute dans le corps de Vstream, fichier Hosters.py.
+# ----------------------------------------------------------------------------------------------------------------
 #
-#Code pour selection de plusieurs liens
-#--------------------------------------
+# Code pour selection de plusieurs liens
+# --------------------------------------
 #
 #            from resources.lib.comaddon import dialog
 #

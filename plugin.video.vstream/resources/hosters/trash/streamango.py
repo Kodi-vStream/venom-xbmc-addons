@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -36,7 +37,7 @@ class cHoster(iHoster):
         return True
 
     def decode(self, encoded, code):
-        #from https://github.com/jsergio123/script.module.urlresolver
+        # from https://github.com/jsergio123/script.module.urlresolver
         _0x59b81a = ""
         k = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
         k = k[::-1]
@@ -85,11 +86,11 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        r1 = re.search("{type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
+        r1 = re.search("{type:\"video/mp4\",src:\\w+\\('([^']+)',(\\d+)", sHtmlContent)
         if (r1):
             api_call = self.decode(r1.group(1), int(r1.group(2)))
             if api_call.endswith('@'):
-               api_call = api_call[:-1]
+                api_call = api_call[:-1]
 
             api_call = 'http:' + api_call
 

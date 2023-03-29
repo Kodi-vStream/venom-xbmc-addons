@@ -60,7 +60,7 @@ def showPays():
     sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)".+?>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -92,7 +92,7 @@ def showDailyList():
     sPattern = '</a><h2 class="post-title"><a href="([^"]+)">([^<]+)</a></h2><div class="excerpt"><p>.+?</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -113,7 +113,7 @@ def showDailyList():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -127,7 +127,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -143,7 +143,7 @@ def showAllPlaylist():
     sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>|<a href="([^"]+)">Download ([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 

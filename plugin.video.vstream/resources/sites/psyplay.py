@@ -98,7 +98,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -118,10 +118,10 @@ def showGenres():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if ('liste-de-films-de-noel'  in aEntry[0]) or ('top-films-streaming-10'  in aEntry[0]):
+            if ('liste-de-films-de-noel' in aEntry[0]) or ('top-films-streaming-10' in aEntry[0]):
                 continue
 
             sUrl = aEntry[0]
@@ -152,11 +152,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -168,11 +167,11 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sQual = aEntry[1]
-            sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
+            sThumb = re.sub('/w\\d+/', '/w342/', aEntry[2])
             sTitle = aEntry[3].replace(' en streaming', '').replace(' en Streaming', '').replace(' Streaming', '')\
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             if '/series' in sUrl2:
-                sTitle = re.sub('Episode \d+', '', sTitle)
+                sTitle = re.sub('Episode \\d+', '', sTitle)
             sYear = aEntry[4]
             sDesc = aEntry[5].replace('<p>', '').replace('&#8220;', '"').replace('&#8221;', '"')
 
@@ -193,7 +192,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -203,18 +202,18 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "<a class=''>.+?href='([^']+).+?/(\d+)'>Last"
+    sPattern = "<a class=''>.+?href='([^']+).+?/(\\d+)'>Last"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
-    sPattern = "<a class=''>.+?href='([^']+).+?>(\d+)</a></li>"
+    sPattern = "<a class=''>.+?href='([^']+).+?>(\\d+)</a></li>"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -244,7 +243,7 @@ def showSaisons():
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -274,12 +273,12 @@ def showHosters():
     sPattern = 'iframe src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

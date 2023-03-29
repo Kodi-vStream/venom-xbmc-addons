@@ -2,21 +2,20 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # 07/05/20 mise en place recaptcha
+from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.recaptcha import ResolveCaptcha
+from resources.lib.config import GestionCookie
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import xbmcgui
+import xbmc
+import re
 return False  # 07/03/2021
 
-import re
-import xbmc
-import xbmcgui
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.config import GestionCookie
-from resources.lib.recaptcha import ResolveCaptcha
-from resources.lib.comaddon import progress, dialog, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
@@ -57,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -134,7 +133,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -160,12 +159,19 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(
+                SITE_IDENTIFIER,
+                'showHosters',
+                sDisplayTitle,
+                'films.png',
+                sThumb,
+                sDesc,
+                oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -179,7 +185,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<div id=\'dle-content\'>.+?<span class="prev-next"> <a href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -203,7 +209,7 @@ def showHosters():
     sPattern = '<div class="tabs_header">.+?<a.+?>([^<]+)</b><tr>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, sMovieTitle)
@@ -224,11 +230,11 @@ def showHosters():
                         sUrl = aEntry[3]
                     except ValueError:
                         sHost = '[COLOR coral]' + aEntry[4].capitalize() + '[/COLOR]'
-                        sHost = re.sub('\.\w+', '', sHost)
+                        sHost = re.sub('\\.\\w+', '', sHost)
                         sUrl = aEntry[3]
                 else:
                     sHost = '[COLOR coral]' + aEntry[2].capitalize() + '[/COLOR]'
-                    sHost = re.sub('\.\w+', '', sHost)
+                    sHost = re.sub('\\.\\w+', '', sHost)
                     sUrl = aEntry[1]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -257,7 +263,7 @@ def Display_protected_link():
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -286,7 +292,7 @@ def Display_protected_link():
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -305,7 +311,7 @@ def Display_protected_link():
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -356,7 +362,8 @@ def DecryptddlProtect(url):
         oRequestHandler.addHeaderEntry('Host', host1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
-        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry(
+            'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         oRequestHandler.addHeaderEntry('Cookie', cookies)
         oRequestHandler.addHeaderEntry('Referer', url)
 
@@ -508,11 +515,14 @@ def DecryptKeeplinks(sUrl):
     Cookie = oRequestHandler.GetCookies()
 
     key = re.search('<div class="g-recaptcha" data-sitekey="(.+?)"></div>', str(sHtmlContent)).group(1)
-    hiddenAction = re.search('<input type="hidden" name=".+?" id="hiddenaction" value="([^"]+)"/>', str(sHtmlContent)).group(1)
+    hiddenAction = re.search(
+        '<input type="hidden" name=".+?" id="hiddenaction" value="([^"]+)"/>',
+        str(sHtmlContent)).group(1)
 
     gToken = ResolveCaptcha(key, sUrl)
 
-    data = "myhiddenpwd=&hiddenaction=" + hiddenAction + "+&captchatype=Re&hiddencaptcha=1&hiddenpwd=&g-recaptcha-response=" + gToken
+    data = "myhiddenpwd=&hiddenaction=" + hiddenAction + \
+        "+&captchatype=Re&hiddencaptcha=1&hiddenpwd=&g-recaptcha-response=" + gToken
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -540,7 +550,10 @@ def DecryptOuo(sUrl):
     Cookie = oRequestHandler.GetCookies()
 
     key = re.search('sitekey: "(.+?)"', str(sHtmlContent)).group(1)
-    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">.+?<input id="v-token" name="v-token" type="hidden" value="(.+?)"', str(sHtmlContent), re.MULTILINE | re.DOTALL)
+    OuoToken = re.search(
+        '<input name="_token" type="hidden" value="(.+?)">.+?<input id="v-token" name="v-token" type="hidden" value="(.+?)"',
+        str(sHtmlContent),
+        re.MULTILINE | re.DOTALL)
 
     gToken = ResolveCaptcha(key, urlOuo)
 
@@ -560,7 +573,9 @@ def DecryptOuo(sUrl):
     oRequestHandler.addParametersLine(params)
     sHtmlContent = oRequestHandler.request()
 
-    final = re.search('<form method="POST" action="(.+?)" accept-charset=.+?<input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent))
+    final = re.search(
+        '<form method="POST" action="(.+?)" accept-charset=.+?<input name="_token" type="hidden" value="(.+?)">',
+        str(sHtmlContent))
 
     url = final.group(1)
     params = '_token=' + final.group(2) + '&x-token=' + ""

@@ -59,7 +59,7 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = '<source src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
 
         if api_call:

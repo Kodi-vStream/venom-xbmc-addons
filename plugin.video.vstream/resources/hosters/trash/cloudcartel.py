@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://cloudcartel.net/embed/video/xxx
+# https://cloudcartel.net/embed/video/xxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
 sPattern1 = '"url":"([^"]+)",'
+
 
 class cHoster(iHoster):
 
@@ -15,7 +16,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -41,7 +42,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('cloudcartel.net/embed/video/', 'cloudcartel.vnadigital.com/download/link/')
-        #suivre
+        # suivre
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -54,9 +55,8 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         aResult = oParser.parse(sHtmlContent, sPattern1)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
-
 
         if (api_call):
             return True, api_call

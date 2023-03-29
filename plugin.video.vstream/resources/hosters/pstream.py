@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://www.pstream.net/e/xxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -13,8 +13,9 @@ import re
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
 
 headers = {'User-Agent': UA,
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
+           "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+           "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
+
 
 class cHoster(iHoster):
 
@@ -23,7 +24,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -69,14 +70,14 @@ class cHoster(iHoster):
         api_call = ''
         url = self.__sUrl
 
-        oRequest = cRequestHandler(url)  
-        oRequest.addHeaderEntry('User-Agent', UA)    
+        oRequest = cRequestHandler(url)
+        oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<script type="text/javascript" src="(.+?)"'
+        sPattern = '<script type="text/javascript" src="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
         oRequest = cRequestHandler(aResult)
@@ -85,7 +86,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        sPattern =  'atob.+?\}\("(.+?)"'
+        sPattern = 'atob.+?\\}\\("(.+?)"'
         code = oParser.parse(sHtmlContent, sPattern)
 
         for i in code[1]:
@@ -95,7 +96,7 @@ class cHoster(iHoster):
                 else:
                     code = base64.b64decode(i)
                 break
-            except:
+            except BaseException:
                 pass
 
         api_call = json.loads(code[code.rfind("{"):])['url']

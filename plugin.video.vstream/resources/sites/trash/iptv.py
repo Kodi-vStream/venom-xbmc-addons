@@ -41,7 +41,7 @@ def showPays():
     sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)"(?:>([^<]+)</a>|([^<]+)includes)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -73,7 +73,7 @@ def showDailyList():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
+    sPattern = '<div class="news-thumb col-md-6">\\s*<a href=([^"]+) title="([^"]+)".+?\\s*<img src=.+?uploads/.+?/.+?/([^"]+)\\..+?'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
@@ -102,7 +102,7 @@ def showDailyList():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -128,7 +128,7 @@ def showDailyIptvList():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    clearHtml = re.search('null>([\s*\S*]+)</pre>', sHtmlContent).group(1)
+    clearHtml = re.search('null>([\\s*\\S*]+)</pre>', sHtmlContent).group(1)
     line = re.compile('http(.+?)\n').findall(clearHtml)
 
     for sUrl2 in line:

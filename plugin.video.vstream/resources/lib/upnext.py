@@ -20,12 +20,12 @@ from resources.lib.util import UnquotePlus
 class UpNext:
     # Prépare le lien du prochain épisode d'une série
     def nextEpisode(self, guiElement):
-        
+
         # tester s'il s'agit d'une série
         if not guiElement.getItemValue('mediatype') == "episode":
             return
 
-        # Demander d'installer l'extension 
+        # Demander d'installer l'extension
         if not self.use_up_next():
             return
 
@@ -45,15 +45,15 @@ class UpNext:
             if not sEpisode:
                 return  # impossible de déterminer l'épisode courant
 
-        #tvShowTitle n'est pas toujours disponible.
+        # tvShowTitle n'est pas toujours disponible.
         tvShowTitle = guiElement.getItemValue('tvshowtitle')
         if not tvShowTitle:
-            tvShowTitle = re.search('\[\/COLOR\](.+?)\[COLOR',guiElement.getItemValue('title')).group(1)
+            tvShowTitle = re.search('\\[\\/COLOR\\](.+?)\\[COLOR', guiElement.getItemValue('title')).group(1)
 
         sMovieTitle = tvShowTitle
 
         numEpisode = int(sEpisode)
-        nextEpisode = numEpisode+1
+        nextEpisode = numEpisode + 1
         sNextEpisode = '%02d' % nextEpisode
 
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
@@ -68,7 +68,8 @@ class UpNext:
         sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         try:
-            sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
+            sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(
+                sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
             if not sMediaUrl:
                 return
 
@@ -83,7 +84,7 @@ class UpNext:
                 nextTitle += ' (%s)' % sLang
 
             episodeTitle = nextTitle
-        
+
             saisonUrl = oInputParameterHandler.getValue('saisonUrl')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
@@ -150,7 +151,18 @@ class UpNext:
         except Exception as e:
             VSlog('UpNext : %s' % e)
 
-    def getMediaUrl(self, sSiteName, sFunction, sParams, sSaison, iEpisode, sLang, sHosterIdentifier, sTitle='', sDesc='', sThumb=''):
+    def getMediaUrl(
+            self,
+            sSiteName,
+            sFunction,
+            sParams,
+            sSaison,
+            iEpisode,
+            sLang,
+            sHosterIdentifier,
+            sTitle='',
+            sDesc='',
+            sThumb=''):
 
         try:
             sys.argv[2] = '?%s' % sParams
@@ -185,10 +197,10 @@ class UpNext:
                 sTitle = tagLine
             else:
                 sTitle = listItem.getLabel()
-                
+
             if not sDesc:
                 sDesc = infoTag.getPlot()
-                
+
             if not sTitle:
                 sTitle = UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
             if 'sHost' in aParams and aParams['sHost']:
@@ -215,7 +227,8 @@ class UpNext:
                 return hostName, sMediaUrl, sTitle, sDesc, sThumb
 
             # if sFunction != 'play':
-            return self.getMediaUrl(sSiteName, sFunction, sParams, sSaison, iEpisode, sLang, sHosterIdentifier, sTitle, sDesc, sThumb)
+            return self.getMediaUrl(sSiteName, sFunction, sParams, sSaison, iEpisode,
+                                    sLang, sHosterIdentifier, sTitle, sDesc, sThumb)
 
         if sMediaUrl:    # si on n'a pas trouvé le bon host on en retourne un autre, il pourrait fonctionner
             return hostName, sMediaUrl, sTitle, sDesc, sThumb
@@ -282,5 +295,6 @@ class UpNext:
                 return True  # addon activé
             else:                          # UpNext non installé, on l'installe et on l'utilise
                 addonManager().installAddon(upnext_id)
-                # ce n'est pas pris en compte à l'installation de l'addon, donc return False, il faudra attendre le prochain épisode
+                # ce n'est pas pris en compte à l'installation de l'addon, donc return
+                # False, il faudra attendre le prochain épisode
                 return False

@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -41,7 +41,7 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)
 
     def getMediaLink(self):
-        
+
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
@@ -54,7 +54,7 @@ class cHoster(iHoster):
         oRequest.addParameters('r', '')
         oRequest.addParameters('d', 'dustreaming.fr')
         sHtmlContent = oRequest.request()
-        
+
         page = json.loads(sHtmlContent)
         if page:
             url = []

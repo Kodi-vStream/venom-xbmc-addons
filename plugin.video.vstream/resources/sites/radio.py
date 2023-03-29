@@ -83,7 +83,9 @@ def parseWebM3U():  # Traite les m3u
     sHtmlContent = f.read()
     f.close()
 
-    line = re.compile('<location>([^<]+).+?title>([^<]+).+?image>([^<]+).+?identifier>([^<]+)', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
+    line = re.compile(
+        '<location>([^<]+).+?title>([^<]+).+?image>([^<]+).+?identifier>([^<]+)',
+        re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
 
     if line:
         # total = len(line)
@@ -205,20 +207,20 @@ def GetRealUrl(chain):  # Recupere les liens des regex
     regex = ''
     sHtmlContent = ''
 
-    r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    r = re.search('\\[[REGEX]+\\](.+?)(?:(?:\\[[A-Z]+\\])|$)', chain)
     if (r):
         regex = r.group(1)
 
-    r = re.search('\[[UA]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    r = re.search('\\[[UA]+\\](.+?)(?:(?:\\[[A-Z]+\\])|$)', chain)
     if (r):
         UA2 = r.group(1)
 
-    r = re.search('\[[URL]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    r = re.search('\\[[URL]+\\](.+?)(?:(?:\\[[A-Z]+\\])|$)', chain)
     if (r):
         url = r.group(1)
 
     # post methode ?
-    r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    r = re.search('\\[[POSTFORM]+\\](.+?)(?:(?:\\[[A-Z]+\\])|$)', chain)
     if (r):
         param = r.group(1)
         oRequestHandler = cRequestHandler(url)

@@ -6,23 +6,24 @@ from resources.hosters.hoster import iHoster
 import time
 import random
 
+
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Duckload.com'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'duckload'
@@ -50,12 +51,17 @@ class cHoster(iHoster):
         if (oPremiumHandler.isPremiumModeAvailable()):
             sUsername = oPremiumHandler.getUsername()
             sPassword = oPremiumHandler.getPassword()
-            return self.__getMediaLinkByPremiumUser(sUsername, sPassword);
+            return self.__getMediaLinkByPremiumUser(sUsername, sPassword)
 
-        return self.__getMediaLinkForGuest();
+        return self.__getMediaLinkForGuest()
 
     def __getMediaLinkByPremiumUser(self, sUsername, sPassword):
-        oRequestHandler = cRequestHandler('http://www.duckload.com/api/public/login&user=' + sUsername + '&pw=' + sPassword + '&fmt=json&source=WEB')
+        oRequestHandler = cRequestHandler(
+            'http://www.duckload.com/api/public/login&user=' +
+            sUsername +
+            '&pw=' +
+            sPassword +
+            '&fmt=json&source=WEB')
         sHtmlContent = oRequestHandler.request()
 
         aHeader = oRequestHandler.getResponseHeader()
@@ -66,12 +72,12 @@ class cHoster(iHoster):
         oRequestHandler.addParameters('stream', '')
         oRequestHandler.addHeaderEntry('Cookie', sReponseCookie)
         sHtmlContent = oRequestHandler.request()
-        
+
         sPattern = '<param name="src" value="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-       
-        if (aResult[0] == True):
+
+        if (aResult[0]):
             return True, aResult[1][0]
 
         return False, aResult
@@ -84,62 +90,64 @@ class cHoster(iHoster):
 
         aHeader = oRequest.getResponseHeader()
         sPhpSessionId = self.__getPhpSessionId(aHeader)
-        
-        sPostName = '';
-        sPostValue = '';
+
+        sPostName = ''
+        sPostValue = ''
         sPostButtonName = ""
         sPattern = '<form onsubmit="return checkTimer.*?<input type="hidden" name="([^"]+)" value="([^"]+)".*?<button name="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
                 sPostName = aEntry[0]
                 sPostValue = aEntry[1]
-                sPostButtonName = aEntry[2]        
+                sPostButtonName = aEntry[2]
 
         sPattern = 'var tick.*?=(.*?);'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-                sTicketValue = str(aResult[1][0]).replace(' ', '');
-                sSecondsForWait = int(sTicketValue) + 2
+        if (aResult[0]):
+            sTicketValue = str(aResult[1][0]).replace(' ', '')
+            sSecondsForWait = int(sTicketValue) + 2
 
-                oGui = cGui()
-                oGui.showNofication(sSecondsForWait, 3)
-                time.sleep(sSecondsForWait)
+            oGui = cGui()
+            oGui.showNofication(sSecondsForWait, 3)
+            time.sleep(sSecondsForWait)
 
-                rndX = random.randint(1, 99999999-10000000)+10000000
-		rndY = random.randint(1, 999999999-100001000)+100000000
-	        ts1 = float(time.time())
-		ts2 = float(time.time())
-		ts3 = float(time.time())
-		ts4 = float(time.time())
-		ts5 = float(time.time())
+            rndX = random.randint(1, 99999999 - 10000000) + 10000000
+            rndY = random.randint(1, 999999999 - 100001000) + 100000000
+            ts1 = float(time.time())
+            ts2 = float(time.time())
+            ts3 = float(time.time())
+            ts4 = float(time.time())
+            ts5 = float(time.time())
 
-                sCookieValue = sPhpSessionId +'; '
-		sCookieValue = sCookieValue + '__utma=' + str(rndY) + '.' + str(rndX) + '.' + str(ts1) + '.' + str(ts2) + '.' + str(ts3) + '; '
-                sCookieValue = sCookieValue + '__utmb=' + str(rndY) + '.1.10.' + str(ts3) + '; '
-                sCookieValue = sCookieValue + '__utmc=' + str(rndY) + "; "
-                sCookieValue = sCookieValue + '__utmz=' + str(rndY) + '.' + str(ts4) + '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); '
-                
-                oRequest = cRequestHandler(self.__sUrl)
-                oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-                oRequest.addHeaderEntry('Cookie', sCookieValue)
-                oRequest.addParameters(sPostName, sPostValue)
-                oRequest.addParameters(sPostButtonName, '')
+            sCookieValue = sPhpSessionId + '; '
+            sCookieValue = sCookieValue + '__utma=' + \
+                str(rndY) + '.' + str(rndX) + '.' + str(ts1) + '.' + str(ts2) + '.' + str(ts3) + '; '
+            sCookieValue = sCookieValue + '__utmb=' + str(rndY) + '.1.10.' + str(ts3) + '; '
+            sCookieValue = sCookieValue + '__utmc=' + str(rndY) + "; "
+            sCookieValue = sCookieValue + '__utmz=' + \
+                str(rndY) + '.' + str(ts4) + '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); '
 
-		sHtmlContent = oRequest.request()
+            oRequest = cRequestHandler(self.__sUrl)
+            oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+            oRequest.addHeaderEntry('Cookie', sCookieValue)
+            oRequest.addParameters(sPostName, sPostValue)
+            oRequest.addParameters(sPostButtonName, '')
 
-		sPattern = '<param name="src" value="([^"]+)"'
-                oParser = cParser()
-                aResult = oParser.parse(sHtmlContent, sPattern)
+            sHtmlContent = oRequest.request()
 
-                if (aResult[0] == True):
-                    return True, aResult[1][0]
+            sPattern = '<param name="src" value="([^"]+)"'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if (aResult[0]):
+                return True, aResult[1][0]
 
         return False, aResult
 
-    def __getPhpSessionId(self, aHeader):       
-        sReponseCookie = aHeader.getheader("Set-Cookie")       
-	aResponseCookies = sReponseCookie.split(";")
+    def __getPhpSessionId(self, aHeader):
+        sReponseCookie = aHeader.getheader("Set-Cookie")
+        aResponseCookies = sReponseCookie.split(";")
         return aResponseCookies[0]

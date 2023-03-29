@@ -35,7 +35,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ALL_MAGNETS[1], 'Magnets', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ALL_INFORMATION[0])
-    oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Information sur les hébergeurs ', 'films.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        ALL_INFORMATION[1],
+        'Information sur les hébergeurs ',
+        'films.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -64,7 +69,7 @@ def showLiens(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         nbItem = 0
         index = 0
         progress_ = progress().VScreate(SITE_NAME)
@@ -132,7 +137,7 @@ def showMagnets(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         nbItem = 0
         index = 0
 
@@ -169,9 +174,23 @@ def showMagnets(sSearch=''):
                     break
 
             if 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showHosters',
+                    sTitle,
+                    'series.png',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'movies.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showseriesHoster',
+                    sTitle,
+                    'movies.png',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -198,12 +217,12 @@ def showseriesHoster(sSearch=''):
         result = resp.headers['location']
         sHosterUrl = result
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
             oGui.setEndOfDirectory()
-    except:
+    except BaseException:
         pass
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -218,7 +237,7 @@ def showseriesHoster(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         nbItem = 0
         index = 0
         progress_ = progress().VScreate(SITE_NAME)
@@ -270,7 +289,7 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
@@ -294,7 +313,7 @@ def showInfo():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 

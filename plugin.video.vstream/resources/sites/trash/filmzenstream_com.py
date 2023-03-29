@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # 25/12/2020
-import re
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import Unquote
 from resources.lib.comaddon import progress
+from resources.lib.util import Unquote
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import re
+return False  # 25/12/2020
+
 
 SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
@@ -51,7 +51,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -122,7 +122,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -143,7 +143,7 @@ def showMovies(sSearch=''):
             sYear = None
             if len(sTitle) > 4 and sTitle[-4:].isdigit():
                 sYear = sTitle[-4:]
-                sTitle = sTitle[0:len(sTitle)-4] + '(' + sYear + ')'
+                sTitle = sTitle[0:len(sTitle) - 4] + '(' + sYear + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -156,7 +156,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -170,7 +170,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+?)" class="next">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -190,7 +190,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             if 'belike' in aEntry:
@@ -208,7 +208,7 @@ def showHosters():
                 sHtmlContent = oRequestHandler.request()
                 sPattern = '<iframe.+?src="([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     for aEntry in aResult[1]:
                         sHosterUrl = aEntry
 
@@ -219,7 +219,7 @@ def showHosters():
                     continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

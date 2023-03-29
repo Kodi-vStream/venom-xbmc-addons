@@ -68,7 +68,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -95,7 +95,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, iGenre in liste:
-        sUrl = URL_MAIN + 'c/wavob/%d/0' %iGenre
+        sUrl = URL_MAIN + 'c/wavob/%d/0' % iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -116,7 +116,7 @@ def showMovies(sSearch=''):
     # memorisation pour la suite
     sMainUrl = URL_HOST + aResult[1][0] + '/'
     # correction de l'url
-    
+
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
     if sSearch:
         sSearch = sSearch[:20]      # limite de caractere sinon bug de la recherche
@@ -137,13 +137,13 @@ def showMovies(sSearch=''):
 
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
-    sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)<\/i>|)'
+    sPattern = '<span style="list-style-type:none;" >.+? href="\\/[0-9a-zA-Z]+\\/([^"]+)">(.+?)\\((.+?)\\).+?>(<i>(.+?)<\\/i>|)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -167,7 +167,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -180,7 +180,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)"><img style="position:relative;" +src="data:image'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -194,7 +194,7 @@ def showHosters():
     sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -206,7 +206,7 @@ def showHosters():
     sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         sThumb = aResult[1][0][0]
         sDesc = cUtil().unescape(aResult[1][0][1])
 
@@ -227,6 +227,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showHostersLink3():
     oGui = cGui()
     oParser = cParser()
@@ -242,7 +243,7 @@ def showHostersLink3():
     aResult = oParser.parse(data, sPattern)
 
     # Si il existe, suivi du lien
-    if ( aResult[0] == True ):
+    if (aResult[0]):
         oRequestHandler = cRequestHandler(aResult[1][0])
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', sLink)
@@ -251,7 +252,7 @@ def showHostersLink3():
     sPattern = "src: '(.+?)'.+?res: (.+?),"
     aResult = oParser.parse(data, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         for aEntry in aResult[1]:
 
@@ -262,7 +263,7 @@ def showHostersLink3():
 
             oHoster = cHosterGui().checkHoster("mp4")
 
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sLink2, '')

@@ -63,7 +63,7 @@ def load():
 def showMoviesSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -102,7 +102,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -128,7 +128,7 @@ def showMovies(sSearch=''):
             oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -142,7 +142,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -164,7 +164,7 @@ def showLinks():
     sPattern = '(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
     aResult = oParser.parse(cutLink(sHtmlContent), sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -203,7 +203,7 @@ def showHosters():
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2])
             data += "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
             # Obligatoire pour validé les cookies.
@@ -222,17 +222,17 @@ def showHosters():
 
             sPattern = 'url":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         sHosterUrl = sUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -245,5 +245,5 @@ def cutLink(sHtmlContent):
     sPattern = '">Lecteurs Disponibles :</span></h3>(.+?)<div id="extras">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]

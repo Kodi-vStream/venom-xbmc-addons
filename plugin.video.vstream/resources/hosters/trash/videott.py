@@ -1,14 +1,18 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
-#from t0mm0.common.net import Net
+# from t0mm0.common.net import Net
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
-import urllib2, re
+import urllib2
+import re
 
-try:    import json
-except: import simplejson as json
+try:
+    import json
+except BaseException:
+    import simplejson as json
+
 
 class cHoster(iHoster):
 
@@ -18,10 +22,11 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -45,11 +50,11 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'http:..(?:www.)*video.tt\/e(?:mbed)*\/([^<]+)'
-        aResult = re.findall(sPattern,sUrl)
+        sPattern = 'http:..(?:www.)*video.tt\\/e(?:mbed)*\\/([^<]+)'
+        aResult = re.findall(sPattern, sUrl)
         if (aResult):
             return aResult[0]
 
@@ -69,21 +74,21 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         sId = self.__getIdFromUrl(self.__sUrl)
-        
+
         json_url = 'http://www.video.tt/player_control/settings.php?v=%s' % sId
-        
+
         vUrl = False
-        
+
         try:
 
             reponse = urllib2.urlopen(json_url)
-            
+
             data = json.loads(reponse.read().decode(reponse.info().getparam('charset') or 'utf-8'))
 
             vids = data['settings']['res']
 
             if vids:
-                
+
                 vUrlsCount = len(vids)
 
                 if (vUrlsCount > 0):
@@ -92,27 +97,25 @@ class cHoster(iHoster):
                     else:
                         vid_list = []
                         url_list = []
-                        
+
                         for index in vids:
                             quality = index[u'l']
                             vid_list.extend(['Video TT - %sp' % quality])
                             url_list.extend([index[u'u']])
-                            
+
                         result = dialog().VSselectqual(vid_list, url_list)
                         if result:
                             vUrl = url_list[result].decode('base-64')
 
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             print e.read()
             print e.reason
-        except Exception, e:
+        except Exception as e:
             print e.read()
             print e.reason
 
-        
         if (vUrl):
             api_call = vUrl
             return True, api_call
-            
+
         return False, False
-        

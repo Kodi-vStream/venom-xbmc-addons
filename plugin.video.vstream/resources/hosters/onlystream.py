@@ -1,10 +1,11 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -14,10 +15,11 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -56,23 +58,23 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '(?:file|src): *"([^"]+)"[^{}<>]+?(?:, *label: *"([^"]+)")*}'
+        sPattern = '(?:file|src): *"([^"]+)"[^{}<>]+?(?:, *label: *"([^"]+)")*}'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0][0]
 
         else:
-            sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
+            sPattern = '(\\s*eval\\s*\\(\\s*function\\(p,a,c,k,e(?:.|\\s)+?)<\\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
 
-                sPattern =  '(?:file|src): *"([^"]+)"[^{}<>]+?(?:, *label: *"([^"]+)")*}'
+                sPattern = '(?:file|src): *"([^"]+)"[^{}<>]+?(?:, *label: *"([^"]+)")*}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    url=[]
-                    qua=[]
+                if (aResult[0]):
+                    url = []
+                    qua = []
                     for i in aResult[1]:
                         url.append(str(i[0]))
                         if len(i) > 1:

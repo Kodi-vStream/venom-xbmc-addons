@@ -20,7 +20,7 @@
 
     Adapted for use in xbmc from:
     http://playonscripts.com/?w=files&id=34
-    
+
     usage:
     html_with_unpacked_js = unwise_process(html_with_packed_js)
 
@@ -90,11 +90,13 @@ def unwise(w, i, s, e, wi, ii, si, ei):
 
 def unwise_process(result):
     while True:
-        a = re.compile(r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
+        a = re.compile(
+            r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
         if not a:
             break
         a = a.group()
-        tmp = re.compile(r'\}\s*\(\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']').search(a)
+        tmp = re.compile(
+            r'\}\s*\(\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']').search(a)
         if not tmp:
             result = result.replace(a, "")
         else:
@@ -111,7 +113,17 @@ def unwise_process(result):
                     wisestr[c] = wise[c]
                     wiseint[c] = int(d)
                     c += 1
-                result = result.replace(a, unwise(wisestr[0], wisestr[1], wisestr[2], wisestr[3], wiseint[0], wiseint[1], wiseint[2], wiseint[3]))
+                result = result.replace(
+                    a,
+                    unwise(
+                        wisestr[0],
+                        wisestr[1],
+                        wisestr[2],
+                        wisestr[3],
+                        wiseint[0],
+                        wiseint[1],
+                        wiseint[2],
+                        wiseint[3]))
     return result
 
 
@@ -119,17 +131,22 @@ def resolve_var(HTML, key):  # this should probably be located elsewhere
     key = re.escape(key)
     tmp1 = HTML.replace("\r", "")
     tmp1 = tmp1.replace("\n", ";")
-    tmp2 = re.compile(r'[^\w\.]' + key + '\s*=\s*([^\"\']*?)[;,]').search(tmp1)  # expect var first, movshare
+    tmp2 = re.compile(r'[^\w\.]' + key + '\\s*=\\s*([^\"\']*?)[;,]').search(tmp1)  # expect var first, movshare
     if tmp2:
         tmp2 = resolve_var(HTML, tmp2.group(1))
     else:
-        tmp2 = re.compile(r'[^\w\.]' + key + '\s*=\s*[\"\'](.*?)[\"\']').search(tmp1)
+        tmp2 = re.compile(r'[^\w\.]' + key + '\\s*=\\s*[\"\'](.*?)[\"\']').search(tmp1)
         if tmp2:
             tmp2 = tmp2.group(1)
         else:
             key = key.split("\\.")
             if len(key) == 2:
-                tmp2 = re.compile(r'[^\w\.]' + key[0] + '\s*=\s*\{.*[^\w\.]' + key[1] + '\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = {key: "value"}', cloudy
+                tmp2 = re.compile(
+                    r'[^\w\.]' +
+                    key[0] +
+                    '\\s*=\\s*\\{.*[^\\w\\.]' +
+                    key[1] +
+                    '\\s*\\:\\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = {key: "value"}', cloudy
             if tmp2:
                 tmp2 = tmp2.group(1)
             else:

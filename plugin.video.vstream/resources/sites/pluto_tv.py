@@ -23,6 +23,7 @@ URL_MAIN = "https://api.pluto.tv"
 CHAINE_DIRECT = (URL_MAIN + '/v2/channels.json?', 'showTV')
 VOD = (URL_MAIN + '/v3/vod/categories?includeItems=true&deviceType=web', 'showGenre')
 
+
 def getData():
     if addon().getSetting("PlutoTV_sid"):
         deviceID = addon().getSetting("PlutoTV_deviceID")
@@ -32,7 +33,13 @@ def getData():
     else:
         sid = str(uuid.uuid1().hex)
         deviceID = str(uuid.uuid4().hex)
-        clientID = Quote(''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits + '=+') for _ in range(24)))
+        clientID = Quote(
+            ''.join(
+                random.choice(
+                    string.ascii_uppercase +
+                    string.ascii_lowercase +
+                    string.digits +
+                    '=+') for _ in range(24)))
 
         addon().setSetting("PlutoTV_deviceID", deviceID)
         addon().setSetting("PlutoTV_clientID", clientID)
@@ -193,7 +200,14 @@ def showSerieSxE():
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(
+                    SITE_IDENTIFIER,
+                    'seriesHosters',
+                    sTitle,
+                    'series.png',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
                 # il y a aussi addAnime pour les mangas
                 # oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
@@ -215,7 +229,7 @@ def showHosters():
     sHosterUrl += sHtmlContent["startingChannel"]["id"] + "/master.m3u8?" + sHtmlContent["stitcherParams"]
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -238,7 +252,7 @@ def seriesHosters():
     sHosterUrl += "&includeExtendedEvents=false&marketingRegion=FR&sid=" + sid + "&serverSideAds=true"
 
     oHoster = cHosterGui().checkHoster(sUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

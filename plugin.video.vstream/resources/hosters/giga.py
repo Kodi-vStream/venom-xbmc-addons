@@ -71,13 +71,13 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = "var mp4v = '(.+?)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return True, aResult[1][0]
         else:
             # streamgk
             sPattern = '<a id="downloadb" class="btn btn-default.+?href="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 return True, aResult[1][0]
 
         return False, False

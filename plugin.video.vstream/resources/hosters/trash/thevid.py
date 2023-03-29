@@ -1,6 +1,6 @@
-#-*- coding: utf8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://thevideo.cc/embed-xxx.html
+# -*- coding: utf8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://thevideo.cc/embed-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -8,7 +8,7 @@ from resources.lib.packer import cPacker
 import xbmcgui
 
 
-#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+# UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 class cHoster(iHoster):
 
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -46,12 +46,12 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromhtml(self, html):
         sPattern = "var thief='([^']+)';"
         oParser = cParser()
         aResult = oParser.parse(html, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -68,55 +68,53 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self): 
-  
+    def __getMediaLinkForGuest(self):
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         oParser = cParser()
 
         api_call = ''
-        
+
         sId = self.__getIdFromhtml(sHtmlContent)
         if sId == '':
-            return False,False
-            
+            return False, False
+
         oRequest = cRequestHandler('https://thevideo.cc/vsign/player/' + sId)
         sHtmlContent2 = oRequest.request()
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?\)\))"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?\\)\\))"
         aResult = oParser.parse(sHtmlContent2, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sUnpacked = cPacker().unpack(aResult[1][0])
             sPattern = 'vt=([^"]+)";'
             aResult = oParser.parse(sUnpacked, sPattern)
-            if (aResult[0] == True):
-                sVt =  aResult[1][0]
-        
+            if (aResult[0]):
+                sVt = aResult[1][0]
+
         sPattern = '"file":"([^"]+)","label":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-        
-            #Remplissage des tableaux
+        if (aResult[0]):
+            # initialisation des tableaux
+            url = []
+            qua = []
+
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
-            #Si une seule url
+
+            # Si une seule url
             if len(url) == 1:
                 api_call = url[0]
-            #si plus de une
+            # si plus de une
             elif len(url) > 1:
-            #Affichage du tableau
+                # Affichage du tableau
                 dialog2 = xbmcgui.Dialog()
                 ret = dialog2.select('Select Quality', qua)
                 if (ret > -1):
                     api_call = url[ret]
-        
+
         if (api_call):
-            return True, api_call + '?direct=false&ua=1&vt=' + sVt 
-            
+            return True, api_call + '?direct=false&ua=1&vt=' + sVt
+
         return False, False
-        
-        

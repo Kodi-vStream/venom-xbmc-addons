@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -8,6 +8,7 @@ import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -16,7 +17,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -42,11 +43,11 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
 
-    def __getIdFromUrl(self, sUrl):#correction ancienne url >> embed depreciated
-        sPattern = '(?:play/|video/|embed\?videoid=|vid=)([0-9]+)'
+    def __getIdFromUrl(self, sUrl):  # correction ancienne url >> embed depreciated
+        sPattern = '(?:play/|video/|embed\\?videoid=|vid=)([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -74,8 +75,8 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('X-KEY', '777750fea4d3bd585bf47dc1873619fc')
-        oRequest.addHeaderEntry('X-REQ-APP', 'web') #pour les mp4
-        oRequest.addHeaderEntry('Referer', self.__sUrl) #au cas ou
+        oRequest.addHeaderEntry('X-REQ-APP', 'web')  # pour les mp4
+        oRequest.addHeaderEntry('Referer', self.__sUrl)  # au cas ou
         sHtmlContent1 = oRequest.request()
 
         if (sHtmlContent1):
@@ -95,7 +96,7 @@ class cHoster(iHoster):
                     url.append(url2)
                     qua.append(repr(content[x]['label']))
 
-                api_call = dialog().VSselectqual(qua,url)
+                api_call = dialog().VSselectqual(qua, url)
 
             if (api_call):
                 return True, api_call + '|User-Agent=' + UA

@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-#from resources.lib.comaddon import VSlog
+# from resources.lib.comaddon import VSlog
 
 
 class cHoster(iHoster):
@@ -15,7 +15,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -66,24 +66,24 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        #VSlog(str(self.__sUrl))
+        # VSlog(str(self.__sUrl))
 
         oParser = cParser()
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        #VSlog(str(sHtmlContent))
+        # VSlog(str(sHtmlContent))
 
-        sPattern = '\("src","([^"]+)"\)'
+        sPattern = '\\("src","([^"]+)"\\)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
             api_call = aResult[1][0]
 
-        #VSlog(str(api_call))
+        # VSlog(str(api_call))
 
         if (api_call):
             return True, api_call

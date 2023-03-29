@@ -34,7 +34,7 @@ def Captcha_Get_Reponse(img, cookie):
         "Accept-Language": "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4",
         "Accept-Encoding": "gzip, deflate",
         # "Content-Type": "application/x-www-form-urlencoded",
-        }
+    }
 
     if cookie:
         headers2["Cookie"] = cookie
@@ -50,7 +50,7 @@ def Captcha_Get_Reponse(img, cookie):
             image_on_web.close()
         else:
             return ""
-    except:
+    except BaseException:
         return ""
 
     # on affiche le dialogue

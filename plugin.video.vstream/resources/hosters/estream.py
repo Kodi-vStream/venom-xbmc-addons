@@ -40,7 +40,7 @@ class cHoster(iHoster):
         sPattern = "v=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -73,17 +73,17 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = '<source *src="([^"]+)" *type=\'video/.+?\''
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
 
         # type2?
         sPattern = '<script type=\'text/javascript\'>(.+?)</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             stri = cPacker().unpack(aResult[1][0])
             sPattern = 'file:"([^"]+)",label:"([0-9]+)"}'
             aResult = oParser.parse(stri, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 url = []
                 qua = []
 

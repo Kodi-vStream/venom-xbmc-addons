@@ -27,12 +27,13 @@ from .gui import cInputWindow, cInputWindowYesNo
 
 try:
     from Queue import Queue
-except:
+except BaseException:
     from queue import Queue
 
 import json
 import time
-import xbmcvfs, re
+import xbmcvfs
+import re
 
 Objectif = ""
 DimTab = []
@@ -45,9 +46,9 @@ class CliSolver(object):
         self.__image_procs = []
 
     def show_image(self, image):
-        oSolver = cInputWindow(captcha=image, msg= Objectif, dimtab = DimTab , roundnum=1)
+        oSolver = cInputWindow(captcha=image, msg=Objectif, dimtab=DimTab, roundnum=1)
         retArg = oSolver.get()
-        if retArg == False:
+        if not retArg:
             return False
         else:
             return retArg
@@ -70,7 +71,7 @@ class CliDynamicSolver(CliSolver):
         solver = self.solver
         indices = self.show_image(image)
 
-        if indices == False:
+        if not indices:
             return False
 
         self.select_initial(indices)
@@ -95,7 +96,7 @@ class CliDynamicSolver(CliSolver):
         self.image_queue.put((index, image))
 
     def select_initial(self, indices):
-        if indices == False:
+        if not indices:
             solver = self.solver
             solver.finish()
 
@@ -126,7 +127,7 @@ class CliMultiCaptchaSolver(CliSolver):
     def handle_image(self, image, **kwargs):
         solver = self.solver
         indices = self.show_image(image)
-        if indices == False:
+        if not indices:
             return False
         solver.select_indices(indices)
 
@@ -162,13 +163,13 @@ class Cli(Frontend):
             return
         global Objectif, DimTab
 
-        ID = json.dumps(meta).split(',')[0].replace('[','')
-        
+        ID = json.dumps(meta).split(',')[0].replace('[', '')
+
         f = xbmcvfs.File(STRINGS_PATH + "/data.txt")
         content = f.read()
         f.close()
 
-        Objectif = re.findall('case '+ID+'.+?<strong>([^<]+)</strong>', content)
+        Objectif = re.findall('case ' + ID + '.+?<strong>([^<]+)</strong>', content)
 
         # Recupere le theme de maniere plus precis.
         if (int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9):

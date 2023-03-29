@@ -2,6 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -9,7 +10,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -52,10 +53,10 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  'var token="([^"]+)".+?var crsf="([^"]+)"'
+        sPattern = 'var token="([^"]+)".+?var crsf="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             aEntry = aResult[1][0]
 
             oRequest = cRequestHandler('https://www.vidload.net/vid/')

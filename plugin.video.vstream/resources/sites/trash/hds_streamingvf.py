@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 45 07022021
-return False # voir https://01seriestreaming.com/
-import re
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import re
+return False  # voir https://01seriestreaming.com/
+
 
 SITE_IDENTIFIER = 'hds_streamingvf'
 SITE_NAME = 'Hds-Streamingvf'
@@ -102,7 +102,7 @@ def showMenuTvShows():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -112,7 +112,7 @@ def showSearchMovie():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -122,7 +122,7 @@ def showSearchSerie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -170,7 +170,7 @@ def showMovies(sSearch=''):
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
         sPattern = 'class="result-item".+?href="([^"]+).+?src="([^"]+).+?alt="([^"]+).+?class="year">([^<]+).+?contenido"><p>([^<]*)'
     else:
-        sPattern = 'class="item.(?:movies|tvshows).+?src="([^"]+).+?alt="([^"]+).+?class="rating.+?<.span>([^<]*).+?href="([^"]+).+?<span>(\d{4}).+?class="texto">([^<]*)'
+        sPattern = 'class="item.(?:movies|tvshows).+?src="([^"]+).+?alt="([^"]+).+?class="rating.+?<.span>([^<]*).+?href="([^"]+).+?<span>(\\d{4}).+?class="texto">([^<]*)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -180,7 +180,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -236,7 +236,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPagination = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', sPagination, oOutputParameterHandler)
@@ -246,9 +246,9 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "class=\"pagination\"><span>.+?de.(\d+)</span>.+?class=\"current\".+?a href='([^']*)"
+    sPattern = "class=\"pagination\"><span>.+?de.(\\d+)</span>.+?class=\"current\".+?a href='([^']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -271,7 +271,7 @@ def showSaisons():
 
     sPattern = 'property="og:description".+?content="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = "class='custom.+?href=(?:\"|'|)([^'\">]+).+?class='title'>([^<]+).+?src=(?:\"|'|)([^'\"]+)"
@@ -283,7 +283,7 @@ def showSaisons():
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -320,7 +320,7 @@ def ShowEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -356,13 +356,13 @@ def showHosters():
     sPattern = "data-type='([^']*).*?post='([^']*).*?nume='([^']*).*?title'>([^<]*).+?flags.(.+?).png"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             datatype = aEntry[0]
             datapost = aEntry[1]
             datanum = aEntry[2]
-            sHost = re.sub('\.\w+', '', aEntry[3])
+            sHost = re.sub('\\.\\w+', '', aEntry[3])
             sLang = str(aEntry[4]).upper()
 
             if 'lecteur hd' in sHost.lower():
@@ -405,13 +405,13 @@ def hostersLink():
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if 'userload' in sHosterUrl:
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

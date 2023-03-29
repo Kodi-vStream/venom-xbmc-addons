@@ -1,10 +1,11 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 # from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
+
 
 class cHoster(iHoster):
 
@@ -14,7 +15,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -39,7 +40,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace("/f/","/e/")
+        self.__sUrl = self.__sUrl.replace("/f/", "/e/")
 
     def getUrl(self):
         return self.__sUrl
@@ -57,24 +58,24 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Cookie', 'hds2=1')
         sHtmlContent = oRequest.request()
 
-        sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        sPattern = '(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
             sPattern = 'wurl="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 api_call = aResult[1][0]
 
-            #else:
-                #sPattern = 'vsrc\d+="([^"]+)"'
-                #aResult = oParser.parse(sHtmlContent, sPattern)
-                #if (aResult[0] == True):
+            # else:
+                # sPattern = 'vsrc\d+="([^"]+)"'
+                # aResult = oParser.parse(sHtmlContent, sPattern)
+                # if (aResult[0] == True):
                 #    api_call = aResult[1][0]
 
-                #else:
+                # else:
                 #    sPattern = 'furl="([^"]+)"'
                 #    aResult = oParser.parse(sHtmlContent, sPattern)
                 #    if (aResult[0] == True):

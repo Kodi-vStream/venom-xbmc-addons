@@ -17,7 +17,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -50,7 +51,7 @@ class cHoster(iHoster):
         sPattern = "?([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -71,7 +72,7 @@ class cHoster(iHoster):
         sPattern = 'fkzd="(.+?)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
@@ -96,11 +97,11 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern = '"url.+?":"(.+?)\.(\d+).mp4'
+        sPattern = '"url.+?":"(.+?)\\.(\\d+).mp4'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
 
             for aEntry in aResult[1]:
                 url.append(aEntry[0])

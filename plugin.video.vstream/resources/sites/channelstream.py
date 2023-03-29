@@ -51,19 +51,19 @@ def showMovies():
         sHtmlContent = sHtmlContent.replace('Ã®', 'î').replace('Ã©', 'é')
 
     # récupérer les drapeaux pour en faire des thumb
-    sPattern = "\.flag\.([^{]+){.+?url\(([^)]+)\)"
+    sPattern = "\\.flag\\.([^{]+){.+?url\\(([^)]+)\\)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     flags = dict(aResult[1])
 
-    sPattern = "colspan=\"7\".+?<b>([^<]+)<\/b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)<\/td>.+?<span class=\"flag ([^\"]+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+).+?<span class=\"t\">([^<]+)<\/span>"
+    sPattern = "colspan=\"7\".+?<b>([^<]+)<\\/b>.+?location\\.href = '([^']+).+?text-align.+?>(.+?)<\\/td>.+?<span class=\"flag ([^\"]+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+).+?<span class=\"t\">([^<]+)<\\/span>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[1]
             sDate = aEntry[2].replace('<br />', ' ')
-            flag =  aEntry[3]
+            flag = aEntry[3]
             sdesc1 = aEntry[4]
             sdesc2 = aEntry[5]
             sTime = aEntry[6]
@@ -72,13 +72,13 @@ def showMovies():
             sTitle = ''
             if sDate:
                 try:
-                    sDate +=  ' ' + sTime
+                    sDate += ' ' + sTime
                     d = datetime(*(time.strptime(sDate, '%Y-%m-%d %H:%M')[0:6]))
-                    d +=  timedelta(hours=6)
+                    d += timedelta(hours=6)
                     sDate = d.strftime("%d/%m/%y %H:%M")
                 except Exception as e:
                     pass
-                sTitle += sDate +' '
+                sTitle += sDate + ' '
             sTitle += ' - '
 
             if sdesc1:
@@ -113,7 +113,7 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     # Double Iframe a passer.
-    sPattern = "document\.getElementById\('video'\)\.src='([^']+)'.+?>([^<]+)<"
+    sPattern = "document\\.getElementById\\('video'\\)\\.src='([^']+)'.+?>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[1]:  # Pas de flux
@@ -127,7 +127,7 @@ def showHoster():
         sMovieTitle = sTitle
         if canal not in sMovieTitle:
             sMovieTitle += ' [' + canal + ']'
-            
+
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sThumbnail', sThumb)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -169,17 +169,17 @@ def showHoster():
         try:
             # Lien telerium qui ne marche pas, mais qui n'est pas toujours present
             iframeURL1 = aResult2[1][1]
-        except:
+        except BaseException:
             iframeURL1 = aResult2[1][0]
 
         oRequestHandler = cRequestHandler(iframeURL1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
-    
+
         oParser = cParser()
         sPattern = '<iframe.+?src="([^"]+)'
         aResult2 = oParser.parse(sHtmlContent, sPattern)
-    
+
         if aResult2[1]:
             urlHoster = aResult2[1][0]
             if 'primetubsub' in urlHoster:
@@ -189,7 +189,7 @@ def showHoster():
             if sHosterUrl:
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
-            
+
     cGui.CONTENT = 'files'
     oGui.setEndOfDirectory()
 
@@ -197,13 +197,13 @@ def showHoster():
 def getHosterWigistream(url, referer):
     url = url.strip()
     if not url.startswith('http'):
-        url = 'http:'+url
+        url = 'http:' + url
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = '(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?{}\\)\\))'
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
@@ -218,9 +218,10 @@ def getHosterWigistream(url, referer):
 
     return False
 
+
 def getHosterPrimetubsub(url, referer):
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)
@@ -233,7 +234,7 @@ def getHosterPrimetubsub(url, referer):
 
     referer = url
     url = aResult[1][0]
-    
+
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)
@@ -243,9 +244,8 @@ def getHosterPrimetubsub(url, referer):
 
     if not aResult[0]:
         return
-    
+
     referer = url
     url = aResult[1][0][1]
-    
-    return url + '|User-Agent=' + UA + '&Referer=' + Quote(referer)
 
+    return url + '|User-Agent=' + UA + '&Referer=' + Quote(referer)

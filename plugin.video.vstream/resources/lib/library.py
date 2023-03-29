@@ -57,7 +57,7 @@ class cLibrary:
             sCat = '2'
 
         sMediaUrl = QuotePlus(sMediaUrl)
-        #sFileName = QuotePlus(sFileName)
+        # sFileName = QuotePlus(sFileName)
 
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName='
         sLink += sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
@@ -65,7 +65,7 @@ class cLibrary:
         sTitle = sFileName
 
         if sCat == '1':  # film
-            #sTitle = cUtil().CleanName(sTitle)
+            # sTitle = cUtil().CleanName(sTitle)
             sTitle = self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
 
             try:
@@ -75,11 +75,11 @@ class cLibrary:
                     xbmcvfs.mkdir(sPath)
 
                 self.MakeFile(sPath, sTitle, sLink)
-            except:
+            except BaseException:
                 dialog().VSinfo('Rajout impossible')
 
         elif sCat == '2':  # serie
-            #sTitle = cUtil().CleanName(sTitle)
+            # sTitle = cUtil().CleanName(sTitle)
             sFTitle = self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
 
             try:
@@ -92,7 +92,7 @@ class cLibrary:
                 sTitle = self.showKeyBoard(sTitle, 'Recommandé NomdeserieS00E00')
 
                 self.MakeFile(sPath, sTitle, sLink)
-            except:
+            except BaseException:
                 dialog().VSinfo('Rajout impossible')
 
     def MakeFile(self, folder, name, content):
@@ -115,7 +115,7 @@ class cLibrary:
             Year = os.path.basename(i)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('filePath', path+i)
+            oOutputParameterHandler.addParameter('filePath', path + i)
             oGui.addDir(SITE_IDENTIFIER, 'openLibrary', Year, 'annees.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -160,7 +160,9 @@ class cLibrary:
 
         xbmcvfs.delete(sFile)
 
-        runClean = self.DIALOG.VSyesno('Voulez vous mettre à jour la librairie maintenant (non conseillé)', 'Fichier supprimé')
+        runClean = self.DIALOG.VSyesno(
+            'Voulez vous mettre à jour la librairie maintenant (non conseillé)',
+            'Fichier supprimé')
         if not runClean:
             return
 

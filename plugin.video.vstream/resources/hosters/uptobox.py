@@ -47,13 +47,15 @@ class cHoster(iHoster):
         oParser = cParser()
 
         # On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        # if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>", sHtmlContent, re.IGNORECASE):
+        # if not re.search("<h1
+        # class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>",
+        # sHtmlContent, re.IGNORECASE):
         if "<track type='vtt'" in sHtmlContent:
 
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
                 Files = []
                 for aEntry in aResult[1]:
                     url = aEntry[0]
@@ -85,7 +87,8 @@ class cHoster(iHoster):
                 mDefault = 0
 
             if mDefault == 0:
-                ret = dialog().VSselect(['Passer en Streaming (via Uptostream)', 'Rester en direct (via Uptobox)'], 'Choissisez votre mode de fonctionnement')
+                ret = dialog().VSselect(['Passer en Streaming (via Uptostream)',
+                                         'Rester en direct (via Uptobox)'], 'Choissisez votre mode de fonctionnement')
             else:
                 # 0 is ask me, so 1 is uptostream and so on...
                 ret = mDefault - 1
@@ -96,7 +99,7 @@ class cHoster(iHoster):
             # mode DL
             if ret == 1:
                 return self.__getMediaLinkByPremiumUser()
-            
+
             return False
 
         else:
@@ -139,11 +142,10 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        sPattern = '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"] *class=\'big-button-green-flat mt-4 mb-4\''
+        sPattern = '<a href *=[\'"](?!http:\\/\\/uptostream.+)([^<>]+?)[\'"] *class=\'big-button-green-flat mt-4 mb-4\''
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0]):
             return QuoteSafe(aResult[1][0])
 
         return False
-

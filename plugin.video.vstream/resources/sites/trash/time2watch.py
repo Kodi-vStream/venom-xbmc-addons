@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-return False
-import base64
-import os
-import re
-import xbmcaddon
-import xbmcvfs
-
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog, addon
-from resources.lib.config import GestionCookie
-from resources.lib.gui.gui import cGui
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import Noredirection, urlEncode
 from resources.lib.multihost import cMultiup
+from resources.lib.util import Noredirection, urlEncode
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog, addon
+import xbmcvfs
+import xbmcaddon
+import re
+import os
+import base64
+return False
+
 
 ADDON = addon()
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
@@ -74,7 +74,12 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showDetail',
+        '[COLOR red]Explication pour le site[/COLOR]',
+        'films.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -235,7 +240,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -304,10 +309,11 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # Connection pour passer la limite
-    if not 'Déconnexion' in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
+    if 'Déconnexion' not in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
         VSlog("Connection")
 
-        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password')}
+        data = {'username': ADDON.getSetting('hoster_time2watch_username'),
+                'pwd': ADDON.getSetting('hoster_time2watch_password')}
 
         data = urlEncode(data)
 
@@ -325,10 +331,10 @@ def showMovies(sSearch=''):
         Cookie = ''
         if 'Set-Cookie' in head:
             oParser = cParser()
-            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            sPattern = '(?:^|,) *([^;,]+?)=([^;,\\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
             # print(aResult)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 for cook in aResult[1]:
                     if 'deleted' in cook[1]:
                         continue
@@ -346,7 +352,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -373,19 +379,39 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sCookie', Cookie)
 
             if '/serie/' in sUrl2 or '/anime/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisonEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showSaisonEpisodes',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showMoviesLink',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(
+                SITE_IDENTIFIER,
+                'showMovies',
+                '[COLOR teal]Page ' +
+                number +
+                ' >>>[/COLOR]',
+                oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -395,7 +421,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="light_pagination" href="([^"]+)" aria-label="Next">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -418,10 +444,10 @@ def showMoviesLink():
 
     sPattern = '<i class="fa fa-download fa-fw"></i>.+?<b>(.+?)</b></a>'
     var = re.search('var hash = (.+?);', sHtmlContent).group(1).replace('"', "").strip('][').split(',')
-    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';", sHtmlContent).group(1)
+    url = re.search("document\\.getElementById\\(\'openlink_\'\\+n\\).href = '(.+?)';", sHtmlContent).group(1)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry, VAR in zip(aResult[1], var):
             sUrl2 = URL_MAIN + url.replace("'+nhash+'", VAR)
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry)
@@ -451,12 +477,12 @@ def showSaisonEpisodes():
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
-    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';", sHtmlContent).group(1)
+    url = re.search("document\\.getElementById\\(\'openlink_\'\\+n\\).href = '(.+?)';", sHtmlContent).group(1)
     oParser = cParser()
     sPattern = '<span style="margin-left: 20px;">(.+?)</span>|<span style="margin-left: 35px;">(.+?)<.+?<span class="fa arrow">|setfatherasseen.+?<i class="fa fa-download fa-fw">.+?<b>(.+?)</b>.+?var hash_.+?= "(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if aEntry[0]:
                 ses = aEntry[0]
@@ -475,13 +501,20 @@ def showSaisonEpisodes():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(
+                    SITE_IDENTIFIER,
+                    'decryptTime',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def getLinkHtml(sHtmlContent):
-    if not "Limite atteinte" in sHtmlContent:
+    if "Limite atteinte" not in sHtmlContent:
         oParser = cParser()
         sPattern = 'style="color: #adadad;"(.+?)no_our_shit_us'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -510,7 +543,7 @@ def decryptTime():
         challenge = result[1][0][0]
         challengeTok = result[1][0][1]
 
-        sPattern = '<img onclick="choose\(\'([^\']+)\'\).+?src="([^"]+)"'
+        sPattern = '<img onclick="choose\\(\'([^\']+)\'\\).+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         Filename = []
@@ -531,13 +564,15 @@ def decryptTime():
                 oRequestHandler.addHeaderEntry('Cookie', Cookie)
             imgdata = oRequestHandler.request()
 
-            downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png", 'wb')
+            downloaded_image = xbmcvfs.File(
+                "special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png", 'wb')
             downloaded_image.write(bytearray(imgdata))
             downloaded_image.close()
             Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png")
             i = i + 1
 
-        oSolver = cInputWindow(captcha=Filename, challenge="special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
+        oSolver = cInputWindow(captcha=Filename,
+                               challenge="special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
         retArg = oSolver.get()
 
         data = "g-recaptcha-response=" + aResult[1][int(retArg)][0] + "&challenge=" + challengeTok
@@ -545,14 +580,16 @@ def decryptTime():
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+        oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
         oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
         if Cookie:
             oRequestHandler.addHeaderEntry('Cookie', Cookie)
         oRequestHandler.addParametersLine(data)
         sHtmlContent = getLinkHtml(oRequestHandler.request())
-        if sHtmlContent == False:
-            dialog().VSok(desc="Limite journalière atteinte, pour continuez à utiliser le site aujourd'hui, il faut utilisez un compte (c'est gratuit)", title="Limites atteintes")
+        if not sHtmlContent:
+            dialog().VSok(
+                desc="Limite journalière atteinte, pour continuez à utiliser le site aujourd'hui, il faut utilisez un compte (c'est gratuit)",
+                title="Limites atteintes")
 
     else:
         sHtmlContent = getLinkHtml(sHtmlContent)
@@ -560,7 +597,7 @@ def decryptTime():
     sPattern = '<img src=.+?<a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] == True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             if 'multiup' in aEntry:
                 aResult = cMultiup().GetUrls(aEntry)
@@ -570,19 +607,20 @@ def decryptTime():
                         sHosterUrl = aEntry
 
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
+                        if (oHoster):
                             oHoster.setDisplayName(sMovieTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-            else:      
+            else:
                 oHoster = cHosterGui().checkHoster(aEntry)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, aEntry, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
@@ -596,11 +634,18 @@ class cInputWindow(xbmcgui.WindowDialog):
 
         self.ctrlBackground = xbmcgui.ControlImage(0, 0, 1280, 720, bg_image)
         self.cancelled = False
-        self.addControl (self.ctrlBackground)
+        self.addControl(self.ctrlBackground)
 
-        self.img = [0]*10
+        self.img = [0] * 10
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Veuillez sélectionnez l\'image qui ressemble le plus \n a l\'image qui se trouve le plus a gauche.', 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            250,
+            20,
+            724,
+            400,
+            'Veuillez sélectionnez l\'image qui ressemble le plus \n a l\'image qui se trouve le plus a gauche.',
+            'font40',
+            '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.img[0] = xbmcgui.ControlImage(450, 110, 260, 166, self.cptloc[0])
@@ -611,7 +656,7 @@ class cInputWindow(xbmcgui.WindowDialog):
 
         self.img[2] = xbmcgui.ControlImage(450 + 520, 110, 260, 166, self.cptloc[2])
         self.addControl(self.img[2])
-        
+
         self.img[3] = xbmcgui.ControlImage(450, 110 + 166, 260, 166, self.cptloc[3])
         self.addControl(self.img[3])
 
@@ -621,7 +666,7 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.img[5] = xbmcgui.ControlImage(450 + 520, 110 + 166, 260, 166, self.cptloc[5])
         self.addControl(self.img[5])
 
-        self.img[6] = xbmcgui.ControlImage(450, 110 + 332, 260, 166,self.cptloc[6])
+        self.img[6] = xbmcgui.ControlImage(450, 110 + 332, 260, 166, self.cptloc[6])
         self.addControl(self.img[6])
 
         self.img[7] = xbmcgui.ControlImage(450 + 260, 110 + 332, 260, 166, self.cptloc[7])
@@ -633,22 +678,103 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.img[9] = xbmcgui.ControlImage(100, 80, 260, 166, kwargs.get('challenge'))
         self.addControl(self.img[9])
 
-        self.chk = [0]*9
-        self.chkbutton = [0]*9
-        self.chkstate = [False]*9
+        self.chk = [0] * 9
+        self.chkbutton = [0] * 9
+        self.chkstate = [False] * 9
 
         if 1 == 2:
-            self.chk[0] = xbmcgui.ControlCheckMark(450, 110, 260, 166, '1', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[1] = xbmcgui.ControlCheckMark(450 + 260, 110, 260, 166, '2', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[2] = xbmcgui.ControlCheckMark(450 + 520, 110, 260, 166, '3', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[0] = xbmcgui.ControlCheckMark(
+                450,
+                110,
+                260,
+                166,
+                '1',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[1] = xbmcgui.ControlCheckMark(
+                450 + 260,
+                110,
+                260,
+                166,
+                '2',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[2] = xbmcgui.ControlCheckMark(
+                450 + 520,
+                110,
+                260,
+                166,
+                '3',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
-            self.chk[3] = xbmcgui.ControlCheckMark(450, 110 + 166, 260, 166, '4', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[4] = xbmcgui.ControlCheckMark(450 + 260, 110 + 166, 260, 166, '5', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[5] = xbmcgui.ControlCheckMark(450 + 520, 110 + 166, 260, 166, '6', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[3] = xbmcgui.ControlCheckMark(
+                450,
+                110 + 166,
+                260,
+                166,
+                '4',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[4] = xbmcgui.ControlCheckMark(
+                450 + 260,
+                110 + 166,
+                260,
+                166,
+                '5',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[5] = xbmcgui.ControlCheckMark(
+                450 + 520,
+                110 + 166,
+                260,
+                166,
+                '6',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
-            self.chk[6] = xbmcgui.ControlCheckMark(450, 110 + 332, 260, 166, '7', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[7] = xbmcgui.ControlCheckMark(450 + 260, 110 + 332, 260, 166, '8', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
-            self.chk[8] = xbmcgui.ControlCheckMark(450 + 520, 110 + 332, 260, 166, '9', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[6] = xbmcgui.ControlCheckMark(
+                450,
+                110 + 332,
+                260,
+                166,
+                '7',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[7] = xbmcgui.ControlCheckMark(
+                450 + 260,
+                110 + 332,
+                260,
+                166,
+                '8',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
+            self.chk[8] = xbmcgui.ControlCheckMark(
+                450 + 520,
+                110 + 332,
+                260,
+                166,
+                '9',
+                font='font14',
+                focusTexture=check_image,
+                checkWidth=260,
+                checkHeight=166)
 
         else:
             self.chk[0] = xbmcgui.ControlImage(450, 110, 260, 166, check_image)
@@ -686,36 +812,58 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
-        self.chkbutton[6].controlDown(self.cancelbutton);  self.chkbutton[6].controlUp(self.chkbutton[3])
-        self.chkbutton[7].controlDown(self.cancelbutton);  self.chkbutton[7].controlUp(self.chkbutton[4])
-        self.chkbutton[8].controlDown(self.okbutton);      self.chkbutton[8].controlUp(self.chkbutton[5])
+        self.chkbutton[6].controlDown(self.cancelbutton)
+        self.chkbutton[6].controlUp(self.chkbutton[3])
+        self.chkbutton[7].controlDown(self.cancelbutton)
+        self.chkbutton[7].controlUp(self.chkbutton[4])
+        self.chkbutton[8].controlDown(self.okbutton)
+        self.chkbutton[8].controlUp(self.chkbutton[5])
 
-        self.chkbutton[6].controlLeft(self.chkbutton[8]);  self.chkbutton[6].controlRight(self.chkbutton[7]);
-        self.chkbutton[7].controlLeft(self.chkbutton[6]);  self.chkbutton[7].controlRight(self.chkbutton[8]);
-        self.chkbutton[8].controlLeft(self.chkbutton[7]);  self.chkbutton[8].controlRight(self.chkbutton[6]);
+        self.chkbutton[6].controlLeft(self.chkbutton[8])
+        self.chkbutton[6].controlRight(self.chkbutton[7])
+        self.chkbutton[7].controlLeft(self.chkbutton[6])
+        self.chkbutton[7].controlRight(self.chkbutton[8])
+        self.chkbutton[8].controlLeft(self.chkbutton[7])
+        self.chkbutton[8].controlRight(self.chkbutton[6])
 
-        self.chkbutton[3].controlDown(self.chkbutton[6]);  self.chkbutton[3].controlUp(self.chkbutton[0])
-        self.chkbutton[4].controlDown(self.chkbutton[7]);  self.chkbutton[4].controlUp(self.chkbutton[1])
-        self.chkbutton[5].controlDown(self.chkbutton[8]);  self.chkbutton[5].controlUp(self.chkbutton[2])
+        self.chkbutton[3].controlDown(self.chkbutton[6])
+        self.chkbutton[3].controlUp(self.chkbutton[0])
+        self.chkbutton[4].controlDown(self.chkbutton[7])
+        self.chkbutton[4].controlUp(self.chkbutton[1])
+        self.chkbutton[5].controlDown(self.chkbutton[8])
+        self.chkbutton[5].controlUp(self.chkbutton[2])
 
-        self.chkbutton[3].controlLeft(self.chkbutton[5]);  self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[5]);
-        self.chkbutton[5].controlLeft(self.chkbutton[4]);  self.chkbutton[5].controlRight(self.chkbutton[3]);
+        self.chkbutton[3].controlLeft(self.chkbutton[5])
+        self.chkbutton[3].controlRight(self.chkbutton[4])
+        self.chkbutton[4].controlLeft(self.chkbutton[3])
+        self.chkbutton[4].controlRight(self.chkbutton[5])
+        self.chkbutton[5].controlLeft(self.chkbutton[4])
+        self.chkbutton[5].controlRight(self.chkbutton[3])
 
-        self.chkbutton[0].controlDown(self.chkbutton[3]);  self.chkbutton[0].controlUp(self.cancelbutton)
-        self.chkbutton[1].controlDown(self.chkbutton[4]);  self.chkbutton[1].controlUp(self.cancelbutton)
-        self.chkbutton[2].controlDown(self.chkbutton[5]);  self.chkbutton[2].controlUp(self.okbutton)
+        self.chkbutton[0].controlDown(self.chkbutton[3])
+        self.chkbutton[0].controlUp(self.cancelbutton)
+        self.chkbutton[1].controlDown(self.chkbutton[4])
+        self.chkbutton[1].controlUp(self.cancelbutton)
+        self.chkbutton[2].controlDown(self.chkbutton[5])
+        self.chkbutton[2].controlUp(self.okbutton)
 
-        self.chkbutton[0].controlLeft(self.chkbutton[2]);  self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);  self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);  self.chkbutton[2].controlRight(self.chkbutton[0]);
+        self.chkbutton[0].controlLeft(self.chkbutton[2])
+        self.chkbutton[0].controlRight(self.chkbutton[1])
+        self.chkbutton[1].controlLeft(self.chkbutton[0])
+        self.chkbutton[1].controlRight(self.chkbutton[2])
+        self.chkbutton[2].controlLeft(self.chkbutton[1])
+        self.chkbutton[2].controlRight(self.chkbutton[0])
 
         self.cancelled = False
         self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);      self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton);      self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[2]);      self.okbutton.controlUp(self.chkbutton[8]);
-        self.cancelbutton.controlDown(self.chkbutton[0]);  self.cancelbutton.controlUp(self.chkbutton[6]);
+        self.okbutton.controlLeft(self.cancelbutton)
+        self.okbutton.controlRight(self.cancelbutton)
+        self.cancelbutton.controlLeft(self.okbutton)
+        self.cancelbutton.controlRight(self.okbutton)
+        self.okbutton.controlDown(self.chkbutton[2])
+        self.okbutton.controlUp(self.chkbutton[8])
+        self.cancelbutton.controlDown(self.chkbutton[0])
+        self.cancelbutton.controlUp(self.chkbutton[6])
 
     def get(self):
         self.doModal()
@@ -747,10 +895,10 @@ class cInputWindow(xbmcgui.WindowDialog):
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
                 if index.isnumeric():
-                    self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
-                    self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
+                    self.chkstate[int(index) - 1] = not self.chkstate[int(index) - 1]
+                    self.chk[int(index) - 1].setVisible(self.chkstate[int(index) - 1])
 
-        except:
+        except BaseException:
             pass
 
     def onAction(self, action):

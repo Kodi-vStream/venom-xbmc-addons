@@ -43,7 +43,7 @@ def extract_strings(javascript):
                 add_strings(child, found)
 
         elif isinstance(tree, dict):
-            if ("type" in tree and tree["type"] == "Literal"and "value" in tree and isinstance(tree["value"], str)):
+            if ("type" in tree and tree["type"] == "Literal" and "value" in tree and isinstance(tree["value"], str)):
 
                 found.append(tree["value"])
             for value in tree.values():

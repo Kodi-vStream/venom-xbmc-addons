@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://letsupload.co/plugins/mediaplayer/site/_embed.php?u=1r0c1&w=770&h=320
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://letsupload.co/plugins/mediaplayer/site/_embed.php?u=1r0c1&w=770&h=320
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
+
 
 class cHoster(iHoster):
 
@@ -13,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -58,8 +59,8 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = 'file: *"([^"]+)",*'
 
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
             api_call = aResult[1][0]
 
         if (api_call):

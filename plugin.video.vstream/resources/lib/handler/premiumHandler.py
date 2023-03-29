@@ -53,7 +53,8 @@ class cPremiumHandler:
                 return True
 
         if 'onefichier' in self.__sHosterIdentifier:
-            if 'premium' in code or 'jqueryFileTree' in code or '1fichier.com/logout' in code:  # test ok mais pas convaincu....
+            # test ok mais pas convaincu....
+            if 'premium' in code or 'jqueryFileTree' in code or '1fichier.com/logout' in code:
                 return True
 
         return False
@@ -139,10 +140,10 @@ class cPremiumHandler:
         cookies = ''
         if 'Set-Cookie' in head:
             oParser = cParser()
-            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            sPattern = '(?:^|,) *([^;,]+?)=([^;,\\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
             # print(aResult)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 for cook in aResult[1]:
                     if 'deleted' in cook[1]:
                         continue
@@ -159,7 +160,7 @@ class cPremiumHandler:
     def GetHtmlwithcookies(self, url, data, cookies):
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        if not (data == None):
+        if not (data is None):
             oRequestHandler.addParametersLine(data)
             oRequestHandler.addHeaderEntry('Referer', url)
 

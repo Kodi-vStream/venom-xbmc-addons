@@ -1,10 +1,11 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
 from resources.lib.util import QuotePlus
+
 
 class cHoster(iHoster):
 
@@ -13,7 +14,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -35,20 +36,20 @@ class cHoster(iHoster):
         self.__sUrl = 'http://rutube.ru/play/embed/' + str(self.__sUrl)
 
     def __getIdFromUrl(self, url):
-        sPattern = "\/play\/embed\/(\w+)" #au cas ou test \/play\/embed\/(\w+)(?:\?|\\?)
+        sPattern = "\\/play\\/embed\\/(\\w+)"  # au cas ou test \/play\/embed\/(\w+)(?:\?|\\?)
         oParser = cParser()
         aResult = oParser.parse(url, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
 
     def __getRestFromUrl(self, url):
-        #sPattern = "\?([\w]=[\w-]+)"
-        sPattern = "\?([^ ]+)"
+        # sPattern = "\?([\w]=[\w-]+)"
+        sPattern = "\\?([^ ]+)"
         oParser = cParser()
         aResult = oParser.parse(url, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -98,26 +99,26 @@ class cHoster(iHoster):
             sPattern = '"default": *"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             url2 = aResult[1][0]
         else:
-            return False,False
+            return False, False
 
         oRequest = cRequestHandler(url2)
         sHtmlContent = oRequest.request()
 
-        sPattern = '(http.+?\?i=)([0-9x_]+)'
+        sPattern = '(http.+?\\?i=)([0-9x_]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
-            url=[]
-            qua=[]
+        if (aResult[0]):
+            url = []
+            qua = []
 
             for aEntry in aResult[1]:
                 url.append(aEntry[0] + aEntry[1])
                 qua.append(aEntry[1])
 
-            #tableau
+            # tableau
             stream_url = dialog().VSselectqual(qua, url)
 
         if (stream_url):

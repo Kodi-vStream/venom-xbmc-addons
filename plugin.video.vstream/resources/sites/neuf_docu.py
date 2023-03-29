@@ -51,7 +51,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -140,7 +140,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -162,7 +162,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -175,7 +175,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'role=\'navigation\'.+?class=\'pages\'>Page.+?sur ([^<]+).+?rel="next" href="([^"]+)">»'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         VSlog(sNextPage)
@@ -200,7 +200,7 @@ def showHosters():
     sPattern = '<a href="([^"]+)" title=".+?".+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             if "clictune" in aEntry:
@@ -209,7 +209,7 @@ def showHosters():
 
                 sPattern = 'txt = \'<b><a href="([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
-                aEntry = Unquote(re.search('url=(.+?)&',aResult).group(1))
+                aEntry = Unquote(re.search('url=(.+?)&', aResult).group(1))
 
             if "ReviveLink" in aEntry:
                 url2 = 'http://' + (aEntry.split('/')[2]).lower() + '/qcap/Qaptcha.jquery.php'
@@ -259,7 +259,7 @@ def showHosters():
                 for url, title in result:
                     sHosterUrl = url
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(title)
                         oHoster.setFileName(title)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -267,7 +267,7 @@ def showHosters():
 
                 sHosterUrl = aEntry
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

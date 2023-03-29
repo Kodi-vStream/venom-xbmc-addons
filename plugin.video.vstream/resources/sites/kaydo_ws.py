@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Il faut faire le code pour le nouvel hoster.
+# Il faut faire le code pour le nouvel hoster.
+from resources.lib.util import Noredirection
+from resources.lib.comaddon import progress, VSlog
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import time
+import base64
+import re
 return False
 
-import re
-import base64
-import time
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
-from resources.lib.util import Noredirection
 
 # copie du site http://www.kaydo.ws/
 # copie du site https://www.hds.to/
@@ -51,7 +50,7 @@ def Decode(chain):
         chain = ''.join(chain.split('$'))
 
         return base64.b64decode(chain)
-    except:
+    except BaseException:
         return chain
 
 
@@ -69,7 +68,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        MOVIE_COMMENTS[1],
+        'Films (Les plus commentés)',
+        'comments.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
@@ -94,7 +98,12 @@ def showMenuMovies():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        MOVIE_COMMENTS[1],
+        'Films (Les plus commentés)',
+        'comments.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
@@ -156,7 +165,14 @@ def showAlpha():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showMovies',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'listes.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -164,7 +180,7 @@ def showAlpha():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -185,7 +201,7 @@ def showMovieGenres():
     sPattern = 'data-val="([^"]+)" data-value="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sGenre = aEntry[0]
@@ -225,7 +241,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -235,7 +251,7 @@ def showMovies(sSearch=''):
                 break
 
             siteUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            sThumb = re.sub('/w\\d+', '/w342', aEntry[1])
             if sThumb.startswith('//'):
                 sThumb = 'https:' + sThumb
             sTitle = aEntry[2]
@@ -255,13 +271,20 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if '/serie/' in siteUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSaisonEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'ShowSaisonEpisodes',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -273,7 +296,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+?)</a><a class="next page-numbers" href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -297,13 +320,13 @@ def ShowSaisonEpisodes():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]Saison: ' + aEntry[0] + '[/COLOR]')
             else:
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
+                sThumb = re.sub('/w\\d+', '/w342', aEntry[1], 1)
                 if sThumb.startswith('//'):
                     sThumb = 'https:' + sThumb
                 sUrl2 = aEntry[2]
@@ -333,13 +356,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     # Recuperer variable pour url de base
-    sPattern = 'trembed=(\d+).+?trid=(\d+).+?trtype=(\d+)'
+    sPattern = 'trembed=(\\d+).+?trid=(\\d+).+?trtype=(\\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         list_site_film = []
         for aEntry in aResult[1]:
 
@@ -358,7 +381,7 @@ def showHosters():
             sHosterUrl = "https://geoip.redirect-ads.com/?v=" + slug
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

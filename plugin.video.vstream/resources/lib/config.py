@@ -59,7 +59,7 @@ class GestionCookie:
             f = xbmcvfs.File(Name)
             data = f.read()
             f.close()
-        except:
+        except BaseException:
             return ''
 
         return data
@@ -90,22 +90,22 @@ class cConfig:
 
     # def __init__(self):
 
-        # import xbmcaddon
-        # self.__oSettings = xbmcaddon.Addon(self.getPluginId())
-        # self.__aLanguage = self.__oSettings.getLocalizedString
-        # self.__setSetting = self.__oSettings.setSetting
-        # self.__getSetting = self.__oSettings.getSetting
-        # self.__oVersion = self.__oSettings.getAddonInfo('version')
-        # self.__oId = self.__oSettings.getAddonInfo('id')
-        # self.__oPath = self.__oSettings.getAddonInfo('path')
-        # self.__oName = self.__oSettings.getAddonInfo('name')
-        # self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo('profile'))
-        # self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
-        # self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
-        # self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
-        # self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode('utf-8')
-        # self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode('utf-8')
-        # self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode('utf-8')
+    # import xbmcaddon
+    # self.__oSettings = xbmcaddon.Addon(self.getPluginId())
+    # self.__aLanguage = self.__oSettings.getLocalizedString
+    # self.__setSetting = self.__oSettings.setSetting
+    # self.__getSetting = self.__oSettings.getSetting
+    # self.__oVersion = self.__oSettings.getAddonInfo('version')
+    # self.__oId = self.__oSettings.getAddonInfo('id')
+    # self.__oPath = self.__oSettings.getAddonInfo('path')
+    # self.__oName = self.__oSettings.getAddonInfo('name')
+    # self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo('profile'))
+    # self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
+    # self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
+    # self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
+    # self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode('utf-8')
+    # self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode('utf-8')
+    # self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode('utf-8')
 
     def isDharma(self):
         return self.__bIsDharma
@@ -145,7 +145,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 DIALOG.VSinfo('Lancement de ExtendInfo')
                 xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
                 return
-    except:
+    except BaseException:
         pass
 
     # Sinon on gere par vStream via la lib TMDB
@@ -161,7 +161,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         if sType == 'season' and not season:
             sType = 'tvshow'
         meta = cTMDb().get_meta(sType, sFileName, tmdb_id=tmdb_id, year=year, season=season, episode=episode)
-    except:
+    except BaseException:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
         pass
 
@@ -192,7 +192,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         duration = meta['duration'] // 60  # En minutes
         durationH = duration // 60  # Nombre d'heures
         meta['durationH'] = '{:02d}'.format(int(durationH))
-        meta['durationM'] = '{:02d}'.format(int(duration - 60*durationH))
+        meta['durationM'] = '{:02d}'.format(int(duration - 60 * durationH))
     else:
         meta['durationH'] = 0
         meta['durationM'] = 0
@@ -204,6 +204,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         """
         Dialog class that asks user about rating of movie.
         """
+
         def __init__(self, *args, **kwargs):
             xbmcgui.WindowXMLDialog.__init__(self)
             pass
@@ -246,7 +247,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     sid = i['id']
                     listitem_ = listitem(label=slabel, label2=slabel2)
                     listitem_.setProperty('id', str(sid))
-                    listitem_.setArt({'icon':sicon})
+                    listitem_.setArt({'icon': sicon})
                     listitems.append(listitem_)
                 self.getControl(50).addItems(listitems)
 
@@ -311,7 +312,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         self.setProperty(prop, meta[prop].encode('utf-8'))
                     else:
                         self.setProperty(prop, str(meta[prop]))
-                except:
+                except BaseException:
                     if isinstance(meta[prop], str):
                         self.setProperty(prop, meta[prop].encode('utf-8'))
                     else:
@@ -328,11 +329,11 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 for i in meta:
                     try:
                         sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii', 'ignore')
-                    except:
+                    except BaseException:
                         sTitle = 'Aucune information'
 
                     if i['poster_path']:
-                        sThumbnail = self.poster+str(i['poster_path'])
+                        sThumbnail = self.poster + str(i['poster_path'])
                     else:
                         sThumbnail = self.none_poster % sTitle
 
@@ -341,14 +342,14 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     listitem_ = listitem(label=sTitle)
                     try:
                         listitem_.setInfo('video', {'rating': i['vote_average'].encode('utf-8')})
-                    except:
+                    except BaseException:
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
                     listitem_.setArt({'icon': sThumbnail})
                     listitems.append(listitem_)
                 self.getControl(control).addItems(listitems)
 
-            except:
+            except BaseException:
                 pass
 
             # self.getControl(52100).setVisible(False)
@@ -385,16 +386,17 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
                     try:
                         sTitle = unicodedata.normalize('NFKD', meta['name']).encode('ascii', 'ignore')
-                    except:
+                    except BaseException:
                         sTitle = 'Aucune information'
 
                     if not meta['deathday']:
                         today = date.today()
                         try:
                             birthday = datetime(*(time.strptime(meta['birthday'], '%Y-%m-%d')[0:6]))
-                            age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+                            age = today.year - birthday.year - \
+                                ((today.month, today.day) < (birthday.month, birthday.day))
                             age = '%s Ans' % age
-                        except:
+                        except BaseException:
                             age = ''
                     else:
                         age = meta['deathday']
@@ -406,7 +408,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     self.setProperty('Person_biography', meta['biography'])
                     self.setFocusId(9000)
 
-                except:
+                except BaseException:
                     return
                 # self.getControl(50).setVisible(True)
                 self.setProperty('vstream_menu', 'Person')
@@ -424,14 +426,14 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     meta = grab.getUrl(sUrl_simil)
                     meta = meta['results']
                     self.credit(meta, 5205)
-                except:
+                except BaseException:
                     pass
 
                 try:
                     meta = grab.getUrl(sUrl_recom)
                     meta = meta['results']
                     self.credit(meta, 5210)
-                except:
+                except BaseException:
                     return
 
             # click pour recherche
@@ -445,7 +447,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 try:
                     sTitle = sTitle.encode('utf-8')
                     sTitle = cUtil().CleanName(sTitle)
-                except:
+                except BaseException:
                     return
 
                 self.close()

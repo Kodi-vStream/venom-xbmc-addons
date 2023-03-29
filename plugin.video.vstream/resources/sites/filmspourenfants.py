@@ -59,12 +59,15 @@ def showThemes():
     oRequestHandler = cRequestHandler('siteUrl')
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent, '<lien1>Portail pour les familles</lien1><br>', '<lien1><i class=icon-circle>')
+    sHtmlContent = oParser.abParse(
+        sHtmlContent,
+        '<lien1>Portail pour les familles</lien1><br>',
+        '<lien1><i class=icon-circle>')
 
     sPattern = '<a href=([^>]+)><lien3><i class=icon-circle></i>([^<]+)</lien3></a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -85,10 +88,10 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class=portfolio-image>.+?src="*([^ ]+\.jpg).+?synopsis>([^<]+)<.+?href="(https[^"]+)".+?<h4>([^<]+)<'
+    sPattern = 'class=portfolio-image>.+?src="*([^ ]+\\.jpg).+?synopsis>([^<]+)<.+?href="(https[^"]+)".+?<h4>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -122,7 +125,7 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

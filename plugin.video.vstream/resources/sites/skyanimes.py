@@ -107,7 +107,7 @@ def showGenresA():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -138,7 +138,7 @@ def showGenresD():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -157,7 +157,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showEpisode(sUrl)
         oGui.setEndOfDirectory()
@@ -181,9 +181,9 @@ def showSeries():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME, large=(total>50))
+        progress_ = progress().VScreate(SITE_NAME, large=(total > 50))
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -236,7 +236,7 @@ def showEpisode(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -248,8 +248,8 @@ def showEpisode(sSearch=''):
             if sSearch:
                 sTitle = aEntry[1]
                 sTitle, sTitle1 = sTitle.replace('1080p', '').replace('BD', '').replace('V2', '').replace('FIN', '')\
-                                       .replace('Fin', '').replace('fin', '').replace('OAV', '').replace('Bluray', '')\
-                                       .replace('Blu-Ray', '').rstrip().rsplit(' ', 1)
+                    .replace('Fin', '').replace('fin', '').replace('OAV', '').replace('Bluray', '')\
+                    .replace('Blu-Ray', '').rstrip().rsplit(' ', 1)
                 sTitle = 'E' + sTitle1 + ' ' + sTitle
                 sUrl2 = URL_MAIN + STREAM + aEntry[0]
                 sThumb = ''
@@ -282,7 +282,7 @@ def showHosters():
         sThumb = sThumb.replace(' ', '%20')
     oHoster = cHosterGui().checkHoster('m3u8')
 
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)

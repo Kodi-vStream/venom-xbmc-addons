@@ -121,14 +121,14 @@ class cHoster(iHoster):
 
         sPattern = 'Vous devez attendre encore [0-9]+ minutes'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             dialog().VSinfo('Erreur - Limitation %s' % aResult[1][0])
             return False
 
-        sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: 10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
+        sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: 10px;font-size:\\+1\\.6em;border:2px solid red" class="ok btn-general btn-orange">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             # xbmc.sleep(1*1000)
             # VSlog(  aResult[1][0] )
             api_call = aResult[1][0] + '|User-Agent=' + UA  # + '&Referer=' + self.__sUrl

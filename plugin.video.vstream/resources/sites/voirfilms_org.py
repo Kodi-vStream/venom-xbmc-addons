@@ -122,7 +122,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sUrl = sUrl + Quote(sSearchText)
@@ -148,7 +148,14 @@ def AlphaSearch():
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.upper())
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showMovies',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     progress_.VSclose(progress_)
 
@@ -269,7 +276,14 @@ def showAlpha():
     for sTitle, sUrl in liste:
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showMovies',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -281,7 +295,7 @@ def showMovies(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
-        sTypeSearch = oParser.parseSingleResult(sUrl, '\?type=(.+?)&')
+        sTypeSearch = oParser.parseSingleResult(sUrl, '\\?type=(.+?)&')
         if sTypeSearch[0]:
             sTypeSearch = sTypeSearch[1]
         else:
@@ -311,7 +325,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -361,7 +375,7 @@ def showMovies(sSearch=''):
             # sThumb = unicode(sThumb, 'UTF-8')
             # sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
             # sThumb = sThumb.decode('utf8')
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -377,7 +391,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -390,7 +404,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = ">([^<]+)</a><a href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         if sNextPage.startswith('/'):
@@ -420,7 +434,7 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -440,11 +454,11 @@ def showLinks():
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
-    sPattern = 'href="(https:\/\/cineactu.co\/.+?").*?span class="([^"]+).*?class="([^"]+)'
+    sPattern = 'href="(https:\\/\\/cineactu.co\\/.+?").*?span class="([^"]+).*?class="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -489,7 +503,7 @@ def showS_E():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
 
@@ -507,7 +521,7 @@ def showS_E():
                 sDisplayTitle = sTitle
             else:
                 sUrl2 = aEntry[0]
-                sTitle = re.sub('\d x ', 'E', aEntry[1])
+                sTitle = re.sub('\\d x ', 'E', aEntry[1])
                 sTitle = sTitle.replace('EP ', 'E')
                 sDisplayTitle = sTitle
 
@@ -564,7 +578,7 @@ def showHosters():
     sUrl = redirection_target
     try:
         m = re.search(r'url=([^"]+)', sHtmlContent)
-    except:
+    except BaseException:
         m = re.search(r'url=([^"]+)', str(sHtmlContent))
 
     if m:
@@ -573,16 +587,17 @@ def showHosters():
     # Modifications
     sUrl = sUrl.replace('1wskdbkp.xyz', 'youwatch.org')
     if '1fichier' in sUrl:
-        sUrl = re.sub('(http.+?\?link=)', 'https://1fichier.com/?', sUrl)
+        sUrl = re.sub('(http.+?\\?link=)', 'https://1fichier.com/?', sUrl)
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def showHostersDL():
     oGui = cGui()
@@ -604,7 +619,7 @@ def showHostersDL():
             if bvalid:
                 sHosterUrl = shost
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -625,11 +640,12 @@ def Hoster_shortn(url, refer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         token = aResult[0]
-        data = '_token=' + token 
+        data = '_token=' + token
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Referer', url)
-        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry(
+            'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
         oRequestHandler.addHeaderEntry('Cookie', cookies)

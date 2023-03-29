@@ -42,6 +42,7 @@ if DEBUG:
         except ImportError:
             sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
+
 class Main(object):
 
     def __init__(self):
@@ -142,7 +143,6 @@ class Main(object):
                 VSlog('could not load site: ' + self.site_name + ' error: ' + str(error))
                 traceback.print_exc()
 
-
     def try_to_call_method(self, action_site_name, path):
         if self.site_name == action_site_name:
             imported_plugin = __import__(path, fromlist=[self.site_name])
@@ -193,6 +193,7 @@ def set_settings(input_parameter_handler):
 
     return True
 
+
 def search_global():
     gui = cGui()
     addons = addon()
@@ -235,7 +236,7 @@ def search_global():
 
             # nom du site
             gui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']),
-                'sites/%s.png' % (plugin['identifier']))
+                        'sites/%s.png' % (plugin['identifier']))
             for result in gui.searchResults:
                 gui.addFolder(result['guiElement'], result['params'])
 

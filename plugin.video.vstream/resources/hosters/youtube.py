@@ -90,7 +90,7 @@ class cHoster(iHoster):
         oRequestHandler.addParameters("k", sHtmlContent['links']["mp4"]["auto"]["k"])
         try:
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
-        except:
+        except BaseException:
             time.sleep(3)
             oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
             oRequestHandler.setRequestType(1)

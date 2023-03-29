@@ -48,7 +48,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_LAST_EPISODES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LAST_EPISODES[1], 'Animés (Derniers épisodes)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        ANIM_LAST_EPISODES[1],
+        'Animés (Derniers épisodes)',
+        'news.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
@@ -88,10 +93,10 @@ def showAlpha():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'class=liste><a href=(\S+).+?mb-2">([^<]+)'
+    sPattern = 'class=liste><a href=(\\S+).+?mb-2">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -99,7 +104,14 @@ def showAlpha():
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addDir(SITE_IDENTIFIER, 'showAnimes', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
+            oGui.addDir(
+                SITE_IDENTIFIER,
+                'showAnimes',
+                'Lettre [COLOR coral]' +
+                sLetter +
+                '[/COLOR]',
+                'az.png',
+                oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -107,7 +119,7 @@ def showAlpha():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_INTERNALSEARCH_MOVIES[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -117,7 +129,7 @@ def showSearchMovie():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_INTERNALSEARCH_SERIES[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -127,7 +139,7 @@ def showSearchSerie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -151,7 +163,7 @@ def showAnimes(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -163,7 +175,8 @@ def showAnimes(sSearch=''):
 
             sDesc = ''
             sUrl2 = aEntry[0]
-            sTitle = aEntry[1].replace('VOSTFR', '').replace('vostfr', '').replace('Vostfr', '')  # à confirmer : tous vostr meme ceux  notés non vostfr
+            sTitle = aEntry[1].replace('VOSTFR', '').replace('vostfr', '').replace(
+                'Vostfr', '')  # à confirmer : tous vostr meme ceux  notés non vostfr
             sTitle = sTitle.replace('Saision', 'Saison').replace('Sasion', 'Saison')
             sDisplayTitle = sTitle
             sThumb = aEntry[2]
@@ -186,13 +199,20 @@ def showAnimes(sSearch=''):
             if URL_MAIN + 'films/' == sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(
+                    SITE_IDENTIFIER,
+                    'showEpisodes',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + sPaging, oOutputParameterHandler)
@@ -201,10 +221,10 @@ def showAnimes(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '>(\d+)</a></li><li><a class="next page-numbers" href="([^"]+)'
+    sPattern = '>(\\d+)</a></li><li><a class="next page-numbers" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -226,21 +246,21 @@ def showEpisodes():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = 'Synopsis\s*:(.*?)</div>'
+    sPattern = 'Synopsis\\s*:(.*?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
     sYear = ''
-    sPattern = 'Année de Production.+?(\d{4}).+?/div'
+    sPattern = 'Année de Production.+?(\\d{4}).+?/div'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sYear = aResult[1][0]
 
     sPattern = 'href="([^"]+)" class="btn btn-default mb-2" title=.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=total > 50)
 
@@ -281,7 +301,7 @@ def showHosters():
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     # i = 0
-    if aResult[0] == True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.strip()
             if sHosterUrl.startswith('//'):
@@ -292,7 +312,7 @@ def showHosters():
             # sDisplayTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -302,14 +322,14 @@ def showHosters():
 
 def getHostName(url):
     oHoster = cHosterGui().checkHoster(url)
-    if (oHoster != False):
+    if (oHoster):
         return oHoster.getDisplayName()
     try:
         if 'www' not in url:
-            sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
+            sHost = re.search('http.*?\\/\\/([^.]*)', url).group(1)
         else:
-            sHost = re.search('htt.+?\/\/(?:www).([^.]*)', url).group(1)
-    except:
+            sHost = re.search('htt.+?\\/\\/(?:www).([^.]*)', url).group(1)
+    except BaseException:
         sHost = url
     return sHost.capitalize()
 
@@ -318,7 +338,7 @@ def cleanDesc(sDesc):
     oParser = cParser()
     sPattern = '(<.+?>)'
     aResult = oParser.parse(sDesc, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sDesc = sDesc.replace(aEntry, '')
     return sDesc

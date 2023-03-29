@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -15,7 +15,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -48,7 +48,7 @@ class cHoster(iHoster):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -72,13 +72,13 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  "var contents = atob\('([^']+)'\);"
+        sPattern = "var contents = atob\\('([^']+)'\\);"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0]):
             chain = base64.decodestring(aResult[1][0])
 
-            sPattern =  '<source src="([^"]+)"'
+            sPattern = '<source src="([^"]+)"'
             aResult = oParser.parse(chain, sPattern)
             if (aResult[0]):
                 api_call = aResult[1][0]

@@ -44,7 +44,7 @@ class cHoster(iHoster):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -68,7 +68,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern = 'sources: \["([^"]+)"'
+        sPattern = 'sources: \\["([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0]:

@@ -25,7 +25,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -52,7 +53,7 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'http:..playreplay.net\/framevideo\/(.+?)\?'
+        sPattern = 'http:..playreplay.net\\/framevideo\\/(.+?)\\?'
         aResult = re.findall(sPattern, sUrl)
         if (aResult):
             return aResult[0]
@@ -75,7 +76,8 @@ class cHoster(iHoster):
         vUrl = False
         sId = self.__getIdFromUrl(self.__sUrl)
 
-        query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
+        query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' +
+                      sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
 
         data = urlEncode(query_args)
         headers = {'User-Agent': 'Mozilla 5.10'}

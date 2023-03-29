@@ -17,7 +17,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -65,18 +66,18 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
+        sPattern = '(\\s*eval\\s*\\(\\s*function\\(p,a,c,k,e(?:.|\\s)+?)<\\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         # Attention sous titre present aussi
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-            sPattern = '{sources:\[{file:"([^"]+)",label:"([^"]+)"'
+            sPattern = '{sources:\\[{file:"([^"]+)",label:"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
                 api_call = aResult[1][0][0]
 
         if api_call:

@@ -68,7 +68,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
 
         if 'film' in sUrl:
             showMovies(sSearchText)
@@ -96,7 +96,7 @@ def showGenres():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
     TriAlpha = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -146,7 +146,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -191,14 +191,21 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if 'serie-en-streaming' in sUrl:
-                oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addSeason(
+                    SITE_IDENTIFIER,
+                    'showEpisodes',
+                    sDisplaytitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -211,7 +218,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a> *</span>.*?<span class="pnext"><a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -250,7 +257,7 @@ def showSeries(sSearch=''):
     sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?block-sai">([^<]+).+?ml-desc">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -265,7 +272,7 @@ def showSeries(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
             sTitle = aEntry[1].replace('- Saison', 'Saison').replace(' wiflix', '')
-            sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
+            sLang = re.sub('Saison \\d+', '', aEntry[3]).replace(' ', '')
             sDisplaytitle = ('%s (%s)') % (sTitle, sLang)
             sUrl = aEntry[2]
             sDesc = aEntry[4]
@@ -279,7 +286,7 @@ def showSeries(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -306,7 +313,7 @@ def showEpisodes():
     ep = 0
     sLang = ''
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if aEntry[0]:
 
@@ -329,7 +336,7 @@ def showEpisodes():
                     sHosterUrl = oRequestHandler.getRealUrl()
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -347,10 +354,10 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="\/vd.php\?u=([^"]+)"[^<>]+target="x_player_wfx"><span>([^<]+)'
+    sPattern = '<a href="\\/vd.php\\?u=([^"]+)"[^<>]+target="x_player_wfx"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]  # .replace('/wiflix.cc/', '')
@@ -366,7 +373,7 @@ def showHosters():
             else:
                 sDisplaytitle = sMovieTitle
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sDisplaytitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

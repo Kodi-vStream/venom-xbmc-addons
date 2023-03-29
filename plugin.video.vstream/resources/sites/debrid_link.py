@@ -36,7 +36,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ALL_MAGNETS[1], 'Magnets', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ALL_INFORMATION[0])
-    oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Information sur les hébergeurs ', 'films.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        ALL_INFORMATION[1],
+        'Information sur les hébergeurs ',
+        'films.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -67,7 +72,7 @@ def showLiens(sSearch=''):
             oRequestHandler.addHeaderEntry('Authorization', New_token)
             r = json.loads(oRequestHandler.request())
 
-    if (r["success"] == True):
+    if (r["success"]):
         progress_ = progress().VScreate(SITE_NAME)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -111,7 +116,7 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
@@ -135,7 +140,7 @@ def showInfo():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -169,7 +174,10 @@ def RenewToken():
         oRequestHandler.addParameters('client_id', addon().getSetting('hoster_debridlink_ID'))
         r = json.loads(oRequestHandler.request())
 
-        dialog().VSok('Allez sur la page : https://debrid-link.fr/device\n et rentrer le code ' + r["user_code"] + ' pour autorisez la connection')
+        dialog().VSok(
+            'Allez sur la page : https://debrid-link.fr/device\n et rentrer le code ' +
+            r["user_code"] +
+            ' pour autorisez la connection')
 
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/token")
         oRequestHandler.setRequestType(1)

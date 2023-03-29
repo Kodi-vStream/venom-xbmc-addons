@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import re
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -63,7 +64,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         from resources.lib.packer import cPacker
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         aResult = re.findall(sPattern, sHtmlContent)
 
         if (aResult):
@@ -73,10 +74,10 @@ class cHoster(iHoster):
             if (sHtmlContent):
 
                 oParser = cParser()
-                sPattern = "replace\(.*'(.+?)'"
+                sPattern = "replace\\(.*'(.+?)'"
                 aResult = oParser.parse(sHtmlContent, sPattern)
 
-                if (aResult[0] == True):
+                if (aResult[0]):
 
                     from resources.lib.gui.hoster import cHosterGui
 
@@ -90,7 +91,7 @@ class cHoster(iHoster):
                     oHoster.setUrl(sHosterUrl)
                     api_call = oHoster.getMediaLink()
 
-                    if (api_call[0] == True):
+                    if (api_call[0]):
                         return True, api_call[1]
 
         return False, False

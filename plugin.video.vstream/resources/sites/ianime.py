@@ -51,11 +51,11 @@ def RandomReferer():
 
 def DecryptMangacity(chain):
     oParser = cParser()
-    sPattern = '(.+?),\[(.+?)\],\[(.+?)\]\)'
+    sPattern = '(.+?),\\[(.+?)\\],\\[(.+?)\\]\\)'
     aResult2 = oParser.parse(chain, sPattern)
     d = ''
 
-    if (aResult2[0] == True):
+    if (aResult2[0]):
 
         a = aResult2[1][0][0]
         b = aResult2[1][0][1].replace('"', '').split(',')
@@ -72,7 +72,7 @@ def DecryptMangacity(chain):
 
 
 def FullUnescape(code):
-    sPattern = '<script type="text/javascript">document\.write\(unescape\(".+?"\)\);</script>'
+    sPattern = '<script type="text/javascript">document\\.write\\(unescape\\(".+?"\\)\\);</script>'
     aResult = re.findall(sPattern, code)
     if aResult:
         return Unquote(aResult[0])
@@ -86,7 +86,7 @@ def ICDecode(html):
 
     import math
 
-    sPattern = 'language=javascript>c="([^"]+)";eval\(unescape\("([^"]+)"\)\);x\("([^"]+)"\);'
+    sPattern = 'language=javascript>c="([^"]+)";eval\\(unescape\\("([^"]+)"\\)\\);x\\("([^"]+)"\\);'
     aResult = re.findall(sPattern, html)
 
     if not aResult:
@@ -107,7 +107,7 @@ def ICDecode(html):
         i = i + 1
 
     # Recuperation du tableau
-    aResult = re.findall('t=Array\(([0-9,]+)\);', Unquote(d))
+    aResult = re.findall('t=Array\\(([0-9,]+)\\);', Unquote(d))
     if not aResult:
         return ''
 
@@ -190,7 +190,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(sUrl + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -247,7 +247,7 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     genres = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sTitle = aEntry[1]
             sTitle = str(cUtil().unescape(sTitle))
@@ -290,10 +290,10 @@ def ShowAlpha2():
         sHtmlContent = FullUnescape(sHtmlContent)
 
     oParser = cParser()
-    sPattern = '<a href=.(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?). class=.button black pastel light. alt="Voir la liste des animes en ' + sType + '"'
+    sPattern = '<a href=.(listing_(?:vf|vostfr)\\.php\\?affichage=[^<>"]+?). class=.button black pastel light. alt="Voir la liste des animes en ' + sType + '"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         ShowAlpha(URL_MAIN + aResult[1][0])
 
 
@@ -301,7 +301,7 @@ def ShowAlpha(url=None):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    if (url == None):
+    if (url is None):
         sUrl = oInputParameterHandler.getValue('siteUrl')
     else:
         sUrl = url
@@ -322,14 +322,21 @@ def ShowAlpha(url=None):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sLetter = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'listes.png', oOutputParameterHandler)
+            oGui.addDir(
+                SITE_IDENTIFIER,
+                'showMovies',
+                'Lettre [B][COLOR red]' +
+                sLetter +
+                '[/COLOR][/B]',
+                'listes.png',
+                oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -369,18 +376,18 @@ def showMovies(sSearch=''):
         sHtmlContent = FullUnescape(sHtmlContent)
 
     if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl or 'drama.php' in sUrl:
-        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
+        sPattern = '<center><div style="background: url\\(\'([^\'].+?)\'\\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
     else:
-        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)"'
+        sPattern = '<center><div style="background: url\\(\'([^\'].+?)\'\\); background-size.+?<a href="([^"]+)".+?alt="(.+?)"'
 
-    sHtmlContent = re.sub('<a\s*href=\"categorie.php\?watch=\"\s*class="genre\s*\"', '', sHtmlContent, re.DOTALL)
+    sHtmlContent = re.sub('<a\\s*href=\"categorie.php\\?watch=\"\\s*class="genre\\s*\"', '', sHtmlContent, re.DOTALL)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -436,21 +443,56 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if 'drama.php' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showEpisode',
+                    sDisplayTitle,
+                    'animes.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
             elif '?manga=' in sUrl2:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+                oGui.addAnime(
+                    SITE_IDENTIFIER,
+                    'showEpisode',
+                    sDisplayTitle,
+                    'animes.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
             elif '?serie=' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showEpisode',
+                    sDisplayTitle,
+                    'series.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
             elif '?film=' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showMovies',
+                    sDisplayTitle,
+                    'films.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showHosters',
+                    sDisplayTitle,
+                    'films.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -468,7 +510,7 @@ def __checkForNextPage(sHtmlContent):
         sPattern = "<.table><center><center><a href='(.+?)' class='button light' title='Voir la page 1'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -488,7 +530,7 @@ def showEpisode():
 
     try:
         sDesc = oParser.parse(sHtmlContent, '</headline15>.+?<font style=.+?>([^"]+)</font')[1][0]
-    except:
+    except BaseException:
         sDesc = ""
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -497,7 +539,7 @@ def showEpisode():
     sPattern = '<headline11>(.+?)</headline11></a>|href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -549,7 +591,7 @@ def extractLink(html):
                 final = a
                 break
 
-    sPattern = 'encodeURI\("(.+?)"\)'
+    sPattern = 'encodeURI\\("(.+?)"\\)'
     aResult = re.findall(sPattern, html)
     if aResult:
         if fake1 not in aResult[0] and fake2 not in aResult[0]:
@@ -607,7 +649,7 @@ def showHosters():
         sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
                 if re.match(".+?&#[0-9]+;", aEntry):  # directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry)
@@ -622,9 +664,9 @@ def showHosters():
                 list_url.append(sHosterUrl)
 
         # 2 eme methode
-        sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);</script>'
+        sPattern = '<script>eval\\(unescape\\((.+?)\\); eval\\(unescape\\((.+?)\\);</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
                 # si url cryptee mangacity algo
                 sHosterUrl = DecryptMangacity(aEntry[1])
@@ -632,9 +674,9 @@ def showHosters():
                 list_url.append(sHosterUrl)
 
         # 3 eme methode
-        sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
+        sPattern = 'document\\.write\\(unescape\\("(%3c%.+?)"\\)\\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
                 tmp = Unquote(aEntry)
 
@@ -668,7 +710,7 @@ def showHosters():
                     sHosterUrl = extractLink(sHtmlContent)
 
                 # Passe par lien .asx ??
-                sPattern = '(https*:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
+                sPattern = '(https*:\\/\\/www.ianime[^\\/\\]+\\/[0-9a-zA-Z_-]+\\.asx)'
                 aResult = oParser.parse(sHosterUrl, sPattern)
                 if aResult[0]:
                     # on telecharge la page
@@ -705,7 +747,7 @@ def showHosters():
                         sHtmlContent = oRequestHandler.request()
                         sHosterUrl = oRequestHandler.getRealUrl()
 
-                    except:
+                    except BaseException:
                         pass
 
                 # Potection visio.php
@@ -723,7 +765,7 @@ def showHosters():
                         sHosterUrl = aResult[1][0]
 
                 # Derniere en date
-                sPattern = "(https*:\/\/www.ianime[^\/\\]+\/[^']+)"
+                sPattern = "(https*:\\/\\/www.ianime[^\\/\\]+\\/[^']+)"
                 aResult = oParser.parse(sHosterUrl, sPattern)
                 if aResult[0]:
                     oRequestHandler = cRequestHandler(sHosterUrl)
@@ -769,7 +811,7 @@ def showHosters():
                 VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -818,7 +860,7 @@ def GetTinyUrl(url):
 
         UrlRedirect = oRequestHandler.getRealUrl()
 
-        if not(UrlRedirect == url):
+        if not (UrlRedirect == url):
             url = UrlRedirect
         elif 'Location' in reponse.getResponseHeader():
             url = reponse.getResponseHeader()['Location']

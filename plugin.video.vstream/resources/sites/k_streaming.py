@@ -76,7 +76,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -126,7 +126,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -156,7 +156,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -168,10 +168,10 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     # &raquo; est réécris par vStream en >>
-    sPattern = 'pages\'>.age.+?sur (\d+).+?current\'>.+?href="([^"]+)">>>'
+    sPattern = 'pages\'>.age.+?sur (\\d+).+?current\'>.+?href="([^"]+)">>>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -199,13 +199,13 @@ def showSaisons():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-    except:
+    except BaseException:
         pass
 
-    sPattern = '<div class="unepetitesaisons">\s*<a href="([^"]+)" title="([^"]+)"'
+    sPattern = '<div class="unepetitesaisons">\\s*<a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -214,7 +214,7 @@ def showSaisons():
                 sUrl = URL_MAIN + sUrl
 
             sTitle = aEntry[1]
-            sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison
+            sTitle = re.sub('- Saison \\d+', '', sTitle)  # double affichage de la saison
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -242,7 +242,7 @@ def showEpisodes():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-    except:
+    except BaseException:
         pass
 
     # recuperation du premier épisode
@@ -250,7 +250,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     ListeUrl = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         ListeUrl = [(sUrl, aResult[1][0])]
 
     # Recuperation des suivants
@@ -258,7 +258,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in ListeUrl:
 
             sUrl = aEntry[0]
@@ -295,7 +295,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[1]
@@ -303,7 +303,7 @@ def showHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -1,10 +1,11 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import re
+
 
 class cHoster(iHoster):
 
@@ -13,10 +14,10 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -35,16 +36,16 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "ref=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
             oRequestHandler = cRequestHandler(sUrl)
@@ -53,16 +54,16 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
+        return sUrl
 
-    def setUrl(self, sUrl):       
+    def setUrl(self, sUrl):
         self.__sUrl = sUrl
 
     def checkUrl(self, sUrl):
         return True
 
-    def getUrl(self,url):
-        r = re.search('\/\/((?:www\.)?vid\.ag)\/(?:embed-)?([0-9A-Za-z]+)', url)
+    def getUrl(self, url):
+        r = re.search('\\/\\/((?:www\\.)?vid\\.ag)\\/(?:embed-)?([0-9A-Za-z]+)', url)
         if r:
             return 'http://%s/embed-%s.html' % (r.groups()[0], r.groups()[1])
         else:
@@ -74,26 +75,26 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         web_url = self.getUrl(self.__sUrl)
-        
+
         oRequest = cRequestHandler(web_url)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-        
-        #Dean Edwards Packer
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+
+        # Dean Edwards Packer
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sUnpacked = cPacker().unpack(aResult[1][0])
             sHtmlContent = sUnpacked
-            
-        sPattern = 'file\s*:\s*"([^"]+)'
+
+        sPattern = 'file\\s*:\\s*"([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
             return True, api_call
         else:
             return False, False
-        
+
         return False, False

@@ -2,7 +2,9 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://abcvideo.cc/embed-xxxxx.html'
 # https://abcvideo.cc/xxxxx.html'
-# pour récuperer le token : https://github.com/addon-lab/addon-lab_resolver_Project adapté pour evoload mais meme principe
+# pour récuperer le token :
+# https://github.com/addon-lab/addon-lab_resolver_Project adapté pour
+# evoload mais meme principe
 
 import requests
 import re
@@ -89,9 +91,9 @@ class cHoster(iHoster):
                 list_url = []
                 list_q = []
                 oParser = cParser()
-                sPattern = 'PROGRAM.*?BANDWIDTH.*?RESOLUTION=(\d+x\d+).*?(https.*?m3u8)'
+                sPattern = 'PROGRAM.*?BANDWIDTH.*?RESOLUTION=(\\d+x\\d+).*?(https.*?m3u8)'
                 aResult = oParser.parse(response, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     for aEntry in aResult[1]:
                         list_url.append(aEntry[1])
                         list_q.append(aEntry[0])
@@ -119,7 +121,7 @@ def get_token(site_key, co, loc):
     req = s.get(url1, headers=headers1)
     data = req.text
 
-    aresult = re.findall("releases\/(.*?)\/", data)
+    aresult = re.findall("releases\\/(.*?)\\/", data)
     if aresult:
         v = aresult[0]
     else:

@@ -20,13 +20,13 @@ class cRechercheHandler:
     def getPluginHandle(self):
         try:
             return int(sys.argv[1])
-        except:
+        except BaseException:
             return 0
 
     def getPluginPath(self):
         try:
             return sys.argv[0]
-        except:
+        except BaseException:
             return ''
 
     def setText(self, sText):
@@ -66,7 +66,7 @@ class cRechercheHandler:
             sFilePath = "/".join([sFolder, sItemName])
             sFilePath = sFilePath.replace('\\', '/')
 
-            if (xbmcvfs.exists(sFilePath) == True):
+            if (xbmcvfs.exists(sFilePath)):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
                     aNameList.append(sItemName)
@@ -94,7 +94,7 @@ class cRechercheHandler:
             pluginData['name'] = plugin.SITE_NAME
             pluginData['search'] = getattr(plugin, sSearch)
             return pluginData
-        except:
+        except BaseException:
             return False
 
     def getAvailablePlugins(self):
@@ -112,7 +112,7 @@ class cRechercheHandler:
                 meta = {'title': sText, 'disp': sCat}
                 with cDb() as db:
                     db.insert_history(meta)
-        except:
+        except BaseException:
             pass
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"

@@ -41,7 +41,7 @@ class cHoster(iHoster):
         sPattern = 'http://daclips.in/embed-([^<]+)-'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 

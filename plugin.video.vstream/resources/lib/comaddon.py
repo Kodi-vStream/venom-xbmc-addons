@@ -36,7 +36,7 @@ class addon(xbmcaddon.Addon):
 
 L'utilisation de subclass peut provoquer des fuites de mémoire, signalé par ce message :
 
-the python script "\plugin.video.vstream\default.py" has left several classes in memory that we couldn't clean up. The classes include: class XBMCAddon::xbmcaddon::Addon
+the python script "\\plugin.video.vstream\\default.py" has left several classes in memory that we couldn't clean up. The classes include: class XBMCAddon::xbmcaddon::Addon
 
 # https://stackoverflow.com/questions/26588266/xbmc-addon-memory-leak
 """
@@ -61,7 +61,10 @@ class addon:
         return xbmcaddon.Addon(self.addonId).getAddonInfo(info) if self.addonId else ADDONVS.getAddonInfo(info)
 
     def VSlang(self, lang):
-        return VSPath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else VSPath(ADDONVS.getLocalizedString(lang))
+        return VSPath(
+            xbmcaddon.Addon(
+                self.addonId).getLocalizedString(lang)) if self.addonId else VSPath(
+            ADDONVS.getLocalizedString(lang))
 
 
 """
@@ -117,7 +120,8 @@ class dialog:
         return self.DIALOG.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds, sound)
 
     def VSerror(self, e):
-        return self.DIALOG.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
+        return self.DIALOG.notification('vStream', 'Erreur: ' + str(e),
+                                        xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
 
     def VStextView(self, desc, title='vStream'):
         return self.DIALOG.textviewer(title, desc)
@@ -255,7 +259,7 @@ class progress:
         if dlgId != 9999 and dlgId != 10138:  # 9999 = None
             return empty()
 
-        if self.PROGRESS == None:
+        if self.PROGRESS is None:
             if large:
                 self.PROGRESS = xbmcgui.DialogProgress()
             elif ADDONVS.getSetting('spinner_small') == 'true':
@@ -357,7 +361,7 @@ def VSlog(e, level=xbmc.LOGDEBUG):
                 level = xbmc.LOGNOTICE
         xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
 
-    except:
+    except BaseException:
         pass
 
 
@@ -382,7 +386,7 @@ def isKrypton():
             return True
         else:
             return False
-    except:
+    except BaseException:
         return False
 
 
@@ -393,7 +397,7 @@ def isMatrix():
             return True
         else:
             return False
-    except:
+    except BaseException:
         return False
 
 
@@ -404,7 +408,7 @@ def isNexus():
             return True
         else:
             return False
-    except:
+    except BaseException:
         return False
 
 
@@ -436,7 +440,7 @@ def VSProfil():
     return name
 
 
-# Gestion des sources : activer, désactiver, libellé, ... 
+# Gestion des sources : activer, désactiver, libellé, ...
 class siteManager:
 
     SITES = 'sites'
@@ -444,18 +448,18 @@ class siteManager:
     LABEL = 'label'
 
     def __init__(self):
-        
+
         # Propriétés par défaut
         self.defaultPath = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
         self.defaultData = None
 
-        # Propriétés selon le profil        
+        # Propriétés selon le profil
         name = VSProfil()
         if name == 'Master user':   # Le cas par defaut
             path = VSPath('special://home/userdata/addon_data/plugin.video.vstream/sites.json')
         else:
             path = VSPath('special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/sites.json')
-        
+
         # Résolution du chemin
         try:
             self.propertiesPath = VSPath(path).decode('utf-8')
@@ -469,19 +473,19 @@ class siteManager:
             # le fichier n'existe pas, on le crée à partir des settings par défaut
             xbmcvfs.copy(self.defaultPath, path)
             self.data = json.load(open(self.propertiesPath))
-            
 
     # Sauvegarder les propriétés modifiées
+
     def save(self):
         with open(self.propertiesPath, 'w') as f:
             f.write(json.dumps(self.data, indent=4))
 
     def isActive(self, sourceName):
         return self.getProperty(sourceName, self.ACTIVE) == 'True'
-    
+
     def setActive(self, sourceName, state):
         self.setProperty(sourceName, self.ACTIVE, state)
-    
+
     def disableAll(self):
         for sourceName in self.data[self.SITES]:
             self.setActive(sourceName, False)
@@ -507,7 +511,7 @@ class siteManager:
 
         # userSettings
         sourceData = self.data[self.SITES].get(sourceName)
-        
+
         # pas de user Settings, on recherche dans les default Settings
         if not sourceData:
             sourceData = self._getDefaultProp(sourceName)
@@ -516,8 +520,8 @@ class siteManager:
             if sourceData:
                 self.data[self.SITES][sourceName] = sourceData
 
-        return sourceData 
-        
+        return sourceData
+
     # Récupérer les propriétés par défaut d'une source
     def _getDefaultProp(self, sourceName):
 
@@ -527,14 +531,13 @@ class siteManager:
 
         # Retrouver la prop par défaut
         sourceData = self.defaultData[self.SITES].get(sourceName)
-        
+
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:
-            sourceData = {self.ACTIVE : 'True', self.LABEL : sourceName}
+            sourceData = {self.ACTIVE: 'True', self.LABEL: sourceName}
 
         return sourceData
-    
-    
+
 
 class addonManager:
     # Demande l'installation d'un addon

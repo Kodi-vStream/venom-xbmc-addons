@@ -4,7 +4,8 @@ from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import xbmcgui,xbmc
+import xbmcgui
+import xbmc
 import urllib2
 import re
 
@@ -16,10 +17,10 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -38,12 +39,12 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "ref=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -61,91 +62,91 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0'
-        headers = {'Host' : 'videomega.tv',
-                   'User-Agent' : UA,
-                   #'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   #'Accept-Encoding' : 'gzip, deflate',
-                   'Referer' : self.__sUrl
+        headers = {'Host': 'videomega.tv',
+                   'User-Agent': UA,
+                   # 'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   # 'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   # 'Accept-Encoding' : 'gzip, deflate',
+                   'Referer': self.__sUrl
                    }
-        
+
         url = self.__sUrl
-        request = urllib2.Request(url,None,headers)
-        
-        #print url
-      
-        try: 
+        request = urllib2.Request(url, None, headers)
+
+        # print url
+
+        try:
             reponse = urllib2.urlopen(request)
-        except URLError, e:
+        except URLError as e:
             print e.read()
             print e.reason
-        
+
         sHtmlContent = reponse.read()
-        
+
         api_call = False
-        
-        #si on passe pr le hash code
+
+        # si on passe pr le hash code
         if 'validatehash.php?hashkey=' in url:
             if 'ref=' in sHtmlContent:
                 a = re.compile('.*?ref="(.+?)".*').findall(sHtmlContent)[0]
                 url = 'http://videomega.tv/cdn.php?ref=' + a
-                
-                request = urllib2.Request(url,None,headers)
-             
-                try: 
+
+                request = urllib2.Request(url, None, headers)
+
+                try:
                     reponse = urllib2.urlopen(request)
-                except URLError, e:
+                except URLError as e:
                     print e.read()
                     print e.reason
-             
+
                 sHtmlContent = reponse.read()
 
         oParser = cParser()
-            
-        #Premier test, lien code unescape
-        sPattern =  'unescape.+?"(.+?)"'
+
+        # Premier test, lien code unescape
+        sPattern = 'unescape.+?"(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             decoder = cUtil().urlDecode(aResult[1][0])
-            
-            sPattern =  'file: "(.+?)"'
+
+            sPattern = 'file: "(.+?)"'
             aResult = oParser.parse(decoder, sPattern)
-            
-            if (aResult[0] == True):
+
+            if (aResult[0]):
                 print 'code unescape'
                 api_call = aResult[1][0]
-                
-        #Dexieme test Dean Edwards Packer
+
+        # Dexieme test Dean Edwards Packer
         if not api_call:
-            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 print 'code Dean Edwards Packer'
                 sUnpacked = cPacker().unpack(aResult[1][0])
-                                
-                sPattern =  '\("src", *"([^\)"<>]+?)"\)'
+
+                sPattern = '\\("src", *"([^\\)"<>]+?)"\\)'
                 aResult = oParser.parse(sUnpacked, sPattern)
 
-                if (aResult[0] == True):
+                if (aResult[0]):
                     api_call = aResult[1][0]
-      
-        #Troisieme test, lien non code
+
+        # Troisieme test, lien non code
         if not api_call:
-            sPattern =  '<source src="([^"]+)" type="video[^"]*"\/>'
+            sPattern = '<source src="([^"]+)" type="video[^"]*"\\/>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
-            if (aResult[0] == True):
+
+            if (aResult[0]):
                 print 'non code'
                 api_call = aResult[1][0]
 
-        #print 'url : ' + api_call
+        # print 'url : ' + api_call
 
         if (api_call):
             api_call = api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
             xbmc.sleep(6000)
             return True, api_call
-            
+
         return False, False

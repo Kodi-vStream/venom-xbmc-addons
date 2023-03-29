@@ -107,7 +107,7 @@ def showGenres():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -149,7 +149,12 @@ def showNetwork():
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_YOUTUBE[0])
     oOutputParameterHandler.addParameter('sTmdbId', 1436)    # Utilisé par TMDB
-    oGui.addNetwork(SITE_IDENTIFIER, SERIE_YOUTUBE[1], 'Séries (YouTube Originals)', 'host.png', oOutputParameterHandler)
+    oGui.addNetwork(
+        SITE_IDENTIFIER,
+        SERIE_YOUTUBE[1],
+        'Séries (YouTube Originals)',
+        'host.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ARTE[0])
     oOutputParameterHandler.addParameter('sTmdbId', 1436)    # Utilisé par TMDB
@@ -174,7 +179,7 @@ def showYears():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -202,7 +207,7 @@ def showSeriesYears():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -221,7 +226,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -243,7 +248,7 @@ def showMovies(sSearch=''):
         else:
             sTypeYear = ''
 
-    sPattern = 'data-movie-id="\d+".+?href="([^"]+).+?oldtitle="([^"]+).+?data-original="([^ "]+).+?desc"><p>([^<]+)'
+    sPattern = 'data-movie-id="\\d+".+?href="([^"]+).+?oldtitle="([^"]+).+?data-original="([^ "]+).+?desc"><p>([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -253,7 +258,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         utils = cUtil()
@@ -289,11 +294,11 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[2]
                 sDesc = aEntry[3]
 
-            sThumb = re.sub('/w\d+', '/w342', sThumb)
+            sThumb = re.sub('/w\\d+', '/w342', sThumb)
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
                 sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
-            except:
+            except BaseException:
                 pass
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -310,19 +315,19 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies',  'Page ' + sPaging, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li class=\'active\'>.+?href=\'([^\']+).+?/(\d+)/\'>Dernière'
+    sPattern = '<li class=\'active\'>.+?href=\'([^\']+).+?/(\\d+)/\'>Dernière'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -330,9 +335,9 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
 
     # for the tvshows and the last page of movies
-    sPattern = "class='active'><a class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^\']+).+?>(\d+)</a></li></ul"
+    sPattern = "class='active'><a class=''>\\d+</a></li><li><a rel='nofollow' class='page larger' href='([^\']+).+?>(\\d+)</a></li></ul"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -360,7 +365,7 @@ def showSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sSaison = ''
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -397,16 +402,16 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         tab = aResult[1]
-        n = len(tab)//3
+        n = len(tab) // 3
 
         for i in range(n):
 
             sHosterUrl = tab[i][0]
-            sLang = tab[2*i+n][1]
-            sQual = tab[2*i+(n+1)][1]
+            sLang = tab[2 * i + n][1]
+            sQual = tab[2 * i + (n + 1)][1]
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
 
@@ -414,9 +419,9 @@ def showHosters():
             # necessaire pour userload.
             if 'userload' in sHosterUrl:
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
-        
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -68,7 +68,7 @@ def showMovies():
     sPattern = '<p style="text-align: center;"><a href="(http.//www.youtitou.com/videos.+?)">.+?<img.+?src="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -97,7 +97,7 @@ def showEpisode():
     sPattern = 'class="media-object">.+?href="(http.//www.youtitou.com/videos.+?)".+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -130,14 +130,14 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'https:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -161,7 +161,7 @@ def showEdu():
         sPattern = '<iframe title="([^"]+)".+?src="([^"]+)".+?</iframe>'  # pas de titre 6_8
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[1]
             if sHosterUrl.startswith('//'):
@@ -172,7 +172,7 @@ def showEdu():
             sThumb = 'https://i.ytimg.com/vi/' + sId + '/mqdefault.jpg'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

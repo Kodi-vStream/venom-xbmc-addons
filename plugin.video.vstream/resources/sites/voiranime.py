@@ -66,7 +66,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sUrl = sUrl + Quote(sSearchText)
@@ -86,7 +86,6 @@ def showAlpha():
     for i in range(-1, 27):
         progress_.VSupdate(progress_, 36)
 
-
         if (i == -1):
             sTitle = 'ALL'
             oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('?start=', ''))
@@ -98,7 +97,14 @@ def showAlpha():
             oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle)
 
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showAnimes', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showAnimes',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     progress_.VSclose(progress_)
 
@@ -146,7 +152,7 @@ def showAnimes(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
-        sTypeSearch = oParser.parseSingleResult(sUrl, '\?type=(.+?)&')
+        sTypeSearch = oParser.parseSingleResult(sUrl, '\\?type=(.+?)&')
         if sTypeSearch[0]:
             sTypeSearch = sTypeSearch[1]
         else:
@@ -172,7 +178,7 @@ def showAnimes(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -211,7 +217,7 @@ def showAnimes(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
@@ -224,7 +230,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink".+?href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -252,7 +258,7 @@ def showEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
 
         # Dernier épisode
@@ -263,7 +269,14 @@ def showEpisodes():
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Dernier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addEpisode(
+            SITE_IDENTIFIER,
+            'showLinks',
+            '===] Dernier épisode [===',
+            '',
+            sThumb,
+            sDesc,
+            oOutputParameterHandler)
 
         # Premier épisode
         sUrlEpisode = aResult[1][-1][0]
@@ -273,7 +286,14 @@ def showEpisodes():
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Premier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addEpisode(
+            SITE_IDENTIFIER,
+            'showLinks',
+            '===] Premier épisode [===',
+            '',
+            sThumb,
+            sDesc,
+            oOutputParameterHandler)
 
         # Liste des épisodes
         for aEntry in aResult[1]:
@@ -305,14 +325,15 @@ def showLinks():
     chapter = data.group(2)
 
     # On extrait une partie de la page pour eviter les doublons.
-    sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
+    sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>',
+                      sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
 
     oParser = cParser()
     sPattern = '<option data-redirect=.+?value="([^"]+)">LECTEUR.+?</option>'
 
     aResult = oParser.parse(sData, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -377,11 +398,13 @@ def getHost():
     types = oInputParameterHandler.getValue('sType')
 
     # On valide le token du coté du site
-    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + post + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
+    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + \
+        post + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
     oRequestHandler = cRequestHandler("https://voiranime.com/wp-admin/admin-ajax.php")
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry(
+        'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
     oRequestHandler.addHeaderEntry('Referer', sUrl)
@@ -395,12 +418,12 @@ def getHost():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -61,7 +61,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -116,12 +116,12 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)">\s*<time datetime=.+?</time>\s*<span class=".+?<i class=".+?></i>\s*([^"]+)</a>'
+    sPattern = '<a href="([^"]+)">\\s*<time datetime=.+?</time>\\s*<span class=".+?<i class=".+?></i>\\s*([^"]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -140,7 +140,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -162,7 +162,7 @@ def showIsdb():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -194,7 +194,7 @@ def showEvents():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<i class=".+?"></i>\s* <a href="([^"]+)">\s*([^"]+)\s*</a>'
+    sPattern = '<i class=".+?"></i>\\s* <a href="([^"]+)">\\s*([^"]+)\\s*</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -202,7 +202,7 @@ def showEvents():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -221,7 +221,7 @@ def showEvents():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showEvents', 'Page ' + sPaging, oOutputParameterHandler)
@@ -236,7 +236,7 @@ def showShows():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<i class=".+?"></i>\s* <a href="([^"]+)">\s*([^"]+)\s*</a>'
+    sPattern = '<i class=".+?"></i>\\s* <a href="([^"]+)">\\s*([^"]+)\\s*</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -244,7 +244,7 @@ def showShows():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -263,7 +263,7 @@ def showShows():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showShows', 'Page ' + sPaging, oOutputParameterHandler)
@@ -278,7 +278,7 @@ def showPodcast():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<i class=".+?"></i>\s* <a href="([^"]+)">\s*([^"]+)\s*</a>'
+    sPattern = '<i class=".+?"></i>\\s* <a href="([^"]+)">\\s*([^"]+)\\s*</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -286,7 +286,7 @@ def showPodcast():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -305,7 +305,7 @@ def showPodcast():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showPodcast', 'Page ' + sPaging, oOutputParameterHandler)
@@ -320,7 +320,7 @@ def showPromo():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<i class=".+?"></i>\s* <a href="([^"]+)">\s*([^"]+)\s*</a>'
+    sPattern = '<i class=".+?"></i>\\s* <a href="([^"]+)">\\s*([^"]+)\\s*</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -328,7 +328,7 @@ def showPromo():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -347,7 +347,7 @@ def showPromo():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showPromo', 'Page ' + sPaging, oOutputParameterHandler)
@@ -357,9 +357,9 @@ def showPromo():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="active"><a href="".+?href="([^"]+).+?>(\d+)</a></li>\s*</ul>'
+    sPattern = 'class="active"><a href="".+?href="([^"]+).+?>(\\d+)</a></li>\\s*</ul>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = URL_MAIN + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -380,16 +380,16 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<br />\s*<a href="([^"]+)">.+?</a>.+?<br />'
+    sPattern = '<br />\\s*<a href="([^"]+)">.+?</a>.+?<br />'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

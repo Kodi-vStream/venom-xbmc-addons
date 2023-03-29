@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 # from resources.lib.packer import cPacker
@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -60,12 +60,12 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        api_call =''
+        api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        #VSlog(str(self.__sUrl))
+        # VSlog(str(self.__sUrl))
 
         oParser = cParser()
         sPattern = '<source.+?src="(.+?)"'
@@ -75,7 +75,7 @@ class cHoster(iHoster):
         if (aResult[0]):
             api_call = aResult[1][0]
 
-        #VSlog(str(api_call))
+        # VSlog(str(api_call))
 
         if (api_call):
             return True, api_call

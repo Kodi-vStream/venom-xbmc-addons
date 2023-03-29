@@ -24,10 +24,10 @@ from threading import Thread
 try:
     from html.parser import HTMLParser
     from urllib.parse import urlparse
-except:
+except BaseException:
     from HTMLParser import HTMLParser
     from urlparse import urlparse
-    
+
 import requests
 import base64
 import json
@@ -71,9 +71,9 @@ def rc_base64(string):
     try:
         if isinstance(string, unicode):
             data = string.encode()
-    except:
+    except BaseException:
         if isinstance(string, str):
-            data = string.encode()   
+            data = string.encode()
 
     return base64.b64encode(data, b"-_").decode().replace("=", ".")
 
@@ -323,7 +323,8 @@ class ReCaptcha(object):
             self.js_strings = get_js_strings(self.user_agent, self.rc_version)
 
     def on_goal(goal, meta, **_3to2kwargs):
-        raw = _3to2kwargs['raw']; del _3to2kwargs['raw']
+        raw = _3to2kwargs['raw']
+        del _3to2kwargs['raw']
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
@@ -484,14 +485,14 @@ class ReCaptcha(object):
         challenge_type = rresp[5]
         pmeta = rresp[4]
         self.current_token = rresp[1]
-        
+
         VSlog("Captcha type :" + str(challenge_type))
 
         solver_class = {
             "dynamic": DynamicSolver,
             "multicaptcha": MultiCaptchaSolver,
-            "tileselect" : MultiCaptchaSolver,
-            "imageselect" : MultiCaptchaSolver
+            "tileselect": MultiCaptchaSolver,
+            "imageselect": MultiCaptchaSolver
         }.get(challenge_type)
 
         handler = {
@@ -499,8 +500,8 @@ class ReCaptcha(object):
             "multicaptcha": self.on_challenge_multicaptcha,
             "default": self.on_challenge_blocked,
             "doscaptcha": self.on_challenge_blocked,
-            "tileselect" : self.on_challenge_multicaptcha,
-            "imageselect" : self.on_challenge_multicaptcha
+            "tileselect": self.on_challenge_multicaptcha,
+            "imageselect": self.on_challenge_multicaptcha
         }.get(challenge_type)
 
         self.on_challenge(challenge_type)

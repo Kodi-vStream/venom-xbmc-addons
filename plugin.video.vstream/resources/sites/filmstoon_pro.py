@@ -70,7 +70,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE[1], 'Episodes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        SERIE_NEWS_EPISODE[1],
+        'Episodes (Derniers ajouts)',
+        'news.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -98,14 +103,19 @@ def showMenuTvShows():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0] )
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE[1], 'Episodes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        SERIE_NEWS_EPISODE[1],
+        'Episodes (Derniers ajouts)',
+        'news.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -113,7 +123,7 @@ def showMenuTvShows():
 def myShowSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_series + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -123,7 +133,7 @@ def myShowSearchSerie():
 def myShowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_movies + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -133,7 +143,7 @@ def myShowSearchMovie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_movies + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -204,7 +214,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -215,7 +225,7 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
+            sThumb = re.sub('/w\\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2]
             if 'episode' in sUrl or '/series/' in sUrl:
                 sTitle = sTitle.replace('- Season', ' Saison').replace('-Season', ' Saison').replace('Season', 'Saison')
@@ -254,7 +264,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         bvalid, sNextPage, sNumPage = __checkForNextPage(sHtmlContent, sUrl)
-        if (bvalid == True):
+        if (bvalid):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
@@ -266,10 +276,10 @@ def __checkForNextPage(shtml, surl):
     # pas de lien next page on crée l'url et on verifie l'index de la derniere page
     sMax = ''
     iMax = 0
-    sPattern = 'page/(\d+)/'
+    sPattern = 'page/(\\d+)/'
     oParser = cParser()
     aResult = oParser.parse(shtml, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sCurrentMax = aEntry
             iCurrentMax = int(sCurrentMax)
@@ -277,10 +287,10 @@ def __checkForNextPage(shtml, surl):
                 iMax = iCurrentMax
                 sMax = sCurrentMax
 
-    sPattern = 'page.(\d+)'
+    sPattern = 'page.(\\d+)'
     oParser = cParser()
     aResult = oParser.parse(surl, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sCurrent = aResult[1][0]
         iCurrent = int(sCurrent)
         iNext = iCurrent + 1
@@ -318,11 +328,11 @@ def showSXE():
     sStart = 'class="les-title"'
     sEnd = '<div class="mvi-content"'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = '<strong>Season.+?(\d+)|<a href="([^"]+).+?Episode.+?(\d+)'
+    sPattern = '<strong>Season.+?(\\d+)|<a href="([^"]+).+?Episode.+?(\\d+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -361,7 +371,7 @@ def showHosters():
 
     sPattern = '<div class="movieplay"><iframe src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         if 'embedo' in aResult[1][0]:
 
             # url1 https://embedo.to/e/QW9RSEhEeEZFUTJXVXo0dzBhdzhVZz09
@@ -377,7 +387,7 @@ def showHosters():
             oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
 
                 url2 = 'https://embedo.to' + aResult[1][0]
                 url3 = url2.replace('/s/', '/r/')
@@ -391,7 +401,7 @@ def showHosters():
                     sHosterUrl = getReal
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     sDisplayTitle = sMovieTitle
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

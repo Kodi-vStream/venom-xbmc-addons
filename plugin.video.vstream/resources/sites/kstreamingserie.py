@@ -49,7 +49,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -135,7 +135,7 @@ def showSeries(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -145,7 +145,7 @@ def showSeries(sSearch=''):
                 break
 
             sThumb = aEntry[0]
-            sTitle = re.sub('\(\d{4}\)', '', aEntry[1])
+            sTitle = re.sub('\\(\\d{4}\\)', '', aEntry[1])
             sUrl = aEntry[2]
             sDesc = ''  # absente pour la recherche
             if len(aEntry) > 3:
@@ -162,7 +162,7 @@ def showSeries(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -174,7 +174,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a></div><div class="naviright"><a href="([^"]+?)" >Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -196,7 +196,7 @@ def showSaisons():
     sPattern = 'movie-poster.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
@@ -226,9 +226,9 @@ def showEpisodes():
     try:
         sPattern = 'line-clamp line-hide">(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sDesc = aResult[1][0].replace('<br />', '').replace('</div>', '')
-    except:
+    except BaseException:
         pass
 
     # recuperation du hoster de base
@@ -236,7 +236,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     ListeUrl = []
-    if (aResult[0] == True):
+    if (aResult[0]):
         ListeUrl = [(sUrl, aResult[1][0])]
 
     # Recuperation des suivants
@@ -244,7 +244,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in ListeUrl:
             sUrl = aEntry[0]
@@ -262,7 +262,15 @@ def showEpisodes():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle + ' episode 1')
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sMovieTitle + ' episode 1', '', sThumb, '', oOutputParameterHandler)
+        oGui.addEpisode(
+            SITE_IDENTIFIER,
+            'showHosters',
+            sMovieTitle +
+            ' episode 1',
+            '',
+            sThumb,
+            '',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -278,12 +286,12 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h3>.+?(VF|VOSTFR)\s*<\/h3>\s*<p><\/p>|<iframe.+?src="([^"]+)"'
+    sPattern = '<h3>.+?(VF|VOSTFR)\\s*<\\/h3>\\s*<p><\\/p>|<iframe.+?src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             # langue
@@ -294,7 +302,7 @@ def showHosters():
                 sHosterUrl = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

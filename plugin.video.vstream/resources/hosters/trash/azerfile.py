@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -13,10 +13,11 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -40,26 +41,25 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://azerfile.com/embed-([^<]+)-640x340.html"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
 
-    def setUrl(self, sUrl):        
+    def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
-        sPattern =  'http://(?:www.|embed.|)azerfile.(?:com)/(?:video/|embed\-|)?([0-9a-z]+)'
-         
+
+        sPattern = 'http://(?:www.|embed.|)azerfile.(?:com)/(?:video/|embed\\-|)?([0-9a-z]+)'
+
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        self.__sUrl = 'http://azerfile.com/'+str(aResult[1][0])
-
+        self.__sUrl = 'http://azerfile.com/' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
         return True
@@ -70,26 +70,22 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        
-        sPattern = 'file=([^<]+)&image';
-        
+
+        sPattern = 'file=([^<]+)&image'
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-
-        if (aResult[0] == True):
+        if (aResult[0]):
             file = aResult[1][0]
 
             liste = file.split('/')
 
-            #api_call = ('http://azerfile.com:%s/d/%s/video.mp4') % (liste[-1], liste[-2])
+            # api_call = ('http://azerfile.com:%s/d/%s/video.mp4') % (liste[-1], liste[-2])
             api_call = aResult[1][0]
             return True, api_call
-            
+
         return False, False
-        
-        

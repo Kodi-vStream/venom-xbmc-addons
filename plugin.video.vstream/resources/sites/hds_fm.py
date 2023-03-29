@@ -136,7 +136,7 @@ def showMenuTvShows():
 def MyshowSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = key_search_series + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -146,7 +146,7 @@ def MyshowSearchSerie():
 def MyshowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = key_search_movies + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -156,7 +156,7 @@ def MyshowSearchMovie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -247,7 +247,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -298,7 +298,7 @@ def showMovies(sSearch=''):
             # if not ('/serie' in sUrl or ' saison ' in sTitle.lower()):
                 # idmovie = get_id_int_Movie(sUrl2)
                 # if idmovie  <= 18729:
-                    # sDisplayTitle = sDisplayTitle + ' *'
+                # sDisplayTitle = sDisplayTitle + ' *'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -315,7 +315,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         bNextPage, sNextPage, sNumPage = __checkForNextPage(sHtmlContent)
-        if (bNextPage != False):
+        if (bNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
@@ -333,25 +333,25 @@ def __checkForNextPage(sHtmlContent):
         return False, 'none', 'none'
 
     if 'class="end"' in sHtmlContent:
-        sPattern = 'class="end".+?">(\d+)'
+        sPattern = 'class="end".+?">(\\d+)'
     else:
-        sPattern = '(\d+)<.a>\s*<a\sclass="next"'
+        sPattern = '(\\d+)<.a>\\s*<a\\sclass="next"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0]
 
     sPattern = 'class="next.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0]  # minimum requis
         if 'htpp' not in sNextPage:
             sNextPage = URL_MAIN[:-1] + sNextPage
             if '/31/32/' in sNextPage:  # bug page 31
                 sNextPage = re.sub('/31', '', sNextPage)
         try:
-            sNumberNext = re.search('/(\d+)/', sNextPage).group(1)
-        except:
+            sNumberNext = re.search('/(\\d+)/', sNextPage).group(1)
+        except BaseException:
             pass
 
         if sNumberNext:
@@ -377,25 +377,25 @@ def ShowEpisodes():
     sHtmlContent = oRequestHandler.request()
 
     if 'saison' not in sMovieTitle.lower():
-        sPattern = 'saison-(\d+)'
+        sPattern = 'saison-(\\d+)'
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sMovieTitle = sMovieTitle + ' Saison ' + aResult[1][0]
 
     sPattern = '<div class="Description">.*?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'Hds Film'
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
-    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
+    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\\d+)"\\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     bFind = ''
     validEntry = ''
     sLang = ''
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -419,7 +419,14 @@ def ShowEpisodes():
                 oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
                 oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(
+                    SITE_IDENTIFIER,
+                    'showSeriesHosters',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
     if not validEntry:
         oGui.addText(SITE_IDENTIFIER, '# Aucune vidéo trouvée #')
@@ -454,16 +461,16 @@ def showSeriesHosters():
             sDisplayTitle = sMovieTitle + ' ' + sHost
             sHosterUrl = sUrl2
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         html = aResult[1][0]
         sPattern = 'href="([^"]+).*?aria-hidden'
         aResulturl = oParser.parse(html, sPattern)
-        if (aResulturl[0] == True):
+        if (aResulturl[0]):
             for aEntry in aResulturl[1]:
                 sUrl2 = aEntry
                 sHost = getHostName(sUrl2)
@@ -485,11 +492,10 @@ def showSeriesHosters():
 
                 sHosterUrl = sUrl2
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                
 
     oGui.setEndOfDirectory()
 
@@ -508,13 +514,13 @@ def showHosters():
     sPattern = 'Synopsis.+?<p>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'Hds Film'
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
     sPattern = '<a style=".+?cid="([^"]+).+?fa-play.+?i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -534,10 +540,9 @@ def showHosters():
             if 'hqq.tv' in sUrl2:
                 continue
 
-
             sHosterUrl = sUrl2
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -548,9 +553,9 @@ def showHosters():
 def get_id_int_Movie(url):
 
     try:
-        number = re.search('https.+?\/(\d+)', url).group(1)
+        number = re.search('https.+?\\/(\\d+)', url).group(1)
         return int(number)
-    except:
+    except BaseException:
         return 20000
         pass
     return 20000
@@ -560,13 +565,13 @@ def getHostName(url):
 
     try:
         if 'opsktp' in url:
-            sHost = re.search('http.+?opsktp.+?\/([^\/]+)', url).group(1)
+            sHost = re.search('http.+?opsktp.+?\\/([^\\/]+)', url).group(1)
 
         elif 'www' not in url:
-            sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
+            sHost = re.search('http.*?\\/\\/([^.]*)', url).group(1)
         else:
-            sHost = re.search('htt.+?\/\/(?:www).([^.]*)', url).group(1)
-    except:
+            sHost = re.search('htt.+?\\/\\/(?:www).([^.]*)', url).group(1)
+    except BaseException:
         sHost = url
 
     return sHost.capitalize()
@@ -577,7 +582,7 @@ def cleanDesc(sDesc):
     sPattern = '(Résumé.+?streaming Complet)'
     aResult = oParser.parse(sDesc, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = sDesc.replace(aResult[1][0], '')
 
     list_comment = [':', 'en streaming', 'Voir Serie ']

@@ -15,16 +15,16 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
-    #facultatif mais a laisser pour compatibilitee
+    # facultatif mais a laisser pour compatibilitee
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
 
-    #facultatif mais a laisser pour compatibilitee
+    # facultatif mais a laisser pour compatibilitee
     def getFileName(self):
         return self.__sFileName
 
@@ -64,16 +64,16 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
             sPattern = '{file:"([^"]+)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0].replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
 
         if (api_call):

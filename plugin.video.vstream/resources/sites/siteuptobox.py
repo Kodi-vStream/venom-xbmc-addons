@@ -79,7 +79,7 @@ def opensetting():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrlSearch = '&searchField=file_name&search=' + sSearchText
         showFile(sUrlSearch)
 
@@ -126,7 +126,7 @@ def showFile(sSearch=''):
             sHtmlContent = oPremiumHandler.GetHtml(BURL)
             sPattern = 'token":"(.+?)",'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sToken = aResult[1][0]
 
             if sSearch:
@@ -159,7 +159,7 @@ def showFile(sSearch=''):
                     sHosterUrl = URL_MAIN + y['file_code']
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
@@ -190,7 +190,10 @@ def showFile(sSearch=''):
 
                     sOffset = int(sOffset) + 100
 
-                    oOutputParameterHandler.addParameter('siteUrl', API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset)))
+                    oOutputParameterHandler.addParameter(
+                        'siteUrl', API_URL.replace(
+                            'none', sToken).replace(
+                            'offset=0', 'offset=' + str(sOffset)))
                     oOutputParameterHandler.addParameter('sToken', sToken)
                     oOutputParameterHandler.addParameter('sNext', sNext)
                     oOutputParameterHandler.addParameter('sOffset', sOffset)
@@ -260,7 +263,7 @@ def UptomyAccount():
         sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             total = aResult[1][0]
             del aResult[1][0]
 

@@ -44,11 +44,11 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
-        sPattern = '(?://|\.)(watchvideo[0-9]?\.us)/(?:embed-)?([0-9a-zA-Z]+)'
+        sPattern = '(?://|\\.)(watchvideo[0-9]?\\.us)/(?:embed-)?([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 
@@ -74,16 +74,16 @@ class cHoster(iHoster):
         oParser = cParser()
 
         # Dean Edwards Packer
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-            sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+            sPattern = '{file:"([^"]+)"\\,label:"([^"]+)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             # initialisation des tableaux
             url = []
             qua = []

@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.handler.requestHandler import cRequestHandler  # requete url
+from resources.lib.parser import cParser  # recherche de code
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
+
 
 class cHoster(iHoster):
 
@@ -13,9 +14,8 @@ class cHoster(iHoster):
         self.__sDisplayName = 'SuperVideo'
         self.__sFileName = self.__sDisplayName
 
-
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -62,23 +62,23 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-            sPattern = 'file:"([^<>"]+?\.mp4).+?label:"([^"]+)"'
+            sPattern = 'file:"([^<>"]+?\\.mp4).+?label:"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
-            url=[]
-            qua=[]
+        if (aResult[0]):
+            url = []
+            qua = []
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #Affichage du tableau
+            # Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):

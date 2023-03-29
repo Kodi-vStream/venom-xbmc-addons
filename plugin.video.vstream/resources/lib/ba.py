@@ -13,7 +13,7 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko
 
 try:
     import json
-except:
+except BaseException:
     import simplejson as json
 
 SITE_IDENTIFIER = 'cBA'
@@ -40,7 +40,7 @@ class cShowBA:
             try:
                 trailer_id = sTrailerUrl.split('=')[1]
                 self.sTrailerUrl = 'http://www.youtube.com/watch?v=' + trailer_id
-            except:
+            except BaseException:
                 pass
 
     def SetMetaType(self, metaType):
@@ -73,9 +73,11 @@ class cShowBA:
                                         headers=headers).text
 
             try:
-                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
-            except:
-                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', sHtmlContent.encode('utf-8')).group(1)
+                result = re.search('"contents":\\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
+            except BaseException:
+                result = re.search(
+                    '"contents":\\[{"videoRenderer":{"videoId":"([^"]+)',
+                    sHtmlContent.encode('utf-8')).group(1)
 
             if result:
                 # Premiere video trouvée

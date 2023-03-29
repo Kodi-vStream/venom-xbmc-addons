@@ -61,22 +61,51 @@ class cFav:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
         total = compt[1] + compt[7]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(total)), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'getFav',
+            ('%s (%s)') %
+            (self.ADDON.VSlang(30120),
+             str(total)),
+            'mark.png',
+            oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
         total = compt[2] + compt[3] + compt[4] + compt[8]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(total)), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'getFav',
+            ('%s/%s (%s)') %
+            (self.ADDON.VSlang(30121),
+             self.ADDON.VSlang(30122),
+             str(total)),
+            'mark.png',
+            oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '6')
         total = compt[6]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'getFav',
+            ('%s (%s)') %
+            (self.ADDON.VSlang(30332),
+             str(total)),
+            'mark.png',
+            oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
         total = compt[5]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'getFav',
+            ('%s (%s)') %
+            (self.ADDON.VSlang(30410),
+             str(total)),
+            'mark.png',
+            oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
@@ -117,7 +146,7 @@ class cFav:
 
             try:
                 title = data['title'].encode('utf-8')
-            except:
+            except BaseException:
                 title = data['title']
 
             thumbnail = data['icon']
@@ -125,7 +154,7 @@ class cFav:
             try:
                 try:
                     siteurl = data['siteurl'].encode('utf-8')
-                except:
+                except BaseException:
                     siteurl = data['siteurl']
 
                 if isMatrix():
@@ -162,7 +191,7 @@ class cFav:
                 oGuiElement.setTitle(title)
                 oGuiElement.setFileName(title)
                 oGuiElement.setIcon("mark.png")
-                if (cat  == '1'):           # Films
+                if (cat == '1'):           # Films
                     oGuiElement.setMeta(1)
                     oGuiElement.setCat(1)
                 elif (cat == '2'):          # Séries
@@ -193,16 +222,22 @@ class cFav:
                 oGuiElement.setFanart(fanart)
                 oGuiElement.addItemProperties('isBookmark', True)
 
-                oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
+                oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav',
+                                      'cFav', 'delBookmark', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)  # addHost n'existe plus
                 else:
                     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-            except:
+            except BaseException:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
+                oGui.addDir(
+                    SITE_IDENTIFIER,
+                    'DoNothing',
+                    '[COLOR red]ERROR[/COLOR]',
+                    'films.png',
+                    oOutputParameterHandler)
 
         # La suppression n'est pas accessible lors de l'utilisation en Widget
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
@@ -217,7 +252,8 @@ class cFav:
     def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
-        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
+        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist(
+            'sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
         iCat = 0
         if sCat:
             iCat = int(sCat)
@@ -227,10 +263,14 @@ class cFav:
 
         meta = {}
 
-        sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
-        sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
-        sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
-        sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+        sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist(
+            'siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+        sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist(
+            'sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist(
+            'sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+        sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist(
+            'sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
 
         if sTitle == '':
             self.DIALOG.VSinfo('Error', 'Probleme sur le titre')
@@ -248,5 +288,5 @@ class cFav:
             # Comptages des marque-pages
             with cDb() as db:
                 db.insert_bookmark(meta)
-        except:
+        except BaseException:
             pass

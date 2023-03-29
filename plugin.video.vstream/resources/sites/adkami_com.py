@@ -112,7 +112,7 @@ def showSearchSerie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -123,7 +123,7 @@ def showSearchAnim():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_ANIMS[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -134,7 +134,7 @@ def showSearchDrama():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_DRAMAS[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -145,7 +145,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -202,14 +202,26 @@ def showAZ():
     # pas d'url pour les non alpha, on utilise l'ancienne méthode épurée.
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showNoAlpha', '[COLOR teal] Lettre [COLOR red]123[/COLOR]', 'az.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showNoAlpha',
+        '[COLOR teal] Lettre [COLOR red]123[/COLOR]',
+        'az.png',
+        oOutputParameterHandler)
 
     import string
     for i in string.ascii_lowercase:
         sUrl2 = sUrl + str(i)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal] Lettre [COLOR red]' + str(i).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showSeries',
+            '[COLOR teal] Lettre [COLOR red]' +
+            str(i).upper() +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -234,7 +246,7 @@ def showNoAlpha():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
@@ -305,7 +317,7 @@ def showSeries(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('page=([0-9]+)', sNextPage).group(1)
@@ -319,7 +331,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<button class=\'actuel\'>[0-9]+</button><a href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -341,23 +353,23 @@ def showEpisode():
     try:
         sPattern = '<p class="description.+?">([^<]+)<a title'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sDesc = aResult[1][0]
             sDesc = sDesc.replace('<br />', '').replace('&apos;', '\'')
-    except:
+    except BaseException:
         pass
 
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
-        sPattern = '<li class="saison">([^<]+)</li>|<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
+        sPattern = '<li class="saison">([^<]+)</li>|<a href="(https://www\\.adkami\\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             oOutputParameterHandler = cOutputParameterHandler()
             sSaison = 'Saison 1'
             for aEntry in aResult[1]:
@@ -385,7 +397,14 @@ def showEpisode():
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
                     oOutputParameterHandler.addParameter('sLang', sLang)
 
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(
+                        SITE_IDENTIFIER,
+                        'showHosters',
+                        sDisplayTitle,
+                        'series.png',
+                        sThumb,
+                        sDesc,
+                        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -408,7 +427,8 @@ def showHosters():
         sPattern = 'class="video-video">.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if "crunchyroll" in str(sHtmlContent) or "wakanim" in str(sHtmlContent) or "animedigitalnetwork" in str(sHtmlContent):
+    if "crunchyroll" in str(sHtmlContent) or "wakanim" in str(
+            sHtmlContent) or "animedigitalnetwork" in str(sHtmlContent):
         sPattern = 'encrypted-media.+?src="([^"]+)"'
         aResult2 = oParser.parse(sHtmlContent, sPattern)
 
@@ -430,7 +450,7 @@ def showHosters():
 
         sHosterUrl = sUrl.replace('plus', '+')
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -464,7 +484,7 @@ def decodex(x):
                 t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
             a = 0 if a > len(r) - 2 else a + 1
         return t
-    except:
+    except BaseException:
         return ''
 
     return ''

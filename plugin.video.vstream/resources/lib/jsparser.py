@@ -46,12 +46,12 @@ import sys
 
 try:
     from types import NoneType
-except:
+except BaseException:
     NoneType = type(None)
 
 
-REG_NAME = '[\w]+'
-REG_OP = '[\/\*\-\+<>\|\&=~^%!]{1,2}'  # not space here, and no bracket
+REG_NAME = '[\\w]+'
+REG_OP = '[\\/\\*\\-\\+<>\\|\\&=~^%!]{1,2}'  # not space here, and no bracket
 DEBUG = False  # Never enable it in kodi, too big size log
 MAX_RECURSION = 50
 ALPHA = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
@@ -83,11 +83,11 @@ def ASCIIDecode(string):
     ret = ''
     while i < l:
         c = string[i]
-        if string[i:(i+2)] == '\\x':
-            c = chr(int(string[(i+2):(i+4)], 16))
+        if string[i:(i + 2)] == '\\x':
+            c = chr(int(string[(i + 2):(i + 4)], 16))
             i += 3
-        if string[i:(i+2)] == '\\u':
-            c = chr(int(string[(i+2):(i+6)], 16))
+        if string[i:(i + 2)] == '\\u':
+            c = chr(int(string[(i + 2):(i + 6)], 16))
             i += 5
         ret = ret + c
         i += 1
@@ -105,7 +105,7 @@ def out(string):
     if DEBUG:
         try:
             string = str(string.encode('ascii', 'replace'))
-        except:
+        except BaseException:
             pass
         print(str(string.decode('latin-1').encode('ascii', 'replace')))
         # logwrite(string)
@@ -119,15 +119,15 @@ def Ustr(string):
 
 def GetNextchar(string, pos):
     try:
-        return string[pos+1]
-    except:
+        return string[pos + 1]
+    except BaseException:
         return ''
 
 
 def GetPrevchar(string, pos):
     try:
-        return string[pos-1]
-    except:
+        return string[pos - 1]
+    except BaseException:
         return ''
 
 
@@ -136,7 +136,7 @@ def GetNextUsefullchar(string):
     try:
         while string[j].isspace():
             j += 1
-    except:
+    except BaseException:
         return '', 0
     return string[j], j
 
@@ -211,7 +211,7 @@ def GetItemAlone(string, separator=' '):
             elif ch == ']':
                 b -= 1
 
-            if ch == '.' and not ((last_char in '0123456789') or (string[i+1] in '0123456789')):
+            if ch == '.' and not ((last_char in '0123456789') or (string[i + 1] in '0123456789')):
                 n = True
 
         # return if the chain is complete but with the char wanted
@@ -236,9 +236,9 @@ def MySplit(string, char, NoEmpty=False):
     while l > i:
         c = string[i]
         if c == '"':
-            c1 = 1-c1
+            c1 = 1 - c1
         if c == "'":
-            c2 = 1-c2
+            c2 = 1 - c2
 
         if not c1 and not c2:
             if c == '(':
@@ -339,7 +339,7 @@ class JSBuffer(object):
         # Need convertion type ?
         if len(self.buf) > 1:
             # Need convertion ?
-            if not (self.type == CheckType(self.buf[len(self.buf) -1])):
+            if not (self.type == CheckType(self.buf[len(self.buf) - 1])):
                 # Type different mais juste operation logique
                 if self.opBuf[1] == '==' or self.opBuf[1] == '===' or self.opBuf[1] == '!=' or self.opBuf[1] == '!==':
                     self.type = 'Logic'
@@ -451,11 +451,11 @@ class JSBuffer(object):
     def SpecialStr(self, value):
         if CheckType(value) == 'Numeric':
             return str(value)
-        if value == None:
+        if value is None:
             return 'undefined'
-        if value == True:
+        if value:
             return 'true'
-        if value == False:
+        if not value:
             return 'false'
         if type(value) in [list]:
             convert_first_to_generator = (str(w) for w in value)
@@ -484,7 +484,7 @@ class JSBuffer(object):
             if isinstance(ret, long):
                 try:
                     ret = int(ret)
-                except:
+                except BaseException:
                     pass
             return ret
 
@@ -494,7 +494,7 @@ class JSBuffer(object):
             else:
                 return False
 
-        if self.type == None:
+        if self.type is None:
             return ''
 
         return self.buf[0]
@@ -504,7 +504,7 @@ class JSBuffer(object):
     def SafeEval(self, str):
         if not str:
             raise Exception('Nothing to eval')
-        f = re.search('[^0-9\+\-\.\(\)<>=xabcdef\|&%!*\^\/~]', str)
+        f = re.search('[^0-9\\+\\-\\.\\(\\)<>=xabcdef\\|&%!*\\^\\/~]', str)
         if f:
             raise Exception('Wrong parameter to Eval : ' + str)
             return 0
@@ -567,7 +567,7 @@ class JsParserHelper1(object):
             self.name = self.Tmp_var
         else:
             # si on a rien encore trouve on recherche une variable/fonction
-            r = re.search('^([\w\$][\w\$]*)', JScode, re.UNICODE)
+            r = re.search('^([\\w\\$][\\w\\$]*)', JScode, re.UNICODE)
             if r and not self.used:
                 self.name = r.group(1)
             else:
@@ -580,7 +580,7 @@ class JsParserHelper1(object):
 
         JScode = JScode[(len(self.name)):]
 
-        c,p = GetNextUsefullchar(JScode)
+        c, p = GetNextUsefullchar(JScode)
         while (c in '.[') and c and not self.at1:
             JScode = JScode[p:]
             if c == '[':
@@ -590,12 +590,12 @@ class JsParserHelper1(object):
                 self.eval = True
 
             if c == '.':
-                a = GetItemAlone(JScode[1:], '[(.\/*-+{}<>|=~^%!')
-                JScode = JScode[(len(a)+1):]
+                a = GetItemAlone(JScode[1:], '[(.\\/*-+{}<>|=~^%!')
+                JScode = JScode[(len(a) + 1):]
                 self.at1 = a
                 self.property = True
 
-            c,p = GetNextUsefullchar(JScode)
+            c, p = GetNextUsefullchar(JScode)
 
         if c == '(':
             a = GetItemAlone(JScode, ')')
@@ -605,7 +605,7 @@ class JsParserHelper1(object):
 
         # operation ?
         if not self.t == 'fct':
-            m = re.search('^(' + REG_OP + '|\[|$)', JScode, re.UNICODE)
+            m = re.search('^(' + REG_OP + '|\\[|$)', JScode, re.UNICODE)
             if m and JScode:
                 self.op = m.group(1).strip()
                 if self.op == '[':
@@ -722,14 +722,14 @@ class JsParser(object):
             i += 1
 
             # ignore comment
-            if string[i:(i+2)] == '/*':
+            if string[i:(i + 2)] == '/*':
                 com1 = True
             if com1:
-                if string[i:(i+2)] == '*/':
+                if string[i:(i + 2)] == '*/':
                     com1 = False
                     i += 1
                 continue
-            if string[i:(i+2)] == '//' and not r and not c1 and not c2:
+            if string[i:(i + 2)] == '//' and not r and not c1 and not c2:
                 com2 = True
             if com2:
                 if string[i] == '\n':
@@ -769,7 +769,7 @@ class JsParser(object):
 
             # vire espace inutile
             if ch.isspace() and not c1 and not c2:
-                if not(prev in ALPHA and GetNextchar(string, i) in ALPHA):
+                if not (prev in ALPHA and GetNextchar(string, i) in ALPHA):
                     continue
 
             stringR = stringR + ch
@@ -812,7 +812,7 @@ class JsParser(object):
                             stringR = stringR[:j] + ';' + stringR[j:]
 
                     # if there is a last ; add it
-                    if string[i+1] == ';':
+                    if string[i + 1] == ';':
                         stringR = stringR + ';'
                         i += 1
 
@@ -820,7 +820,8 @@ class JsParser(object):
 
         # last check
         if p or b or a or f or c1 or c2:
-            out('parenthesis:' + str(p) + ' bracket:' + str(b) + ' accolade:' + str(a) + ' fonction:' + str(f) + ' chain:' + str(c1) + str(c2))
+            out('parenthesis:' + str(p) + ' bracket:' + str(b) + ' accolade:' +
+                str(a) + ' fonction:' + str(f) + ' chain:' + str(c1) + str(c2))
             raise Exception("Can't extract chain " + string)
 
         # chaine bugguée ?
@@ -828,16 +829,17 @@ class JsParser(object):
             # out('ERROR Extract chain without ";" > ' + string )
             return string + ';', i
 
-        out('parenthesis:' + str(p) + ' bracket:' + str(b) + ' accolade:' + str(a) + ' fonction:' + str(f) + ' chain:' + str(c1) + str(c2))
+        out('parenthesis:' + str(p) + ' bracket:' + str(b) + ' accolade:' +
+            str(a) + ' fonction:' + str(f) + ' chain:' + str(c1) + str(c2))
         raise Exception("*** Can't extract chain " + string)
 
     # Everything Without a "Real" is False
     def CheckTrueFalse(self, string):
         # if DEBUG:
-            # out('> Check True or false : ' + str(string))
+        # out('> Check True or false : ' + str(string))
 
         if isinstance(string, bool):
-            if string == True:
+            if string:
                 return True
         elif isinstance(string, types.StringTypes):
             if not string == '':
@@ -868,12 +870,12 @@ class JsParser(object):
             # In this case function = text but useless ATM
 
             if a:
-            # ecriture
+                # ecriture
                 vv = self.evalJS(a[0], vars, allow_recursion)
                 self.AddHackVar(name.var, vv)
                 return vv, JScode
             else:
-            # lecture
+                # lecture
                 vv = self.GetVarHack(name.var)
                 out('Hack vars (set): ' + vv)
                 return vv, JScode
@@ -883,7 +885,7 @@ class JsParser(object):
         if not fe:
             try:
                 fe = self.IsFunc(vars, '%s["%s"]' % (name, function))
-            except:
+            except BaseException:
                 pass
 
         if fe:
@@ -933,7 +935,7 @@ class JsParser(object):
                 # TODO list copy is rly bad for optimisation, need to make variable list by scope
                 List_tmpvar = list(vars)
 
-                if (len(p) > 0) and (len(a2)>0):
+                if (len(p) > 0) and (len(a2) > 0):
                     nv = tuple(zip(p, a2))
                     for z, w in nv:
                         self.SetVar(List_tmpvar, z, w)
@@ -950,7 +952,7 @@ class JsParser(object):
 
                 # TODO: REALLY IMPORTANT : Check wich one is good
                 # HACK : NEED TO CHECK
-                if self.ReturnValue == None:
+                if self.ReturnValue is None:
                     self.ReturnValue = jjj
                 # return jjj, JScode
                 return self.ReturnValue, JScode
@@ -1058,7 +1060,7 @@ class JsParser(object):
                 return r, JScode
 
             elif op == '--':
-                self.SetVar(vars, variable, r-1)
+                self.SetVar(vars, variable, r - 1)
                 return r, JScode
 
             # a+=1 form
@@ -1148,7 +1150,7 @@ class JsParser(object):
                     InterpretedCode.AddValue(True)
                 else:
                     InterpretedCode.AddValue(False)
-                JScode = JScode[(len(B)+2):]
+                JScode = JScode[(len(B) + 2):]
                 continue
 
             # Special value
@@ -1173,7 +1175,7 @@ class JsParser(object):
                     continue
 
             # hackVars
-            r = re.search('^\$\("#([\w]+)"\)\.text\(\)', JScode)
+            r = re.search('^\\$\\("#([\\w]+)"\\)\\.text\\(\\)', JScode)
             if r:
                 InterpretedCode.AddValue(self.GetVar(self.HackVars, r.group(1)))
                 JScode = JScode[(r.end()):]
@@ -1198,7 +1200,7 @@ class JsParser(object):
 
                     replac, pos3, v = self.MemFonction(vars, name, m.group(2), openparenthesis, JScode)
                     JScode = replac
-                    if not v in replac:
+                    if v not in replac:
                         InterpretedCode.AddValue(v)
 
                     continue
@@ -1210,7 +1212,7 @@ class JsParser(object):
                     InterpretedCode.AddValue(fm)
                     JScode = ''
                     continue
-            except:
+            except BaseException:
                 pass
 
             # 3 - numeric chain
@@ -1227,7 +1229,7 @@ class JsParser(object):
                 continue  # for this one continue directly
 
             # 4 - Regex
-            r = re.search('^\/.*\/(.*$)', JScode)
+            r = re.search('^\\/.*\\/(.*$)', JScode)
             if r:
                 reg = r.group(0)
                 flag = r.group(1)
@@ -1294,11 +1296,11 @@ class JsParser(object):
 
                 # raw string cannot end in a single backslash
                 # if vv[-1:] == '\\' and  not vv[-2:-1] == '\\':
-                    # vv = vv + '\\'
+                # vv = vv + '\\'
 
                 # warning with this function
                 # if not vv.endswith('\\'):
-                    # vv = vv.decode('string-escape')
+                # vv = vv.decode('string-escape')
 
                 JScode = JScode[e:]
 
@@ -1383,10 +1385,11 @@ class JsParser(object):
 
             # --var method, HACK
             if JScode[0:2] == '--' or JScode[0:2] == '++':
-                m = re.search('^(\({0,1}\w[\w\.]*\){0,1} *(?:\[[^\]]+\])* *)(' + REG_OP + '|\[|$)', JScode[2:], re.UNICODE)
+                m = re.search('^(\\({0,1}\\w[\\w\\.]*\\){0,1} *(?:\\[[^\\]]+\\])* *)(' +
+                              REG_OP + '|\\[|$)', JScode[2:], re.UNICODE)
                 if m:
                     l = len(m.group(1))
-                    JScode = m.group(1) + JScode[0:2] + JScode[(l+2):]
+                    JScode = m.group(1) + JScode[0:2] + JScode[(l + 2):]
                     continue
                 else:
                     bb(mm)
@@ -1547,7 +1550,7 @@ class JsParser(object):
             k = j[1]
             r = k
 
-            if not(index == None):
+            if not (index is None):
                 # Special method
                 if index == 'length':
                     r = len(k)
@@ -1573,14 +1576,14 @@ class JsParser(object):
                         index = RemoveGuil(index)
                         try:
                             r = k[index]
-                        except:
+                        except BaseException:
                             try:
                                 r = k[int(index)]
-                            except:
+                            except BaseException:
                                 # Need better check
                                 # if self.IsFunc(var, j[1]):
-                                    # return 'undefined'
-                                    # return None
+                                # return 'undefined'
+                                # return None
                                 return None  # To check
                 elif type(k) in [dict]:
                     index = RemoveGuil(index)
@@ -1616,7 +1619,7 @@ class JsParser(object):
         # If not xisting var, create it first ?
         if not self.IsVar(var, variable):
             # Chain or numeric
-            if index == None:
+            if index is None:
                 var.append((variable, value))
                 return
             # dictionnary
@@ -1628,7 +1631,7 @@ class JsParser(object):
 
         for j in var:
             if j[0] == variable:
-                if index == None:
+                if index is None:
                     # chain ?
                     if isinstance(value, types.StringTypes):
                         var[var.index(j)] = (variable, value)
@@ -1680,7 +1683,7 @@ class JsParser(object):
                 if j[0] == variable:
                     return type(j[1])
             return 'undefined'
-        except:
+        except BaseException:
             return 'undefined'
 
     def IsVar(self, var, variable, index=None):
@@ -1691,7 +1694,7 @@ class JsParser(object):
             # Normal vars
             for j in var:
                 if j[0] == variable:
-                    if index == None:
+                    if index is None:
                         return True
                     if index in var[var.index(j)][1]:
                         return True
@@ -1700,7 +1703,7 @@ class JsParser(object):
                 if j[0] == variable:
                     return True
             return False
-        except:
+        except BaseException:
             return False
 
     # Need to use metaclass here
@@ -1736,7 +1739,7 @@ class JsParser(object):
 
         try:
             value = value.strip()
-        except:
+        except BaseException:
             pass
         name = name.strip()
 
@@ -1762,18 +1765,18 @@ class JsParser(object):
                 value = self.evalJS(value, vars, allow_recursion)
                 # to optimise
                 if type(value) in [list, tuple]:
-                    if index == None:
+                    if index is None:
                         index = 0
                         init = True
                 elif type(value) in [dict]:
-                    if index == None:
+                    if index is None:
                         init = True
 
         name = name.strip()
 
         # Output for debug
         if DEBUG:
-            if index == None:
+            if index is None:
                 out('*** Variable in parser => ' + Ustr(name) + ' = ' + Ustr(value))
             else:
                 out('*** Variable in parser => ' + Ustr(name) + '[' + Ustr(index) + ']' + ' = ' + Ustr(value))
@@ -1793,7 +1796,7 @@ class JsParser(object):
         elif isinstance(value, fonction):
             self.SetVar(vars, name, value, index)
         # undefined
-        elif value == None:
+        elif value is None:
             self.SetVar(vars, name, None, index)
         else:
             raise Exception('> ERROR : Var problem >' + str(value))
@@ -1844,7 +1847,7 @@ class JsParser(object):
         if openparenthesis:
             c, p = GetNextUsefullchar(data)
             if c == ')':
-                data = data[(p+1):]
+                data = data[(p + 1):]
                 openparenthesis = False
 
         selfinvoked = False
@@ -1863,7 +1866,7 @@ class JsParser(object):
             if openparenthesis:
                 c, p = GetNextUsefullchar(data)
                 if c == ')':
-                    data = data[(p+1):]
+                    data = data[(p + 1):]
                     openparenthesis = False
 
         replac = replac + data
@@ -1924,7 +1927,7 @@ class JsParser(object):
 
                     replac, pos3, xyz = self.MemFonction(vars, name, m.group(3), openparenthesis, chain)
 
-                    JScode = JScode[:Startoff]+ replac + JScode[Endoff:]
+                    JScode = JScode[:Startoff] + replac + JScode[Endoff:]
 
                     posG = Startoff + len(replac)
 
@@ -1943,7 +1946,7 @@ class JsParser(object):
             if not chain:
                 break
 
-            JScode = JScode[(pos+1):]
+            JScode = JScode[(pos + 1):]
 
             chain = chain.lstrip().rstrip()
 
@@ -2023,12 +2026,12 @@ class JsParser(object):
                 name = m.group(1)
                 sp = m.group(2)
                 if sp == '(':
-                    arg = GetItemAlone(chain[(m.end()-1):], ')')[1:-1]
+                    arg = GetItemAlone(chain[(m.end() - 1):], ')')[1:-1]
                     pos3 = len(arg) + 1
                     code = chain[(m.end() + pos3):]
                 elif sp == '{':
                     arg = ''
-                    code = chain[(m.end()-1):]
+                    code = chain[(m.end() - 1):]
                 else:
                     raise Exception('> Er 74')
 
@@ -2160,7 +2163,7 @@ class JsParser(object):
 
                     while ((not f.startswith(StrToSearch)) and (len(f) > 0)):
                         tmp_str = GetItemAlone(f, ';}')
-                        f = f[(len(tmp_str)+1):]
+                        f = f[(len(tmp_str) + 1):]
 
                     if len(f) < 1:
                         raise Exception("Can't find switch value " + str(v))
@@ -2197,7 +2200,7 @@ class JsParser(object):
                     if self.option_ForceTest:
                         try:
                             ttt = self.CheckTrueFalse(self.evalJS(t, vars, allow_recursion))
-                        except:
+                        except BaseException:
                             from random import choice
                             ttt = choice([True, False])
 
@@ -2234,10 +2237,10 @@ class JsParser(object):
                     # Hack again
                     if type(member_list) in [type]:
                         for i in member_list.__dict__:
-                            f = re.sub(r'[^\w]' + str(i) + '[^\w]', sub, f, re.DOTALL)
+                            f = re.sub(r'[^\w]' + str(i) + '[^\\w]', sub, f, re.DOTALL)
                     else:
                         for i in member_list:
-                            f = re.sub(r'[^\w]' + i + '[^\w]', sub, f, re.DOTALL)
+                            f = re.sub(r'[^\w]' + i + '[^\\w]', sub, f, re.DOTALL)
 
                     # print('after: ' + f)
 
@@ -2429,7 +2432,7 @@ class String(object):
         b = ''.join(map(unichr, arg))
         try:
             return str(b)
-        except:
+        except BaseException:
             return b
 
     def substr(self, arg):
@@ -2596,7 +2599,7 @@ class Basic(object):
 
         try:
             f = self._name.im_func.__name__
-        except:
+        except BaseException:
             f = "HACK'"
         t = "function %s() {\n    [native code]\n}" % (f)
         return t

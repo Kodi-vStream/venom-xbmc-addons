@@ -69,7 +69,7 @@ class AADecoder(object):
                         if findClose and t == ')':
                             balance -= 1
                             if balance == 0:
-                                result += [enc_char[startpos:l+1]]
+                                result += [enc_char[startpos:l + 1]]
                                 findClose = False
                                 continue
                         elif not findClose and t == '(':
@@ -101,7 +101,7 @@ class AADecoder(object):
 
         # enc_int = enc_int.replace('(ﾟΘﾟ)', '1').replace('(ﾟｰﾟ)', '4').replace('(c^_^o)', '0').replace('(o^_^o)', '3')
 
-        rr = '(\(.+?\)\))\+'
+        rr = '(\\(.+?\\)\\))\\+'
         rerr = enc_int.split('))+')
         v = ''
 
@@ -114,11 +114,11 @@ class AADecoder(object):
                     if c.strip().endswith('+'):
                         c = c.strip()[:-1]
 
-                    startbrackets = len(c)-len(c.replace('(', ''))
-                    endbrackets = len(c)-len(c.replace(')', ''))
+                    startbrackets = len(c) - len(c.replace('(', ''))
+                    endbrackets = len(c) - len(c.replace(')', ''))
 
                     if startbrackets > endbrackets:
-                        c += ')' * startbrackets-endbrackets
+                        c += ')' * startbrackets - endbrackets
 
                     # fh = open('c:\\test.txt', "w")
                     # fh.write(c)
@@ -151,20 +151,20 @@ class AADecoder(object):
             if not found:
                 return ""
 
-            enc_int = re.sub('^\s+|\s+$', '', enc_int)
+            enc_int = re.sub('^\\s+|\\s+$', '', enc_int)
             if enc_int.find("+") == 0:
                 mode = 0
             else:
                 mode = 1
 
             enc_int = enc_int[1:]
-            enc_int = re.sub('^\s+|\s+$', '', enc_int)
+            enc_int = re.sub('^\\s+|\\s+$', '', enc_int)
 
         return self.base_repr(value, radix)
 
     def decode(self):
 
-        self.encoded_str = re.sub('^\s+|\s+$', '', self.encoded_str)
+        self.encoded_str = re.sub('^\\s+|\\s+$', '', self.encoded_str)
 
         # get data
         pattern = (r"\(ﾟДﾟ\)\[ﾟoﾟ\]\+ *(.+?)\(ﾟДﾟ\)\[ﾟoﾟ\]\)")
@@ -253,9 +253,10 @@ def decodeAA(text):
                 x = c
                 subchar += str(eval(x))
                 c = ""
-            except:
+            except BaseException:
                 pass
-        if subchar != '': txt += subchar + "|"
+        if subchar != '':
+            txt += subchar + "|"
     txt = txt[:-1].replace('+', '')
 
     txt_result = "".join([chr(int(n, 8)) for n in txt.split('|')])
@@ -270,13 +271,13 @@ def toStringCases(txt_result):
         if "+(" in txt_result:
             m3 = True
             try:
-                sum_base = "+" + re.search(".toString...(\d+).", txt_result, re.DOTALL).groups(1)
-            except:
+                sum_base = "+" + re.search(".toString...(\\d+).", txt_result, re.DOTALL).groups(1)
+            except BaseException:
                 sum_base = ""
-            txt_pre_temp = re.findall("..(\d),(\d+).", txt_result, re.DOTALL)
+            txt_pre_temp = re.findall("..(\\d),(\\d+).", txt_result, re.DOTALL)
             txt_temp = [(n, b) for b, n in txt_pre_temp]
         else:
-            txt_temp = re.findall('(\d+)\.0.\w+.([^\)]+).', txt_result, re.DOTALL)
+            txt_temp = re.findall('(\\d+)\\.0.\\w+.([^\\)]+).', txt_result, re.DOTALL)
         for numero, base in txt_temp:
             code = toString(int(numero), eval(base + sum_base))
             if m3:

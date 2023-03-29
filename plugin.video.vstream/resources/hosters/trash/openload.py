@@ -1,5 +1,5 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
@@ -9,11 +9,15 @@ from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
 from resources.lib.util import QuoteSafe
 from resources.lib.comaddon import dialog, VSlog, xbmc
-#Pour le futur
+# Pour le futur
 from resources.lib.jsparser import JsParser
-import re, urllib2, base64, math
+import re
+import urllib2
+import base64
+import math
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+
 
 class cHoster(iHoster):
 
@@ -23,7 +27,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -80,24 +84,24 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        #recuperation de la page
-        #xbmc.log('url teste : ' + self.__sUrl)
+        # recuperation de la page
+        # xbmc.log('url teste : ' + self.__sUrl)
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('referer', self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent1 = oRequest.request()
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent1)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent1)
+        # fh.close()
 
-        #Recuperation url cachee
+        # Recuperation url cachee
         TabUrl = []
-        #sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
-        sPattern = '<p id="([^"]+)" *style=\"\">([^<]+)<\/p>'
+        # sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
+        sPattern = '<p id="([^"]+)" *style=\"\">([^<]+)<\\/p>'
         aResult = re.findall(sPattern, sHtmlContent1)
         if not aResult:
-            sPattern = '<p style="" *id="([^"]+)" *>([^<]+)<\/p>'
+            sPattern = '<p style="" *id="([^"]+)" *>([^<]+)<\\/p>'
             aResult = re.findall(sPattern, sHtmlContent1)
         if (aResult):
             TabUrl = aResult
@@ -105,10 +109,10 @@ class cHoster(iHoster):
             VSlog('OPL er 1')
             return False, False
 
-        #xbmc.log("Nbre d'url : " + str(len(TabUrl)))
+        # xbmc.log("Nbre d'url : " + str(len(TabUrl)))
 
-        #on essait de situer le code
-        sPattern = '<script src="\/assets\/js\/video-js\/video\.js.+?.js"(.+)*'
+        # on essait de situer le code
+        sPattern = '<script src="\\/assets\\/js\\/video-js\\/video\\.js.+?.js"(.+)*'
 
         aResult = re.findall(sPattern, sHtmlContent1, re.DOTALL)
         if (aResult):
@@ -117,7 +121,7 @@ class cHoster(iHoster):
             VSlog('OPL er 2')
             return False, False
 
-        #Deobfuscation, a optimiser pour accelerer le traitement
+        # Deobfuscation, a optimiser pour accelerer le traitement
         code = ''
         maxboucle = 4
         while (maxboucle > 0):
@@ -129,12 +133,12 @@ class cHoster(iHoster):
 
         code = sHtmlContent3
 
-        #fh = open('c:\\html.txt', 'w')
-        #fh.write(code)
-        #fh.close()
+        # fh = open('c:\\html.txt', 'w')
+        # fh.write(code)
+        # fh.close()
 
         id_final = ''
-        sPattern = 'var srclink.*?\/stream\/.*?(#[^\'"]+).*?mime=true'
+        sPattern = 'var srclink.*?\\/stream\\/.*?(#[^\'"]+).*?mime=true'
         aResult = re.findall(sPattern, code)
         if (aResult):
             id_final = aResult[0]
@@ -146,30 +150,30 @@ class cHoster(iHoster):
             VSlog('OPL er 3')
             return False, False
 
-        #Search the coded url
+        # Search the coded url
         Coded_url = ''
         for i in TabUrl:
             if len(i[1]) > 30:
                 Coded_url = i[1]
                 Item_url = '#' + i[0]
-                VSlog( Item_url + ' : ' + Coded_url )
+                VSlog(Item_url + ' : ' + Coded_url)
 
-        if not(Coded_url):
+        if not (Coded_url):
             VSlog('Url codée non trouvée')
             return False, False
 
-        #Nettoyage du code pr traitement
+        # Nettoyage du code pr traitement
         code = CleanCode(code, Coded_url)
 
-        #fh = open('c:\\JS.txt', 'w'w)
-        #fh.write(code)
-        #fh.close()
+        # fh = open('c:\\JS.txt', 'w'w)
+        # fh.write(code)
+        # fh.close()
 
         VSlog('Code JS extrait')
 
         dialog().VSinfo('Décodage: Peut durer plus d\'une minute.', self.__sDisplayName, 15)
 
-        #interpreteur JS
+        # interpreteur JS
         JP = JsParser()
         Liste_var = []
         JP.AddHackVar(Item_url, Coded_url)
@@ -177,14 +181,14 @@ class cHoster(iHoster):
         JP.ProcessJS(code, Liste_var)
 
         url = None
-        #for name in [ '#streamurl', '#streamuri', '#streamurj']:
+        # for name in [ '#streamurl', '#streamuri', '#streamurj']:
         #    if JP.IsVar( JP.HackVars, name ):
         #        url = JP.GetVarHack( name )
         #        VSlog( 'Decoded url ' + name + ' : ' + url )
         #        break
         url = JP.GetVarHack(id_final)
 
-        if not(url):
+        if not (url):
             VSlog('Rate, debug: ' + str(Liste_var))
             return False, False
 
@@ -194,7 +198,7 @@ class cHoster(iHoster):
 
         if '::' in api_call:
             dialog().VSinfo('Possible problème d\'ip V6', self.__sDisplayName, 5)
-            xbmc.sleep(5*1000)
+            xbmc.sleep(5 * 1000)
 
         VSlog(api_call)
 
@@ -203,9 +207,10 @@ class cHoster(iHoster):
 
         return False, False
 
-#****************************************************************
-#Fonction utilisee pour nettoyer le code et recuperer le code JS
-#****************************************************************
+# ****************************************************************
+# Fonction utilisee pour nettoyer le code et recuperer le code JS
+# ****************************************************************
+
 
 def ASCIIDecode(string):
 
@@ -220,7 +225,7 @@ def ASCIIDecode(string):
         if string[i:(i + 2)] == '\\u':
             cc = int(string[(i + 2):(i + 6)], 16)
             if cc > 256:
-                #ok c'est de l'unicode, pas du ascii
+                # ok c'est de l'unicode, pas du ascii
                 return ''
             c = chr(cc)
             i += 5
@@ -229,18 +234,23 @@ def ASCIIDecode(string):
 
     return ret
 
+
 def SubHexa(g):
     return g.group(1) + Hexa(g.group(2))
+
 
 def Hexa(string):
     return str(int(string, 0))
 
+
 def parseInt(sin):
-    return int(''.join([c for c in re.split(r'[,.]', str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
+    return int(''.join([c for c in re.split(r'[,.]', str(sin))[0] if c.isdigit()])
+               ) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
+
 
 def CheckCpacker(str):
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = '(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?{}\\)\\))'
     aResult = re.findall(sPattern, str)
     if (aResult):
         str2 = aResult[0]
@@ -249,14 +259,15 @@ def CheckCpacker(str):
         try:
             str = cPacker().unpack(str2)
             print('Cpacker encryption')
-        except:
+        except BaseException:
             pass
 
     return str
 
+
 def CheckJJDecoder(str):
 
-    sPattern = '([a-z]=.+?\(\)\)\(\);)'
+    sPattern = '([a-z]=.+?\\(\\)\\)\\(\\);)'
     aResult = re.findall(sPattern, str)
     if (aResult):
         print('JJ encryption')
@@ -264,8 +275,9 @@ def CheckJJDecoder(str):
 
     return str
 
+
 def CheckAADecoder(str):
-    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str, re.DOTALL | re.UNICODE)
+    aResult = re.search('([>;]\\s*)(ﾟωﾟ.+?\\(\'_\'\\);)', str, re.DOTALL | re.UNICODE)
     if (aResult):
         print('AA encryption')
         tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
@@ -273,21 +285,22 @@ def CheckAADecoder(str):
 
     return str
 
-def CleanCode(code,Coded_url):
-    #extract complete code
+
+def CleanCode(code, Coded_url):
+    # extract complete code
     r = re.search(r'type="text\/javascript">(.+?)<\/script>', code, re.DOTALL)
     if r:
         code = r.group(1)
 
-    #1 er decodage
+    # 1 er decodage
     code = ASCIIDecode(code)
 
-    #fh = open('c:\\html2.txt', "w")
-    #fh.write(code)
-    #fh.close()
+    # fh = open('c:\\html2.txt', "w")
+    # fh.write(code)
+    # fh.close()
 
-    #extract first part
-    P3 = "^(.+?)}\);\s*\$\(\"#videooverlay"
+    # extract first part
+    P3 = "^(.+?)}\\);\\s*\\$\\(\"#videooverlay"
     r = re.search(P3, code, re.DOTALL)
     if r:
         code = r.group(1)
@@ -295,58 +308,58 @@ def CleanCode(code,Coded_url):
         VSlog('er1')
         return False
 
-    #hack a virer dans le futur
+    # hack a virer dans le futur
     code = code.replace('!![]', 'true')
-    P8 = '\$\(document\).+?\(function\(\){'
-    code= re.sub(P8, '\n', code)
-    P4 = 'if\(!_[0-9a-z_\[\(\'\)\]]+,document[^;]+\)\){'
+    P8 = '\\$\\(document\\).+?\\(function\\(\\){'
+    code = re.sub(P8, '\n', code)
+    P4 = 'if\\(!_[0-9a-z_\\[\\(\'\\)\\]]+,document[^;]+\\)\\){'
     code = re.sub(P4, 'if (false) {', code)
-    P4 = 'if\(+\'toString\'[^;]+document[^;]+\){'
+    P4 = 'if\\(+\'toString\'[^;]+document[^;]+\\){'
     code = re.sub(P4, 'if (false) {', code)
 
-    #hexa convertion
+    # hexa convertion
     code = re.sub('([^_])(0x[0-9a-f]+)', SubHexa, code)
 
-    #Saut de ligne
-    #code = code.replace(';', ';\n')
+    # Saut de ligne
+    # code = code.replace(';', ';\n')
     code = code.replace('case', '\ncase')
     code = code.replace('}', '\n}\n')
     code = code.replace('{', '{\n')
 
-    #tab
+    # tab
     code = code.replace('\t', '')
 
-    #hack
+    # hack
     code = code.replace('!![]', 'true')
 
     return code
 
-#************************************************************
-#Fonctions non utilisées, juste la pour memoire
-#************************************************************
+# ************************************************************
+# Fonctions non utilisées, juste la pour memoire
+# ************************************************************
 
-def GetOpenloadUrl(url,referer):
+
+def GetOpenloadUrl(url, referer):
     if 'openload.co/stream' in url:
 
         headers = {'User-Agent': UA,
-                   #'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   #'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   #'Accept-Encoding': 'gzip, deflate, br',
-                   #'Host': 'openload.co',
+                   # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   # 'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   # 'Accept-Encoding': 'gzip, deflate, br',
+                   # 'Host': 'openload.co',
                    'Referer': referer
-        }
+                   }
 
         req = urllib2.Request(url, None, headers)
         res = urllib2.urlopen(req)
-        #xbmc.log(res.read())
+        # xbmc.log(res.read())
         finalurl = res.geturl()
-
 
         VSlog('Url decodee : ' + finalurl)
 
-        #autres infos
-        #xbmc.log(str(res.info()))
-        #xbmc.log(res.info()['Content-Length'])
+        # autres infos
+        # xbmc.log(str(res.info()))
+        # xbmc.log(res.info()['Content-Length'])
 
         if 'KDA_8nZ2av4/x.mp4' in finalurl:
             VSlog('pigeon url : ' + url)
@@ -362,7 +375,9 @@ def GetOpenloadUrl(url,referer):
         return finalurl
     return url
 
-#Code updated with code from https://gitlab.com/iptvplayer-for-e2
+# Code updated with code from https://gitlab.com/iptvplayer-for-e2
+
+
 def decodek(k):
     y = ord(k[0])
     e = y - 0x37
@@ -372,10 +387,10 @@ def decodek(k):
     h = 0
     g = []
     while h < len(t):
-        f = t[h:h+3]
+        f = t[h:h + 3]
         g.append(int(f, 0x8))
         h += 3
-    v = k[0:e] + k[e+0x24:]
+    v = k[0:e] + k[e + 0x24:]
     p = []
     i = 0
     h = 0
@@ -388,7 +403,7 @@ def decodek(k):
         if (i % 3) == 0:
             f = int(C, 8)
             h += 1
-        elif i % 2 == 0 and i != 0 and ord(v[i-1]) < 0x3c:
+        elif i % 2 == 0 and i != 0 and ord(v[i - 1]) < 0x3c:
             f = int(C, 0xa)
             h += 1
 

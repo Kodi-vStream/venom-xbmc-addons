@@ -54,7 +54,7 @@ class cHoster(iHoster):
         sPattern = 'CreatePlayer.+?v=(.+?)&tp'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = Unquote(aResult[1][0])
         if api_call:
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl

@@ -32,7 +32,7 @@ class cMultiup:
 
         for item in r:
 
-            if 'bounce-to-right' in str(item[2]) and not 'download-fast' in item[1]:
+            if 'bounce-to-right' in str(item[2]) and 'download-fast' not in item[1]:
                 self.list.append(item[1])
 
         return self.list
@@ -58,12 +58,12 @@ class cJheberg:
             return False
 
         for item in r:
-            if not 'ERROR' in item[2]:
+            if 'ERROR' not in item[2]:
                 urllink = 'https://download.jheberg.net/redirect/' + idFile + '-' + item[0]
                 try:
                     url = GetHtml(urllink)
                     self.list.append(url)
-                except:
+                except BaseException:
                     pass
 
         return self.list
@@ -83,7 +83,7 @@ def GetHtml(url, postdata=None):
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
 
-        if postdata != None:
+        if postdata is not None:
             oRequest.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
             oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
             oRequest.addHeaderEntry('Referer', 'https://download.jheberg.net/redirect/xxxxxx/yyyyyy/')

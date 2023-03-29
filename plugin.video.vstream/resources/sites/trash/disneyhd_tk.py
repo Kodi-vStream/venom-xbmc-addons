@@ -1,16 +1,16 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False#au 18/03/2020
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
-from resources.lib.util import Unquote
-
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
+from resources.lib.util import Unquote
+from resources.lib.comaddon import progress
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+return False  # au 18/03/2020
+
 
 SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
@@ -29,10 +29,11 @@ sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 ###################################################################################
-#DECODE TORRENT : https://effbot.org/zone/bencode.htm
+# DECODE TORRENT : https://effbot.org/zone/bencode.htm
 ###################################################################################
 
-def tokenize(text, match=re.compile("([idel])|(\d+):|(-?\d+)").match):
+
+def tokenize(text, match=re.compile("([idel])|(\\d+):|(-?\\d+)").match):
     i = 0
     while i < len(text):
         m = match(text, i)
@@ -40,10 +41,11 @@ def tokenize(text, match=re.compile("([idel])|(\d+):|(-?\d+)").match):
         i = m.end()
         if m.lastindex == 2:
             yield "s"
-            yield text[i:i+int(s)]
+            yield text[i:i + int(s)]
             i = i + int(s)
         else:
             yield s
+
 
 def decode_item(nextItem, token):
     if token == "i":
@@ -67,17 +69,19 @@ def decode_item(nextItem, token):
         raise ValueError
     return data
 
+
 def decode(text):
     try:
         src = tokenize(text)
         data = decode_item(src.next, src.next())
-        for token in src: # look for more tokens
+        for token in src:  # look for more tokens
             raise SyntaxError("trailing junk")
     except (AttributeError, ValueError, StopIteration):
         raise SyntaxError("syntax error")
     return data
 
 ###################################################################################
+
 
 def load():
     oGui = cGui()
@@ -103,15 +107,17 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sHowResultSearch(str(sSearchText))
         oGui.setEndOfDirectory()
         return
 
-def sHowResultSearch(sSearch = ''):
+
+def sHowResultSearch(sSearch=''):
     oGui = cGui()
 
     sSearch = Unquote(sSearch)
@@ -123,7 +129,7 @@ def sHowResultSearch(sSearch = ''):
     sPattern = '<a class="item" href="([^"]+)" title="([^"]+)"> *<img src="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -133,7 +139,7 @@ def sHowResultSearch(sSearch = ''):
 
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN + aEntry[2]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -145,13 +151,15 @@ def sHowResultSearch(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def order(sList, sIndex):
-    #remet en ordre le résultat du parser par un index ici par le titre qui est en position 2
-    #exemple: ('http://venom', 'sThumb', 'sTitle')
+    # remet en ordre le résultat du parser par un index ici par le titre qui est en position 2
+    # exemple: ('http://venom', 'sThumb', 'sTitle')
     #          aResult = order(aResult[1], 2)
-    aResult = sorted(sList, key=lambda a:a[sIndex])
-    #retourne au format du parser
+    aResult = sorted(sList, key=lambda a: a[sIndex])
+    # retourne au format du parser
     return True, aResult
+
 
 def showMovies():
     oGui = cGui()
@@ -182,8 +190,7 @@ def showMovies():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -203,28 +210,37 @@ def showMovies():
             if aEntry[0].startswith('s-'):
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showHosters',
+                    sTitle,
+                    'enfants.png',
+                    sThumb,
+                    '',
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-#Non utilisé
+# Non utilisé
+
+
 def ShowList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    
+
     aResult = oParser.parse(sHtmlContent, '<li data-arr_pos="([0-9]+)">([^<]+)<')
-    
-    if (aResult[0] == True):
+
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -246,21 +262,22 @@ def ShowList():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
 
-    #film
+    # film
     if '<ol id="playlist">' in sHtmlContent:
-        sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
+        sPattern = '<li data-trackurl="([^"]+)">(.+?)<\\/li>'
     elif 'data-ws=' in sHtmlContent:
         sPattern = 'data-ws="([^"]+)">(.+?)</span>'
     else:
@@ -268,13 +285,13 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]
             sFinalTitle = sMovieTitle + ' ' + aEntry[1]
 
-            if '/mp4/' in sHosterUrl and not 'http' in sHosterUrl:
+            if '/mp4/' in sHosterUrl and 'http' not in sHosterUrl:
                 sHosterUrl = 'http://disneyhd.tk%s' % sHosterUrl
 
             if '//goo.gl' in sHosterUrl:
@@ -286,43 +303,43 @@ def showHosters():
                         https_response = http_response
 
                     opener = urllib2.build_opener(NoRedirection)
-                    opener.addheaders.append (('User-Agent', UA))
-                    opener.addheaders.append (('Connection', 'keep-alive'))
+                    opener.addheaders.append(('User-Agent', UA))
+                    opener.addheaders.append(('Connection', 'keep-alive'))
 
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
                     sHosterUrl = sHosterUrl.replace('https', 'http')
-                except:
+                except BaseException:
                     pass
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sFinalTitle)
                 oHoster.setFileName(sFinalTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
-        #playlist-serie lien direct http pour le moment
+        # playlist-serie lien direct http pour le moment
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
                 sTitle = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         else:
-            #Dernier essai avec les torrent
+            # Dernier essai avec les torrent
             aResult = oParser.parse(sHtmlContent, 'data-maglink="([^"]+)')
-            if (aResult[0] == True):
+            if (aResult[0]):
                 match = Unquote(aResult[1][0])
-                
+
                 folder = re.findall('ws=(https[^&]+)', match)[0] + '/'
                 torrent = re.findall('xs=(https[^&]+)', match)[0]
-                
+
                 oRequestHandler2 = cRequestHandler(torrent)
                 torrent = decode(oRequestHandler2.request())
 
@@ -335,7 +352,7 @@ def showHosters():
                     count = count + 1
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sMovieTitle + " " + name + "E" + str(count))
                         oHoster.setFileName(sMovieTitle + " " + name + "E" + str(count))
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

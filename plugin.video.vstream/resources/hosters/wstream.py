@@ -45,11 +45,11 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
-        sPattern = 'http:\/\/wstream.+?\/(.+)'
+        sPattern = 'http:\\/\\/wstream.+?\\/(.+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 
@@ -77,10 +77,10 @@ class cHoster(iHoster):
         oParser = cParser()
 
         # Dean Edwards Packer
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sUnpacked = cPacker().unpack(aResult[1][0])
             sHtmlContent = sUnpacked
 
@@ -88,7 +88,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         # print(aResult)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             # initialisation des tableaux
             url = []
             qua = []

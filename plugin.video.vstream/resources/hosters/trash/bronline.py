@@ -1,5 +1,6 @@
 from resources.hosters.hoster import iHoster
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -7,7 +8,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName
@@ -28,7 +29,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = sUrl

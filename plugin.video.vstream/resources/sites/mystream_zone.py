@@ -112,10 +112,20 @@ def showMenuTvShows():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_SAISONS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_SAISONS[1], 'Séries (Saisons récentes)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        SERIE_NEWS_SAISONS[1],
+        'Séries (Saisons récentes)',
+        'news.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODES[1], 'Séries (Episodes récents)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        SERIE_NEWS_EPISODES[1],
+        'Séries (Episodes récents)',
+        'news.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_TOP_IMD[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_TOP_IMD[1], 'Séries (Top IMDd)', 'tmdb.png', oOutputParameterHandler)
@@ -129,7 +139,7 @@ def showMenuTvShows():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -139,7 +149,7 @@ def showSearch():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_series + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -149,7 +159,7 @@ def showSearchSerie():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_movies + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -204,7 +214,14 @@ def showAlpha(stype):
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showMovies',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'listes.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -258,7 +275,12 @@ def showMovies(sSearch=''):
 
         oOutputParameterHandler = cOutputParameterHandler()
         for i, idict in jsonrsp.items():
-            sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore')).replace(' mystream', '')  # I Know This Much Is True mystream
+            sTitle = str(
+                jsonrsp[i]['title'].encode(
+                    'utf-8',
+                    'ignore')).replace(
+                ' mystream',
+                '')  # I Know This Much Is True mystream
             sTitle = sTitle[2:-1]
             sUrl2 = str(jsonrsp[i]['url'])
             sThumb = str(jsonrsp[i]['img'])
@@ -317,7 +339,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -334,7 +356,7 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[2]
                 sYear = aEntry[3]
                 if sYear != '':
-                    sYear = re.search('(\d{4})', sYear).group(1)
+                    sYear = re.search('(\\d{4})', sYear).group(1)
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             elif sUrl == URL_MAIN:  # thumb; title; url; year
@@ -393,7 +415,7 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[2]
                 sYear = aEntry[3]
                 if sYear != '':
-                    sYear = re.search('(\d{4})', sYear).group(1)
+                    sYear = re.search('(\\d{4})', sYear).group(1)
                 sDesc = aEntry[4]
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
 
@@ -432,7 +454,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -442,9 +464,9 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'pagination"><span>Page \d+ de (\d+)</span>.+?current">\d+</span><ahref=.([^"|\']+)'
+    sPattern = 'pagination"><span>Page \\d+ de (\\d+)</span>.+?current">\\d+</span><ahref=.([^"|\']+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -477,15 +499,15 @@ def showSaisons():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sDesc = aResult[1][0]
-        except:
+        except BaseException:
             pass
 
     # '2 - 11'   href   title
     # class='numerando'>([^<]*).+?href='([^']*).>([^<]*) #
-    sPattern = "class='numerando'>(\d+) - (\d+)<.+?href='([^']*)"
+    sPattern = "class='numerando'>(\\d+) - (\\d+)<.+?href='([^']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = aEntry[0]
@@ -523,14 +545,14 @@ def showListEpisodes():  # plus utilisé
     aResult = oParser.parse(listeUrlEpisode, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             listeUrlEpisode2.append(aEntry)
 
     aResult = oParser.parse(listeStitle, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             listeStitle2.append(aEntry)
     i = 0
@@ -569,7 +591,7 @@ def showEpisodes():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sDesc = aResult[1][0]
-        except:
+        except BaseException:
             pass
     # '2 - 11'   url
     sPattern = "class='numerando'>([^<]*).+?href='([^']*)"
@@ -578,7 +600,7 @@ def showEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = re.search('([0-9]+)', aEntry[0]).group(1)
@@ -616,13 +638,13 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sDesc = aResult[1][0]
-        except:
+        except BaseException:
             pass
 
     sPattern = "data-type='([^']*).*?post='([^']*).*?nume='([^']*).*?title'>([^<]*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             datatype = aEntry[0]
@@ -669,7 +691,7 @@ def hostersLink():
     sHosterUrl = sHtmlContent["embed_url"]
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

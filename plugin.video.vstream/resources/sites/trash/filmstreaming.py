@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # disable 03/08/2020
+from resources.lib.util import cUtil, Unquote
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.comaddon import progress  # , VSlog
+import re
+import base64
 return False
 
-import base64
-import re
-
-from resources.lib.comaddon import progress  # , VSlog
-from resources.lib.gui.gui import cGui
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Unquote
 
 SITE_IDENTIFIER = 'filmstreaming'
 SITE_NAME = 'Film Streaming'
@@ -60,7 +59,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sSearch = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sSearch)
         oGui.setEndOfDirectory()
@@ -70,7 +69,7 @@ def showSearch():
 def showSearchOld():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showSearchMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -95,7 +94,7 @@ def showSearchMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -104,7 +103,7 @@ def showSearchMovies(sSearch=''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
+            sThumb = re.sub('/w\\d+', '/w342', aEntry[1], 1)
             if sThumb.startswith('/'):
                 sThumb = 'https:' + sThumb
             sTitle = aEntry[2]
@@ -135,7 +134,7 @@ def showGenres():
     sPattern = '<li class="cat-item cat-item-.+?"><a href=([^>]+)>([^<]+)</a>([^<]+)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1] + aEntry[2]
@@ -158,7 +157,14 @@ def AlphaSearch():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'letters/' + sLetter + '/page/1/')
-        oGui.addDir(SITE_IDENTIFIER, 'showList', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showList',
+            'Lettre [COLOR coral]' +
+            sLetter +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -179,7 +185,7 @@ def showList():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -189,7 +195,7 @@ def showList():
                 break
 
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
+            sThumb = re.sub('/w\\d+', '/w342', aEntry[1], 1)
             if sThumb.startswith('/'):
                 sThumb = 'http:' + sThumb
             sTitle = aEntry[2]
@@ -209,13 +215,20 @@ def showList():
         progress_.VSclose(progress_)
 
         if aResult:
-            sPattern = 'page/(\d+)/'
+            sPattern = 'page/(\\d+)/'
             aResult = oParser.parse(sUrl, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 number = int(aResult[1][0]) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', re.sub('page/(\d+)/', 'page/' + str(number) + '/', sUrl))
-                oGui.addNext(SITE_IDENTIFIER, 'showList', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('siteUrl', re.sub(
+                    'page/(\\d+)/', 'page/' + str(number) + '/', sUrl))
+                oGui.addNext(
+                    SITE_IDENTIFIER,
+                    'showList',
+                    '[COLOR teal]Page ' +
+                    str(number) +
+                    ' >>>[/COLOR]',
+                    oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -236,7 +249,7 @@ def showMovies(sSearch=''):
     sPattern = 'class=Image>.+?src=([^ ]+) .+?class=Qlty>([^<]+).+?href=([^>]+)><div class=Title>([^<]+).+?Description><p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -244,7 +257,7 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
+            sThumb = re.sub('/w\\d+', '/w342', aEntry[0], 1)
             if sThumb.startswith('/'):
                 sThumb = 'https:' + sThumb
 
@@ -272,11 +285,17 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(
+                SITE_IDENTIFIER,
+                'showMovies',
+                '[COLOR teal]Page ' +
+                number +
+                ' >>>[/COLOR]',
+                oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -285,7 +304,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="*([^">]+)"*>Next'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -305,7 +324,7 @@ def showHosters():
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 
-    sPattern2 = '<div id=VideoOption\d+ class="*Vid.+?>([^<]+)</div>'
+    sPattern2 = '<div id=VideoOption\\d+ class="*Vid.+?>([^<]+)</div>'
     aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult2)) #Commenter ou supprimer cette ligne une fois fini
 
@@ -332,7 +351,7 @@ def showHosters():
                 sHosterUrl = sUrl.group(1)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ')')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

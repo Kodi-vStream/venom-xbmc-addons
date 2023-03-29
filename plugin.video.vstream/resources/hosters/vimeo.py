@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -13,10 +14,11 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,10 +45,10 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'vimeo\.com\/(?:video\/)?([0-9]+)'
+        sPattern = 'vimeo\\.com\\/(?:video\\/)?([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -72,21 +74,21 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(web_url)
         sHtmlContent = oRequest.request()
-        sPattern =  ',"url":"(.+?)",.+?"quality":"(.+?)",'
+        sPattern = ',"url":"(.+?)",.+?"quality":"(.+?)",'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
+        if (aResult[0]):
+            # initialisation des tableaux
+            url = []
+            qua = []
 
-            #Remplissage des tableaux
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #tableau
+            # tableau
             api_call = dialog().VSselectqual(qua, url)
 
             if (api_call):

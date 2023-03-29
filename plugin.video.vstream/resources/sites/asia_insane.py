@@ -59,7 +59,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -116,7 +116,7 @@ def showAlpha():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -142,7 +142,7 @@ def showAlpha():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -160,12 +160,13 @@ def showMovies(sSearch=''):
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
-        sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?class="asp_res_text">([^<]+)'
+        sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\\("([^"]+)"\\).+?\'>([^.]+)d{2}.+?<span.+?class="asp_res_text">([^<]+)'
 
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry(
+            'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         oRequestHandler.addHeaderEntry('Referer', "https://www.asia-insane.biz/recherche-avancee-asia-insane/")
@@ -175,7 +176,9 @@ def showMovies(sSearch=''):
         oRequestHandler.addParameters('asid', "1")
         oRequestHandler.addParameters('aspp', sSearch)
         oRequestHandler.addParameters('asp_inst_id', "1_1")
-        oRequestHandler.addParameters('options', "current_page_id=413&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=amy_movie&customset%5B%5D=amy_tvshow&termset%5Bamy_director%5D%5B%5D=-1&termset%5Bamy_actor%5D%5B%5D=-1")
+        oRequestHandler.addParameters(
+            'options',
+            "current_page_id=413&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=amy_movie&customset%5B%5D=amy_tvshow&termset%5Bamy_director%5D%5B%5D=-1&termset%5Bamy_actor%5D%5B%5D=-1")
         sHtmlContent = oRequestHandler.request()
 
     elif '/amy_genre/' in sUrl or '/date/' in sUrl:
@@ -194,7 +197,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -235,14 +238,21 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showSerieEpisodes',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -255,7 +265,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)/', sNextPage).group(1)
@@ -286,7 +296,7 @@ def showSerieEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -325,7 +335,7 @@ def showHosters():
                     sHosterUrl = aEntry
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sMovieTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -334,7 +344,7 @@ def showHosters():
             sHosterUrl = sUrl2
 
             oHoster = cHosterGui().checkHoster(sUrl2)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -349,14 +359,14 @@ def showHosters():
         sPattern = '>.+?href="([^"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             for aEntry in aResult[1]:
 
                 sTitle = sMovieTitle
                 sHosterUrl = aEntry
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

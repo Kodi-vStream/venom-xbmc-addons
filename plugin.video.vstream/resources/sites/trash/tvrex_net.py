@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.comaddon import progress
+import urllib2
+import re
+import base64
 return false  # désactivé le 29/08/2020
 
-import base64
-import re
-import urllib2
 
 # from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress
-from resources.lib.gui.gui import cGui
 # tester le 30/10 ne fonctionne pas
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'tvrex_net'
 SITE_NAME = 'Tvrex'
@@ -39,11 +39,11 @@ def TimeET():
     oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<span id="theTime" class="fontTS">\s*(.+?)\s*</span>'
+    sPattern = '<span id="theTime" class="fontTS">\\s*(.+?)\\s*</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     timeError = ''
@@ -84,7 +84,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -95,7 +95,8 @@ def showFinals():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2017-nba-playoffs/2017-nba-finals-nba-finals-2/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN +
+                                         'category/2017-nba-playoffs/2017-nba-finals-nba-finals-2/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2017 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -186,12 +187,21 @@ def showMovies(sSearch=''):
     if 'reddit' in sUrl:
         TimeUTC = TimeET()
         sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'
-        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + ' [ Heure Locale ET : ' + '[/COLOR]' + TimeUTC + '[COLOR gray]' + ']' + '[/COLOR]')
+        oGui.addText(
+            SITE_IDENTIFIER,
+            '[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' +
+            '[COLOR gray]' +
+            ' [ Heure Locale ET : ' +
+            '[/COLOR]' +
+            TimeUTC +
+            '[COLOR gray]' +
+            ']' +
+            '[/COLOR]')
 
     elif 'category/20' in sUrl:
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
     elif sSearch:
-        sPattern = '<div class="col-sm-4 col-xs-6 item responsive-height">\s*<a title="([^"]+)" href="([^"]+)".+?src="([^"]+)"'
+        sPattern = '<div class="col-sm-4 col-xs-6 item responsive-height">\\s*<a title="([^"]+)" href="([^"]+)".+?src="([^"]+)"'
     else:
         sPattern = '<div id="post-.+?<a href="([^"]+)"><img.+?src="([^"]+)".+?<h.+?>([^"]+)–([^"]+)</a>'
 
@@ -204,7 +214,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
 
         progress_ = progress().VScreate(SITE_NAME)
@@ -257,7 +267,8 @@ def showMovies(sSearch=''):
                     sDateReplay = sTitle2[1]
 
                     if (sDate != sDateReplay):
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Replay[/COLOR]' + '[COLOR teal]' + ' / ' + sDateReplay + '[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Replay[/COLOR]' +
+                                     '[COLOR teal]' + ' / ' + sDateReplay + '[/COLOR]')
                         sDate = sDateReplay
 
             finally:
@@ -282,7 +293,8 @@ def showMovies(sSearch=''):
                     else:
                         sDatePlayoff = ''
 
-                    sTitle = '[COLOR olive]' + sGame + '[/COLOR]' + sTeam + '[COLOR teal]' + '/' + sDatePlayoff + '[/COLOR]'
+                    sTitle = '[COLOR olive]' + sGame + '[/COLOR]' + sTeam + \
+                        '[COLOR teal]' + '/' + sDatePlayoff + '[/COLOR]'
 
             finally:
                 pass
@@ -304,7 +316,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent, sUrl)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -327,7 +339,7 @@ def __checkForNextPage(sHtmlContent, sUrl):
         sPattern = '<a href="([^"]+)"> <li class="next">Newer.+?</ul>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
     return False
 
@@ -360,14 +372,14 @@ def showHosters():
     else:  # Replay
 
         sPattern = '<a href="(https?://(?:wstream|youwa|openlo)[^"]+)" target="_blank">(?:([^<]+)</a>|)'
-        sPattern2 = '(?:data\-lazy\-src|src)="(http.+?(?:openload|raptu)\.co[^"]+)"'
+        sPattern2 = '(?:data\\-lazy\\-src|src)="(http.+?(?:openload|raptu)\\.co[^"]+)"'
 
         aResult1 = re.findall(sPattern, sHtmlContent)
         aResult2 = re.findall(sPattern2, sHtmlContent)
         sLink = aResult1 + aResult2
 
         # Test si lien video non embed (raptu/openload)
-        sPattern3 = 'document.getElementById\(\'frame\'\).src=\'([^"]+)\'">(.+?)<span'
+        sPattern3 = 'document.getElementById\\(\'frame\'\\).src=\'([^"]+)\'">(.+?)<span'
         aResult3 = re.findall(sPattern3, sHtmlContent)
 
         # recup lien video non embed
@@ -413,7 +425,14 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addMovie(SITE_IDENTIFIER, 'showLiveHosters', sTitle, '', sThumb, sHosterUrl, oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showLiveHosters',
+                    sTitle,
+                    '',
+                    sThumb,
+                    sHosterUrl,
+                    oOutputParameterHandler)
 
             else:  # Replay
 
@@ -438,7 +457,7 @@ def showHosters():
                     sTitle = ('[%s]') % (aEntry[1])
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -508,7 +527,8 @@ def showLiveHosters():
                 sHosterUrl = aEntry
 
             # live ok avec UA ipad sauf si geoIP usa
-            sHosterUrl = sHosterUrl + '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
+            sHosterUrl = sHosterUrl + \
+                '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
 
             oHoster = cHosterGui().checkHoster('m3u8')
             oHoster.setDisplayName(sTitle)
@@ -516,7 +536,9 @@ def showLiveHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
-        oGui.addText(SITE_IDENTIFIER, '(Erreur connection ou stream non disponible : UA pas bon/Lien protégé/code soluce à trouver)')
+        oGui.addText(
+            SITE_IDENTIFIER,
+            '(Erreur connection ou stream non disponible : UA pas bon/Lien protégé/code soluce à trouver)')
 
     oGui.setEndOfDirectory()
 
@@ -553,7 +575,8 @@ def showHosters4():
                 apiUrl = 'https://www.fembed.com/api/source/' + videoID[0]
                 oRequestHandler = cRequestHandler(apiUrl)
                 oRequestHandler.setRequestType(1)
-                oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
+                oRequestHandler.addHeaderEntry(
+                    'User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
                 oRequestHandler.addHeaderEntry('Referer', sHosterUrl)
                 oRequestHandler.addHeaderEntry('Cookie', cookies)
                 oRequestHandler.addParameters('r', '')
@@ -562,19 +585,19 @@ def showHosters4():
 
                 aResult = re.findall('"file":"(.+?)"', sHtmlContent)
                 if (aResult):
-                    sHosterUrl = aEntry.replace('\/', '\\')
+                    sHosterUrl = aEntry.replace('\\/', '\\')
                     if not sHosterUrl.startswith('http'):
                         sHosterUrl = 'https://www.fembed.com' + sHosterUrl
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sMovieTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)

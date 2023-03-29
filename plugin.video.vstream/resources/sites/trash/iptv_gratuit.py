@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
-import re
-
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.parser import cParser
-from resources.sites.freebox import getHtml, showWeb, play__
 from resources.lib.comaddon import progress, VSlog
+from resources.sites.freebox import getHtml, showWeb, play__
+from resources.lib.parser import cParser
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+import re
+return False
+
 
 SITE_IDENTIFIER = 'iptv_gratuit'
 SITE_NAME = 'IptvGratuit'
@@ -164,7 +164,7 @@ def showDailyList():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('pages/([0-9]+)', sNextPage).group(1)

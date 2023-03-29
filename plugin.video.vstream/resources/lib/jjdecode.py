@@ -18,7 +18,7 @@ class JJDecoder(object):
         self.encoded_str = jj_encoded_data
 
     def clean(self):
-        return re.sub('^\s+|\s+$', '', self.encoded_str)
+        return re.sub('^\\s+|\\s+$', '', self.encoded_str)
 
     def checkPalindrome(self, Str):
         startpos = -1
@@ -30,7 +30,7 @@ class JJDecoder(object):
         if index == 0:
             startpos = Str.find('$$+"\\""+') + 8
             endpos = Str.find('"\\"")())()')
-            gv = Str[Str.find('"\'\\"+\'+",')+9:Str.find('=~[]')]
+            gv = Str[Str.find('"\'\\"+\'+",') + 9:Str.find('=~[]')]
             gvl = len(gv)
         else:
             gv = Str[0:Str.find('=')]
@@ -50,7 +50,23 @@ class JJDecoder(object):
 
         data = self.encoded_str[startpos:endpos]
 
-        b = ['___+', '__$+', '_$_+', '_$$+', '$__+', '$_$+', '$$_+', '$$$+', '$___+', '$__$+', '$_$_+', '$_$$+', '$$__+', '$$_$+', '$$$_+', '$$$$+']
+        b = [
+            '___+',
+            '__$+',
+            '_$_+',
+            '_$$+',
+            '$__+',
+            '$_$+',
+            '$$_+',
+            '$$$+',
+            '$___+',
+            '$__$+',
+            '$_$_+',
+            '$_$$+',
+            '$$__+',
+            '$$_$+',
+            '$$$_+',
+            '$$$$+']
 
         str_l = '(![]+"")[' + gv + '._$_]+'
         str_o = gv + '._$+'
@@ -301,7 +317,7 @@ class JJDecoder(object):
                                     break
                             out += chr(int(ch_str, 8)) + ch_lotux
                             break  # step out of the while loop
-                        elif (0x21 <= n and n <= 0x2f) or (0x3A <= n and n <= 0x40) or ( 0x5b <= n and n <= 0x60 ) or ( 0x7b <= n and n <= 0x7f ):
+                        elif (0x21 <= n and n <= 0x2f) or (0x3A <= n and n <= 0x40) or (0x5b <= n and n <= 0x60) or (0x7b <= n and n <= 0x7f):
                             out += data[0]
                             data = data[1:]
                             match += 1

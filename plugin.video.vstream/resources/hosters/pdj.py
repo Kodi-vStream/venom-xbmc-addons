@@ -46,7 +46,7 @@ class cHoster(iHoster):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -70,7 +70,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<span class="download">.+?href="(.+?)" ambatitle="Download podcast">'
+        sPattern = '<span class="download">.+?href="(.+?)" ambatitle="Download podcast">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0]):

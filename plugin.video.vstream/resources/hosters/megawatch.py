@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -69,15 +69,15 @@ class cHoster(iHoster):
             return False, False
 
         oParser = cParser()
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
         sPattern = '{file:"(http.+?mp4)"}'
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
-            api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+            api_call = aResult[1][0]  # pas de choix qualité trouvé pour le moment
 
         if (api_call):
             return True, api_call

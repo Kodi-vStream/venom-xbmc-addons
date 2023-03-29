@@ -24,7 +24,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -75,7 +76,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         # suppression commentaires
-        sHtmlContent = re.sub( r'<!--.*?-->', '', sHtmlContent )
+        sHtmlContent = re.sub(r'<!--.*?-->', '', sHtmlContent)
 
         oParser = cParser()
 
@@ -112,7 +113,7 @@ class cHoster(iHoster):
                 Realurl = red[0]
             else:
                 VSlog("2")
-                red = re.findall('location\.assign *\( *"([^"]+)" \)', sHtmlContent)
+                red = re.findall('location\\.assign *\\( *"([^"]+)" \\)', sHtmlContent)
                 if red:
                     Realurl = red[0]
 
@@ -140,29 +141,29 @@ class cHoster(iHoster):
 
         api_call = ''
 
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
+        sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\)\\))<'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for packed in aResult[1]:
                 sHtmlContent = cPacker().unpack(packed)
                 sHtmlContent = sHtmlContent.replace('\\', '')
                 if "jwplayer('vplayer').setup" in sHtmlContent:
                     sPattern2 = "{file:.([^']+.mp4)"
                     aResult2 = oParser.parse(sHtmlContent, sPattern2)
-                    if (aResult2[0] == True):
+                    if (aResult2[0]):
                         api_call = aResult2[1][0]
                         break
 
         else:
-            sPattern = "file\s*:\s*\'([^\']+.mp4)"
+            sPattern = "file\\s*:\\s*\'([^\']+.mp4)"
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 api_call = aResult[1][0]
 
-        VSlog('API_CALL: ' + api_call )
+        VSlog('API_CALL: ' + api_call)
 
         if (api_call):
-            api_call = api_call + '|User-Agent=' + UA  #+ #'|Host=' + api_call.replace('http://','').rsplit('/', 2)[0]
+            api_call = api_call + '|User-Agent=' + UA  # + #'|Host=' + api_call.replace('http://','').rsplit('/', 2)[0]
 
             return True, api_call
 
@@ -172,7 +173,7 @@ class cHoster(iHoster):
 
 def CheckCpacker(str):
 
-    sPattern = '>([^>]+\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
+    sPattern = '>([^>]+\\(p,a,c,k,e(?:.|\\s)+?\\)\\)\\s*)<'
     aResult = re.search(sPattern, str, re.DOTALL | re.UNICODE)
     if (aResult):
         # VSlog('Cpacker encryption')
@@ -190,19 +191,19 @@ def CheckCpacker(str):
         try:
             tmp = cPacker().unpack(str2)
             # tmp = tmp.replace("\\'", "'")
-        except:
+        except BaseException:
             tmp = ''
 
         # VSlog(tmp)
 
-        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
+        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end() - 1):]
 
     return str
 
 
 def CheckJJDecoder(str):
 
-    sPattern = '([a-z]=.+?\(\)\)\(\);)'
+    sPattern = '([a-z]=.+?\\(\\)\\)\\(\\);)'
     aResult = re.search(sPattern, str, re.DOTALL | re.UNICODE)
     if (aResult):
         VSlog('JJ encryption')
@@ -214,7 +215,7 @@ def CheckJJDecoder(str):
 
 
 def CheckAADecoder(str):
-    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str, re.DOTALL | re.UNICODE)
+    aResult = re.search('([>;]\\s*)(ﾟωﾟ.+?\\(\'_\'\\);)', str, re.DOTALL | re.UNICODE)
     if (aResult):
         VSlog('AA encryption')
 
@@ -231,6 +232,6 @@ def CheckAADecoder(str):
             tmp = JP.LastEval.decode('string-escape').decode('string-escape')
 
             return str[:aResult.start()] + tmp + str[aResult.end():]
-        except:
+        except BaseException:
             return ''
     return str

@@ -48,11 +48,11 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern1 = 'sources.+?"([^"]+mp4)"'
-        
+
         aResult = oParser.parse(sHtmlContent, sPattern1)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][0]
 
         if api_call:

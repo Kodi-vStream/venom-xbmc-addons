@@ -107,7 +107,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -138,7 +138,7 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch
-        sPattern = 'class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)'
+        sPattern = 'class="image">.*?<a href="([^"]+)">\\s*<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)'
     elif 'episodes' in sUrl:
         sPattern = 'class="poster">.*?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)'
     else:
@@ -154,7 +154,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -188,9 +188,9 @@ def showMovies(sSearch=''):
             # si utile il faut retirer oOutputParameterHandler.addParameter(sDesc)
             # if sDesc:  # désactivé le 17/06/2020,
                 # try:
-                    # sDesc = cUtil().unescape(sDesc.decode('utf8'))
+                # sDesc = cUtil().unescape(sDesc.decode('utf8'))
                 # except AttributeError:
-                    # sDesc = cUtil().unescape(sDesc)
+                # sDesc = cUtil().unescape(sDesc)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -208,7 +208,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -218,10 +218,10 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'Page \d+ de ([^<]+).+?arrow_pag\' *href="([^"]+)"><i id=\'nextpagination'
+    sPattern = 'Page \\d+ de ([^<]+).+?arrow_pag\' *href="([^"]+)"><i id=\'nextpagination'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -245,7 +245,7 @@ def showSxE():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -254,10 +254,11 @@ def showSxE():
 
             else:
                 sUrl = aEntry[2]
-                SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>', aEntry[1])
+                SxE = re.sub('(\\d+) - (\\d+)', 'saison \\g<1> Episode \\g<2>', aEntry[1])
                 sTitle = sMovieTitle + ' ' + SxE
 
-                sDisplaytitle = sTitle # "MARQUER LU" à besoin de la saison et de l'épisode # sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
+                # "MARQUER LU" à besoin de la saison et de l'épisode # sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
+                sDisplaytitle = sTitle
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -280,13 +281,13 @@ def showLinks():
     sHtmlContent = oRequest.request()
 
     if 'episodes' in sUrl:
-        sPattern = 'dooplay_player_option.+?data-post="(\d+)".+?data-nume="([^"]+).+?title">([^<]+)'
+        sPattern = 'dooplay_player_option.+?data-post="(\\d+)".+?data-nume="([^"]+).+?title">([^<]+)'
     else:
-        sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='([^']+).+?title'>([^<]+)"
+        sPattern = "dooplay_player_option.+?data-post='(\\d+)'.+?data-nume='([^']+).+?title'>([^<]+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if ('trailer' in aEntry[1]):
@@ -346,7 +347,7 @@ def showHosters():
         for aEntry in aResult:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

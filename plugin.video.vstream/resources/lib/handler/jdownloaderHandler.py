@@ -19,7 +19,7 @@ class cJDownloaderHandler:
             return False
 
         bDownload = self.__download(sUrl)
-        if (bDownload == True):
+        if (bDownload):
             self.DIALOG.VSinfo('Link gesendet', 'JDownloader')
 
     def __checkConfig(self):
@@ -61,14 +61,15 @@ class cJDownloaderHandler:
 
     def __createJDUrl(self, sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber):
         sGrabber = '0'
-        if (bLinkGrabber == True):
+        if (bLinkGrabber):
             sGrabber = '1'
 
         sAutomaticStart = '0'
-        if (bAutomaticDownload == True):
+        if (bAutomaticDownload):
             sAutomaticStart = '1'
 
-        sUrl = 'http://' + str(sHost) + ':' + str(sPort) + '/action/add/links/grabber' + str(sGrabber) + '/start' + str(sAutomaticStart) + '/' + sFileUrl
+        sUrl = 'http://' + str(sHost) + ':' + str(sPort) + '/action/add/links/grabber' + \
+            str(sGrabber) + '/start' + str(sAutomaticStart) + '/' + sFileUrl
         return sUrl
 
     def __checkConnection(self):
@@ -85,6 +86,3 @@ class cJDownloaderHandler:
         except Exception as e:
             return False
         return False
-
-
-

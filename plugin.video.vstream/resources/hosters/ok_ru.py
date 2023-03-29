@@ -26,7 +26,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -53,10 +54,10 @@ class cHoster(iHoster):
         return ''
 
     def getHostAndIdFromUrl(self, sUrl):
-        sPattern = 'https*:\/\/.*?((?:(?:ok)|(?:odnoklassniki))\.ru)\/.+?\/([0-9]+)'
+        sPattern = 'https*:\\/\\/.*?((?:(?:ok)|(?:odnoklassniki))\\.ru)\\/.+?\\/([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 
@@ -83,7 +84,7 @@ class cHoster(iHoster):
         HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
-        St=requests.Session()
+        St = requests.Session()
         sHtmlContent = St.get(web_url).content.decode('utf-8')
         oParser = cParser()
 
@@ -104,7 +105,6 @@ class cHoster(iHoster):
             if (url):
                 # dialogue qualité
                 api_call = dialog().VSselectqual(qua, url)
-
 
         if (api_call):
             api_call = api_call + '|Referer=' + self.__sUrl

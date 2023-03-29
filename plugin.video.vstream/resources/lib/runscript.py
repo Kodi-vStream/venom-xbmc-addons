@@ -23,7 +23,7 @@ from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath, siteMan
 try:
     from sqlite3 import dbapi2 as sqlite
     VSlog('SQLITE 3 as DB engine')
-except:
+except BaseException:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
@@ -63,7 +63,7 @@ class cClear:
                     sContent = oResponse.read()
 
                 self.TextBoxes('vStream Changelog', sContent)
-            except:
+            except BaseException:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
@@ -103,7 +103,7 @@ class cClear:
                         # message
                         try:
                             desc = item['commit']['message'].encode("utf-8")
-                        except:
+                        except BaseException:
                             desc = 'None'
 
                         listitem = xbmcgui.ListItem(label=login, label2=desc)
@@ -142,7 +142,7 @@ class cClear:
                     sContent = oResponse.read()
 
                 self.TextBoxes('vStream Soutient', sContent)
-            except:
+            except BaseException:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
@@ -166,7 +166,7 @@ class cClear:
                     dbcur.close()
                     db.close()
                     self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
-                except:
+                except BaseException:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30091))
             return
 
@@ -217,7 +217,7 @@ class cClear:
                 try:
                     xbmcvfs.rmdir(path, True)
                     self.DIALOG.VSok(self.ADDON.VSlang(30092))
-                except:
+                except BaseException:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30093))
             return
 
@@ -227,7 +227,7 @@ class cClear:
                 try:
                     xbmcvfs.rmdir(path, True)
                     self.DIALOG.VSok(self.ADDON.VSlang(30095))
-                except:
+                except BaseException:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30096))
             return
 
@@ -289,7 +289,7 @@ class cClear:
 
                 ADDON = addon()
                 sitesManager = siteManager()
-                
+
                 def __init__(self, *args, **kwargs):
                     xbmcgui.WindowXMLDialog.__init__(self)
                     pass
@@ -305,7 +305,7 @@ class cClear:
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getAllPlugins()
 
-                    #self.data = json.load(open(self.path))
+                    # self.data = json.load(open(self.path))
 
                     for aPlugin in aPlugins:
                         # teste si deja dans le dsip
@@ -344,7 +344,7 @@ class cClear:
                         return
                     elif controlId == 6:
                         item = self.container.getSelectedItem()
-                        if item.isSelected() == True:
+                        if item.isSelected():
                             label = item.getLabel().replace(valid, '')
                             item.setLabel(label)
                             item.select(False)
@@ -377,7 +377,7 @@ class cClear:
                 try:
                     xbmcvfs.rmdir(path, True)
                     text = 'Clear Thumbnail Folder, Successful[CR]'
-                except:
+                except BaseException:
                     text = 'Clear Thumbnail Folder, Error[CR]'
 
                 folder, items = xbmcvfs.listdir(path_DB)
@@ -388,7 +388,7 @@ class cClear:
                         try:
                             xbmcvfs.delete(cached_Cache)
                             text += 'Clear Thumbnail DB, Successful[CR]'
-                        except:
+                        except BaseException:
                             text += 'Clear Thumbnail DB, Error[CR]'
 
                 if text:
@@ -414,7 +414,7 @@ class cClear:
                         if new:
                             xbmcvfs.copy(DB, new + 'vstream.db')
                             self.DIALOG.VSinfo(self.ADDON.VSlang(30099))
-                except:
+                except BaseException:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30100))
 
                 return

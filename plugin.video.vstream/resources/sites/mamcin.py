@@ -31,7 +31,12 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Plus Belle La Vie (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        SERIE_NEWS[1],
+        'Plus Belle La Vie (Derniers ajouts)',
+        'news.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -42,10 +47,10 @@ def load():
 
     # sSearchText = oGui.showKeyBoard()
     # if (sSearchText != False):
-        # sUrl = URL_SEARCH[0] + sSearchText
-        # showMovies(sUrl)
-        # oGui.setEndOfDirectory()
-        # return
+    # sUrl = URL_SEARCH[0] + sSearchText
+    # showMovies(sUrl)
+    # oGui.setEndOfDirectory()
+    # return
 
 
 # genre definition
@@ -83,7 +88,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -106,7 +111,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sPaging = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -121,7 +126,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class="previous"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -143,14 +148,14 @@ def showHosters():
     # add dailymotion sources
     sPattern = '<iframe.+?src="(.+?)?logo=0&info=0"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if not aEntry.startswith('http'):
                 sHosterUrl = 'https:' + aEntry
             else:
                 sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -158,13 +163,13 @@ def showHosters():
     # add sendvid sources
     sPattern = '<(?:source|iframe) src="(.+?)" width'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if not sHosterUrl.startswith('http'):
                 sHosterUrl = 'https:' + aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

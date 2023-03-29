@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 # import urllib
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -39,7 +40,7 @@ class cHoster(iHoster):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -60,7 +61,7 @@ class cHoster(iHoster):
         sPattern = 'flashvars.filekey="(.+?)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
@@ -86,21 +87,21 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        #lien deja decode
+        # lien deja decode
         if self.__sUrl[-4] == '.':
             return True, self.__sUrl
 
-        #Sinon on decode
+        # Sinon on decode
         self.__sUrl = self.Reformat(self.__sUrl)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  "file': '(.+?)',"
+        sPattern = "file': '(.+?)',"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             return True, aResult[1][0]
 
         return False, False

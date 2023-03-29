@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
-#https://rapidstream.co/embed-zxxx-635x445.html tfarjo twd
+# -*- coding: utf-8 -*-
+# https://rapidstream.co/embed-zxxx-635x445.html tfarjo twd
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -50,7 +51,7 @@ class cHoster(iHoster):
         sPattern = '"(http[^"]+(?:.m3u8|.mp4))"'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = aResult[1][1]
 
         if (api_call):

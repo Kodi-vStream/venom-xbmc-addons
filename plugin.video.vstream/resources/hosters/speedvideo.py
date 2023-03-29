@@ -26,7 +26,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -49,10 +50,10 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-        sPattern = 'https*:\/\/speedvideo.[a-z]{3}\/(?:embed-)?([0-9a-zA-Z]+)'
+        sPattern = 'https*:\\/\\/speedvideo.[a-z]{3}\\/(?:embed-)?([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             self.__sUrl = 'https://speedvideo.net/embed-' + aResult[1][0] + '.html'
         else:
             VSlog('ID error')
@@ -71,11 +72,11 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = 'var linkfile\s*=\s*"([^"]+)"'
+        sPattern = 'var linkfile\\s*=\\s*"([^"]+)"'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sUrl = aResult[1][0]
 
             class NoRedirection(urllib2.HTTPErrorProcessor):

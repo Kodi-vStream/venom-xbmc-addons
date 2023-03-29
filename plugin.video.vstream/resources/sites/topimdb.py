@@ -30,6 +30,7 @@ MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&st
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
+
 def unescape(text):
     try:  # python 2
         import htmlentitydefs
@@ -54,7 +55,7 @@ def unescape(text):
             except KeyError:
                 pass
         return text  # leave as is
-    return re.sub("&#?\w+;", fixup, text)
+    return re.sub("&#?\\w+;", fixup, text)
 
 
 def load():
@@ -72,6 +73,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showMovieYears():
     oGui = cGui()
 
@@ -80,10 +82,18 @@ def showMovieYears():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(xrange(1903, int(now.year))):
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'search/title?year=' + str(i) + ',' + str(i) + '&title_type=feature&explore=languages')
+        oOutputParameterHandler.addParameter(
+            'siteUrl',
+            URL_MAIN +
+            'search/title?year=' +
+            str(i) +
+            ',' +
+            str(i) +
+            '&title_type=feature&explore=languages')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(i), 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -102,10 +112,10 @@ def showMovies(sSearch=''):
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'img alt="([^"]+).+?loadlate="([^"]+).+?primary">([^<]+).+?unbold">([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
+    sPattern = 'img alt="([^"]+).+?loadlate="([^"]+).+?primary">([^<]+).+?unbold">([^<]+).+?(?:|rated this(.+?)\\s.+?)muted">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -133,7 +143,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -147,7 +157,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+?)"class="lister-page-next'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         sUrl = ('%s/%s') % (URL_MAIN, aResult[1][0])
         return sUrl
 
@@ -165,13 +175,14 @@ def showTitle(sMovieTitle, sUrl):
     try:
         # ancien decodage
         sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
-        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
+        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode(
+            'ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
         sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
-    except:
+    except BaseException:
         sMovieTitle = sMovieTitle.lower()
 
     sMovieTitle = Quote(sMovieTitle)
-    sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
+    sMovieTitle = re.sub('\\(.+?\\)', ' ', sMovieTitle)  # vire les tags entre parentheses
 
     # modif venom si le titre comporte un - il doit le chercher
     sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)  # vire les caracteres a la con qui peuvent trainer

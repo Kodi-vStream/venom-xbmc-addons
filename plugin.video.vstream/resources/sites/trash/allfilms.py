@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
-import re
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import re
+return False
+
 
 SITE_IDENTIFIER = 'allfilms'
 SITE_NAME = 'All Films'
@@ -54,7 +54,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -98,8 +98,8 @@ def showYears():
     oGui = cGui()
 
     from itertools import chain
-    generator = chain([1922, 1929, 1934, 1936, 1939, 1942, 1943, 1944, 1945, 1947, 1950, 1952]
-                      , range(1953, 1956), [1957], range(1960, 2021))
+    generator = chain([1922, 1929, 1934, 1936, 1939, 1942, 1943, 1944, 1945, 1947,
+                      1950, 1952], range(1953, 1956), [1957], range(1960, 2021))
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -128,7 +128,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -157,14 +157,21 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         if aResult:
-            sPattern = '-(\d+).html'
+            sPattern = '-(\\d+).html'
             aResult = oParser.parse(sUrl, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 number = int(aResult[1][0]) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', re.sub('-(\d+).html', '-' + str(number) + '.html', sUrl))
+                oOutputParameterHandler.addParameter('siteUrl', re.sub(
+                    '-(\\d+).html', '-' + str(number) + '.html', sUrl))
 
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(
+                    SITE_IDENTIFIER,
+                    'showMovies',
+                    '[COLOR teal]Page ' +
+                    str(number) +
+                    ' >>>[/COLOR]',
+                    oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -191,13 +198,13 @@ def showHosters():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

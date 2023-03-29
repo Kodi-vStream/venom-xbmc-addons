@@ -67,7 +67,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -88,14 +88,13 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -132,15 +131,15 @@ def showLink():
     sStart = '<div class="td-post-content tagdiv-type">'
     sEnd = '<div class="td-post-source-tags">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = 'Part (\d).+?<iframe.+?src="([^"]+)"'
+    sPattern = 'Part (\\d).+?<iframe.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            #oOutputParameterHandler = cOutputParameterHandler()
+        if (aResult[0]):
+            # oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
 
                 sHosterUrl = aEntry
@@ -148,7 +147,7 @@ def showLink():
                     sHosterUrl = 'https:' + sHosterUrl
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -156,7 +155,7 @@ def showLink():
     else:
         if (aResult[0] == False):
             oGui.addText(SITE_IDENTIFIER)
-        if (aResult[0] == True):
+        if (aResult[0]):
             total = len(aResult[1])
             progress_ = progress().VScreate(SITE_NAME)
             for aEntry in aResult[1]:
@@ -169,7 +168,7 @@ def showLink():
                 if sHosterUrl.startswith('//'):
                     sHosterUrl = 'https:' + sHosterUrl
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle + ' Partie' + sPartie)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

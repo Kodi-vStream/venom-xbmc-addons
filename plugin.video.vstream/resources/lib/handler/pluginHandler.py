@@ -13,13 +13,13 @@ class cPluginHandler:
     def getPluginHandle(self):
         try:
             return int(sys.argv[1])
-        except:
+        except BaseException:
             return 0
 
     def getPluginPath(self):
         try:
             return sys.argv[0]
-        except:
+        except BaseException:
             return ''
 
     def __getFileNamesFromFolder(self, sFolder):
@@ -27,7 +27,7 @@ class cPluginHandler:
         items = xbmcvfs.listdir(sFolder)[1]
         items.remove("__init__.py")
         items.sort()
-        
+
         for sItemName in items:
             if not sItemName.endswith(".py"):
                 continue
@@ -37,7 +37,7 @@ class cPluginHandler:
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
 
-            if (xbmcvfs.exists(sFilePath) == True):
+            if (xbmcvfs.exists(sFilePath)):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
                     aNameList.append(sItemName)
@@ -59,7 +59,7 @@ class cPluginHandler:
             return False, False
 
     def getAvailablePlugins(self, sLabel="", force=False):
-        
+
         addons = addon()
         sitesManager = siteManager()
 
@@ -78,7 +78,7 @@ class cPluginHandler:
                 else:
                     aPlugin = self.__importPlugin(sFileName)
 
-                if (aPlugin[0] != False):
+                if (aPlugin[0]):
                     sSiteDesc = aPlugin[1]
                     if sLabel:
                         sSiteUrl = aPlugin[0]
@@ -102,7 +102,7 @@ class cPluginHandler:
         for sFileName in aFileNames:
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
-            if (aPlugin[0] != False):
+            if (aPlugin[0]):
                 sSiteName = aPlugin[0]
                 sSiteDesc = aPlugin[1]
 

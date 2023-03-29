@@ -106,7 +106,12 @@ def showMenuTokusatsu():
     oGui.addDir(SITE_IDENTIFIER, TOKUSATSU[1], 'Tokusatsu', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        TOKUSATSU_ALPHA[1],
+        'Tokusatsu (Ordre alphabétique)',
+        'az.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -126,7 +131,7 @@ def loadTypelist(typemovie, typelist):
 
     list_typelist = {}
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if aEntry[0]:
                 if aEntry[0] == typelist:
@@ -220,7 +225,14 @@ def ShowAlpha(typemovie):
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showSeries',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'listes.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -231,7 +243,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sUrl + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -253,7 +265,7 @@ def showSeries(sSearch=''):
     if sSearch:
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
     else:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?<td class'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\\/>.+?alt="([^"]+).+?<td class'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -264,7 +276,7 @@ def showSeries(sSearch=''):
             sTitle = ''
             try:
                 sTitle = re.search('<h1>([^<]+)', sHtmlContent).group(1)
-            except:
+            except BaseException:
                 pass
             if sTitle:
                 sUrl2 = sUrl
@@ -273,7 +285,8 @@ def showSeries(sSearch=''):
                 # Enleve le contenu pour adulte.
                 if 'Public Averti' in sTitle or 'Interdit' in sTitle:
                     if adulteContent == "false":
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER,
+                                     '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
                         return
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -290,7 +303,7 @@ def showSeries(sSearch=''):
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=True)
 
@@ -304,13 +317,13 @@ def showSeries(sSearch=''):
                 # Enleve les balise.
                 try:
                     sTitle = re.sub('<.*?>', '', aEntry[2])
-                except:
+                except BaseException:
                     sTitle = aEntry[2]
 
                 # Le décodage n'est pas utile sous Python 3
                 try:
                     sTitle = sTitle.decode('iso-8859-1').encode('utf8')
-                except:
+                except BaseException:
                     pass
 
                 sUrl2 = URL_MAIN + aEntry[0]
@@ -319,7 +332,7 @@ def showSeries(sSearch=''):
                 sTitle = aEntry[2]
                 try:
                     sTitle = sTitle.decode('iso-8859-1').encode('utf8')
-                except:
+                except BaseException:
                     pass
 
                 sUrl2 = URL_MAIN + aEntry[0]
@@ -369,15 +382,15 @@ def showEpisode():
             # Enleve les balises.
             try:
                 sDesc = re.sub('<.*?>', '', sDesc)
-            except:
+            except BaseException:
                 pass
-    except:
+    except BaseException:
         pass
 
     sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?nowrap>+?<.+?</td>.+?<.+?/td>.+?<.+?<a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -390,7 +403,7 @@ def showEpisode():
             sTitle = aEntry[0].replace('FHD', '').replace('vostfr', '').replace('HD', '').replace('HQ', '')
             try:
                 sTitle = sTitle.decode('iso-8859-1').encode('utf8')
-            except:
+            except BaseException:
                 pass
 
             sUrl2 = URL_MAIN + aEntry[1]
@@ -423,14 +436,14 @@ def showHosters():
     sPattern = '"([0-9p]+)".+?url":"(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry[0])
             sHosterUrl = aEntry[1].replace('\\/', '/')
             oHoster = cHosterGui().checkHoster('mp4')
 
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

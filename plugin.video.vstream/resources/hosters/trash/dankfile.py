@@ -3,23 +3,24 @@ from resources.lib.parser import cParser
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 
+
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'DankFile.com'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'dankfile'
@@ -52,23 +53,22 @@ class cHoster(iHoster):
         return self.__getUrlFromJavascriptCode(sHtmlContent)
 
     def __getUrlFromJavascriptCode(self, sHtmlContent):
-        sPattern = "<script type='text/javascript'>eval.*?return p}\((.*?)</script>"
+        sPattern = "<script type='text/javascript'>eval.*?return p}\\((.*?)</script>"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sJavascript = aResult[1][0]
 
             sUnpacked = cJsUnpacker().unpackByString(sJavascript)
-            sPattern = ".addVariable\('file','([^']+)'"
+            sPattern = ".addVariable\\('file','([^']+)'"
             oParser = cParser()
             aResultLink = oParser.parse(sUnpacked, sPattern)
-            
-            if (aResultLink[0] == True):
+
+            if (aResultLink[0]):
                 aResult = []
                 aResult.append(True)
                 aResult.append(aResultLink[1][0])
                 return aResult
 
         return False, ''
-

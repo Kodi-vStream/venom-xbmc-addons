@@ -1,7 +1,8 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 import urlresolver
+
 
 class cHoster(iHoster):
 
@@ -15,7 +16,7 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR violet]'+ self.__sDisplayName + self.__sRealHost + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + self.__sRealHost + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -53,7 +54,7 @@ class cHoster(iHoster):
     def checkUrl(self, sUrl):
         return True
 
-    def getUrl(self,media_id):
+    def getUrl(self, media_id):
         return ''
 
     def getMediaLink(self):
@@ -62,7 +63,7 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         sUrl = self.__sUrl
 
-        hmf = urlresolver.HostedMediaFile(url = sUrl)
+        hmf = urlresolver.HostedMediaFile(url=sUrl)
         if hmf.valid_url():
             stream_url = hmf.resolve()
             if stream_url:

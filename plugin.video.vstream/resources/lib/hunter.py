@@ -14,12 +14,12 @@ def duf(d, e, f):
     j = 0
     for c, b in enumerate(d):
         if b in h:
-            j = j + h.index(b)*e**c
+            j = j + h.index(b) * e**c
 
     k = ""
     while j > 0:
         k = i[j % f] + k
-        j = (j - (j % f))//f
+        j = (j - (j % f)) // f
 
     return int(k) or 0
 

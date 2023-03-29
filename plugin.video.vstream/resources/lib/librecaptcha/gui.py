@@ -22,7 +22,15 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl(self.ctrlBackground)
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Le theme est : ' + kwargs.get('msg'), 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            250,
+            20,
+            724,
+            400,
+            'Le theme est : ' +
+            kwargs.get('msg'),
+            'font40',
+            '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.img = xbmcgui.ControlImage(250, 110, 780, 499, str(self.cptloc))
@@ -130,10 +138,10 @@ class cInputWindow(xbmcgui.WindowDialog):
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
                 if index.isnumeric():
-                    self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
-                    self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
+                    self.chkstate[int(index) - 1] = not self.chkstate[int(index) - 1]
+                    self.chk[int(index) - 1].setVisible(self.chkstate[int(index) - 1])
 
-        except:
+        except BaseException:
             pass
 
     def onAction(self, action):
@@ -187,7 +195,7 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
             else:
                 self.chkstate = "N"
                 self.chk = "N"
-        except:
+        except BaseException:
             pass
 
         if str(control.getLabel()) == "Yes":

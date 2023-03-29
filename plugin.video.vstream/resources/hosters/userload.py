@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-## https://userload.co/embed/xxxx
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://userload.co/embed/xxxx
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
@@ -9,9 +9,11 @@ from resources.lib.aadecode import AADecoder
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import VSlog
 
-import requests, re 
+import requests
+import re
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
+
 
 class cHoster(iHoster):
 
@@ -21,7 +23,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -62,26 +64,26 @@ class cHoster(iHoster):
         url = self.__sUrl
 
         keymorocco = ''
-        keymycountry= ''
+        keymycountry = ''
         morocco = ''
         mycountry = ''
 
         urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
 
-        #A voir quel encodage il faut pour Kodi 18.
+        # A voir quel encodage il faut pour Kodi 18.
         sHtmlContent1 = requests.get(urlapi).content.decode('utf-8')
 
         oParser = cParser()
-        sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
-        aResult = oParser.parse(sHtmlContent1 , sPattern)
+        sPattern = '(ﾟωﾟ.+?\\(\'_\'\\);)'
+        aResult = oParser.parse(sHtmlContent1, sPattern)
 
-        if (aResult[0]== True):
+        if (aResult[0]):
             sdecode = AADecoder(aResult[1][0]).decode()
 
-            sPattern =  'morocco=".([^\W]+).+?"&mycountry=".([^\W]+)'
+            sPattern = 'morocco=".([^\\W]+).+?"&mycountry=".([^\\W]+)'
             aResult_2 = oParser.parse(sdecode, sPattern)
 
-            if (aResult_2[0] == True):
+            if (aResult_2[0]):
                 keymorocco = aResult_2[1][0][0]
                 keymycountry = aResult_2[1][0][1]
 
@@ -92,7 +94,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Referer', referer)
         sHtmlContent1 = oRequestHandler.request()
 
-        sPattern2 = '<script type="text/javascript">(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+        sPattern2 = '<script type="text/javascript">(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?{}\\)\\))'
         aResult = re.findall(sPattern2, sHtmlContent1)
 
         if aResult:
@@ -103,10 +105,10 @@ class cHoster(iHoster):
             strs = cPacker().unpack(str2)
 
             oParser = cParser()
-            sPattern = 'var\s(.+?)="([^"]*)'
+            sPattern = 'var\\s(.+?)="([^"]*)'
             aResult = oParser.parse(strs, sPattern)
 
-            if (aResult[0]== True):
+            if (aResult[0]):
                 for r in aResult[1]:
                     if r[0] == keymorocco:
                         morocco = r[1]
@@ -125,7 +127,7 @@ class cHoster(iHoster):
             oRequest.addParametersLine(pdata)
             api_call = oRequest.request()
 
-            if 'mp4' in api_call  and 'uloadcdn.com' in api_call :
+            if 'mp4' in api_call and 'uloadcdn.com' in api_call:
                 return True, api_call.strip()
 
         return False, False

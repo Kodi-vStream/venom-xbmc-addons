@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.comaddon import progress, dialog
+from resources.lib.util import cUtil
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import xbmc
+import requests
+import re
 return False  # Cloudflare 15/01/2021
 
-import re
-import requests
-import xbmc
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, dialog
 
 SITE_IDENTIFIER = 'dpstreaming'
 SITE_NAME = 'DP Streaming'
@@ -55,7 +54,7 @@ def protectStreamByPass(url):
     sPattern = 'var k=\"([^<>\"]*?)\";'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         dialog().VSinfo('Décodage en cours', 'Patientez', 5)
         xbmc.sleep(5000)
@@ -84,13 +83,13 @@ def protectStreamByPass(url):
         # recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
         aResult = oParser.parse(data, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         # recherche d'un lien redirigee
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(data, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
     return ''
@@ -116,7 +115,7 @@ def showSeriesSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -158,7 +157,10 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = re.sub('src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"', '', sHtmlContent)
+    sHtmlContent = re.sub(
+        'src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"',
+        '',
+        sHtmlContent)
     sPattern = '<div class="moviefilm".+?<a href="([^"]+)".+?<img.+?src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -166,7 +168,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -190,7 +192,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -203,7 +205,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink" rel="next" href="([^"]+)">»</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -228,13 +230,13 @@ def showSeries():
         if aResult[0]:
             sDesc = aResult[1][0].decode('utf-8')
             sDesc = cUtil().unescape(sDesc).encode('utf-8')
-    except:
+    except BaseException:
         pass
 
     sPattern = '<a href="([^"]+)" class.+?><span>([^<]+)</span></a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -265,7 +267,7 @@ def showLinks():
     sPattern = 'class="lg" width=".+?">(?:(VF|VOSTFR|VO))</td>.+?<td class="lg" width=".+?">([^<]+)</td.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sLang = aEntry[0]
@@ -294,7 +296,7 @@ def serieHosters():
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

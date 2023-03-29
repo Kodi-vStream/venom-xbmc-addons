@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -11,6 +11,7 @@ import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -19,7 +20,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -48,34 +49,33 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-
     def __getMediaLinkForGuest(self):
         api_call = False
         oParser = cParser()
-        sPattern = 'return decodeURIComponent\(escape\(r\)\)}\("([^,]+)",([^,]+),"([^,]+)",([^,]+),([^,]+),([^,\))]+)\)'
+        sPattern = 'return decodeURIComponent\\(escape\\(r\\)\\)}\\("([^,]+)",([^,]+),"([^,]+)",([^,]+),([^,]+),([^,\\))]+)\\)'
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Cookie', 'popads2=opened')
         sHtmlContent = oRequest.request()
-        
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        #Get decode page
-        #oRequest = cRequestHandler("https://upvideo.to/assets/js/tabber.js")
-        #oRequest.addHeaderEntry('Referer', self.__sUrl)
-        #sHtmlContent2 = oRequest.request()
-        #aResult2 = oParser.parse(sHtmlContent2, sPattern)
 
-        #if (aResult2[0] == True):
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        # Get decode page
+        # oRequest = cRequestHandler("https://upvideo.to/assets/js/tabber.js")
+        # oRequest.addHeaderEntry('Referer', self.__sUrl)
+        # sHtmlContent2 = oRequest.request()
+        # aResult2 = oParser.parse(sHtmlContent2, sPattern)
+
+        # if (aResult2[0] == True):
         #    j = aResult2[1][0]
         #    decoder = hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5]))
         #    VSlog("Decoder ok")
-            
-        if (aResult[0] == True):
+
+        if (aResult[0]):
             l = aResult[1]
             for j in l:
-                data = hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5]))
-                if "fcbbbdddebad" in data:                    
+                data = hunter(j[0], int(j[1]), j[2], int(j[3]), int(j[4]), int(j[5]))
+                if "fcbbbdddebad" in data:
                     r = re.search('var fcbbbdddebad *= *"([^"]+)" *;', data)
                     if not r:
                         VSlog('er2')

@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -49,19 +49,19 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        #accelère le traitement
+        # accelère le traitement
         sHtmlContent = oParser.abParse(sHtmlContent, 'var player', 'vvplay')
         # Traitement pour les liens m3u8
         sHtmlContent = sHtmlContent.replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
         sPattern = '"(http[^"]+(?:.m3u8|.mp4))"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = ''
 
             # initialisation des tableaux
-            url=[]
-            qua=[]
+            url = []
+            qua = []
             n = 1
 
             # Remplissage des tableaux

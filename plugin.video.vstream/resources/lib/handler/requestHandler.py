@@ -172,7 +172,7 @@ class cRequestHandler:
 
         sContent = ''
 
-        if self.BUG_SSL == True:
+        if self.BUG_SSL:
             self.verify = False
 
         if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
@@ -197,11 +197,15 @@ class cRequestHandler:
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
 
-            self.oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
+            self.oResponse = self.s.send(
+                prepped,
+                timeout=self.__timeout,
+                allow_redirects=self.redirects,
+                verify=self.verify)
             self.__sResponseHeader = self.oResponse.headers
             self.__sRealUrl = self.oResponse.url
 
-            if jsonDecode == True:
+            if jsonDecode:
                 sContent = self.oResponse.json()
             else:
                 sContent = self.oResponse.content
@@ -209,16 +213,17 @@ class cRequestHandler:
                 if isMatrix() and 'youtube' not in self.oResponse.url:
                     try:
                         sContent = sContent.decode()
-                    except:
+                    except BaseException:
                         # Decodage minimum obligatoire.
                         try:
                             sContent = sContent.decode('unicode-escape')
-                        except:
+                        except BaseException:
                             pass
 
         except ConnectionError as e:
             # Retry with DNS only if addon is present
-            if 'getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e) and self.__enableDNS == False:
+            if 'getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(
+                    e) and self.__enableDNS == False:
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
@@ -259,8 +264,10 @@ class cRequestHandler:
                     json_session = False
 
                     try:
-                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={'cmd': 'sessions.list'})
-                    except:
+                        json_session = post(
+                            CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
+                                'cmd': 'sessions.list'})
+                    except BaseException:
                         dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
                     if json_session:
@@ -273,7 +280,8 @@ class cRequestHandler:
                             }).json()
                             cloudproxy_session = json_session['session']
 
-                        self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
+                        self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (
+                            method == 'post') else 'application/json'
 
                         # Ont fait une requete.
                         json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
@@ -298,11 +306,11 @@ class cRequestHandler:
                     dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), self.oResponse.status_code, self.__sUrl))
 
         if sContent:
-            if (self.__bRemoveNewLines == True):
+            if (self.__bRemoveNewLines):
                 sContent = sContent.replace("\n", "")
                 sContent = sContent.replace("\r\t", "")
 
-            if (self.__bRemoveBreakLines == True):
+            if (self.__bRemoveBreakLines):
                 sContent = sContent.replace("&nbsp;", "")
 
         if self.__enableDNS:
@@ -356,17 +364,21 @@ def MPencode(fields):
     if fields:
         try:
             data = fields.iteritems()
-        except:
+        except BaseException:
             data = fields.items()
 
         for (key, value) in data:
             if not hasattr(value, 'read'):
-                itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"\r\n\r\n%s\r\n' % (random_boundary, key, value)
+                itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"\r\n\r\n%s\r\n' % (
+                    random_boundary, key, value)
                 form_data.append(itemstr)
             elif hasattr(value, 'read'):
                 with value:
-                    file_mimetype = mimetypes.guess_type(value.name)[0] if mimetypes.guess_type(value.name)[0] else 'application/octet-stream'
-                    itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"; filename="%s"\r\nContent-Type: %s\r\n\r\n%s\r\n' % (random_boundary, key, value.name, file_mimetype, value.read())
+                    file_mimetype = mimetypes.guess_type(
+                        value.name)[0] if mimetypes.guess_type(
+                        value.name)[0] else 'application/octet-stream'
+                    itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"; filename="%s"\r\nContent-Type: %s\r\n\r\n%s\r\n' % (
+                        random_boundary, key, value.name, file_mimetype, value.read())
                 form_data.append(itemstr)
             else:
                 raise Exception(value, 'Field is neither a file handle or any other decodable type.')

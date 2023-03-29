@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import urllib
+
 
 class cHoster(iHoster):
 
@@ -12,10 +13,10 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -34,16 +35,16 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
             oRequestHandler = cRequestHandler(sUrl)
@@ -52,16 +53,16 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
-        
+        return sUrl
+
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
         sPattern = 'flashvars.filekey="(.+?)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
+        if (aResult[0]):
+            aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
         return ''
@@ -81,21 +82,22 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
- 
-        #api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
-        api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
-        
+    def __getMediaLinkForGuest(self):
+
+        # api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
+        api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (
+            self.__getIdFromUrl(), self.__getKey())
+
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
-        
-        sPattern =  'url=(.+?)&title'
+
+        sPattern = 'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             stream_url = urllib.unquote(aResult[1][0])
             return True, stream_url
         else:
             return False, False
-        
+
         return False, False

@@ -37,10 +37,20 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Toutes les emissions', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_DIVERTISSEMENT[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_DIVERTISSEMENT[1], 'Emissions de Divertissements/Téléréalité', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        REPLAYTV_DIVERTISSEMENT[1],
+        'Emissions de Divertissements/Téléréalité',
+        'tv.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_INVESTIGATION[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_INVESTIGATION[1], 'Emissions de Reportages/Investigations', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        REPLAYTV_INVESTIGATION[1],
+        'Emissions de Reportages/Investigations',
+        'tv.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -48,7 +58,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -77,7 +87,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if sSearch:
@@ -99,7 +109,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -109,10 +119,10 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="next" href="([^"]+)".+?<\/a><a class="last" href="https.+?page\/(\d+)'
+    sPattern = 'class="next" href="([^"]+)".+?<\\/a><a class="last" href="https.+?page\\/(\\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -140,14 +150,14 @@ def showHosters():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 sHosterUrl = aEntry[1]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

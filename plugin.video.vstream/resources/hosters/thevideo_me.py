@@ -30,7 +30,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -56,16 +57,16 @@ class cHoster(iHoster):
             https://thevideo.me/embed-1a2b3c4e5d6f.html
             http(s)://thevideo.me/embed-1a2b3c4e5d6f-816x459.html
         """
-        sPattern = '\/(?:embed-)?(\w+)(?:-\d+x\d+)?(?:\.html)?$'
-        aResult = cParser().parse( sUrl, sPattern )
-        if (aResult[0] == True):
+        sPattern = '\\/(?:embed-)?(\\w+)(?:-\\d+x\\d+)?(?:\\.html)?$'
+        aResult = cParser().parse(sUrl, sPattern)
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 
     def setUrl(self, sUrl):
         sId = self.__getIdFromUrl(sUrl)
         # anciens lien
-        if 'video.' in sUrl :
+        if 'video.' in sUrl:
             self.__sUrl = 'http://thevideo.me/embed-' + sId + '.html'
         else:
             self.__sUrl = "https://vev.io/embed/" + sId
@@ -82,7 +83,7 @@ class cHoster(iHoster):
                            }
 
         # thevideo.me doesn't exist so take redirection
-        req = urllib2.Request(self.__sUrl,headers=request_headers)
+        req = urllib2.Request(self.__sUrl, headers=request_headers)
         gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
         response = urllib2.urlopen(req, context=gcontext)
         # sHtmlContent = response.read()

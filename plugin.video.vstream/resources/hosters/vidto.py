@@ -2,7 +2,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import re, time, xbmcgui
+import re
+import time
+import xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -11,7 +14,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -40,7 +43,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('http://vidto.me/', '')
         self.__sUrl = self.__sUrl.replace('embed-', '')
-        self.__sUrl= re.sub(r'\-.*\.html', '', self.__sUrl)
+        self.__sUrl = re.sub(r'\-.*\.html', '', self.__sUrl)
         self.__sUrl = 'http://vidto.me/' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
@@ -57,10 +60,10 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
+        sPattern = '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             time.sleep(7)
             oRequest = cRequestHandler(self.__sUrl)
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -71,20 +74,20 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
             sHtmlContent = sHtmlContent.replace('file:""', '')
 
-            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-                sPattern =  ',file:"([^"]+)"}'
+                sPattern = ',file:"([^"]+)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if (aResult[0]):
                     return True, aResult[1][0]
             else:
-                sPattern = '{file:"([^"]+)",label:"(\d+p)"}'
+                sPattern = '{file:"([^"]+)",label:"(\\d+p)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    url=[]
-                    qua=[]
+                if (aResult[0]):
+                    url = []
+                    qua = []
                 for i in aResult[1]:
                     url.append(str(i[0]))
                     qua.append(str(i[1]))
@@ -93,6 +96,6 @@ class cHoster(iHoster):
                     return True, url[0]
 
                 elif len(url) > 1:
-                    return True, url[0] #240p de nos jours serieux dialog choix inutile max vue 360p pour le moment
+                    return True, url[0]  # 240p de nos jours serieux dialog choix inutile max vue 360p pour le moment
 
         return False, False

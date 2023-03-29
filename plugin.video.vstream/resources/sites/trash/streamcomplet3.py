@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
-import re
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import re
+return False
 
 
 # le 24122020  memes films que streamiz sans redirections (considéré comme clone et avec code differents)
@@ -60,7 +59,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -116,7 +115,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -138,7 +137,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -147,10 +146,10 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '</span>\s*<a href="([^"]+).+?">(\d+)</a>\s*</div>'
+    sPattern = '</span>\\s*<a href="([^"]+).+?">(\\d+)</a>\\s*</div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -172,10 +171,10 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'full-text clearfix">\s*<p>([^<]+)'
+    sPattern = 'full-text clearfix">\\s*<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'streamcomplet3'
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = aResult[1][0].replace('Résumé du Film :', '')
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
@@ -185,13 +184,13 @@ def showLinks():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sUrl)
-            if (oHoster != False):
+            if (oHoster):
                 hostName = oHoster.getDisplayName()
             else:
                 hostName = getHostName(sUrl)
@@ -215,7 +214,7 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -227,10 +226,10 @@ def getHostName(url):
 
     try:
         if 'www' not in url:
-            sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
+            sHost = re.search('http.*?\\/\\/([^.]*)', url).group(1)
         else:
-            sHost = re.search('htt.+?\/\/(?:www).([^.]*)', url).group(1)
-    except:
+            sHost = re.search('htt.+?\\/\\/(?:www).([^.]*)', url).group(1)
+    except BaseException:
         sHost = url
 
     return sHost.capitalize()

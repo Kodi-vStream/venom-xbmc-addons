@@ -1,8 +1,10 @@
-#coding: utf-8
+# coding: utf-8
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import xbmcgui, re
+import xbmcgui
+import re
+
 
 class cHoster(iHoster):
 
@@ -11,7 +13,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -58,7 +60,7 @@ class cHoster(iHoster):
 
         api_call = ''
 
-        sPattern =  'id="videolink">([^<>]+)<\/p>'
+        sPattern = 'id="videolink">([^<>]+)<\\/p>'
         aResult = re.findall(sPattern, sHtmlContent)
 
         if (aResult):

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 27 https://cinemey.com/
+from resources.lib.comaddon import progress
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import xbmc
+import re
 return False  # HS voir https://cinemay.cc/ memes films et series
 
-import re
-import xbmc
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'cinemey'
 SITE_NAME = 'Cinemey'
@@ -87,7 +87,7 @@ def showMenuSeries():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -172,14 +172,14 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # title img year surl
-    sPattern = '<article class.+?data-url.+?title="([^"]*).+?img src=([^\s]*).+?year">([^<]+).+?href="([^"]+)'
+    sPattern = '<article class.+?data-url.+?title="([^"]*).+?img src=([^\\s]*).+?year">([^<]+).+?href="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -214,7 +214,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -226,7 +226,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+?)</a><a href="([^"]+?)" class="next page-numbers'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -252,7 +252,7 @@ def showSelectType():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -286,7 +286,7 @@ def showSXE():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = 'class="num-epi">([^<]+).+?href="([^"]+)'
@@ -294,7 +294,7 @@ def showSXE():
 
     list_saison = []
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if 'x' in aEntry[0]:
@@ -334,7 +334,7 @@ def showLink():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     # dans le cas d'une erreur si serie (pas de controle année et genre)
@@ -355,12 +355,12 @@ def showLink():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sKey = aEntry[0]
             sHost = aEntry[1].replace('www.', '').replace('embed.mystream.to', 'mystream')
-            sHost = re.sub('\.\w+', '', sHost).capitalize()
+            sHost = re.sub('\\.\\w+', '', sHost).capitalize()
             sLang = aEntry[2].upper()
             sUrl2 = URL_MAIN + 'll/captcha?hash=' + sKey
 
@@ -390,13 +390,13 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.*?src=([^\s]+)'
+    sPattern = '<iframe.*?src=([^\\s]+)'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = aResult[0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -420,7 +420,7 @@ def GetTokens():
     if (aResult[0] == False):
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         token = aResult[1][0]
 
     sPattern = 'XSRF-TOKEN=([^;]+).+?cinemay_session=([^;]+)'
@@ -429,7 +429,7 @@ def GetTokens():
     if (aResult[0] == False):
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 

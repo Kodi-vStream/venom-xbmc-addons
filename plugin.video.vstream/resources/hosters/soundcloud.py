@@ -8,7 +8,7 @@ from resources.lib.comaddon import VSlog
 
 try:
     import json
-except:
+except BaseException:
     import simplejson as json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -69,7 +69,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         # Magic number
-        sPattern = 'soundcloud:\/\/sounds:([0-9]+)">'
+        sPattern = 'soundcloud:\\/\\/sounds:([0-9]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             n = aResult[1][0]
@@ -112,7 +112,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(TrackUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        sPattern = 'soundcloud:tracks:([^"]+\/)stream'
+        sPattern = 'soundcloud:tracks:([^"]+\\/)stream'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sTrack = aResult[1][0]

@@ -40,7 +40,7 @@ class cHoster(iHoster):
         sPattern = 'v=([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -81,4 +81,3 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
-

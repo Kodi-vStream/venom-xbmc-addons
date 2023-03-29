@@ -61,6 +61,7 @@ class cPacker():
             args = re.search(pattern, str, re.DOTALL)
             if args:
                 a = args.groups()
+
                 def openload_re(match):
                     c = match.group(0)
                     b = ord(c) + int(a[1])
@@ -82,7 +83,7 @@ class cPacker():
     def _filterargs(self, source):
         """Juice from a source file the four args needed by decoder."""
 
-        source = source.replace(',[],',',0,')
+        source = source.replace(',[],', ',0,')
 
         juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
         args = re.search(juicer, source, re.DOTALL)
@@ -132,7 +133,7 @@ class Unbaser(object):
     ALPHABET = {
         62: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
         95: (' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-             '[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
+             '[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
     }
 
     def __init__(self, base):

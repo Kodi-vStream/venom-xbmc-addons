@@ -57,7 +57,7 @@ class cHoster(iHoster):
         sPattern = 'google.+?([a-zA-Z0-9-_]{20,40})'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -92,13 +92,13 @@ class cHoster(iHoster):
 
         # listage des cookies
         c = Headers['Set-Cookie']
-        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', c)
+        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\\/]+?);', c)
         if c2:
             cookies = ''
             for cook in c2:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
-        sPattern = '\["fmt_stream_map","([^"]+)"]'
+        sPattern = '\\["fmt_stream_map","([^"]+)"]'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -110,10 +110,10 @@ class cHoster(iHoster):
         sListUrl = aResult[1][0]
 
         if sListUrl:
-            aResult2 = oParser.parse(sHtmlContent, '([0-9]+)\/([0-9]+x[0-9]+)\/')
+            aResult2 = oParser.parse(sHtmlContent, '([0-9]+)\\/([0-9]+x[0-9]+)\\/')
 
         # liste les qualitee
-            r = oParser.parse(sListUrl, '([0-9]+)\|([^,]+)')
+            r = oParser.parse(sListUrl, '([0-9]+)\\|([^,]+)')
             for item in r[1]:
                 url.append(item[1].decode('unicode-escape'))
                 for i in aResult2[1]:

@@ -86,7 +86,7 @@ def UnlockUrl(url2=None):
         VSlog('Redirection :' + url)
     else:
         # VSlog(code)
-        aResult = re.search("!= null\){\s*\$.get\('([^']+)', *{(.+?)}", code, re.DOTALL)
+        aResult = re.search("!= null\\){\\s*\\$.get\\('([^']+)', *{(.+?)}", code, re.DOTALL)
         if aResult:
             dat = aResult.group(2)
             dat = dat.replace("'", '')
@@ -117,7 +117,7 @@ def LoadLinks(htmlcode):
     VSlog('Scan des liens')
 
     host = 'https://www.flashx.tv'
-    sPattern = '[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
+    sPattern = '[\\("\'](https*:)*(\\/[^,"\'\\)\\s]+)[\\)\'"]'
     aResult = re.findall(sPattern, htmlcode, re.DOTALL)
 
     # VSlog(str(aResult))
@@ -127,8 +127,8 @@ def LoadLinks(htmlcode):
         if http:
             sUrl = http + sUrl
 
-        sUrl = sUrl.replace('/\/', '//')
-        sUrl = sUrl.replace('\/', '/')
+        sUrl = sUrl.replace('/\\/', '//')
+        sUrl = sUrl.replace('\\/', '/')
 
         # filtrage mauvaise url
         if (sUrl.count('/') < 2) or ('<' in sUrl) or ('>' in sUrl) or (len(sUrl) < 15):
@@ -179,7 +179,7 @@ def LoadLinks(htmlcode):
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                         'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                         'Accept-Encoding': 'gzip, deflate, br'
-                        }
+                    }
                     request = urllib2.Request(e.geturl().replace('https', 'http'), None, headers9)
                     reponse = urllib2.urlopen(request)
                     sCode = reponse.read()
@@ -210,7 +210,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -245,7 +246,7 @@ class cHoster(iHoster):
             # 'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
             'Referer': 'http://embed.flashx.tv/embed.php?c=' + sId,
             'Accept-Encoding': 'identity'
-            }
+        }
 
         MaxRedirection = 3
         while MaxRedirection > 0:
@@ -289,17 +290,17 @@ class cHoster(iHoster):
         return sHtmlContent
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "https*:\/\/((?:www.|play.)?flashx.+?)\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
+        sPattern = "https*:\\/\\/((?:www.|play.)?flashx.+?)\\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0][1]
 
         return ''
 
     def GetHost(self, sUrl):
         oParser = cParser()
-        sPattern = 'https*:\/\/(.+?)\/'
+        sPattern = 'https*:\\/\\/(.+?)\\/'
         aResult = oParser.parse(sUrl, sPattern)
         if aResult[0]:
             return aResult[1][0]
@@ -370,7 +371,7 @@ class cHoster(iHoster):
         # fh.write(sHtmlContent)
         # fh.close()
 
-        sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
+        sPattern = 'href=["\'](https*:\\/\\/www\\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern, sHtmlContent, re.DOTALL)
         # VSlog(str(AllUrl))
 
@@ -383,7 +384,7 @@ class cHoster(iHoster):
                     if i[0] == '':
                         web_url = i[1]
             else:
-                return False,False
+                return False, False
         else:
             web_url = AllUrl[0]
 
@@ -394,7 +395,7 @@ class cHoster(iHoster):
         LoadLinks(sHtmlContent)
         # unlock bubble
         unlock = False
-        url2 = re.findall('["\']([^"\']+?\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
+        url2 = re.findall('["\']([^"\']+?\\.js\\?cache.+?)["\']', sHtmlContent, re.DOTALL)
         if not url2:
             VSlog('No special unlock url find')
         for i in url2:
@@ -409,7 +410,7 @@ class cHoster(iHoster):
         # get the page
         sHtmlContent = self.GetRedirectHtml(web_url, sId, True)
 
-        if sHtmlContent == False:
+        if not sHtmlContent:
             VSlog('Passage en mode barbare')
             # ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
@@ -435,7 +436,7 @@ class cHoster(iHoster):
             sRefresh = aResult[0]
 
             # on recupere le script de debloquage
-            sPattern = "<script type='text/javascript' src='([^']+)'><\/script>"
+            sPattern = "<script type='text/javascript' src='([^']+)'><\\/script>"
             aResult = re.findall(sPattern, sHtmlContent)
             if not aResult:
                 return False, False
@@ -460,13 +461,13 @@ class cHoster(iHoster):
         if (False):
 
             # A t on le lien code directement?
-            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            sPattern = "(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>"
             aResult = re.findall(sPattern, sHtmlContent)
 
             if (aResult):
                 # VSlog("lien code")
 
-                AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>', sHtmlContent, re.DOTALL)
+                AllPacked = re.findall('(eval\\(function\\(p,a,c,k.*?)\\s+<\\/script>', sHtmlContent, re.DOTALL)
                 if AllPacked:
                     for i in AllPacked:
                         sUnpacked = cPacker().unpack(i)
@@ -483,7 +484,7 @@ class cHoster(iHoster):
 
         # VSlog(str(aResult))
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             # initialisation des tableaux
             url = []
             qua = []

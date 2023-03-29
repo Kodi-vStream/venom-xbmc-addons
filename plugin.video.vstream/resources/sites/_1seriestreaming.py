@@ -59,7 +59,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -94,7 +94,14 @@ def showAlpha():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'alphabet/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showSeries',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'az.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -151,7 +158,7 @@ def showSeries(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -160,7 +167,7 @@ def showSeries(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
+            sThumb = re.sub('/w\\d+/', '/w342/', aEntry[0])
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -174,7 +181,7 @@ def showSeries(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -185,9 +192,9 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '> \d+ </span><a href="([^"]+).+?>([^<]+)</a></div></div>'
+    sPattern = '> \\d+ </span><a href="([^"]+).+?>([^<]+)</a></div></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page=([0-9]+)', sNextPage).group(1)
@@ -214,13 +221,13 @@ def showSaisons():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-    except:
+    except BaseException:
         pass
 
     sPattern = 'link"><img src=([^ ]+).+?href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -255,7 +262,7 @@ def showEpisodes():
     sPattern = 'LI2"><a href="([^"]+)"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -286,12 +293,12 @@ def showLinks():
     sPattern = 'code="([^"]+).+?</i>([^<]+).+?flag/([^ ]+).png'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sHost = aEntry[1].replace('www.', '')
-            sHost = re.sub('\..+', '', sHost).capitalize()
+            sHost = re.sub('\\..+', '', sHost).capitalize()
             sLang = aEntry[2].replace('default', '').upper()
             sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[0]
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
@@ -323,7 +330,7 @@ def showHosters():
 
     if 'captcha' not in sHosterUrl:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -331,10 +338,10 @@ def showHosters():
         oParser = cParser()
         sPattern = 'src=([^ ]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -358,7 +365,7 @@ def getTokens():
     if (aResult[0] == False):
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         token = aResult[1][0]
 
     sPattern = 'XSRF-TOKEN=([^;]+).+?.+?1seriestreaming_session=([^;]+)'
@@ -367,7 +374,7 @@ def getTokens():
     if (aResult[0] == False):
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 

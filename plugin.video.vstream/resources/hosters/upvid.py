@@ -1,15 +1,17 @@
-#-*- coding: utf-8 -*-
-#https://upvid.co/embed-xxx.html
-#https://upvid.co/xxx.html
+# -*- coding: utf-8 -*-
+# https://upvid.co/embed-xxx.html
+# https://upvid.co/xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
 from resources.lib.comaddon import isMatrix
-import base64, re
+import base64
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 sPattern1 = '<iframe id="iframe" src="([^"]+)"'
+
 
 class cHoster(iHoster):
 
@@ -19,7 +21,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -44,13 +46,12 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        #lien embed obligatoire
-        if not 'embed-' in self.__sUrl:
+        # lien embed obligatoire
+        if 'embed-' not in self.__sUrl:
             self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
-
 
     def __getMediaLinkForGuest(self):
         api_call = ''
@@ -61,7 +62,7 @@ class cHoster(iHoster):
 
         aResult = oParser.parse(sHtmlContent, sPattern1)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sUrl = aResult[1][0]
 
             oRequest = cRequestHandler(sUrl)
@@ -70,7 +71,7 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
 
             aResult = oParser.parse(sHtmlContent, sPattern1)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 sUrl2 = aResult[1][0]
 
                 oRequest = cRequestHandler(sUrl2)
@@ -83,23 +84,24 @@ class cHoster(iHoster):
                 if (aResult):
                     sFunc = base64.b64decode(aResult.group(1))
 
-                aResult = re.search('(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent, re.DOTALL | re.UNICODE)
+                aResult = re.search('(ﾟωﾟ.+?\\(\'_\'\\);)', sHtmlContent, re.DOTALL | re.UNICODE)
                 if (aResult):
                     sHtmlContent = AADecoder(aResult.group(1)).decode()
                     if sHtmlContent:
-                        aResult = re.search("func.innerHTML.+?\('(.+?)',", sHtmlContent, re.DOTALL)
+                        aResult = re.search("func.innerHTML.+?\\('(.+?)',", sHtmlContent, re.DOTALL)
                         if (aResult):
                             chars = aResult.group(1)
                             final = sDecode(chars, sFunc)
-                            sPattern = "source\.setAttribute\('src', '([^']+)'\)"
+                            sPattern = "source\\.setAttribute\\('src', '([^']+)'\\)"
                             aResult = oParser.parse(final, sPattern)
-                            if (aResult[0] == True):
+                            if (aResult[0]):
                                 api_call = aResult[1][0]
 
         if (api_call):
             return True, api_call
 
         return False, False
+
 
 def sDecode(r, o):
     t = []
@@ -120,7 +122,7 @@ def sDecode(r, o):
     for h in range(len(o)):
         f = f + 1
         n = (n + e[f % 256]) % 256
-        if not f in e:
+        if f not in e:
             f = 0
         t = e[f]
         e[f] = e[n]
@@ -131,4 +133,3 @@ def sDecode(r, o):
         else:
             a += chr(ord(o[h]) ^ e[(e[f] + e[n]) % 256])
     return a
-

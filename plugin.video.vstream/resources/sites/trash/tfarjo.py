@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
 import re
+from resources.lib.comaddon import progress, addon
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+return False
 sColor = addon().getSetting("deco_color")
 
 SITE_IDENTIFIER = 'tfarjo'
@@ -69,8 +69,8 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sText= sSearchText
+    if (sSearchText):
+        sText = sSearchText
         showMovies(sText)
         oGui.setEndOfDirectory()
         return
@@ -81,7 +81,7 @@ def showGenres():
 
     liste = []
     liste.append(['Action', URL_MAIN + 'films/genre/action'])
-    liste.append(['Animation', URL_MAIN +'films/genre/animation'])
+    liste.append(['Animation', URL_MAIN + 'films/genre/animation'])
     liste.append(['Arts Martiaux', URL_MAIN + 'films/genre/arts-Martiaux'])
     liste.append(['Aventure', URL_MAIN + 'films/genre/aventure'])
     liste.append(['Biopic', URL_MAIN + 'films/genre/biopic'])
@@ -146,7 +146,10 @@ def showMovies(sSearch=''):
         oRequest.addParametersLine('search=' + sText + '&csrf_test_name=' + sCode)
 
         sHtmlContent = oRequest.request()
-        sHtmlContent = re.sub('<h2></h2>', '<span class="Langue..."></span><span class="qalite">Qualité...</span>', sHtmlContent)#recherche pas de qualité,langue
+        sHtmlContent = re.sub(
+            '<h2></h2>',
+            '<span class="Langue..."></span><span class="qalite">Qualité...</span>',
+            sHtmlContent)  # recherche pas de qualité,langue
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -155,8 +158,11 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        #parfois pas de qualité,langue,liens >> BA
-        sHtmlContent = re.sub('<span class="bientot"></span>', '<span class="nothing"></span><span class="qalite">nothing</span>', sHtmlContent)
+        # parfois pas de qualité,langue,liens >> BA
+        sHtmlContent = re.sub(
+            '<span class="bientot"></span>',
+            '<span class="nothing"></span><span class="qalite">nothing</span>',
+            sHtmlContent)
 
     sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)">.+?<span class="([^"]+)"></span><span class="qalite">([^<]+)</span>'
 
@@ -164,7 +170,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -173,7 +179,7 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            if aEntry[3] == 'nothing' and aEntry[4] == 'nothing':#pas de qualité,langue,liens >> BA
+            if aEntry[3] == 'nothing' and aEntry[4] == 'nothing':  # pas de qualité,langue,liens >> BA
                 continue
 
             sUrl = aEntry[0]
@@ -197,7 +203,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -207,9 +213,9 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="active">\d+</span>.+?<a href="([^"]+)" data-ci'
+    sPattern = '<span class="active">\\d+</span>.+?<a href="([^"]+)" data-ci'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False
@@ -231,7 +237,7 @@ def showSeries():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -253,7 +259,7 @@ def showSeries():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -276,11 +282,11 @@ def showSaisons():
     # pas encore d'épisode >> timer avant sortie
     sHtmlContent = re.sub('<kbd><span', '<kbd>nothing</span>', sHtmlContent)
 
-    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\/span>([^"]+)</a>'
+    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\\d+)<\\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\\/span>([^"]+)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
@@ -312,10 +318,10 @@ def showLink():
     cook = oRequest.GetCookies()
     sCode = getcode(sHtmlContent)
 
-    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?<\/span> *([^<]+)<"
+    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\\('([^']+)'\\).+?<\\/span> *([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sLang = aEntry[0].upper()
@@ -368,13 +374,13 @@ def showHosters():
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
 
         sHosterUrl = aResult[1][0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

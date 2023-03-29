@@ -67,13 +67,13 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
-        
+
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        
+
         urlDownload = oRequest.getRealUrl()
         host = 'https://' + urlDownload.split('/')[2]
 
@@ -85,26 +85,26 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(urlJS)
         oRequest.addHeaderEntry('User-Agent', UA)
         JScode = oRequest.request()
-        
+
         JScode = JScode.replace(' ', '')
-        
-        r = "if\(\$\.adblock!=null\){\$\.get\('([^']+)',{([^}]+)}"
+
+        r = "if\\(\\$\\.adblock!=null\\){\\$\\.get\\('([^']+)',{([^}]+)}"
         aResult = oParser.parse(JScode, r)
-        
+
         if not aResult[0]:
             return False, False
-        
+
         data = aResult[1][0][1].split(':')
         Fakeurl = aResult[1][0][0] + '?' + data[0] + '=' + data[1].replace("'", "")
-        
+
         # Request URL
         oRequest = cRequestHandler(Fakeurl)
         oRequest.addHeaderEntry('User-Agent', UA)
         try:
             tmp = oRequest.request()
-        except:
+        except BaseException:
             pass
-        sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
+        sPattern = '(\\s*eval\\s*\\(\\s*function(?:.|\\s)+?)<\\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             for i in aResult[1]:

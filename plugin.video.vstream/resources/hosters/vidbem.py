@@ -1,14 +1,15 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://www.vidbem.com/embed-xxx.html 
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://www.vidbem.com/embed-xxx.html
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.aadecode import AADecoder
-from resources.lib.comaddon import dialog #,VSlog
+from resources.lib.comaddon import dialog  # ,VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
+
 
 class cHoster(iHoster):
 
@@ -18,7 +19,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -69,16 +70,16 @@ class cHoster(iHoster):
         list_url = []
         list_q = []
         oParser = cParser()
-        
-        sPattern = '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
+
+        sPattern = '(?:[>;]\\s*)(ﾟωﾟ.+?\\(\'_\'\\);)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0]== True):  # 1 seul à vérifier ici ?
+        if (aResult[0]):  # 1 seul à vérifier ici ?
             sdec = AADecoder(aResult[1][0]).decode()
-            sPattern =  'file:"([^"]+).+?label:"([^"]+)'
+            sPattern = 'file:"([^"]+).+?label:"([^"]+)'
             aResult = oParser.parse(sdec, sPattern)
 
-            if (aResult[0] == True):
+            if (aResult[0]):
                 for aentry in aResult[1]:  # ou là
                     list_url.append(aentry[0])
                     list_q.append(aentry[1])

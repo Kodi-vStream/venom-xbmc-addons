@@ -29,13 +29,20 @@ view = '500'
 tmdb_session = ''
 tmdb_account = ''
 
+
 def load():
     oGui = cGui()
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', '%s (TMDB)' % addons.VSlang(30330), 'search.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        'showSearch',
+        '%s (TMDB)' %
+        addons.VSlang(30330),
+        'search.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30425), 'comments.png', oOutputParameterHandler)
@@ -267,7 +274,7 @@ def getAction():
         # vote /movie/{movie_id}/rating
         # /tv/{tv_id}/rating
         numboard = dialogs.numeric(0, 'Min 0.5 - Max 10')
-        if numboard != None:
+        if numboard is not None:
             sAction = '%s/%s/rating' % (sCat, sTMDB)
             sPost = {"value": numboard}
         else:
@@ -339,7 +346,7 @@ def showSearchMovie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
@@ -349,7 +356,7 @@ def showSearchSerie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showSeries(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
@@ -359,7 +366,7 @@ def showSearchActor():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showActors(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
@@ -504,9 +511,10 @@ def showMovies(sSearch=''):
                     break
 
                 # Mise en forme des infos (au format meta imdb)
-                i = grab._format(i, '',"movie")
+                i = grab._format(i, '', "movie")
 
-                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
+                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i[
+                    'genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
                 if not isMatrix():
                     sTitle = sTitle.encode("utf-8")
@@ -607,8 +615,9 @@ def showSeries(sSearch=''):
                     break
 
                 # Mise en forme des infos (au format meta imdb)
-                i = grab._format(i, '',"tvshow")
-                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
+                i = grab._format(i, '', "tvshow")
+                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i[
+                    'genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
                 if not isMatrix():
                     sTitle = sTitle.encode("utf-8")
@@ -682,10 +691,10 @@ def showSeriesSaison():
     sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     sId = oInputParameterHandler.getValue('sId')
 
-    if sId == False:
+    if not sId:
         sId = sUrl.split('/')[-1]
 
-    if sFanart == False:
+    if not sFanart:
         sFanart = ''
 
     # recherche la serie complete
@@ -721,7 +730,7 @@ def showSeriesSaison():
             sNbreEp, SSeasonNum = i['episode_count'], i['season_number']
 
             # Mise en forme des infos (au format meta imdb)
-            i = grab._format(i, '',"season")
+            i = grab._format(i, '', "season")
             sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
             sTitle = 'Saison ' + str(SSeasonNum) + ' (' + str(sNbreEp) + ')'
@@ -775,10 +784,10 @@ def showSeriesEpisode():
 
     sSeason = oInputParameterHandler.getValue('sSeason')
     # sId = oInputParameterHandler.getValue('sId')
-    if sSeason == False:
+    if not sSeason:
         sSeason = sUrl.split('/')[-1]
 
-    if sFanart == False:
+    if not sFanart:
         sFanart = ''
 
     oGui = cGui()
@@ -830,7 +839,8 @@ def showSeriesEpisode():
 
             sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 
-            oOutputParameterHandler.addParameter('siteUrl', sMovieTitle + '|' + sExtraTitle)  # Pour compatibilite Favoris
+            oOutputParameterHandler.addParameter(
+                'siteUrl', sMovieTitle + '|' + sExtraTitle)  # Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
@@ -981,9 +991,10 @@ def showFilmActor():
                 break
 
             # Mise en forme des infos (au format meta imdb)
-            i = grab._format(i, '',"person")
+            i = grab._format(i, '', "person")
 
-            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
+            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i[
+                'genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
             if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
@@ -1053,7 +1064,8 @@ def showLists():
             # Mise en forme des infos (au format meta imdb)
             i = grab._format(i, '')
 
-            sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i['media_type'], i['poster_path'], i['backdrop_path'], i['rating'], i['plot'], i['year']
+            sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i[
+                'media_type'], i['poster_path'], i['backdrop_path'], i['rating'], i['plot'], i['year']
 
             if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
@@ -1108,7 +1120,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         return aResult[1][0]
 
     return False

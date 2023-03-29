@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.comaddon import progress
+from resources.lib.util import Unquote
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+import xbmc
+import re
 return False  # Sous Cloudflare 14/10/2021
 
-import re
-import xbmc
-
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import Unquote
-from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
@@ -56,7 +55,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -104,7 +103,14 @@ def showAlpha():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'ABC/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(
+            SITE_IDENTIFIER,
+            'showMovies',
+            'Lettre [COLOR coral]' +
+            sTitle +
+            '[/COLOR]',
+            'listes.png',
+            oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -126,9 +132,9 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     if sSearch:
-        sPattern = '<a href="([^"]+).+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
+        sPattern = '<a href="([^"]+).+?url\\((.+?)\\).+?<div class="title"> (.+?) </div>'
     elif 'Annee/' in sUrl or '/ABC' in sUrl:
-        sPattern = '<div class="table-movies-content.+?href="([^"]+).+?url\((.+?)\).+?<.i>.([^<]+)'
+        sPattern = '<div class="table-movies-content.+?href="([^"]+).+?url\\((.+?)\\).+?<.i>.([^<]+)'
     elif 'genre/' in sUrl:
         sPattern = 'film-uno.+?href="([^"]+).+?data-src="([^"]+).+?alt="([^"]+)'
     else:
@@ -140,7 +146,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -177,10 +183,11 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            # sNumPage = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
+            # sNumPage = re.search('(page|genre).*?[-=\/]([0-9]+)',
+            # sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -190,19 +197,19 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'class=\'Paginaactual\'.+?a href=\'([^"]+?)\'.+?>([^<]+)</a></li></ul'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
-        sNumberNext = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)
+        sNumberNext = re.search('(page|genre).*?[-=\\/]([0-9]+)', sNextPage).group(2)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
-    sPattern = '<span>\d+</span>.+?href=\'([^"]+?)\'.+?>([^<]+)</a></li></ul'
+    sPattern = '<span>\\d+</span>.+?href=\'([^"]+?)\'.+?>([^<]+)</a></li></ul'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
-        sNumberNext = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)
+        sNumberNext = re.search('(page|genre).*?[-=\\/]([0-9]+)', sNextPage).group(2)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
@@ -227,7 +234,7 @@ def showHoster():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -256,7 +263,7 @@ def showHoster():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -292,7 +299,7 @@ def showHostersLinks():
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

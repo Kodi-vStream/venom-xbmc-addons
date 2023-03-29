@@ -76,18 +76,18 @@ class cHoster(iHoster):
 
         cookies = ''
         if 'Set-Cookie' in head:
-            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            sPattern = '(?:^|,) *([^;,]+?)=([^;,\\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 for cook in aResult[1]:
                     cookies = cookies + cook[0] + '=' + cook[1] + ';'
         # Get link
-        sPattern = '"video":\[{"default":true,"url":"([^"]+?)"}]'
+        sPattern = '"video":\\[{"default":true,"url":"([^"]+?)"}]'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             url = aResult[1][0]
-            url = url.replace('\/', '/')
+            url = url.replace('\\/', '/')
 
             api_call = url + '|Cookie=' + cookies
 

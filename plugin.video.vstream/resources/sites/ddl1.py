@@ -127,7 +127,12 @@ def showMenuMovies():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films en VOSTFR', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR_MKV[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR_MKV[1], 'Films en VOSTFR (format mkv)', 'films.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        MOVIE_VOSTFR_MKV[1],
+        'Films en VOSTFR (format mkv)',
+        'films.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CAM[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_CAM[1], 'Films (CAM)', 'films.png', oOutputParameterHandler)
@@ -170,13 +175,28 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS_720[1], 'Séries 720p (VOSTFR)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', PACK_SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, PACK_SERIE_VOSTFRS[1], 'Saison complète (VOSTFR)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        PACK_SERIE_VOSTFRS[1],
+        'Saison complète (VOSTFR)',
+        'series.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', PACK_SERIE_VOSTFRS_720[0])
-    oGui.addDir(SITE_IDENTIFIER, PACK_SERIE_VOSTFRS_720[1], 'Saison complet en 720p (VOSTFR)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        PACK_SERIE_VOSTFRS_720[1],
+        'Saison complet en 720p (VOSTFR)',
+        'series.png',
+        oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', PACK_SERIE_VOSTFRS_1080[0])
-    oGui.addDir(SITE_IDENTIFIER, PACK_SERIE_VOSTFRS_1080[1], 'Saison complet en 1080p (VOSTFR)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(
+        SITE_IDENTIFIER,
+        PACK_SERIE_VOSTFRS_1080[1],
+        'Saison complet en 1080p (VOSTFR)',
+        'series.png',
+        oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -206,7 +226,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sUrl + sSearchText + '&search_start=1'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -273,12 +293,12 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'th-in" href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?th-tip-meta.+?(?:|<span>([^\D]+).+?)#aaa;">([^<]+)'
+    sPattern = 'th-in" href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?th-tip-meta.+?(?:|<span>([^\\D]+).+?)#aaa;">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     titles = set()
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -316,20 +336,55 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if sMisc:
-                oGui.addMisc(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif 'animes' in sUrl and not 'films' in sUrl:
-                oGui.addAnime(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMisc(
+                    SITE_IDENTIFIER,
+                    'showSeriesHosters',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
+            elif 'animes' in sUrl and 'films' not in sUrl:
+                oGui.addAnime(
+                    SITE_IDENTIFIER,
+                    'showSeriesHosters',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             elif '/series/' in sUrl or 'emissions-tv' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showSeriesHosters',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             elif '-saison-' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(
+                    SITE_IDENTIFIER,
+                    'showSeriesHosters',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(
+                    SITE_IDENTIFIER,
+                    'showMoviesLinks',
+                    sDisplayTitle,
+                    '',
+                    sThumb,
+                    sDesc,
+                    oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sUrl, sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oOutputParameterHandler.addParameter('misc', sMisc)
@@ -348,13 +403,16 @@ def __checkForNextPage(sUrl, sHtmlContent):
         pageNext = 2
 
     try:
-        extractPageList = re.search('<div class="navigation">(.+?)</div>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
+        extractPageList = re.search(
+            '<div class="navigation">(.+?)</div>',
+            sHtmlContent,
+            re.MULTILINE | re.DOTALL).group(1)
 
         oParser = cParser()
         sPattern = '<a href="([^"]+)">' + str(pageNext) + '</a>'
         aResult = oParser.parse(extractPageList, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             nextPage = aResult[1][0]
             if not nextPage.startswith('https'):
                 nextPage = URL_MAIN[:-1] + nextPage
@@ -415,7 +473,7 @@ def showMoviesLinks():
     sPattern = '<a href="([^"]+)"><span class="ffas js-guest icon-left" title="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -468,7 +526,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    elif (aResult[0] == True):
+    elif (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sHoster = aEntry[0]
@@ -477,7 +535,7 @@ def showHosters():
 
             if "protect" not in sUrl2:
                 oHoster = cHosterGui().checkHoster(sUrl2)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
@@ -512,13 +570,13 @@ def showSeriesHosters():
     sPattern = 'download-alt" style="margin-right: 10px;"></i>([^<]+)|href="([^"]+)".+?external noreferrer">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 sHoster = aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', sHoster) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\\.\\w+', '', sHoster) + '[/COLOR]')
 
             else:
                 sUrl2 = aEntry[1]
@@ -527,7 +585,7 @@ def showSeriesHosters():
 
                 if 'protect' not in sUrl2:
                     oHoster = cHosterGui().checkHoster(sUrl2)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
@@ -537,7 +595,14 @@ def showSeriesHosters():
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sHost', sHoster)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(
+                        SITE_IDENTIFIER,
+                        'Display_protected_link',
+                        sTitle,
+                        '',
+                        sThumb,
+                        sDesc,
+                        oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
     else:   # certains films mals classés apparaissent dans les séries
@@ -570,11 +635,11 @@ def Display_protected_link():
 
     try:
         sHosterUrl = sHosterUrl.decode('utf-8')
-    except:
+    except BaseException:
         pass
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

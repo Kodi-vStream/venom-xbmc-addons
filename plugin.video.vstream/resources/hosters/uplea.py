@@ -43,11 +43,11 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
 
-    def __getIdFromUrl(self,url):
-        sPattern = 'http:\/\/uplea\.com\/dl\/([0-9a-zA-Z]+)'
+    def __getIdFromUrl(self, url):
+        sPattern = 'http:\\/\\/uplea\\.com\\/dl\\/([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(url, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
         return ''
 
@@ -96,9 +96,9 @@ class cHoster(iHoster):
 
         # get step
         urlstep = ''
-        sPattern = '<a href="(\/step\/[^<>"]+)">'
+        sPattern = '<a href="(\\/step\\/[^<>"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             urlstep = aResult[1][0]
 
         # get cookie
@@ -107,7 +107,7 @@ class cHoster(iHoster):
             cookies = head['Set-Cookie']
             sPattern = '(__cfduid=[0-9a-z]+;).+?(PHPSESSID=[0-9a-z]+)'
             aResult = oParser.parse(str(cookies), sPattern)
-            if (aResult[0] == True):
+            if (aResult[0]):
                 cookies = str(aResult[1][0][0]) + str(aResult[1][0][1])
 
         url = 'http://uplea.com' + urlstep
@@ -127,17 +127,17 @@ class cHoster(iHoster):
 
         # waiting time
         waitingtime = 20
-        sPattern = "ulCounter\({'timer':([0-9]+)}\);"
+        sPattern = "ulCounter\\({'timer':([0-9]+)}\\);"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             waitingtime = int(aResult[1][0]) + 2
 
         sPattern = '<a class="button-download" href="([^<>"]+?)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             dialog.VSinfo('Waiting time', self.__sDisplayName, waitingtime)
-            xbmc.sleep(waitingtime*1000)
+            xbmc.sleep(waitingtime * 1000)
 
             # print(aResult[1][0])
 

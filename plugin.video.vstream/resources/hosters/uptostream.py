@@ -8,7 +8,10 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-import json, requests, re
+import json
+import requests
+import re
+
 
 class cHoster(iHoster):
 
@@ -18,7 +21,7 @@ class cHoster(iHoster):
         self.oPremiumHandler = None
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -60,7 +63,7 @@ class cHoster(iHoster):
                     url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    Files.append(url.replace('.vtt','.srt'))
+                    Files.append(url.replace('.vtt', '.srt'))
                 else:
                     continue
             return Files
@@ -90,8 +93,8 @@ class cHoster(iHoster):
         s.headers.update({"Cookie": cookies})
 
         r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[-1]).json()
-        
-        if r["statusCode"] != 0: # Erreur
+
+        if r["statusCode"] != 0:  # Erreur
             dialog().VSinfo(r["data"])
             return False, False
 
@@ -109,7 +112,10 @@ class cHoster(iHoster):
             from resources.lib.librecaptcha.gui import cInputWindowYesNo
             qr = pyqrcode.create(r['data']['user_url'])
             qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
-            oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+            oSolver = cInputWindowYesNo(
+                captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png',
+                msg="Scanner le QRCode pour acceder au lien d'autorisation",
+                roundnum=1)
             retArg = oSolver.get()
             DIALOG = dialog()
             if retArg == "N":
@@ -117,9 +123,9 @@ class cHoster(iHoster):
 
             js_result = s.get(r["data"]["check_url"]).json()["data"]
 
-        #Deux modes de fonctionnement different.
+        # Deux modes de fonctionnement different.
         if js_result.get("streamLinks").get('src'):
-            api_call = js_result['streamLinks']['src'].replace(".m3u8",".mpd")
+            api_call = js_result['streamLinks']['src'].replace(".m3u8", ".mpd")
         else:
             sPattern = "'(.+?)': {(.+?)}"
 
@@ -132,17 +138,17 @@ class cHoster(iHoster):
 
             for aEntry in aResult[1]:
                 QUAL = aEntry[0]
-                d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
+                d = re.findall("'u*(.+?)': u*'(.+?)'", aEntry[1])
                 for aEntry1 in d:
                     url.append(aEntry1[1])
-                    qua.append(QUAL  + ' (' + aEntry1[0] + ')')
+                    qua.append(QUAL + ' (' + aEntry1[0] + ')')
 
             # Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
 
         try:
             SubTitle = self.checkSubtitle(js_result["subs"])
-        except:
+        except BaseException:
             VSlog("Pas de sous-titre")
 
         if (api_call):

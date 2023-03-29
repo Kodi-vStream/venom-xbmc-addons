@@ -1,26 +1,27 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
+
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Turbovid.net'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'turbovid'
@@ -32,13 +33,13 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://turbovid.net/([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -46,7 +47,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         if 'embed' not in sUrl:
             self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://turbovid.net/embed-'+str(self.__sUrl)+'.html'
+            self.__sUrl = 'http://turbovid.net/embed-' + str(self.__sUrl) + '.html'
         else:
             self.__sUrl = sUrl
 
@@ -59,21 +60,19 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         if not sHtmlContent:
-            return False, False            
-        
-        sPattern = 'var/type/(.+?)/.+?/provider/mp4/([^<]+)/flash/';
-        
+            return False, False
+
+        sPattern = 'var/type/(.+?)/.+?/provider/mp4/([^<]+)/flash/'
+
         oParser = cParser()
-        sHtmlContent=sHtmlContent.replace('|','/')
+        sHtmlContent = sHtmlContent.replace('|', '/')
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             api_call = ('http://178.33.122.207:%s/%s/v.mp4') % (aResult[1][0][0], aResult[1][0][1])
             return True, api_call
-        
+
         return False, False
-        
-        

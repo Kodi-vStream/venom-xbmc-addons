@@ -53,11 +53,11 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         try:
             import urllib.parse as urllib
-        except:
+        except BaseException:
             import urllib
 
         # On récupere l'array
-        sPattern = '<script>\s*\(function\(\).+?=(.+?)var player'
+        sPattern = '<script>\\s*\\(function\\(\\).+?=(.+?)var player'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult):
             for aEntry in aResult[1]:

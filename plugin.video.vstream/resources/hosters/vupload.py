@@ -17,7 +17,8 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + \
+            self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -63,15 +64,15 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-        
+        sPattern = '(eval\\(function\\(p,a,c,k,e(?:.|\\s)+?\\))<\\/script>'
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             sHtmlContent2 = cPacker().unpack(aResult[1][0])
-            
-            sPattern = '{src:"([^"]+)",type:"video\/mp4",res:([^:,<>]+)'
+
+            sPattern = '{src:"([^"]+)",type:"video\\/mp4",res:([^:,<>]+)'
             aResult = oParser.parse(sHtmlContent2, sPattern)
             if aResult[0]:
                 # initialisation des tableaux

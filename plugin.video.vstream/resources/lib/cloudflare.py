@@ -36,9 +36,9 @@ class CipherSuiteAdapter(HTTPAdapter):
 
         if hasattr(ssl, 'PROTOCOL_TLS'):
             self.ssl_context = create_urllib3_context(
-                    ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
-                    ciphers=self.cipherSuite
-                    )
+                ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
+                ciphers=self.cipherSuite
+            )
         else:
             self.ssl_context = create_urllib3_context(ssl_version=ssl.PROTOCOL_TLSv1)
 
@@ -91,15 +91,15 @@ if False:
 # Ne marche que si meme user-agent
     # req = urllib.request.Request(sUrl, None, headers)
     # try:
-        # response = urllib.request.urlopen(req)
-        # sHtmlContent = response.read()
-        # response.close()
+    # response = urllib.request.urlopen(req)
+    # sHtmlContent = response.read()
+    # response.close()
     # except urllib.error.HTTPError as e:
-        # if e.code == 503:
-            # if CloudflareBypass().check(e.headers):
-                # cookies = e.headers['Set-Cookie']
-                # cookies = cookies.split(';')[0]
-                # sHtmlContent = CloudflareBypass().GetHtml(sUrl, e.read(), cookies)
+    # if e.code == 503:
+    # if CloudflareBypass().check(e.headers):
+    # cookies = e.headers['Set-Cookie']
+    # cookies = cookies.split(';')[0]
+    # sHtmlContent = CloudflareBypass().GetHtml(sUrl, e.read(), cookies)
 
 # Heavy method
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
@@ -132,7 +132,7 @@ class CloudflareBypass(object):
     def ParseCookies(self, data):
         list = {}
 
-        sPattern = '(?:^|[,;]) *([^;,]+?)=([^;,\/]+)'
+        sPattern = '(?:^|[,;]) *([^;,]+?)=([^;,\\/]+)'
         aResult = re.findall(sPattern, data)
         if aResult:
             for cook in aResult:
@@ -147,7 +147,8 @@ class CloudflareBypass(object):
         head = OrderedDict()
         # Need to use correct order
         h = ['User-Agent', 'Accept', 'Accept-Language', 'Accept-Encoding', 'Connection', 'Upgrade-Insecure-Requests']
-        v = [UA, 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'en-US,en;q=0.5', 'gzip, deflate', 'close', '1']
+        v = [UA, 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+             'en-US,en;q=0.5', 'gzip, deflate', 'close', '1']
         for i in enumerate(h):
             k = checklowerkey(i[1], self.Memorised_Headers)
             if k:
@@ -161,7 +162,15 @@ class CloudflareBypass(object):
 
         if False:
             # Normalisation because they are not case sensitive:
-            Headers = ['User-Agent', 'Accept', 'Accept-Language', 'Accept-Encoding', 'Cache-Control', 'Dnt', 'Pragma', 'Connexion']
+            Headers = [
+                'User-Agent',
+                'Accept',
+                'Accept-Language',
+                'Accept-Encoding',
+                'Cache-Control',
+                'Dnt',
+                'Pragma',
+                'Connexion']
             Headers_l = [x.lower() for x in Headers]
             head2 = dict(head)
             for key in head2:
@@ -282,7 +291,7 @@ def checkpart(s, end='+'):
     pos = 0
 
     try:
-        while 1:
+        while True:
             c = s[pos]
 
             if (c == '('):
@@ -294,7 +303,7 @@ def checkpart(s, end='+'):
 
             if (c == end) and (p == 0) and (pos > 1):
                 break
-    except:
+    except BaseException:
         pass
 
     return s[:pos]

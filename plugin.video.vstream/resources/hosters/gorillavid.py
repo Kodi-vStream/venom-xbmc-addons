@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import re
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -39,7 +40,7 @@ class cHoster(iHoster):
         sPattern = 'http://gorillavid.in/embed.+?-([^<]+)-'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             return aResult[1][0]
 
         return ''
@@ -65,10 +66,10 @@ class cHoster(iHoster):
         url = 'http://gorillavid.in/' + sId
         oRequest = cRequestHandler(url)
         sHtmlContent = oRequest.request()
-        sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
+        sPattern = '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if (aResult[0]):
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
                 oRequest.addParameters(aEntry[0], aEntry[1])

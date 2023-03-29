@@ -59,7 +59,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -102,7 +102,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -138,7 +138,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/serie' in sUrl:
-                sMovieTitle = re.sub('  S\d+', '', sTitle)
+                sMovieTitle = re.sub('  S\\d+', '', sTitle)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oGui.addSeason(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
@@ -148,7 +148,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -159,9 +159,9 @@ def showMovies(sSearch=''):
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     # jusqu'au 5 dernières pages on utilise cette regex
-    sPattern = 'href="([^"]+)">>><.+?">(\d+)</a></div>'
+    sPattern = 'href="([^"]+)">>><.+?">(\\d+)</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -171,7 +171,7 @@ def __checkForNextPage(sHtmlContent):
     # à partir des 5 dernières pages on change de regex
     sPattern = '>([^<]+)</a> <a class="inactive" style="margin-bottom:5px;" href="([^"]+)">>>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -192,7 +192,7 @@ def showSeriesNews():
     sPattern = '<div class="titleE".+?<a href="([^"]+)">([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -203,10 +203,10 @@ def showSeriesNews():
                 break
 
             sUrl = aEntry[0]
-            sTitle = re.sub('(\d+)&#215;(\d+)', 'S\g<1>E\g<2>', aEntry[1])
+            sTitle = re.sub('(\\d+)&#215;(\\d+)', 'S\\g<1>E\\g<2>', aEntry[1])
             sTitle = sTitle.replace(':', '')
-            cCleantitle = re.sub('S\d+E\d+', '', sTitle)
-            cCleantitle = re.sub('- Saison \d+', '', sTitle)
+            cCleantitle = re.sub('S\\d+E\\d+', '', sTitle)
+            cCleantitle = re.sub('- Saison \\d+', '', sTitle)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', cCleantitle)
@@ -228,7 +228,7 @@ def showSeriesList():
     sPattern = '<li class="alpha-title"><h3>([^<]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -274,7 +274,7 @@ def showSeries():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0].split('Résumé')[0]
-    except:
+    except BaseException:
         pass
 
     sPattern = 'class="episodios" style="([^"]+)">|class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
@@ -283,7 +283,7 @@ def showSeries():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         sLang = ''
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -300,7 +300,8 @@ def showSeries():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sData', sData)
                 oOutputParameterHandler.addParameter('sLang', sLang)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle,
+                                '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -322,13 +323,13 @@ def showLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-    except:
+    except BaseException:
         pass
 
     sPattern = 'var movie.+?id.+?"(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         MovieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
         oRequestHandler = cRequestHandler(MovieUrl)
@@ -338,14 +339,14 @@ def showLinks():
         head = oRequestHandler.getResponseHeader()
         cookies = getCookie(head)
 
-    sPattern = 'hidden" name="videov" id="videov" value="([^"]+).+?</b>([^<]+)<span class="dt_flag">.+?/flags/(.+?)\.'
+    sPattern = 'hidden" name="videov" id="videov" value="([^"]+).+?</b>([^<]+)<span class="dt_flag">.+?/flags/(.+?)\\.'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if (aResult[0]):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sHost = aEntry[1].replace(' ', '').replace('.ok.ru', 'ok.ru')
-            sHost = re.sub('\.\w+', '', sHost)
+            sHost = re.sub('\\.\\w+', '', sHost)
             if 'nowvideo' in sHost:
                 continue
             sHost = sHost.capitalize()
@@ -380,18 +381,18 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
 
             # if 'opsktp' in aEntry:  # redirection vers ==> fsimg
-                # oRequestHandler = cRequestHandler(aEntry)
-                # oRequestHandler.request()
-                # sHosterUrl = oRequestHandler.getRealUrl()
+            # oRequestHandler = cRequestHandler(aEntry)
+            # oRequestHandler.request()
+            # sHosterUrl = oRequestHandler.getRealUrl()
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -418,12 +419,12 @@ def showSeriesHosters():
     sPattern = 'id="videov" value="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -436,9 +437,9 @@ def getCookie(head):
     cookies = ''
     if 'Set-Cookie' in head:
         oParser = cParser()
-        sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+        sPattern = '(?:^|,) *([^;,]+?)=([^;,\\/]+?);'
         aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-        if (aResult[0] == True):
+        if (aResult[0]):
             for cook in aResult[1]:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
             return cookies
@@ -478,7 +479,7 @@ def decode_js(k, i, s, e):
         localvar = -1
         if ord(secondstr[incerement2]) % 2:
             localvar = 1
-        finaltab.append(chr(int(firststr[varinc: varinc+2], base=36) - localvar))
+        finaltab.append(chr(int(firststr[varinc: varinc + 2], base=36) - localvar))
         incerement2 = incerement2 + 1
         if incerement2 >= len(secondtab):
             incerement2 = 0

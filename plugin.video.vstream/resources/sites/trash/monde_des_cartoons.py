@@ -1,16 +1,16 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-return False
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
-
+from resources.lib.comaddon import progress  # , VSlog
 import re
+from resources.lib.parser import cParser
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
+return False
+
 
 SITE_IDENTIFIER = 'monde_des_cartoons'
 SITE_NAME = 'Le monde des cartoons'
@@ -21,6 +21,7 @@ URL_MAIN = 'https://monde-des-cartoons.blogspot.com/'
 ANIM_ENFANTS = ('http://', 'load')
 ANIM_LISTE = (URL_MAIN, 'showMovies')
 
+
 def load():
     oGui = cGui()
 
@@ -29,6 +30,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_LISTE[1], 'Liste des cartoons', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies():
     oGui = cGui()
@@ -47,7 +49,7 @@ def showMovies():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -72,6 +74,7 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
+
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
@@ -88,7 +91,7 @@ def ShowSerieSaisonEpisodes():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if (aResult[0]):
         total = len(aResult[1])
 
         progress_ = progress().VScreate(SITE_NAME)
@@ -112,6 +115,7 @@ def ShowSerieSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def seriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -122,7 +126,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Utilisation de re car avec le parser de Vstream il ne veux pas prendre correctement le 'vostfr'
+    # Utilisation de re car avec le parser de Vstream il ne veux pas prendre correctement le 'vostfr'
     aResult = re.findall('<img.+?src=".+?/_(?:0001|0002)_(.+?).png|<iframe.+?src="([^"]+)"', str(sHtmlContent))
 
     if (aResult):
@@ -135,7 +139,7 @@ def seriesHosters():
                 if sHosterUrl.startswith('//'):
                     sHosterUrl = 'https:' + sHosterUrl
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
