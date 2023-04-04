@@ -306,7 +306,7 @@
         },
         "stream_complet": {
             "label": "Stream Complet",
-            "active": "True",
+            "active": "False",
             "url": "https://ww.streamcomplet.click/"
         },
         "streaming_series": {
@@ -356,7 +356,7 @@
         },
         "uptobox_live": {
             "label": "Uptobox Live",
-            "active": "True",
+            "active": "False",
             "url": "https://uptobox.live/"
         },
         "vf_film": {
