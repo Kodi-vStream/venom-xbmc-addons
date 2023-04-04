@@ -126,7 +126,7 @@ class cViewing:
 
                     # pourcentage de lecture
                     meta = {}
-                    meta['title'] = sTitleWatched
+                    meta['titleWatched'] = sTitleWatched
                     resumetime, totaltime = DB.get_resume(meta)
                     oOutputParameterHandler.addParameter('ResumeTime', resumetime)
                     oOutputParameterHandler.addParameter('TotalTime', totaltime)

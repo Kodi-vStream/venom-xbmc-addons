@@ -231,8 +231,23 @@ class cPlayer(xbmc.Player):
                         sTitleWatched = self.infotag.getOriginalTitle()
                         if sTitleWatched:
                             meta = {}
-                            meta['title'] = sTitleWatched
                             meta['cat'] = self.sCat
+                            meta['title'] = self.sTitle
+                            meta['titleWatched'] = sTitleWatched
+                            if self.movieUrl and self.movieFunc:
+                                meta['siteurl'] = self.movieUrl
+                                meta['fav'] = self.movieFunc
+                            else:
+                                meta['siteurl'] = self.sSite
+                                meta['fav'] = self.sFav
+
+                            meta['tmdbId'] = self.sTmdbId
+                            meta['site'] = self.sSource
+                            
+                            if self.sSaison:
+                                meta['season'] = self.sSaison
+                            meta['seasonUrl'] = self.saisonUrl
+                            meta['seasonFunc'] = self.nextSaisonFunc
                             db.insert_watched(meta)
         
                             # RAZ du point de reprise
@@ -240,8 +255,6 @@ class cPlayer(xbmc.Player):
                             
                             # Sortie des LECTURE EN COURS pour les films, pour les séries la suppression est manuelle
                             if self.sCat == '1':
-                                meta['titleWatched'] = sTitleWatched
-                                meta['cat'] = self.sCat
                                 db.del_viewing(meta)
                             elif self.sCat == '8':      # A la fin de la lecture d'un episode, on met la saison en "Lecture en cours" 
                                 saisonViewing = True
@@ -254,7 +267,8 @@ class cPlayer(xbmc.Player):
                         sTitleWatched = self.infotag.getOriginalTitle()
                         if sTitleWatched:
                             meta = {}
-                            meta['title'] = sTitleWatched
+                            meta['title'] = self.sTitle
+                            meta['titleWatched'] = sTitleWatched
                             meta['site'] = self.sSite
                             meta['point'] = self.currentTime
                             meta['total'] = self.totalTime
@@ -275,8 +289,6 @@ class cPlayer(xbmc.Player):
                                 if self.sCat == '5' and self.totalTime < 2700:
                                     pass
                                 else:
-                                    meta['title'] = self.sTitle
-                                    meta['titleWatched'] = sTitleWatched
                                     if self.movieUrl and self.movieFunc:
                                         meta['siteurl'] = self.movieUrl
                                         meta['fav'] = self.movieFunc
@@ -324,7 +336,7 @@ class cPlayer(xbmc.Player):
                 sTitleWatched = self.infotag.getOriginalTitle()
                 if sTitleWatched:
                     meta = {}
-                    meta['title'] = sTitleWatched
+                    meta['titleWatched'] = sTitleWatched
                     resumePoint, total = db.get_resume(meta)
                     if resumePoint:
                         h = resumePoint//3600

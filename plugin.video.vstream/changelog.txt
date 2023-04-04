@@ -13,6 +13,10 @@ Historique des modifications
 ==================================================================================
 
 
+*** 2.5.0***
+- Mes contenus : Historique de visionnage
+- TMDB : Choix de la langue des informations
+
 *** 2.4.3***
 - CloudFlare : Compatibilité avec FlareSolverr 3
 

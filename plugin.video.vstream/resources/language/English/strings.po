@@ -768,6 +768,10 @@ msgctxt "#30320"
 msgid "You have successfully logged out"
 msgstr ""
 
+msgctxt "#30321"
+msgid "my viewing history"
+msgstr ""
+
 msgctxt "#30324"
 msgid "Add to media"
 msgstr ""

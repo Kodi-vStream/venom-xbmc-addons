@@ -768,6 +768,10 @@ msgctxt "#30320"
 msgid "You have successfully logged out"
 msgstr "Vous avez été déconnecté avec succès"
 
+msgctxt "#30321"
+msgid "my viewing history"
+msgstr "Mon historique de visionnage"
+
 msgctxt "#30324"
 msgid "Add to media"
 msgstr "Ajouter aux médias"
