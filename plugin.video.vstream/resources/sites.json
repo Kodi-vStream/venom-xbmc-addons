@@ -2,7 +2,7 @@
     "sites": {
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
-            "active": "True",
+            "active": "False",
             "url": "https://1seriestreaming.com/"
         },
         "_33seriestreaming": {
