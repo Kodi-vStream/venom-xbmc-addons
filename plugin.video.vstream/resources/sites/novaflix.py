@@ -407,7 +407,7 @@ def showHosters():
 
             sDisplayTitle = sMovieTitle
             if sLang:
-                sDisplayTitle += '[%s] ' % sLang.upper()
+                sDisplayTitle += '(%s)' % sLang.upper()
 
             sDisplayTitle += ' [COLOR coral]%s[/COLOR]' % sHost.capitalize()
 
