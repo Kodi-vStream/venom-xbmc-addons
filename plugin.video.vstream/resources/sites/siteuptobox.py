@@ -281,6 +281,7 @@ def showMedias(sSearch = '', sType = None):
             sTitle = file['file_name']
             sHosterUrl = URL_MAIN + file['file_code']
             showMovie(oGui, sTitle, sHosterUrl, 'film')
+            nbFile += 1
 
     # Lien Suivant >>
     if not sSearch and nbFile == NB_FILES:
