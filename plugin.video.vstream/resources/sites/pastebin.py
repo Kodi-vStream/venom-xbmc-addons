@@ -1161,20 +1161,20 @@ def showTMDB():
 
     result = grab.getUrl(siteUrl, numPage, term)
     total = len(result)
-
     results = None
-    if 'cast' in result:
-        sMedia = 'film'
-        sType = 'person'
-        results = result['cast']
-    elif 'results' in result:
-        sMedia = 'film' if 'movie' in siteUrl else 'serie'
-        sType = 'movie' if 'movie' in siteUrl else 'tvshow'
-        results = result['results']
+    if total > 0:
+        if 'cast' in result:
+            sMedia = 'film'
+            sType = 'person'
+            results = result['cast']
+        elif 'results' in result:
+            sMedia = 'film' if 'movie' in siteUrl else 'serie'
+            sType = 'movie' if 'movie' in siteUrl else 'tvshow'
+            results = result['results']
+        total = len(results)
 
     if total > 0 and results:
         bMatrix = isMatrix()
-        total = len(results)
         tmdbIds = {}
         for data in results:
             tmdbIds[data['id']] = data['title'] if 'title' in data else data['name']
