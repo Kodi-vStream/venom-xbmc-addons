@@ -813,7 +813,7 @@ msgid "Activate Premium"
 msgstr ""
 
 msgctxt "#30334"
-msgid "Free or Premium Token"
+msgid "Premium Token"
 msgstr ""
 
 msgctxt "#30340"

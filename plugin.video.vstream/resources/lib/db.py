@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import json
-import xbmcvfs
-import xbmc
-
 from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
@@ -45,7 +41,7 @@ class cDb(object):
             if self.dbcur.fetchone() is None:
                 self._create_tables()
             return self
-            
+
         except:
             VSlog('Error: Unable to access to %s' % REALDB)
             pass
@@ -91,6 +87,7 @@ class cDb(object):
                      "title TEXT, "\
                      "siteurl TEXT, "\
                      "site TEXT, "\
+                     "fav TEXT, "\
                      "cat TEXT, "\
                      "season integer, "\
                      "UNIQUE(title_id)"\
@@ -235,7 +232,6 @@ class cDb(object):
         site = meta['site']
         fav = meta['fav']
         season = meta['season'] if 'season' in meta else ''
-        
 
         # on enleve avant de remettre pour retrier
         ex = "DELETE FROM watched WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
@@ -244,7 +240,6 @@ class cDb(object):
         except Exception as e:
             VSlog('SQL ERROR - ' + ex)
             pass
-
 
         ex = 'INSERT or IGNORE INTO watched (tmdb_id, title_id, title, siteurl, site, cat, fav, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         try:
@@ -274,7 +269,6 @@ class cDb(object):
             else:
                 VSlog('SQL ERROR INSERT watched : title = %s' % e)
 
-
         # Lecture d'une episode, on retient aussi la saison
         if cat == "8":
             meta['cat'] = 4
@@ -285,7 +279,6 @@ class cDb(object):
             titleWatched = titleWatched[:titleWatched.rindex('E')].strip()
             meta['titleWatched'] = titleWatched
             self.insert_watched(meta)
-
 
     def get_watched(self, meta):
         title = meta['titleWatched']
@@ -318,7 +311,7 @@ class cDb(object):
             else:
                 VSlog('SQL ERROR %s' % sql_select)
             return False
-        
+
     def get_allwatched(self):
         sql_select = "SELECT * FROM watched order by addon_id DESC"
 
@@ -330,7 +323,7 @@ class cDb(object):
         except Exception as e:
             VSlog('SQL ERROR : %s' % sql_select)
             return None
-            
+
     def del_watched(self, meta):
         title = meta['titleWatched']
         if not title:

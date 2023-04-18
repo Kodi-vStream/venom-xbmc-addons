@@ -814,7 +814,7 @@ msgstr "Activer Premium"
 
 msgctxt "#30334"
 msgid "Free or Premium Token"
-msgstr "Token Premium ou gratuit"
+msgstr "Token Premium"
 
 msgctxt "#30340"
 msgid "Trakt integration"

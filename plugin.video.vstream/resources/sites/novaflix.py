@@ -178,7 +178,6 @@ def showMovieYears():
     for i in reversed(range(1930, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
-        oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -192,7 +191,6 @@ def showSerieYears():
     for i in reversed(range(1930, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
-        oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -203,14 +201,13 @@ def showMovies(sSearch=''):
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sYear = oInputParameterHandler.getValue('sYear')
 
     if sSearch:
         oUtil = cUtil()
         sSearchText = sSearch.replace(URL_SEARCH[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
-    sPattern = 'class=".+?grid-item.+?src="([^"]+).+?alt="([^"]+).+?href="([^"]+).+?>([^<]+).+?season">([^<]+).+?language">([^<]+)'
+    sPattern = 'class=".+?grid-item.+?src="([^"]+).+?alt="([^"]+).+?href="([^"]+)">([^<]+).+?season">([^<]+).+?language">([^<]+)'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -229,13 +226,14 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[2]
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[1]
-            sQual = aEntry[3]
-            sLang = aEntry[4]
+            sUrl2 = aEntry[2]
+            sYear = aEntry[3]
+            sQual = aEntry[4]
+            sLang = aEntry[5]
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -395,7 +393,7 @@ def showHosters():
                 sHost = dataName = aEntry[1].strip()
                 pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
-                sLang = 'VF' # tag la langue pour l'enchainement
+                sLang = 'VF'  # tag la langue pour l'enchainement
                 if '-' in sHost:
                     sHost, sLang = sHost.split('-')
             else:
@@ -403,14 +401,14 @@ def showHosters():
                 sHost = dataName = aEntry[1].strip()
                 pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
-            
+
             if not cHosterGui().checkHoster(sHost):
                 continue
 
             sDisplayTitle = sMovieTitle
             if sLang:
-                sDisplayTitle += '[%s] ' % sLang.upper()
-            
+                sDisplayTitle += '(%s)' % sLang.upper()
+
             sDisplayTitle += ' [COLOR coral]%s[/COLOR]' % sHost.capitalize()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
