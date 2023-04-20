@@ -158,7 +158,9 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span>\d+</span>\s*<a href="([^"]+).+?>([^<]+)</a>\s*</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
+        sNextPage = aResult[1][0][0]
+        if sNextPage.startswith('/'):
+            sNextPage = URL_MAIN[:-1] + sNextPage
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page-([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
