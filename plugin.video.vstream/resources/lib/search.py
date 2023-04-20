@@ -10,12 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.comaddon import progress, VSlog, addon, window
 from resources.lib.util import Quote
 
+
 class cSearch:
 
     def __init__(self):
         self.addons = addon()
 
-    def searchGlobal(self, sSearchText = '', sCat = ''):
+    def searchGlobal(self, sSearchText='', sCat=''):
         try:
             if not sSearchText:
                 oInputParameterHandler = cInputParameterHandler()
@@ -45,14 +46,14 @@ class cSearch:
             if total:
                 xbmc.sleep(500)    # Nécessaire pour enchainer deux progressBar
                 # Progress de chargement des metadata
-                progressMeta = progress().VScreate(self.addons.VSlang(30076) + ' - ' + sSearchText, large = total > 50)
+                progressMeta = progress().VScreate(self.addons.VSlang(30076) + ' - ' + sSearchText, large=total > 50)
                 for plugin in listPlugins:
                     pluginId = plugin['identifier']
-                    if pluginId in searchResults.keys() and (len(searchResults[pluginId]) > 0): # Au moins un résultat
+                    if pluginId in searchResults.keys() and (len(searchResults[pluginId]) > 0):  # Au moins un résultat
                         # nom du site
                         count += 1
                         oGui.addText(pluginId, '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']),
-                            'sites/%s.png' % (pluginId))
+                                     'sites/%s.png' % pluginId)
 
                         # résultats du site
                         for result in searchResults[pluginId]:
@@ -64,9 +65,9 @@ class cSearch:
                             break
 
                 progressMeta.VSclose(progressMeta)
-            
-            else: # aucune source ne retourne de résultat
-                oGui.addText('globalSearch') # "Aucune information"
+
+            else:  # aucune source ne retourne de résultat
+                oGui.addText('globalSearch')  # "Aucune information"
 
             cGui.CONTENT = 'files'
 
@@ -79,10 +80,8 @@ class cSearch:
 
         return True
 
-
     def _progressInit(self):
         self.progress_ = progress().VScreate(large=True)
-
 
     def _progressUpdate(self):
         searchResults = cGui().getSearchResult()
@@ -98,21 +97,17 @@ class cSearch:
             message += ", ..."
         self.progress_.VSupdate(self.progress_, self.progressTotal, message, True)
 
-
     def _progressClose(self):
         self.progress_.VSclose(self.progress_)
 
-
     def _progressForceClose(self):
         progress().VSclose()
-
 
     def _getAvailablePlugins(self, searchText, categorie):
         oHandler = cRechercheHandler()
         oHandler.setText(searchText)
         oHandler.setCat(categorie)
         return oHandler.getAvailablePlugins()
-
 
     def _initSearch(self, searchText, searchCat):
         try:
@@ -136,7 +131,7 @@ class cSearch:
         listThread = []
         window(10101).setProperty('search', 'true')
         for plugin in listPlugins:
-            thread = threading.Thread(target = targetFunction, name = plugin['name'], args = tuple([plugin] + argsList))
+            thread = threading.Thread(target=targetFunction, name=plugin['name'], args=tuple([plugin] + argsList))
             thread.start()
             listThread.append(thread)
 
@@ -146,11 +141,10 @@ class cSearch:
         # On attend que les thread soient finis
         for thread in listThread:
             thread.join()
-        
+
         window(10101).setProperty('search', 'false')
 
-
-    def _pluginSearch(self, plugin, sSearchText, updateProcess = False):
+    def _pluginSearch(self, plugin, sSearchText, updateProcess=False):
         try:
             plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
             function = getattr(plugins, plugin['search'][1])
@@ -164,5 +158,3 @@ class cSearch:
             VSlog('Load Search: ' + str(plugin['identifier']))
         except Exception as e:
             VSlog(plugin['identifier'] + ': search failed (' + str(e) + ')')
-
-
