@@ -152,10 +152,12 @@ class cHosterGui:
         except:
             sHostName = sHosterUrl
 
-        if debrid:
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
+                f = self.getHoster('alldebrid')
+                #mise a jour du nom
+                f.setRealHost(sHostName)
+                return f
 
             # L'user a activé realbrid ?
             if self.ADDON.getSetting('hoster_realdebrid_premium') == 'true':
