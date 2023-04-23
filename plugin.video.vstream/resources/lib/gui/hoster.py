@@ -188,7 +188,10 @@ class cHosterGui:
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
-            
+
+        if ('guccihide' in sHostName) or ('streamhide' in sHostName):
+            return self.getHoster('streamhide')
+
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
