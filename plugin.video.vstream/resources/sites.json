@@ -176,7 +176,7 @@
         },
         "kstreamingfilm": {
             "label": "K streaming Film",
-            "active": "True",
+            "active": "False",
             "url": "https://kstreamingfilm.xyz/"
         },
         "leet365": {
@@ -242,7 +242,7 @@
         "o1streaming": {
             "label": "O1 streaming",
             "active": "True",
-            "url": "https://01streaming.click/"
+            "url": "https://01streaming.stream/"
         },
         "otaku_attitude": {
             "label": "Otaku-Attitude",
