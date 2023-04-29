@@ -24,11 +24,11 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
-MOVIE_NEWS = (URL_MAIN + 'films-en-streaming/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = ('?type=movies', 'showGenres')
-MOVIE_ANNEES = (True, 'showMovieYears')
+MOVIE_ANNEES = (True, 'showYears')
 
-SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_GENRES = ('?type=series', 'showGenres')
 
 
@@ -57,7 +57,7 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():
+def showYears():
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_MAIN + 'accueil/')
     sHtmlContent = oRequestHandler.request()
@@ -289,17 +289,17 @@ def showLinks():
     # récupération du Synopsis
     if sDesc is False:
         try:
-            sPattern = 'description"><p>(.+?)</p>'
+            sPattern = 'description">\s*<p>(.+?)</p>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sDesc = aResult[1][0]
         except:
             pass
 
-    sPatternUrl = '<iframe (?:data-)*src="([^"]+)"'
+    sPatternUrl = '<iframe (?:data-)*src="([^"]+)'
     aResultUrl = oParser.parse(sHtmlContent, sPatternUrl)
     if aResultUrl[0]:
-        sPatternHost = 'class="btn(| on)" href="([^"]+).+?class="server">([^<]+) <'
+        sPatternHost = 'class="btn(| on)" href="([^"]+).+?class="server">([^<]+)<'
         aResultHost = oParser.parse(sHtmlContent, sPatternHost)
         if aResultHost[0]:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -311,11 +311,11 @@ def showLinks():
                 sLang = 'VF'
                 if '-VOSTFR' in sHost:
                     sLang = 'VOSTFR'
-                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '')
+                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '').replace(' ', '').capitalize()
 
                 oHoster = cHosterGui().checkHoster(sHost)
                 if oHoster:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR] (%s)') % (sMovieTitle, sHost, sLang)
+                    sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -334,21 +334,12 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sPattern = 'src="([^"]+)'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0]:
-        for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    if sUrl:
+        sHosterUrl = sUrl
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if oHoster:
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
