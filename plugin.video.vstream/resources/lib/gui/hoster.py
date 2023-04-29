@@ -152,14 +152,19 @@ class cHosterGui:
         except:
             sHostName = sHosterUrl
 
-        if debrid:
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
+                f = self.getHoster('alldebrid')
+                #mise a jour du nom
+                f.setRealHost(sHostName)
+                return f
 
             # L'user a activé realbrid ?
             if self.ADDON.getSetting('hoster_realdebrid_premium') == 'true':
-                return self.getHoster('realdebrid')
+                f = self.getHoster('realdebrid')
+                #mise a jour du nom
+                f.setRealHost(sHostName)
+                return f
 
             # L'user a activé debrid_link ?
             if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
@@ -188,7 +193,10 @@ class cHosterGui:
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
-            
+
+        if ('guccihide' in sHostName) or ('streamhide' in sHostName):
+            return self.getHoster('streamhide')
+
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
