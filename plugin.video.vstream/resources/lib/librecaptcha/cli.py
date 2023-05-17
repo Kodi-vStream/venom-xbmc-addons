@@ -15,14 +15,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import
+from __future__ import with_statement
 
 import json
 import re
 import time
 import xbmcvfs
 
-from __future__ import absolute_import
-from __future__ import with_statement
 from threading import Thread, RLock
 from resources.lib.comaddon import VSlog
 from .errors import UserError
