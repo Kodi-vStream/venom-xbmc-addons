@@ -214,7 +214,7 @@ class cGuiElement:
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         # vire espace et - a la fin
-        sTitle = re.sub('[- –_\.]+$', '', sTitle)
+        sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
         # et au debut
         sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
@@ -260,7 +260,7 @@ class cGuiElement:
         if sa or ep:
             sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
             # vire espace et - a la fin
-            sTitle = re.sub('[- –_\.]+$', '', sTitle)
+            sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
 
         if sa:
             self.__Season = sa

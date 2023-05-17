@@ -299,21 +299,21 @@ class cDb(object):
                 if matchedcat:
                     return int(matchedcat) == int(cat)
 
-            if matchedrow:
-                return True
-            return False
+            return True if matchedrow else False
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
-                # Deuxieme tentative, sans la cat
-                sql_select = "SELECT * FROM watched WHERE title_id = '%s'" % title
-                self.dbcur.execute(sql_select)
-                return 1 if self.dbcur.fetchall() else 0
-            else:
-                VSlog('SQL ERROR %s' % sql_select)
+                self.convertWatched()    # MAJ du modele de table
+                # Deuxieme tentative
+                try:
+                    self.dbcur.execute(sql_select)
+                    matchedrow = self.dbcur.fetchall()
+                    return True if matchedrow else False
+                except Exception as e:
+                    VSlog('SQL ERROR %s' % sql_select)
             return False
 
     def get_allwatched(self):
-        sql_select = "SELECT * FROM watched order by addon_id DESC"
+        sql_select = "SELECT tmdb_id, * FROM watched order by addon_id DESC"
 
         try:
             self.dbcur.execute(sql_select)
@@ -321,8 +321,17 @@ class cDb(object):
             return matchedrow
 
         except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
+                self.convertWatched()    # MAJ du modele de table
+                try:    # 2eme tentative
+                    self.dbcur.execute(sql_select)
+                    matchedrow = self.dbcur.fetchall()
+                    return matchedrow
+                except Exception as e:
+                    pass
             VSlog('SQL ERROR : %s' % sql_select)
-            return None
+        return None
+        
 
     def del_watched(self, meta):
         title = meta['titleWatched']
@@ -336,7 +345,42 @@ class cDb(object):
             return False, False
         except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
-            return False, False
+        return False, False
+
+
+    # conversion de l'ancienne table watched
+    def convertWatched(self):
+        try:
+            self.dbcur.execute("ALTER TABLE watched RENAME COLUMN title TO title_id")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add title TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add tmdb_id TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add siteurl TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add site TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add fav TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add season integer")
+        except Exception as e:
+            pass
+        
+        return
+    
 
     # ***********************************
     #   Resume fonctions

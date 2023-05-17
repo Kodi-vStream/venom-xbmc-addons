@@ -55,6 +55,8 @@ class cWatched:
                     title = data['title'].encode('utf-8')
                 except:
                     title = data['title']
+                if not title:
+                    continue
 
                 try:
                     cat = data['cat']
@@ -66,11 +68,12 @@ class cWatched:
                     except:
                         siteurl = data['siteurl']
 
-                    if isMatrix():
-                        siteurl = UnquotePlus(siteurl.decode('utf-8'))
-                        title = str(title, 'utf-8')
-                    else:
-                        siteurl = UnquotePlus(siteurl)
+                    if siteurl:
+                        if isMatrix():
+                            siteurl = UnquotePlus(siteurl.decode('utf-8'))
+                            title = str(title, 'utf-8')
+                        else:
+                            siteurl = UnquotePlus(siteurl)
 
                     sTitleWatched = data['title_id']
                     site = data['site']
