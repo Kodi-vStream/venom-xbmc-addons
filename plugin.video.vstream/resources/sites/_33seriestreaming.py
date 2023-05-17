@@ -369,6 +369,18 @@ def showHosters():
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     sHtmlContent = oRequestHandler.request()
 
+    if not sDesc:
+        # récupération du Synopsis pour les films
+        sDesc = ''
+        try:
+            sPattern = 'fsynopsis"><p>([^<]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
+
+
     if isSerie:  # episode d'une série
         sPattern = 'data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+).+?name">([^<]+).+?src="([^\.]+)'
     else:        # Film
