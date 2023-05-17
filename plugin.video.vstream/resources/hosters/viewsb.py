@@ -45,8 +45,6 @@ class cHoster(iHoster):
             sPattern = 'download_video([^"]+).*?<span>\s*(\d+)'
             oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
-            VSlog(aResult)
-            
             if aResult[0] is True:
                 list_data = []
                 list_q = []
