@@ -387,8 +387,8 @@ def showHosters():
                 pdata = str(pdata)
 
             sHost = aEntry[3].strip()
-            if not cHosterGui().checkHoster(sHost):
-                continue
+            # if not cHosterGui().checkHoster(sHost):
+                # continue
 
             sLang = aEntry[4]
             if sLang:
