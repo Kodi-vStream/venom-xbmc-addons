@@ -147,7 +147,7 @@ def showGenres():
 def showMSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -156,7 +156,7 @@ def showMSearch():
 def showSSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH2[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -177,10 +177,10 @@ def showMovies(sSearch = ''):
     sPattern = '<a class="poster" href="([^"]+)"\s+title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
 		oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
 
@@ -205,7 +205,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -217,7 +217,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="current">.+?<\/span><\/li><li><a href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -236,7 +236,7 @@ def showSeries(sSearch = ''):
     oParser = cParser()
     sPattern = '<a class="poster" href="([^"]+)"\s+title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
 
@@ -260,7 +260,7 @@ def showSeries(sSearch = ''):
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -287,7 +287,7 @@ def showSaisons():
 
     sPattern = '<a class="expand-season-trigger" data-toggle="collapse".+?href="([^"]+)".+?<\/span>([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -330,7 +330,7 @@ def showEpisodes():
     sPattern = '<div class="larr episode-header">.+?<a href="([^"]+)"\s+title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -399,7 +399,7 @@ def showHosters():
                 sHosterUrl = sUrl
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     sDisplayTitle = sMovieTitle + ' [' + aEntry[1][1] + '/' + sLang + ']'
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
@@ -421,10 +421,10 @@ def ShowPapyLink():
 
         sPattern = 'var player.+?"([^"]+mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
@@ -438,13 +438,13 @@ def ShowPapyLink():
         sHtmlContent = oRequestHandler.request()
         sPattern = 'file: *"([^"]+)",label:"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0]:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
                 sLabel = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     sDisplayTitle = sMovieTitle + ' [' + sLabel + ']'
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
@@ -475,7 +475,7 @@ def ShowPapyLink():
                     sHosterUrl = 'http' + sHosterUrl
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     sDisplayTitle = sMovieTitle + ' [' + qual + ']'
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)

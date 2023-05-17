@@ -71,7 +71,7 @@ def showSerieYears():
     # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1955], range(1957, 2022))
+    generator = chain([1955], range(1957, 2023))
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(list(generator)):
@@ -290,7 +290,7 @@ def showLinks():
 
             sHost = aEntry[1].replace('www.', '')
             sHost = re.sub('\..+', '', sHost).capitalize()
-            if (cHosterGui().checkHoster(sHost) == False):
+            if not cHosterGui().checkHoster(sHost):
                 continue
 
             sLang = aEntry[2].replace('default', '').upper()

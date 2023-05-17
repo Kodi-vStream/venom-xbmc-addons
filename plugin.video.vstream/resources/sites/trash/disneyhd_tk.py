@@ -106,7 +106,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sHowResultSearch(str(sSearchText))
         oGui.setEndOfDirectory()
         return
@@ -123,7 +123,7 @@ def sHowResultSearch(sSearch = ''):
     sPattern = '<a class="item" href="([^"]+)" title="([^"]+)"> *<img src="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
 
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -179,11 +179,11 @@ def showMovies():
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult = order(aResult[1], 2)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -224,7 +224,7 @@ def ShowList():
     
     aResult = oParser.parse(sHtmlContent, '<li data-arr_pos="([0-9]+)">([^<]+)<')
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -268,7 +268,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]
@@ -296,20 +296,20 @@ def showHosters():
                     pass
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sFinalTitle)
                 oHoster.setFileName(sFinalTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         #playlist-serie lien direct http pour le moment
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0]:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
                 sTitle = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -317,7 +317,7 @@ def showHosters():
         else:
             #Dernier essai avec les torrent
             aResult = oParser.parse(sHtmlContent, 'data-maglink="([^"]+)')
-            if (aResult[0] == True):
+            if aResult[0]:
                 match = Unquote(aResult[1][0])
                 
                 folder = re.findall('ws=(https[^&]+)', match)[0] + '/'
@@ -335,7 +335,7 @@ def showHosters():
                     count = count + 1
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sMovieTitle + " " + name + "E" + str(count))
                         oHoster.setFileName(sMovieTitle + " " + name + "E" + str(count))
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

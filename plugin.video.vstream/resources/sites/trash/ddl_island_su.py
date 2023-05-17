@@ -224,7 +224,7 @@ def showMenuEmissionsTV():
 def showSearchMovies():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -233,7 +233,7 @@ def showSearchMovies():
 def showSearchSeries():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -242,7 +242,7 @@ def showSearchSeries():
 def showSearchAnimes():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_ANIMES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -251,7 +251,7 @@ def showSearchAnimes():
 def showSearchMangas():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MANGAS[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -260,7 +260,7 @@ def showSearchMangas():
 def showSearchSpectacles():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SPECTACLES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -269,7 +269,7 @@ def showSearchSpectacles():
 def showSearchEmissionsTV():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_EMISSIONS_TV[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -353,7 +353,7 @@ def getIdFromUrl(sUrl):
     sPattern = "\/(telechargemen.+?\/)"
     oParser = cParser()
     aResult = oParser.parse(sUrl, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
        return aResult[1][0]
     return
 
@@ -404,10 +404,10 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -462,7 +462,7 @@ def showMovies(sSearch = ''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -481,7 +481,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<div class="page">.+?</div></td><td align="center"><a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         #print aResult
         if 'recherche.php' in aResult[1][0]:
             return URL_MAIN + aResult[1][0]
@@ -507,10 +507,10 @@ def showMoviesReleases():
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -554,10 +554,10 @@ def showSaisons():
     sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a>(?:&nbsp;<img src=.+?title=(.+?) width|)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -610,7 +610,7 @@ def showSeriesReleases():
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles:[/COLOR]')
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -648,7 +648,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -668,7 +668,7 @@ def showHosters():
             if  sHost == 'Revivelink':
                 oHoster = True
 
-            if (oHoster != False):
+            if (oHoster):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -705,7 +705,7 @@ def Display_protected_link():
                 sHosterUrl = code[k] + match.group(1)
                 sHosterUrl = sHosterUrl.replace('123455615', '/')
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -759,7 +759,7 @@ def Display_protected_link():
                 oGui.addMovie(SITE_IDENTIFIER, 'showStreamingHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

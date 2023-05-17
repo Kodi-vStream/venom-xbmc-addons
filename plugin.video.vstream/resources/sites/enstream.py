@@ -54,7 +54,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showSeries(URL_SEARCH[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -81,7 +81,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1997, 2022)):
+    for i in reversed(range(1997, 2023)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', Year, 'annees.png', oOutputParameterHandler)
@@ -145,7 +145,7 @@ def showSeries(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -158,7 +158,9 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span>\d+</span>\s*<a href="([^"]+).+?>([^<]+)</a>\s*</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
+        sNextPage = aResult[1][0][0]
+        if sNextPage.startswith('/'):
+            sNextPage = URL_MAIN[:-1] + sNextPage
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page-([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
@@ -300,7 +302,7 @@ def showHostersLinks():
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

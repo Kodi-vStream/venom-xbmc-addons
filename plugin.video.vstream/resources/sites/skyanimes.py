@@ -161,7 +161,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showEpisode(sUrl)
         oGui.setEndOfDirectory()
@@ -286,7 +286,7 @@ def showHosters():
         sThumb = sThumb.replace(' ', '%20')
     oHoster = cHosterGui().checkHoster('.m3u8')
 
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)

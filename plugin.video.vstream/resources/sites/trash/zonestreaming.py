@@ -146,7 +146,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -228,10 +228,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addNone(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -264,7 +264,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -277,7 +277,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -320,12 +320,12 @@ def showSeries():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #astuce en cas d'episode unique
-    if (aResult[0] == False):
+    if not aResult[0]:
         #oGui.setEndOfDirectory()
         showHosters()
         return
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -365,7 +365,7 @@ def showHosters():
     sPattern = '<span style="color: #ff990.+?>([^<]+)<|large button.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -392,12 +392,12 @@ def showHosters():
                     sHtmlContent = oRequestHandler.request()
                     sPattern = '<iframe.+?src="([^"]+)"'
                     aResult = oParser.parse(sHtmlContent, sPattern)
-                    if (aResult[0] == True):
+                    if aResult[0]:
                         for aEntry in aResult[1]:
                             sHosterUrl = aEntry
 
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
-                            if (oHoster != False):
+                            if (oHoster):
                                 oHoster.setDisplayName(sMovieTitle)
                                 oHoster.setFileName(sMovieTitle)
                                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -410,14 +410,14 @@ def showHosters():
                             sHosterUrl = aEntry
 
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
-                            if (oHoster != False):
+                            if (oHoster):
                                 oHoster.setDisplayName(sMovieTitle)
                                 oHoster.setFileName(sMovieTitle)
                                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
                 else:
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sMovieTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -438,7 +438,7 @@ def serieHosters():
     sPattern = 'href="([^"]+)"'
     aResult = oParser.parse(sUrl, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -459,12 +459,12 @@ def serieHosters():
                 sHtmlContent = oRequestHandler.request()
                 sPattern = '<iframe.+?src="([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
+                if aResult[0]:
                     for aEntry in aResult[1]:
                         sHosterUrl = aEntry
 
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
+                        if (oHoster):
                             oHoster.setDisplayName(sMovieTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -477,14 +477,14 @@ def serieHosters():
                         sHosterUrl = aEntry
 
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
+                        if (oHoster):
                             oHoster.setDisplayName(sMovieTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

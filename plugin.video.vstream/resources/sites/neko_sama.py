@@ -56,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showSearchResult(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -131,7 +131,7 @@ def showLastEp():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '"episode":"([^"]+)".+?","title":"([^"]+)".+?"lang":"([^"]+)".+?"anime_url":"([^"]+)".+?"url_bg":"([^"]+)"'
+    sPattern = 'episode":"([^"]+).+?title":"([^"]+).+?lang":"([^"]+).+?anime_url":"([^"]+).+?url_bg":"([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -185,7 +185,7 @@ def showMovies():
             oGui.addAnime(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -237,7 +237,7 @@ def showSaisonEpisodes():
     except:
         pass
 
-    sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
+    sPattern = 'episode":"([^"]+).+?url":"([^"]+)","url_image":"([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -268,7 +268,7 @@ def showSeriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "video\[\d+\] = \'([^']+)\'"
+    sPattern = "video\[\d+\] = '([^']+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -282,7 +282,7 @@ def showSeriesHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

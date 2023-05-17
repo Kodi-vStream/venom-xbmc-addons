@@ -114,7 +114,7 @@ def showHosters():
         sTitle = aResult[1][0][1]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster != False:
+        if oHoster:
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')

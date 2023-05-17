@@ -18,7 +18,7 @@ SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
 
 # Source compatible avec les clones : toblek, bofiaz, nimvon
-# mais pas compatible avec les clones, qui ont une redirection direct : sajbo, trozam, radego
+# mais pas compatible avec les clones, qui ont une redirection directe : sajbo, trozam, radego
 URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_HOST = dans sites.json
 URL_MAIN = 'URL_MAIN'
@@ -67,7 +67,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -131,7 +131,7 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        if sUrl == URL_MAIN:    # page d'accueil
+        if sUrl == URL_MAIN:  # page d'accueil
             sABPattern = '<div class="column1"'
         else:
             sABPattern = '<div class="column20"'
@@ -159,7 +159,7 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = ("%s (%s) [%s]") % (sTitle, sYear, sQual)
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
@@ -167,16 +167,16 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', URL_HOST[:-1] + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^"]+)"><img style="position:relative;" +src="data:image'
+    sPattern = 'a><a style="position: relative;top: 3px;margin-right: 6px;" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -190,9 +190,10 @@ def showHosters():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sYear = oInputParameterHandler.getValue('sYear')
+
+    # sMainUrl = oInputParameterHandler.getValue('sMainUrl')
+    # sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -202,14 +203,14 @@ def showHosters():
     # Recuperation info film, com et image
     sThumb = ''
     sDesc = ''
-    sPattern = '<img src="([^"]+)".+?<p.+?>([^<]+)</p>'
+    sPattern = '<img src="([^"]+).+?<p.+?>([^<]+)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         sThumb = aResult[1][0][0]
         sDesc = aResult[1][0][1]
 
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -227,10 +228,9 @@ def showHosters():
             for aEntry in aResult[1]:
 
                 sLink2 = aEntry
-
                 oHoster = cHosterGui().checkHoster(sLink2)
 
-                if oHoster != False:
+                if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sLink2, sThumb)

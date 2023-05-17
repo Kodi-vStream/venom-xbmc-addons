@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -117,7 +117,7 @@ def showMenuSeries():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -175,7 +175,7 @@ def showMovieYearsTVShow():
 def showMovieYears(sTypeSerie=''):
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(2001, 2022)):  # pas grand chose 32 - 90
+    for i in reversed(range(2001, 2023)):  # pas grand chose 32 - 90
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + sTypeSerie)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
@@ -254,7 +254,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -330,8 +330,8 @@ def showSaison():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sNumSaison = aEntry[0]
-            sSaison = 'Saison ' + aEntry[0]
+            sNumSaison = aEntry
+            sSaison = 'Saison ' + sNumSaison
             sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
             sDisplayTitle = sMovieTitle + ' ' + sSaison
             sTitle = sMovieTitle
@@ -407,6 +407,7 @@ def showLink():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
@@ -425,6 +426,7 @@ def showLink():
 
     sPattern = 'data-url="([^"]+).+?server.+?alt="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -471,7 +473,7 @@ def showHosters():
         sHosterUrl = aResult[0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster != False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

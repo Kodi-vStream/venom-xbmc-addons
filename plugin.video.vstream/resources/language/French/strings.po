@@ -284,6 +284,10 @@ msgctxt "#30069"
 msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
 msgstr "A moins d'avoir un débrideur,[CR] cocher cette case vous apportera plus de problèmes que d'avantages."
 
+msgctxt "#30070"
+msgid "Language"
+msgstr "Langues des informations"
+
 msgctxt "#30071"
 msgid "Updated list"
 msgstr "Liste mise à jour"
@@ -764,6 +768,10 @@ msgctxt "#30320"
 msgid "You have successfully logged out"
 msgstr "Vous avez été déconnecté avec succès"
 
+msgctxt "#30321"
+msgid "my viewing history"
+msgstr "Mon historique de visionnage"
+
 msgctxt "#30324"
 msgid "Add to media"
 msgstr "Ajouter aux médias"
@@ -805,8 +813,8 @@ msgid "Activate Premium"
 msgstr "Activer Premium"
 
 msgctxt "#30334"
-msgid "Free or Premium Token"
-msgstr "Token Premium ou gratuit"
+msgid "Premium Token"
+msgstr "Token Premium"
 
 msgctxt "#30340"
 msgid "Trakt integration"

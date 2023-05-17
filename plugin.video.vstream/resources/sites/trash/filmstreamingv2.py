@@ -75,7 +75,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
             sUrl = sSearchText
             showMovies(sUrl)
             oGui.setEndOfDirectory()
@@ -131,10 +131,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
 		oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -159,7 +159,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -173,7 +173,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         sUrl = aResult[1][0]
         #correction d'1 bug de leur site
         sUrl = sUrl.replace('xfsearch//page/2/','xfsearch/page/2/page/2/')
@@ -193,7 +193,7 @@ def showMoviesHtml():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -233,7 +233,7 @@ def showSagas():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -272,7 +272,7 @@ def showHosters():
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Liens Streaming :' + '[/COLOR]')
@@ -285,7 +285,7 @@ def showHosters():
             sHosterUrl = str(aEntry)
             sHosterUrl = sHosterUrl.replace('//ok.ru','https://ok.ru')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
@@ -299,7 +299,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Liens Download :' + '[/COLOR]')
@@ -349,7 +349,7 @@ def Display_protected_link():
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)

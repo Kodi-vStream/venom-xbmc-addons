@@ -11,7 +11,14 @@ from resources.lib.comaddon import dialog, VSlog
 class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'realdebrid', 'RealDebrid', 'violet')
+        self.__sRealHost = ''
 
+    def setRealHost(self, host):
+        self.__sRealHost = "/" + host
+
+    def setDisplayName(self, displayName):
+        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + self.__sRealHost + '[/COLOR]'
+        
     def _getMediaLinkForGuest(self):
         token = cPremiumHandler(self.getPluginIdentifier()).getToken()
         if not token:

@@ -53,7 +53,7 @@ def showSearch(): #function de recherche
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard() #apelle le clavier xbmx
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText  #modifi l'url de recherche
         showMovies(sUrl) #apelle la function qui pouras lire la page de resultats
         oGui.setEndOfDirectory()
@@ -88,7 +88,7 @@ def showMovies(sSearch = ''):
 
     #xbmc.log(str(aResult)) #Commenter ou supprimer cette ligne une foix fini
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         #dialog barre de progression
         progress_ = progress().VScreate(SITE_NAME)
@@ -118,7 +118,7 @@ def showMovies(sSearch = ''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -140,7 +140,7 @@ def showMovies2(sSearch = ''):
     sPattern = '<li><a href="([^<]+)" title="([^<]+)" rel="([^<]+)" class="anm_det_pop">([^<]+)</a></li>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -168,7 +168,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
     sPattern = '<li><a href="([^<]+)">Suivant</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -193,12 +193,12 @@ def showHosters():# recherche et affiche les hotes
     #penser a faire un print aResult pour verifier
 
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(aEntry[1])
                 oHoster.setFileName(aEntry[1])
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
@@ -226,7 +226,7 @@ def seriesListEpisodes(): #cherche les episode de series
 
     #VSlog(str(aResult))
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sTitle = aEntry[1]

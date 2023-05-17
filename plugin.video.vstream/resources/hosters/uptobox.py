@@ -55,7 +55,8 @@ class cHoster(iHoster):
             return self._getMediaLinkForGuest()
 
     def _getMediaLinkForGuest(self):
-        self._url = self._url.replace('uptobox.com/', 'uptostream.com/')
+        self._url = self._url.replace('uptobox.com/', 'uptostream.eu/')
+        self._url = self._url.replace('uptobox.eu/', 'uptostream.eu/')
 
         # On redirige vers le hoster uptostream
         oHoster = uptostreamHoster()
@@ -69,7 +70,7 @@ class cHoster(iHoster):
             return self._getMediaLinkForGuest()
 
         fileCode = self._url.split('/')[-1].split('?')[0]
-        url1 = "https://uptobox.com/api/link?token=%s&file_code=%s" % (token, fileCode)
+        url1 = "https://uptobox.eu/api/link?token=%s&file_code=%s" % (token, fileCode)
         try:
             oRequestHandler = cRequestHandler(url1)
             dict_liens = oRequestHandler.request(jsonDecode=True)

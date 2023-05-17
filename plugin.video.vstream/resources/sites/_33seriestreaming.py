@@ -226,16 +226,16 @@ def showMovies(sSearch=''):
                     continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
-            sDesc = ''
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            if '/series' in sUrl2 or '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if '/series' in sUrl2 or '/series' in sUrl or URL_SEARCH_SERIES[0] in sSearch:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -272,12 +272,21 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
-    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'grid-item" href="([^"]+).+?-src="([^"]*).+?(saison \d+)'
+    # récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = 'fsynopsis"><p>([^<]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
+
+    sPattern = 'href="([^"]+)">\s*<div class="thumb.+?src="([^"]+).+?figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -314,11 +323,11 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sStart = 'class="pmovie__subtitle"'
-    sEnd = 'pmovie__bottom-btns'
+    sStart = 'div align="center'
+    sEnd = 'full-ser-keywords'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = 'href="([^"]+).+?(épisode \d+)'
+    sPattern = 'href="([^"]+).+?/span>([^<]+)</'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -329,7 +338,7 @@ def showEpisodes():
             sUrl2 = aEntry[0]
             sEp = aEntry[1]
 
-            sTitle = sMovieTitle + ' ' + sEp
+            sTitle = sMovieTitle + ' Episode ' + sEp
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -360,10 +369,22 @@ def showHosters():
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     sHtmlContent = oRequestHandler.request()
 
+    if not sDesc:
+        # récupération du Synopsis pour les films
+        sDesc = ''
+        try:
+            sPattern = 'fsynopsis"><p>([^<]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
+
+
     if isSerie:  # episode d'une série
-        sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?img src="([^\.]+)'
+        sPattern = 'data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+).+?name">([^<]+).+?src="([^\.]+)'
     else:        # Film
-        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+).+?">([^<]+).+?img src="([^\.]+)'
+        sPattern = 'data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+).+?name">([^<]+).+?src="([^\.]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 

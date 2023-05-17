@@ -13,26 +13,27 @@ Historique des modifications
 ==================================================================================
 
 
+*** 2.5.0***
+- Mes contenus : Historique de visionnage
+- Uptobox : Gestion de la nouvelle adresse
+- TMDB : Choix de la langue des informations
+
 *** 2.4.3***
 - CloudFlare : Compatibilité avec FlareSolverr 3
 
 *** 2.4.0***
 - Kodi 20 : Compatibilité avec différents OS
-- uptobox : compatibilité nouvelle version du site
-
+- uptobox : Compatibilité nouvelle version du site
 
 *** 2.3.0***
 - Uptobox : Retrouver le token sur la nouveau site 
 
-
 *** 2.2.0***
 - Kodi 20 : Compatibilité avec Kodi 20 "Nexus"
-
 
 *** 2.1.0***
 - RealDebrid : Utilisation par token, sans besoin de UrlResolver
 - Bande annonce : Compatibilité avec l'extension Invidious 
-
 
 *** 2.0.0***
 - TMDB : Noter film/série, ajouter aux favoris, à la liste de suivi, à des listes personnelles

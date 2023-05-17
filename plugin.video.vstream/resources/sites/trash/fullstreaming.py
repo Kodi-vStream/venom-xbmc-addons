@@ -61,7 +61,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -77,7 +77,7 @@ def showGenres():
 
     sPattern = '<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-13.+?"><a href="([^<]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sTitle = aEntry[1].replace('-720p', ' [720p]').replace('-1080p', ' [1080p]')
             sUrl = URL_MAIN[:-1] + aEntry[0]
@@ -117,10 +117,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -156,7 +156,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -170,7 +170,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^<]+)" >Suivant</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -196,14 +196,14 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             if 'jawcloud' in sHosterUrl:
                 sHosterUrl = sHosterUrl + '.html'
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -229,7 +229,7 @@ def seriesHosters():
     sEpisodesList= {}
     sPattern = '<a href="#(div[0-9]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         for i in aResult[1]:
             sEpisodesList[i[0]] = i[1]
 
@@ -239,7 +239,7 @@ def seriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             div = aEntry[0]
@@ -250,7 +250,7 @@ def seriesHosters():
 
             sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle2)
                 oHoster.setFileName(sMovieTitle2)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

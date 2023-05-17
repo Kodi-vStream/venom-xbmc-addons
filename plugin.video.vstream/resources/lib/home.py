@@ -8,7 +8,7 @@ from resources.lib.search import cSearch
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import addon, window
+from resources.lib.comaddon import addon
 
 SITE_IDENTIFIER = 'cHome'
 SITE_NAME = 'Home'
@@ -35,10 +35,10 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'showMyVideos', self.addons.VSlang(30130), 'star.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'ShowTools', self.addons.VSlang(30033), 'tools.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showTools', self.addons.VSlang(30033), 'tools.png', oOutputParameterHandler)
 
         view = False
-        if (self.addons.getSetting('active-view') == 'true'):
+        if self.addons.getSetting('active-view') == 'true':
             view = self.addons.getSetting('accueil-view')
 
         oGui.setEndOfDirectory(view)
@@ -76,10 +76,13 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('cFav', 'getBookmarks', self.addons.VSlang(30207), 'mark.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cViewing', 'showMenu', self.addons.VSlang(30125), 'replay.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getBookmarks', self.addons.VSlang(30207), 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cWatched', 'showMenu', self.addons.VSlang(30321), 'annees.png', oOutputParameterHandler)
 
         oGui.addDir('cDownload', 'getDownloadList', self.addons.VSlang(30229), 'download.png', oOutputParameterHandler)
 
@@ -97,7 +100,6 @@ class cHome:
         oGui.addDir('globalSources', 'activeSources', self.addons.VSlang(30362), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
 
     def showMenuSearch(self):
         oGui = cGui()
@@ -122,12 +124,11 @@ class cHome:
         oOutputParameterHandler.addParameter('sCat', '5')
         oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30080), 'buzz.png', oOutputParameterHandler)
 
-        if (self.addons.getSetting('history-view') == 'true'):
+        if self.addons.getSetting('history-view') == 'true':
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir('cHome', 'showHistory', self.addons.VSlang(30308), 'annees.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
 
     def showSearchText(self):
         oGui = cGui()
@@ -328,29 +329,27 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
         oGui.addDir('freebox', 'showMenuMusic', self.addons.VSlang(30203), 'music.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
-        
+
     def showMenuTV(self):
         oGui = cGui()
-    
+
         oOutputParameterHandler = cOutputParameterHandler()
 
         # SI plusieurs sources proposent la TNT
         # oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_TV')
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30332), 'host.png', oOutputParameterHandler)
-        # SINON accès direct à la seule source 
+        # SINON accès direct à la seule source
         oOutputParameterHandler.addParameter('siteUrl', 'TV')
         oGui.addDir('freebox', 'showWeb', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_CINE')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30200), self.addons.VSlang(30133)), 'films.png', oOutputParameterHandler)
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30138), self.addons.VSlang(30113)), 'host.png', oOutputParameterHandler)
-    
+
         oOutputParameterHandler.addParameter('siteUrl', 'TV_TV')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30138), self.addons.VSlang(30200)), 'host.png', oOutputParameterHandler)
- 
-        oGui.setEndOfDirectory()
 
-        
+        oGui.setEndOfDirectory()
 
     def showReplay(self):
         oGui = cGui()
@@ -409,7 +408,7 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-    def ShowTools(self):
+    def showTools(self):
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -429,10 +428,6 @@ class cHome:
         oGui.addDir('globalSources', 'globalSources', self.addons.VSlang(30449), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
-    def opensetting(self):
-        addon().openSettings()
-
 
     def showHistory(self):
         oGui = cGui()
@@ -474,6 +469,22 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
+    def showHostDirect(self):  # fonction de recherche
+        oGui = cGui()
+        sUrl = oGui.showKeyBoard(heading=self.addons.VSlang(30045))
+        if sUrl:
+
+            oHoster = cHosterGui().checkHoster(sUrl)
+            if oHoster:
+                oHoster.setDisplayName(self.addons.VSlang(30046))
+                oHoster.setFileName(self.addons.VSlang(30046))
+                cHosterGui().showHoster(oGui, oHoster, sUrl, '')
+
+        oGui.setEndOfDirectory()
+
+    def opensetting(self):
+        addon().openSettings()
+
     def delSearch(self):
         from resources.lib.db import cDb
         with cDb() as db:
@@ -496,18 +507,5 @@ class cHome:
                 oGui.addDir(aPlugin[2], aPlugin[3], aPlugin[1], icon, oOutputParameterHandler)
             except:
                 pass
-
-        oGui.setEndOfDirectory()
-
-    def showHostDirect(self):  # fonction de recherche
-        oGui = cGui()
-        sUrl = oGui.showKeyBoard(heading=self.addons.VSlang(30045))
-        if (sUrl != False):
-
-            oHoster = cHosterGui().checkHoster(sUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(self.addons.VSlang(30046))
-                oHoster.setFileName(self.addons.VSlang(30046))
-                cHosterGui().showHoster(oGui, oHoster, sUrl, '')
 
         oGui.setEndOfDirectory()

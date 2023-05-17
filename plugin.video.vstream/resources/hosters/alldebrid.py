@@ -12,6 +12,13 @@ from resources.lib.comaddon import VSlog
 class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'alldebrid', 'Alldebrid', 'violet')
+        self.__sRealHost = ''
+
+    def setRealHost(self, host):
+        self.__sRealHost = "/" + host
+
+    def setDisplayName(self, displayName):
+        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + self.__sRealHost + '[/COLOR]'
 
     def _getMediaLinkForGuest(self):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()

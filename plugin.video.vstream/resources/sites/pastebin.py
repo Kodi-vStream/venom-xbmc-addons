@@ -34,7 +34,7 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
-#MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2022', 'showMovies')
+#MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2023', 'showMovies')
 MOVIE_NEWS = ('movie/now_playing', 'showTMDB')
 # MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
 MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
@@ -52,7 +52,7 @@ SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
 ANIM_ANIMS = (URL_MAIN + '&sMedia=anime', 'showMenuMangas')
-ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2022', 'showMovies')
+ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2023', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
 ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
@@ -658,7 +658,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2022&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2023&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
@@ -707,7 +707,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2022&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2023&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
@@ -875,7 +875,7 @@ def showMenuFilms():
     if not sRes:
         oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
         oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30426), 'news.png', oOutputParameterHandler)
-        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2022')
+        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2023')
         # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
@@ -938,7 +938,7 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2022')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2023')
     # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'trending/tv/day')#tv/on_the_air')
@@ -986,7 +986,7 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2022')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2023')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1161,20 +1161,20 @@ def showTMDB():
 
     result = grab.getUrl(siteUrl, numPage, term)
     total = len(result)
-
     results = None
-    if 'cast' in result:
-        sMedia = 'film'
-        sType = 'person'
-        results = result['cast']
-    elif 'results' in result:
-        sMedia = 'film' if 'movie' in siteUrl else 'serie'
-        sType = 'movie' if 'movie' in siteUrl else 'tvshow'
-        results = result['results']
+    if total > 0:
+        if 'cast' in result:
+            sMedia = 'film'
+            sType = 'person'
+            results = result['cast']
+        elif 'results' in result:
+            sMedia = 'film' if 'movie' in siteUrl else 'serie'
+            sType = 'movie' if 'movie' in siteUrl else 'tvshow'
+            results = result['results']
+        total = len(results)
 
     if total > 0 and results:
         bMatrix = isMatrix()
-        total = len(results)
         tmdbIds = {}
         for data in results:
             tmdbIds[data['id']] = data['title'] if 'title' in data else data['name']
@@ -1268,7 +1268,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl += Quote(sSearchText)
 
         showMovies(sUrl)
@@ -2012,8 +2012,11 @@ def showMovies(sSearch=''):
 
     # Classement par ID TMDB, pseudo-classement par sortie
     if sYear or sGenre:
-        movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
-
+        try:
+            movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
+        except Exception as e:
+            raise
+            
     # Recherche par ordre alphabétique => le tableau doit être trié
     if sAlpha:
         movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
@@ -2415,7 +2418,7 @@ def showHosters():
         for sHosterUrl, lang in listRes[res]:
 
             if not sHosterUrl.startswith('http'):
-                sHosterUrl += 'http://' + sHosterUrl
+                sHosterUrl = 'http://' + sHosterUrl
 
             if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
                 oHoster = hosterLienDirect
@@ -2530,7 +2533,10 @@ def getHosterList(siteUrl):
             if len(listLinks) > 0:
                 listResMovie = []
                 idxResMovie = 0
-                res = movie[pbContent.RES].strip().upper()
+                if pbContent.RES == -1:
+                    res = ''
+                else:
+                    res = movie[pbContent.RES].strip().upper()
                 if '[' in res:
                     listResMovie.extend(eval(res))
                 else:

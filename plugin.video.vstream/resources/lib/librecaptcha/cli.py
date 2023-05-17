@@ -18,9 +18,13 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 
-from resources.lib.comaddon import dialog, VSlog
-from threading import Thread, RLock
+import json
+import re
+import time
+import xbmcvfs
 
+from threading import Thread, RLock
+from resources.lib.comaddon import VSlog
 from .errors import UserError
 from .frontend import Frontend
 from .gui import cInputWindow, cInputWindowYesNo
@@ -29,10 +33,6 @@ try:
     from Queue import Queue
 except:
     from queue import Queue
-
-import json
-import time
-import xbmcvfs, re
 
 Objectif = ""
 DimTab = []
@@ -45,7 +45,7 @@ class CliSolver(object):
         self.__image_procs = []
 
     def show_image(self, image):
-        oSolver = cInputWindow(captcha=image, msg= Objectif, dimtab = DimTab , roundnum=1)
+        oSolver = cInputWindow(captcha=image, msg= Objectif, dimtab=DimTab, roundnum=1)
         retArg = oSolver.get()
         if retArg == False:
             return False
@@ -163,7 +163,7 @@ class Cli(Frontend):
         global Objectif, DimTab
 
         ID = json.dumps(meta).split(',')[0].replace('[','')
-        
+
         f = xbmcvfs.File(STRINGS_PATH + "/data.txt")
         content = f.read()
         f.close()
@@ -171,7 +171,7 @@ class Cli(Frontend):
         Objectif = re.findall('case '+ID+'.+?<strong>([^<]+)</strong>', content)
 
         # Recupere le theme de maniere plus precis.
-        if (int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9):
+        if int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9:
             Objectif = Objectif[1].encode('utf-8').decode('unicode-escape')
         else:
             Objectif = Objectif[0].encode('utf-8').decode('unicode-escape')

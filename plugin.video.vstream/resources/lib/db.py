@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import json
-import xbmcvfs
-import xbmc
-
 from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
@@ -45,7 +41,7 @@ class cDb(object):
             if self.dbcur.fetchone() is None:
                 self._create_tables()
             return self
-            
+
         except:
             VSlog('Error: Unable to access to %s' % REALDB)
             pass
@@ -86,9 +82,15 @@ class cDb(object):
 
         sql_create = "CREATE TABLE IF NOT EXISTS watched ("\
                      "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "tmdb_id TEXT, "\
+                     "title_id TEXT, "\
                      "title TEXT, "\
+                     "siteurl TEXT, "\
+                     "site TEXT, "\
+                     "fav TEXT, "\
                      "cat TEXT, "\
-                     "UNIQUE(title)"\
+                     "season integer, "\
+                     "UNIQUE(title_id)"\
                      ");"
         self.dbcur.execute(sql_create)
 
@@ -222,11 +224,26 @@ class cDb(object):
         title = meta['title']
         if not title:
             return
-        cat = meta['cat'] if 'cat' in meta else '1'
 
-        ex = 'INSERT or IGNORE INTO watched (title, cat) VALUES (?, ?)'
+        titleWatched = meta['titleWatched']
+        cat = meta['cat'] if 'cat' in meta else '1'
+        siteurl = QuotePlus(meta['siteurl'])
+        tmdbId = meta['tmdbId'] if 'tmdbId' in meta else ''
+        site = meta['site']
+        fav = meta['fav']
+        season = meta['season'] if 'season' in meta else ''
+
+        # on enleve avant de remettre pour retrier
+        ex = "DELETE FROM watched WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
         try:
-            self.dbcur.execute(ex, (title, cat))
+            self.dbcur.execute(ex)
+        except Exception as e:
+            VSlog('SQL ERROR - ' + ex)
+            pass
+
+        ex = 'INSERT or IGNORE INTO watched (tmdb_id, title_id, title, siteurl, site, cat, fav, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        try:
+            self.dbcur.execute(ex, (tmdbId, titleWatched, title, siteurl, site, cat, fav, season))
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
         except Exception as e:
@@ -236,19 +253,40 @@ class cDb(object):
                     self.db.commit()
                     VSlog('Table recreated : watched')
 
-                    # Deuxieme tentative
-                    self.dbcur.execute(ex, (title, cat))
+                if 'named tmdb_id' in str(e):  # ajout nouvelle colonne 'tmdb_id'
+                    self.dbcur.execute("ALTER TABLE watched add column tmdb_id TEXT")
                     self.db.commit()
+                    VSlog('Table recreated : watched')
+
+                if 'named season' in str(e):  # ajout nouvelle colonne 'season'
+                    self.dbcur.execute("ALTER TABLE watched add column season integer")
+                    self.db.commit()
+                    VSlog('Table recreated : watched')
+
+                # Deuxieme tentative
+                self.dbcur.execute(ex, (tmdbId, titleWatched, title, siteurl, site, cat, fav, season))
+                self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT watched : title = %s' % e)
 
+        # Lecture d'une episode, on retient aussi la saison
+        if cat == "8":
+            meta['cat'] = 4
+            meta['fav'] = meta['seasonFunc']
+            meta['siteurl'] = meta['seasonUrl']
+            tvshowtitle = title[:title.rindex('E')].strip()
+            meta['title'] = tvshowtitle
+            titleWatched = titleWatched[:titleWatched.rindex('E')].strip()
+            meta['titleWatched'] = titleWatched
+            self.insert_watched(meta)
+
     def get_watched(self, meta):
-        title = meta['title']
+        title = meta['titleWatched']
         if not title:
             return False
         cat = meta['cat'] if 'cat' in meta else '1'
 
-        sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
+        sql_select = "SELECT * FROM watched WHERE title_id = '%s'" % title
 
         try:
             self.dbcur.execute(sql_select)
@@ -261,39 +299,95 @@ class cDb(object):
                 if matchedcat:
                     return int(matchedcat) == int(cat)
 
-            if matchedrow:
-                return True
-            return False
+            return True if matchedrow else False
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
-                # Deuxieme tentative, sans la cat
-                sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
-                self.dbcur.execute(sql_select)
-                return 1 if self.dbcur.fetchall() else 0
-            else:
-                VSlog('SQL ERROR %s' % sql_select)
+                self.convertWatched()    # MAJ du modele de table
+                # Deuxieme tentative
+                try:
+                    self.dbcur.execute(sql_select)
+                    matchedrow = self.dbcur.fetchall()
+                    return True if matchedrow else False
+                except Exception as e:
+                    VSlog('SQL ERROR %s' % sql_select)
             return False
 
+    def get_allwatched(self):
+        sql_select = "SELECT tmdb_id, * FROM watched order by addon_id DESC"
+
+        try:
+            self.dbcur.execute(sql_select)
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow
+
+        except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
+                self.convertWatched()    # MAJ du modele de table
+                try:    # 2eme tentative
+                    self.dbcur.execute(sql_select)
+                    matchedrow = self.dbcur.fetchall()
+                    return matchedrow
+                except Exception as e:
+                    pass
+            VSlog('SQL ERROR : %s' % sql_select)
+        return None
+        
+
     def del_watched(self, meta):
-        title = meta['title']
+        title = meta['titleWatched']
         if not title:
             return
 
-        sql_select = "DELETE FROM watched WHERE title = '%s'" % title
+        sql_select = "DELETE FROM watched WHERE title_id = '%s'" % title
         try:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
         except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
-            return False, False
+        return False, False
+
+
+    # conversion de l'ancienne table watched
+    def convertWatched(self):
+        try:
+            self.dbcur.execute("ALTER TABLE watched RENAME COLUMN title TO title_id")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add title TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add tmdb_id TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add siteurl TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add site TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add fav TEXT")
+        except Exception as e:
+            pass
+        try:
+            self.dbcur.execute("ALTER TABLE watched add season integer")
+        except Exception as e:
+            pass
+        
+        return
+    
 
     # ***********************************
     #   Resume fonctions
     # ***********************************
 
     def insert_resume(self, meta):
-        title = self.str_conv(meta['title'])
+        title = self.str_conv(meta['titleWatched'])
         site = QuotePlus(meta['site'])
         point = meta['point']
         total = meta['total']
@@ -320,7 +414,7 @@ class cDb(object):
                 VSlog('SQL ERROR INSERT : %s' % e)
 
     def get_resume(self, meta):
-        title = self.str_conv(meta['title'])
+        title = self.str_conv(meta['titleWatched'])
         # site = QuotePlus(meta['site'])
 
         sql_select = "SELECT point, total FROM resume WHERE title = '%s'" % title
@@ -342,7 +436,7 @@ class cDb(object):
         return False, False
 
     def del_resume(self, meta):
-        title = QuotePlus(meta['title'])
+        title = QuotePlus(meta['titleWatched'])
 
         sql_select = "DELETE FROM resume WHERE title = '%s'" % title
 
@@ -460,6 +554,7 @@ class cDb(object):
         saison = meta['season'] if 'season' in meta else ''
         sTmdbId = meta['sTmdbId'] if 'sTmdbId' in meta else ''
 
+        # on enleve avant de remettre pour retrier
         ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
         try:
             self.dbcur.execute(ex)
@@ -471,7 +566,6 @@ class cDb(object):
             ex = 'INSERT INTO viewing (tmdb_id, title_id, title, siteurl, site, fav, cat, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
             self.dbcur.execute(ex, (sTmdbId, titleWatched, title, siteurl, meta['site'], meta['fav'], cat, saison))
             self.db.commit()
-
             VSlog('SQL INSERT viewing Successfully')
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
@@ -479,7 +573,7 @@ class cDb(object):
                 VSlog('Table recreated : viewing')
 
                 # Deuxieme tentative
-                self.dbcur.execute(ex, (meta['sTmdbId'], titleWatched, title, siteurl, meta['site'], meta['fav'], meta['cat'], saison, episode))
+                self.dbcur.execute(ex, (sTmdbId, titleWatched, title, siteurl, meta['site'], meta['fav'], cat, saison))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT : %s' % e)

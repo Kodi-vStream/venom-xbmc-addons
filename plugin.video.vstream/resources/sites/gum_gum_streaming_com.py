@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,14 +10,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
 
-import re
-
 SITE_IDENTIFIER = 'gum_gum_streaming_com'
 SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-# URL_MAIN = 'https://gum-gum-streaming.co/'  # sans pub
 
 ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, 'showNews')
@@ -34,16 +33,16 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://gum-gum-streaming.com/vostfr1/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'vostfr1/')
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (A-F)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://gum-gum-streaming.com/vostfr2/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'vostfr2/')
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (G-L)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://gum-gum-streaming.com/vostfr3/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'vostfr3/')
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (M-R)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://gum-gum-streaming.com/vostfr4/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'vostfr4/')
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (S-Z)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
@@ -61,7 +60,6 @@ def showNews():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # sPattern = 'Dernier (VF|VOSTFR|OAV|Film)\s*: (?:<a |<a title="([^"]+)" )href="([^"]+)" data-wpel-link="internal">([^<]+)'
     sPattern = 'Dernier (VF|VOSTFR|OAV|Film)\s*: (<a|<a title="([^"]+)") href="([^"]+)" data-wpel-link="internal">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -191,8 +189,8 @@ def showEpisodes():
                 sDisplayTitle = aEntry[2].replace('•', '').strip()
                 if sDisplayTitle.endswith(':'):
                     sDisplayTitle = sDisplayTitle[:-1]
-                
-                sTitle = sSerieTitle + ' ' + sDisplayTitle 
+
+                sTitle = sSerieTitle + ' ' + sDisplayTitle
 
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -292,7 +290,7 @@ def showHosters():
                     sHosterUrl = GetTinyUrl(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster:
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')

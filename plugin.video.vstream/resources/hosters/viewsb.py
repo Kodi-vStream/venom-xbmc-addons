@@ -12,7 +12,7 @@ from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
 MODE = 0
 
 
@@ -42,7 +42,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         if MODE == 1:  # Non terminé encore
-            sPattern = 'download_video([^"]+)[^\d]+\d+x(\d+)'
+            sPattern = 'download_video([^"]+).*?<span>\s*(\d+)'
             oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
@@ -68,12 +68,9 @@ class cHoster(iHoster):
             oRequest = cRequestHandler(eurl)
             oRequest.addHeaderEntry('User-Agent', UA)
             oRequest.addHeaderEntry('Referer', host)
-            oRequest.addHeaderEntry('watchsb', 'streamsb')
+            oRequest.addHeaderEntry('watchsb', 'sbstream')
+            
             sHtmlContent = oRequest.request()
-
-            # fh = open('c:\\test.txt', "w")
-            # fh.write(sHtmlContent)
-            # fh.close
 
             page = json.loads(sHtmlContent)
             data = page['stream_data']
@@ -94,10 +91,14 @@ def get_embedurl(host, media_id):
         t = string.ascii_letters + string.digits
         return ''.join([random.choice(t) for _ in range(length)])
 
+    #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), media_id, makeid(12))
+    #c1 = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), makeid(12), makeid(12))
+    #c2 = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), c2, makeid(12))
+    #c3 = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    #return '{0}sources16/{1}/{2}'.format(host, c1, c3)
+
     x = '{0}||{1}||{2}||streamsb'.format(makeid(12), media_id, makeid(12))
-    c1 = binascii.hexlify(x.encode('utf8')).decode('utf8')
-    x = '{0}||{1}||{2}||streamsb'.format(makeid(12), makeid(12), makeid(12))
-    c2 = binascii.hexlify(x.encode('utf8')).decode('utf8')
-    x = '{0}||{1}||{2}||streamsb'.format(makeid(12), c2, makeid(12))
-    c3 = binascii.hexlify(x.encode('utf8')).decode('utf8')
-    return '{0}sources43/{1}/{2}'.format(host, c1, c3)
+    x = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    return '{0}sources16/{1}'.format(host, x)

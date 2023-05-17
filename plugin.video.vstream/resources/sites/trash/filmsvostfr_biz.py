@@ -86,7 +86,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -227,10 +227,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -267,7 +267,7 @@ def showMovies(sSearch = ''):
 
         if not sSearch:
             sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
+            if (sNextPage):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -279,7 +279,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = "<div class=\"wp-pagenavi\">.+?</span><a href='([^<>']+?)'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         if aResult[1][0].startswith('http'):
             return aResult[1][0]
         else:
@@ -305,7 +305,7 @@ def showEpisode():
     else:
         sPattern = '<span>Résumé.+?<\/span><span>([^<]+)<\/span><\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sDesc = aResult[1][0]
 
     sPattern = '<span>(.aison *\d+.+?)<\/span>'
@@ -313,7 +313,7 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
     SaisonNum = '0'
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -358,7 +358,7 @@ def showLinks():
     sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oGui.addText(SITE_IDENTIFIER,'[COLOR crimson]Vidéo bientôt disponible[/COLOR]')
 
     #resume
@@ -366,13 +366,13 @@ def showLinks():
     sPattern = '<span class="synopsis">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         sDesc = aResult[1][0]
 
     sPattern = '<a href="([^"]+)" class="sinactive ilink.+?" rel="nofollow" title="([^"]+)">.+?<span class="quality" title="(.+?)">.+?<span class="langue" title="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0].replace('p=watchers', 'p=30').replace('p=16do', 'p=16').replace('p=the23eo', 'p=23').replace('p=the24', 'p=24') #a del si correction sur le site
@@ -433,7 +433,7 @@ def showHosters():
         sHosterUrl = sUrl
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

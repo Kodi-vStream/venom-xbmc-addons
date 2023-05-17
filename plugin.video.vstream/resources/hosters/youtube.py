@@ -48,7 +48,7 @@ class cHoster(iHoster):
             if MODE == 1:
                 api_call = 'plugin://plugin.video.youtube/play/?video_id=' + videoID
             else:
-                api_call = 'plugin://plugin.video.invidious/?action=video&videoId=' + videoID
+                api_call = 'plugin://plugin.video.invidious/?action=play_video&video_id=' + videoID
 
         if api_call:
             return True, api_call

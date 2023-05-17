@@ -152,14 +152,19 @@ class cHosterGui:
         except:
             sHostName = sHosterUrl
 
-        if debrid:
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
+                f = self.getHoster('alldebrid')
+                #mise a jour du nom
+                f.setRealHost(sHostName)
+                return f
 
             # L'user a activé realbrid ?
             if self.ADDON.getSetting('hoster_realdebrid_premium') == 'true':
-                return self.getHoster('realdebrid')
+                f = self.getHoster('realdebrid')
+                #mise a jour du nom
+                f.setRealHost(sHostName)
+                return f
 
             # L'user a activé debrid_link ?
             if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
@@ -177,7 +182,7 @@ class cHosterGui:
                             'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
+                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload']
 
@@ -188,7 +193,10 @@ class cHosterGui:
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
-            
+
+        if ('guccihide' in sHostName) or ('streamhide' in sHostName):
+            return self.getHoster('streamhide')
+
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
@@ -258,6 +266,9 @@ class cHosterGui:
 
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
+
+        if ('dood' in sHostName) or ('dooood' in sHostName):
+            return self.getHoster('dood')
 
         if ('voe' in sHostName):
             return self.getHoster('voe')

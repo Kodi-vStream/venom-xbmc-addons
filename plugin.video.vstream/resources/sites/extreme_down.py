@@ -275,7 +275,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -443,7 +443,7 @@ def showMovies(sSearch=''):
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
-            if sNextPage != False:
+            if sNextPage:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oOutputParameterHandler.addParameter('misc', sMisc)
@@ -719,7 +719,7 @@ def showHosters():
         for sHosterUrl in HostURL:
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -776,7 +776,7 @@ def getHost():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

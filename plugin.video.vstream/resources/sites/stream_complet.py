@@ -56,7 +56,7 @@ def load():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -66,7 +66,7 @@ def showSearchSerie():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -76,7 +76,7 @@ def showSearchMovie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -161,7 +161,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPagination = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies',  sPagination, oOutputParameterHandler)
@@ -349,7 +349,7 @@ def showHosters():
         if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = oHosterGui.checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -366,7 +366,7 @@ def showHosters():
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
                 oHoster = oHosterGui.checkHoster(sHosterUrl)
-                if oHoster != False:
+                if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -391,7 +391,7 @@ def showHostersDL():
             sHosterUrl = shost
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -399,7 +399,7 @@ def showHostersDL():
     else:
         sHosterUrl = sUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster != False:
+        if oHoster:
             oHoster.setDisplayName(sDisplayName)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

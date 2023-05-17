@@ -47,7 +47,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -85,10 +85,10 @@ def showMovies(sSearch=''):
     sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|moviefilm">)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -120,7 +120,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/([0-9]+)/', sNextPage).group(1)
@@ -134,7 +134,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -156,10 +156,10 @@ def showLinks():
     sPattern = '<li class="player link" data-player="([^"]+)">.+?<span class="p-name">([^"]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]
@@ -189,11 +189,11 @@ def showHosters():
     sPattern = 'url=([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -207,7 +207,7 @@ def showHosters():
 
 #    sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
 #    aResult = oParser.parse(sHtmlContent, sPattern)
-#    if (aResult[0] == True):
+#    if aResult[0]:
 
 #        sUrl2 = aResult[1][0][0]
 #
@@ -219,11 +219,11 @@ def showHosters():
 #        sPattern = '<iframe src="([^"]+)"'
 #        aResult = oParser.parse(sHtmlContent, sPattern)
 #
-#        if (aResult[0] == True):
+#        if aResult[0]:
 #            sHosterUrl = 'https:' + aResult[1][0]
 #            #VSlog(sHosterUrl)
 #            oHoster = cHosterGui().checkHoster(sHosterUrl)
-#            if (oHoster != False):
+#            if (oHoster):
 #                oHoster.setDisplayName(sMovieTitle)
 #                oHoster.setFileName(sMovieTitle)
 #                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -232,7 +232,7 @@ def showHosters():
 #
 #            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
 #            aResult = oParser.parse(sHtmlContent, sPattern)
-#            if (aResult[0] == True):
+#            if aResult[0]:
 #                sHtmlContent = cPacker().unpack(aResult[1][0])
 #                sHtmlContent = sHtmlContent.replace('\\', '')
 #                #VSlog(sHtmlContent)
@@ -241,7 +241,7 @@ def showHosters():
 #                    sHosterUrl = code.group(1)
 #                   #VSlog(sHosterUrl)
 #                   oHoster = cHosterGui().checkHoster(sHosterUrl)
-#                   if (oHoster != False):
+#                   if (oHoster):
 #                       oHoster.setDisplayName(sMovieTitle)
 #                       oHoster.setFileName(sMovieTitle)
 #                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -24,11 +24,11 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
-MOVIE_NEWS = (URL_MAIN + 'films-en-streaming/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = ('?type=movies', 'showGenres')
-MOVIE_ANNEES = (True, 'showMovieYears')
+MOVIE_ANNEES = (True, 'showYears')
 
-SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_GENRES = ('?type=series', 'showGenres')
 
 
@@ -57,7 +57,7 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():
+def showYears():
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_MAIN + 'accueil/')
     sHtmlContent = oRequestHandler.request()
@@ -106,7 +106,7 @@ def showGenres():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -152,9 +152,9 @@ def showMovies(sSearch=''):
             sDisplayTitle = sTitle
             if '/release/' in sUrl or sSearch:
                 if '/serie' in sUrl2:
-                    sDisplayTitle += ' [Série]'
+                    sDisplayTitle += ' {Série}'
                 else:
-                    sDisplayTitle += ' [Film]'
+                    sDisplayTitle += ' {Film}'
 
             if sYear:
                 sDisplayTitle += ' (%s)' % sYear
@@ -173,7 +173,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -218,56 +218,53 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '<a data-post="([^"]+)" data-season="([^"]+)"[^<>]+>([^<>]+)<'
+    sPattern = 'choose-season"><a href="([^"]+).+?inline">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            data = aEntry[0]
-            saison = aEntry[1]
 
-            sTitle = ("%s %s") % (sMovieTitle, ' Saison ' + saison)
+            sUrl = aEntry[0]
+            sMovieTitle = sMovieTitle + ' Saison ' + aEntry[1]
 
-            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'wp-admin/admin-ajax.php')
-            oOutputParameterHandler.addParameter('data', data)
-            oOutputParameterHandler.addParameter('saison', saison)
+            # oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'wp-admin/admin-ajax.php')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def ShowEpisodes():
+def showEpisodes():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    data = oInputParameterHandler.getValue('data')
-    sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    saison = oInputParameterHandler.getValue('saison')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addParameters('action', 'action_select_season')
-    oRequestHandler.addParameters('season', saison)
-    oRequestHandler.addParameters('post', data)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
-    sPattern = '<h2 class="entry-title">([^><]+).+?<a href="([^"]+)" class="lnk-blk">'
+    sPattern = 'h2 class="entry-title">([^<]+).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[1]
-            sTitle = aEntry[0].replace('- Saison', 'Saison')
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            sTitle = aEntry[0]
+            sUrl = aEntry[1]
+            # if sUrl.startswith('/'):
+                # sUrl = URL_MAIN + sUrl
+
+            # sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison
+
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -292,32 +289,33 @@ def showLinks():
     # récupération du Synopsis
     if sDesc is False:
         try:
-            sPattern = 'description"><p>(.+?)</p>'
+            sPattern = 'description">\s*<p>(.+?)</p>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sDesc = aResult[1][0]
         except:
             pass
 
-    sPatternUrl = '<iframe (?:data-)*src="([^"]+)"'
+    sPatternUrl = '<iframe (?:data-)*src="([^"]+)'
     aResultUrl = oParser.parse(sHtmlContent, sPatternUrl)
-    if aResultUrl[0] is True:
-        sPatternHost = '<a class="btn(| on)" href="(.+?)".+?<span class="server">([^<]+) <'
+    if aResultUrl[0]:
+        sPatternHost = 'class="btn(| on)" href="([^"]+).+?class="server">([^<]+)<'
         aResultHost = oParser.parse(sHtmlContent, sPatternHost)
-        if aResultHost[0] is True:
+        if aResultHost[0]:
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResultHost[1]:
+
                 sUrl2 = aResultUrl[1][numUrl]
                 numUrl += 1
                 sHost = aEntry[2]
                 sLang = 'VF'
                 if '-VOSTFR' in sHost:
                     sLang = 'VOSTFR'
-                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '')
+                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '').replace(' ', '').capitalize()
 
                 oHoster = cHosterGui().checkHoster(sHost)
-                if oHoster != False:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR] (%s)') % (sMovieTitle, sHost, sLang)
+                if oHoster:
+                    sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -336,14 +334,12 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHosterUrl = sUrl
-    if sHosterUrl.startswith('/'):
-        sHosterUrl = 'http:' + sHosterUrl
-
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster != False:
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    if sUrl:
+        sHosterUrl = sUrl
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if oHoster:
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

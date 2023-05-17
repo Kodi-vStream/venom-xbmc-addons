@@ -125,7 +125,7 @@ def showSeriesMenu():
 def MyshowSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         # sSearchText.replace(' ', '-') recherche plus précise mais plus risquée
         sUrl = URL_SEARCH[0] + key_search_series + sSearchText
         showMovies(sUrl)
@@ -136,7 +136,7 @@ def MyshowSearchSerie():
 def MyshowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + key_search_movies + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -146,7 +146,7 @@ def MyshowSearchMovie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -188,7 +188,7 @@ def RequestHandlerSearch(searchs):
     sPattern = 'voirhd.co.rechercher-([^ ]*)'
     aResult = oParser.parse(searchs, sPattern)
     sHtmlContent = ''
-    if (aResult[0] == True):
+    if aResult[0]:
         ssearch= aResult[1][0]
     else:
         return False, sHtmlContent, 'Erreur'
@@ -217,7 +217,7 @@ def RequestHandlerGenre(searchs):
     sPattern = 'recherche-([^-]*)'
     aResult = oParser.parse(searchs, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         ssearch = aResult[1][0]
     else:
         return False, 'none'
@@ -299,7 +299,7 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if not aResult[0]:
         if (URL_MAIN + 'rechercher' in sUrl) and '<div class="divrecher">' in sHtmlContent:
             oGui.addText(SITE_IDENTIFIER, 'Recherche : Aucun resultat')
         # erreur interne qui peu etre cause par mauvais liens du site mais aussi le programme
@@ -308,7 +308,7 @@ def showMovies(sSearch=''):
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_1 = progress().VScreate(SITE_NAME)
         bclosedprogress_1 = False
@@ -447,7 +447,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         bNextPage, urlnext, number, numbermax = __checkForNextPage(sHtmlContent, sUrl)
-        if (bNextPage != False):
+        if (bNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlnext)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + '/' + numbermax + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -470,9 +470,9 @@ def __checkForNextPage(sHtmlContent, sUrl):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if not aResult[0]:
         return False, 'none', 'none', 'none'
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             snumber = str(aEntry)
             try:
@@ -519,10 +519,10 @@ def showSaisons():
     sPattern = 'div class="col-sm-3.+?href="serie([^"]*).+?<div class="serietitre">.*?<span>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in reversed(aResult[1]):
             sUrl2 = URL_MAIN + 'serie' + aEntry[0]
             # c'est tjrs le meme titre
@@ -563,10 +563,10 @@ def ShowEpisodes():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sTitleDisplay = sMovieTitle + ' Episode' + aEntry[1]  # saison en odre drecroissant
@@ -629,7 +629,7 @@ def showLink():
     sPattern = '<button.+?lectt.+?src="([^"]*)"style="'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         if '<title>404 Not Found</title>' in sHtmlContent:  # erreur interne du site sur lien donnée par hd.co
             oGui.addText(SITE_IDENTIFIER, ' request failed : voirhd.co no update is database')
         elif iposVF == -1 or iposVOSTFR == -1:  # index DL tjrs trouvé
@@ -637,7 +637,7 @@ def showLink():
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             url = str(aEntry)
 
@@ -696,7 +696,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oHoster = cHosterGui().checkHoster(sUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)

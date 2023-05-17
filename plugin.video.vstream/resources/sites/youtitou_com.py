@@ -104,7 +104,7 @@ def showEpisode():
             sThumb = 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % videoId
 
             oHoster = oHosterGui.checkHoster(sUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 oHosterGui.showHoster(oGui, oHoster, sUrl, sThumb)

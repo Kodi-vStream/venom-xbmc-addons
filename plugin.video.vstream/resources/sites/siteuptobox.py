@@ -12,9 +12,8 @@ try:  # Python 2
 except ImportError:  # Python 3
     import urllib.request as urllib2
     from urllib.error import URLError as UrlError
-    from urllib.parse import urlencode
 
-from resources.lib.comaddon import progress, VSlog, dialog, addon, isMatrix, siteManager
+from resources.lib.comaddon import VSlog, dialog, addon, isMatrix, siteManager
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -32,8 +31,8 @@ SITE_NAME = '[COLOR dodgerblue]Compte UpToBox[/COLOR]'
 SITE_DESC = 'Fichiers sur compte UpToBox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 NB_FILES = 100
-BURL = URL_MAIN + '?op=my_files'
-API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_date_inserted&dir=desc'
+#BURL = URL_MAIN + '?op=my_files'
+API_URL = 'https://uptobox.eu/api/user/files?token=none&orderBy=file_date_inserted&dir=desc'
 URL_MOVIE = ('&path=//', 'showMedias')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -75,7 +74,7 @@ def showSearch(path = '//'):
     sType = oInputParameterHandler.getValue('sMovieTitle')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrlSearch = ''
         if sType:
             sUrlSearch += '&type=' + sType
@@ -136,7 +135,6 @@ def showFile(sSearch=''):
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
 
 
-    total = len(content)
     sPath = getpath(content)
     
     # les dossiers en premier, sur la première page seulement
@@ -238,7 +236,6 @@ def showMedias(sSearch = '', sType = None):
         oGui.setEndOfDirectory()
         return
 
-    isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
     if not isMatrix():
         path = path.encode('utf-8')
@@ -640,7 +637,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
 # Recherche saisons et episodes
 def searchEpisode(sTitle):
     sa = ep =''
-    m = re.search('( S|\.S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('(^S| S|\.S|_S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *| *_ *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
@@ -652,7 +649,7 @@ def searchEpisode(sTitle):
         if m:
             ep = m.group(4)
         else:  # juste la saison
-            m = re.search('( S|\.S|\[S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+            m = re.search('( S|\.S|_S|\[S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
             if m:
                 sa = m.group(3)
                 if int(sa) > 100:
@@ -709,7 +706,7 @@ def showHosters():
     sHosterUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
@@ -717,6 +714,14 @@ def showHosters():
 
 
 def getYear(sMovieTitle, pos):
+
+    # d'abord entre parenthèse
+    sPattern = ['\(([0-9]{4})\)']
+    y, pos = _getTag(sMovieTitle, sPattern, pos)
+    if y:
+        return y, pos
+    
+    # sinon sans les parenthèses
     sPattern = ['[^\w]([0-9]{4})[^\w]']
     return _getTag(sMovieTitle, sPattern, pos)
 
@@ -727,7 +732,8 @@ def getLang(sMovieTitle, pos):
 
 
 def getReso(sMovieTitle, pos):
-    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
+    
+    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)', '.(HDLIGHT)', '.(4K)', '.(UHD)', '\d{3,4}P', '.(HDRIP)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBDL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if sRes:
         sRes = sRes.replace('2160P', '4K')
@@ -748,7 +754,7 @@ def _getTag(sMovieTitle, tags, pos):
             if not ret and l > 1:
                 ret = aResult.group(l-1)
             p = sMovieTitle.index(aResult.group(0))
-            if p<pos:
+            if p<pos and p > 3:
                 pos = p
             return ret.upper(), pos
     return False, pos

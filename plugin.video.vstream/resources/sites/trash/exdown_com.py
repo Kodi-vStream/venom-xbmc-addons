@@ -153,7 +153,7 @@ def load():
 def showSearchMovies(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
@@ -162,7 +162,7 @@ def showSearchMovies():
 def showSearchSeries(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
@@ -222,7 +222,7 @@ def showMovies(sSearch = ''):
     
     #print aResult 
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])        
         for aEntry in aResult[1]:
 
@@ -240,7 +240,7 @@ def showMovies(sSearch = ''):
             oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -259,7 +259,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a style="margin-left:2%;" href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         #print aResult
         return aResult[1][0]
         
@@ -353,7 +353,7 @@ def showMoviesLinks(sHtmlContent):
     sPattern = '<a title="TÃ©lÃ©chargez.+?en (.+?)" href="(.+?)"><button class="button_subcat"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -483,7 +483,7 @@ def showHosters():# recherche et affiche les hotes
     
     #print aResult
         
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
@@ -546,7 +546,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     
 
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
@@ -630,7 +630,7 @@ def Display_protected_link():
             episode+=1
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)

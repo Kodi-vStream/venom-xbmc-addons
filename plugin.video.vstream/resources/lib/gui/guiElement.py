@@ -214,7 +214,7 @@ class cGuiElement:
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         # vire espace et - a la fin
-        sTitle = re.sub('[- –_\.]+$', '', sTitle)
+        sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
         # et au debut
         sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
@@ -259,6 +259,8 @@ class cGuiElement:
         # enleve les crochets et les parentheses si elles sont vides
         if sa or ep:
             sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
+            # vire espace et - a la fin
+            sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
 
         if sa:
             self.__Season = sa
@@ -415,7 +417,7 @@ class cGuiElement:
         if not self.getTitleWatched():
             return 0
 
-        meta = {'title': self.getTitleWatched(),
+        meta = {'titleWatched': self.getTitleWatched(),
                 'site': self.getSiteUrl(),
                 'cat': self.getCat()
                 }

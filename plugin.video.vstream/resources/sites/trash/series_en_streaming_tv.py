@@ -97,7 +97,7 @@ def AlphaDisplay():
     oParser = cParser()
     sPattern = '<a href=\'\.\.\/(serie\/[^\']+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -122,7 +122,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -144,10 +144,10 @@ def showMovies(sSearch = ''):
     sPattern = "<a class='host-a wrap'.+?href='([^']+)'.+?src='([^']+)'.+?<h3.+?>(.+?)</h3>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
 		oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
 
@@ -191,7 +191,7 @@ def showLasts():
     sPattern = '<a class="host-a wrap".+?href="([^"]+)".+?src="([^"]+)".+?<span.+?>(.+?)</span><br><span.+?>(.+?)</span><br><span.+?>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
 
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -239,14 +239,14 @@ def ShowSaisons():
     img = ''
     sPattern = '<img.+?src="([^"]+)" alt=".+?" width=".+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         img = URL_MAIN[:-1] + aResult[1][0]
 
 
     sPattern = '<a href="([^<>]+?)" class="seasonLink">([^<>]+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
 
@@ -286,7 +286,7 @@ def showEpisode():
     sPattern = '<a class="host-a wrap".+?href="([^<"]+)".+?<img.+?src="/images/\?src=(.+?)" class="img-responsive".+?<h3 style=.+?>(.+?)</h3>([^<"]+)<br'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
 
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -335,7 +335,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -373,20 +373,20 @@ def GetLink():
     oParser = cParser()
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sHosterUrl = cPacker().unpack(aResult[1][0])
 
         sHosterUrl = sHosterUrl.replace('"+window.innerWidth+"', '1680')
 
         sPattern2 = "src=\\\\\'(.+?)\\\\"
         aResult = oParser.parse(sHosterUrl, sPattern2)
-        if (aResult[0] == True):
+        if aResult[0]:
             oHoster = cHosterGui().checkHoster(aResult[1][0])
             sHosterUrl = aResult[1][0]
         else:
             oHoster = False
 
-        if (oHoster != False):
+        if (oHoster):
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             oHoster.setDisplayName(sDisplayTitle)
             oHoster.setFileName(sTitle)

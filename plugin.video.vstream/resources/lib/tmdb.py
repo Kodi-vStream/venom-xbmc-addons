@@ -67,13 +67,15 @@ class cTMDb:
     else:
         REALCACHE = VSPath(CACHE)
 
-    def __init__(self, api_key='', debug=False, lang='fr'):
+    def __init__(self, api_key='', debug=False):
 
         self.ADDON = addon()
 
         self.api_key = self.ADDON.getSetting('api_tmdb')
         self.debug = debug
-        self.lang = lang
+        self.lang = self.ADDON.getSetting('tmdb_lang')
+        if not self.lang:
+            self.lang = 'fr'
         self.poster = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('backdrop_tmdb')
 

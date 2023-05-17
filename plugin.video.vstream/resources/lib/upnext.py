@@ -73,13 +73,13 @@ class UpNext:
 
         try:
             # sauvegarde des parametres d'appel
-            oldParams = sys.argv[2] 
-            
+            oldParams = sys.argv[2]
+
             sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
 
             # restauration des anciens params
             sys.argv[2] = oldParams
-            
+
             # pas d'épisode suivant
             if not sMediaUrl:
                 return
@@ -182,13 +182,13 @@ class UpNext:
                 continue
 
             if sLang and 'sLang' in aParams and UnquotePlus(aParams['sLang']) != sLang:
-                continue           # La langue est connue, mais ce n'est pas la bonne
+                continue  # La langue est connue, mais ce n'est pas la bonne
 
             if sSaison and 'sSeason' in aParams and aParams['sSeason'] and int(aParams['sSeason']) != int(sSaison):
-                continue           # La saison est connue, mais ce n'est pas la bonne
+                continue  # La saison est connue, mais ce n'est pas la bonne
 
             if 'sEpisode' in aParams and aParams['sEpisode'] and int(aParams['sEpisode']) != iEpisode:
-                continue           # L'épisode est connu, mais ce n'est pas le bon
+                continue  # L'épisode est connu, mais ce n'est pas le bon
 
             sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
             infoTag = listItem.getVideoInfoTag()
@@ -278,7 +278,7 @@ class UpNext:
             # tente de charger UpNext pour tester sa présence
             xbmcaddon.Addon(upnext_id)
             return True
-        except RuntimeError:    # Addon non installé ou désactivé
+        except RuntimeError:  # Addon non installé ou désactivé
             if not dialog().VSyesno(addons.VSlang(30505)):  # Voulez-vous l'activer ?
                 addons.setSetting('upnext', 'false')
                 return False
@@ -292,7 +292,7 @@ class UpNext:
                     return False
 
                 return True  # addon activé
-            else:                          # UpNext non installé, on l'installe et on l'utilise
+            else:  # UpNext non installé, on l'installe et on l'utilise
                 addonManager().installAddon(upnext_id)
                 # ce n'est pas pris en compte à l'installation de l'addon, donc return False, il faudra attendre le prochain épisode
                 return False

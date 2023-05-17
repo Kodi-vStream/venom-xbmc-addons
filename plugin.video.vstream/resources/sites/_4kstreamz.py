@@ -195,7 +195,7 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
     else:
         oGui.addText(SITE_IDENTIFIER)
-        
+
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage is not False:
@@ -220,9 +220,9 @@ def __checkForNextPage(sHtmlContent):
         if 'suivanthds' in sHtmlContent:  # genre
             sNumberMax = aResult[1][0][0]
             sNextPage = aResult[1][0][1]
-        elif 'CurrentPage':  # film année serie
-            sNextPage = aResult[1][0][0]
-            sNumberMax = aResult[1][0][1]
+        # elif 'CurrentPage':  # film année serie
+            # sNextPage = aResult[1][0][0]
+            # sNumberMax = aResult[1][0][1]
         else:  # film année à partir de la page 8
             sNextPage = aResult[1][0][0]
             sNumberMax = aResult[1][0][1]
@@ -276,12 +276,12 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def ShowEpisodes():
+def showEpisodes():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()

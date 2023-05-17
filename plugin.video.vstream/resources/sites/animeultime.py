@@ -220,7 +220,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = sUrl + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -420,7 +420,7 @@ def showHosters():
             sThumb = aEntry[1]
             sHosterUrl = aEntry[2]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

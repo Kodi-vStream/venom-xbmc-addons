@@ -56,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -114,10 +114,11 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
+    sPattern = 'class="fullstream fullstreaming.+?src="([^"]+).+?'
     if sSearch:
-        sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?</*strong>'
+        sPattern += '<strong>([^<]+).+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)'
     else:
-        sPattern = 'class="fullstream fullstreaming".+?src="([^"]+).+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?>(.+?)</a>.+?</*strong>.+?xfsearch.+?>([^<]+).+?itemprop="description".+?;">([^<]+).+?<a href="([^"]+)'
+        sPattern += 'alt="([^"]+).+?<strong>([^<]+).+?xfsearch.+?>([^<]*).+?itemprop="description.+?;">([^<]+).+?<a href="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -138,11 +139,10 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[0]
                 if sThumb.startswith('/'):
                     sThumb = URL_MAIN[:-1] + sThumb
+                sQual = aEntry[1].replace(':', '').replace(' ', '').replace(',', '/')
 
-                siteUrl = re.sub('www\.', '', aEntry[1])
-                sTitle = aEntry[2]
-                sQual = aEntry[3]
-                sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
+                siteUrl = re.sub('www\.', '', aEntry[2])
+                sTitle = aEntry[3]
                 sDesc = ''
 
             else:
@@ -151,8 +151,7 @@ def showMovies(sSearch=''):
                     sThumb = "https:" + sThumb
 
                 sTitle = aEntry[1]
-                sQual = aEntry[2]
-                sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
+                sQual = aEntry[2].replace(':', '').replace(' ', '').replace(',', '/')
 
                 # Certain film n'ont pas de date.
                 try:
@@ -185,12 +184,11 @@ def showMovies(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         else:
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if sNextPage != False:
+            sNextPage, sPaging = __checkForNextPage(sHtmlContent)
+            if sNextPage:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                number = re.search('/page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if nextPageSearch:
         oGui.setEndOfDirectory()
@@ -200,14 +198,18 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">Suivant &#8594;'
+    sPattern = '>([^<]+)</a>\s+<a href="([^"]+)">Suivant &#8594;'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        return re.sub('www\.', '', aResult[1][0])
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showHosters():
@@ -221,7 +223,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^"]+)" title="([^"]+)" target="seriePlayer"'
+    sPattern = 'class="fa fa-play-circle-o"></i>([^<]+)</div>|embedURL" href="([^"]+)" title="([^"]+)" target="seriePlayer'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sethost = set()
 
@@ -239,7 +241,7 @@ def showHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

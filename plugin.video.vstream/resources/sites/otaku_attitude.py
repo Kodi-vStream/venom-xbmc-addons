@@ -75,7 +75,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -311,7 +311,7 @@ def showMp3():
 #         sHosterUrl = mp3Url
 
     oHoster = cHosterGui().checkHoster('.m3u8')
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb)
@@ -335,7 +335,7 @@ def showHosters():
         sHosterUrl = URL_MAIN + 'launch-download-2-' + serieID + '-ddl-' + idEpisode + '.html'
 
     oHoster = cHosterGui().checkHoster('.m3u8')
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl + "|verifypeer=false", sThumb)

@@ -353,7 +353,7 @@ def play__():  # Lancer les liens
     else:
         oHoster = cHosterGui().checkHoster(sUrl)
 
-        if oHoster != False:
+        if oHoster:
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
