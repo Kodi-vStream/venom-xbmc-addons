@@ -2012,8 +2012,11 @@ def showMovies(sSearch=''):
 
     # Classement par ID TMDB, pseudo-classement par sortie
     if sYear or sGenre:
-        movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
-
+        try:
+            movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
+        except Exception as e:
+            raise
+            
     # Recherche par ordre alphabétique => le tableau doit être trié
     if sAlpha:
         movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
