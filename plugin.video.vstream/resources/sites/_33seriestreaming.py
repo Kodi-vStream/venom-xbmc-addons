@@ -226,16 +226,16 @@ def showMovies(sSearch=''):
                     continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
-            sDesc = ''
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/series' in sUrl2 or '/series' in sUrl or URL_SEARCH_SERIES[0] in sSearch:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -272,10 +272,19 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
-    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    # récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = 'fsynopsis"><p>([^<]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
 
     sPattern = 'href="([^"]+)">\s*<div class="thumb.+?src="([^"]+).+?figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -387,8 +396,8 @@ def showHosters():
                 pdata = str(pdata)
 
             sHost = aEntry[3].strip()
-            # if not cHosterGui().checkHoster(sHost):
-                # continue
+            if not cHosterGui().checkHoster(sHost):
+                continue
 
             sLang = aEntry[4]
             if sLang:
