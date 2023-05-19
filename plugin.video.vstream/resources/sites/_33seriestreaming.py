@@ -196,7 +196,7 @@ def showMovies(sSearch=''):
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
-    sPattern = 'class=".+?grid-item.+?href="([^"]+).+?-src="([^"]+).+?alt="([^"]+)'
+    sPattern = 'grid-item" href="([^"]+).+?-src="([^"]+).+?alt="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
