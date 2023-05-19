@@ -427,6 +427,10 @@ def showHosters():
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'hostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
+    # pas de moyen d'orientation depuis showMovies pour les séries en passant par showAlpha
+    if not aResult[0]:
+        showSaisons()
+
     oGui.setEndOfDirectory()
 
 
