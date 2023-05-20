@@ -47,7 +47,7 @@ def load():
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
                 sUrl = aEntry[0]
-                sTitle = aEntry[1]
+                sTitle = aEntry[1].replace(' vs ', ' / ')
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sTitle)
@@ -111,7 +111,7 @@ def showLink():
         matchinfo = data['matchinfo']
         
         if matchinfo['status'] == 2:
-            oGui.addText(SITE_IDENTIFIER, "(" + matchinfo['name'] + ") - Match terminé", "none.png")
+            oGui.addText(SITE_IDENTIFIER, "(" + matchinfo['name'] + ") - Match fini", "none.png")
             sMovieTitle = matchinfo['hteam_name'] + " " + matchinfo['score'] +  " " + matchinfo['ateam_name']
             oGui.addText(SITE_IDENTIFIER, sMovieTitle, "sport.png")
         else:
