@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import json
+import re
 
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
@@ -34,7 +36,7 @@ def load():
 
     if aResult[0]:
         sUrl = aResult[1][0]
-        sPattern = "<h3 class='post-title entry-title'><a href='(.+?)'>(.+?)</a>"
+        sPattern = "<h3 class='post-title.+?href='(.+?)'.+?snippetized'>(.+?)<"
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -49,7 +51,7 @@ def load():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sTitle)
-                oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, 'genres.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -62,25 +64,78 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
+
+def showMovies(sSearch=''):
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = "<iframe .+? src='.+?mid=([^&]+)&"
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if not aResult[0]:
+        oGui.addText(SITE_IDENTIFIER)
+    else:
+        sUrl2 = "https://dszbok.com/prod-api/match/detail?type=1&pid=6&langtype=en&mid=" + aResult[1][0]
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sDesc', sTitle)
+
+        oGui.addLink(SITE_IDENTIFIER, 'showLink', sTitle, "sport.png", sTitle, oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()
+
+
+
+
 def showLink():
     oGui = cGui()
-    oParser = cParser()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    sPattern = 'player = new Clappr\.Player.+?source: "([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    sHtmlContent = oRequestHandler.request();
+    result = json.loads(sHtmlContent)
 
-    if aResult[0]:
-        sHosterUrl = aResult[1][0].strip()
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster:
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+    if result['msg'] == 'ok':
+        data = result['data']
+        matchinfo = data['matchinfo']
+        
+        if matchinfo['status'] == 2:
+            oGui.addText(SITE_IDENTIFIER, "(" + matchinfo['name'] + ") - Match terminé", "none.png")
+            sMovieTitle = matchinfo['hteam_name'] + " " + matchinfo['score'] +  " " + matchinfo['ateam_name']
+            oGui.addText(SITE_IDENTIFIER, sMovieTitle, "sport.png")
+        else:
+            sDate = matchinfo['matchtime_en']
+            mois = ['filler', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            try:
+                sDateTime = re.findall('(\w+) (\d+), (\d+) (\d+):(\d+):(\d+)', str(sDate))
+                if sDateTime:
+                    month = mois.index(sDateTime[0][0])
+                    hour = int(sDateTime[0][3])
+                    hour = (hour + 6)%24;
+                    sDate = " (" + matchinfo['name'] + ") - " + '%02d/%02d - %02d:%02d' % (int(sDateTime[0][1]), month, hour, int(sDateTime[0][4]))
+                    oGui.addText(SITE_IDENTIFIER, sDate, "annees.png")
+            except Exception as e:
+                pass
+            
+            urls = matchinfo['global_live_urls']
+            for url in urls[::-1]:
+                sHosterUrl = url['url'] + '|referer=https://player.huminbird.cn/'
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if oHoster:
+                    sDisplayTitle = sMovieTitle + " [" + url['name'] + "]"
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sDisplayTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
