@@ -25,19 +25,19 @@ class cHoster(iHoster):
         self._url = str(url)
 
     def checkSubtitle(self, sHtmlContent):
-        if sHtmlContent:
-            Files = []
-            lab = []
-            for aEntry in sHtmlContent:
-                if aEntry["label"] == "French":
-                    url = aEntry["src"]
-                    if not url.startswith('http'):
-                        url = 'http:' + url
-                    Files.append(url)
-                else:
-                    continue
-            return Files
-        return False
+        if not sHtmlContent:
+            return False
+
+        files = []
+        for aEntry in sHtmlContent:
+            if aEntry["label"] == "French":
+                url = aEntry["src"]
+                if not url.startswith('http'):
+                    url = 'http:' + url
+                files.append(url)
+            else:
+                continue
+        return files
 
     def _getMediaLinkForGuest(self):
         pass
@@ -56,10 +56,10 @@ class cHoster(iHoster):
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
         if token:
-            r = requests.get('https://uptobox.com/api/user/me?token=' + token).json()
+            r = requests.get('https://uptobox.eu/api/user/me?token=' + token).json()
         if token and r["data"]["premium"]:
             status = ''
-            url1 = "https://uptobox.com/api/streaming?token=%s&file_code=%s" % (token, filecode)
+            url1 = "https://uptobox.eu/api/streaming?token=%s&file_code=%s" % (token, filecode)
             try:
                 oRequestHandler = cRequestHandler(url1)
                 dict_liens = oRequestHandler.request(jsonDecode=True)
@@ -80,14 +80,14 @@ class cHoster(iHoster):
 
             s = requests.Session()
             s.headers.update({"Cookie": cookies})
-            r = s.get('https://uptobox.com/api/streaming?file_code=' + filecode).json()
+            r = s.get('https://uptobox.eu/api/streaming?file_code=' + filecode).json()
 
             if r["statusCode"] != 0:  # Erreur
                 dialog().VSinfo(r["data"])
                 return False, False
 
-            r1 = s.get(r["data"]["user_url"]).text
-            tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
+            # r1 = s.get(r["data"]["user_url"]).text
+            # tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
 
             if not xbmc.getCondVisibility('system.platform.android'):
                 # Si possible on ouvre la page automatiquement dans un navigateur internet.
@@ -103,7 +103,6 @@ class cHoster(iHoster):
                 qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
                 retArg = oSolver.get()
-                DIALOG = dialog()
                 if retArg == "N":
                     return False
 

@@ -196,7 +196,7 @@ def showMovies(sSearch=''):
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
-    sPattern = 'class=".+?grid-item.+?href="([^"]+).+?-src="([^"]+).+?alt="([^"]+)'
+    sPattern = 'grid-item" href="([^"]+).+?-src="([^"]+).+?alt="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -426,6 +426,10 @@ def showHosters():
             oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'hostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    # pas de moyen d'orientation depuis showMovies pour les séries en passant par showAlpha
+    if not aResult[0]:
+        showSaisons()
 
     oGui.setEndOfDirectory()
 
