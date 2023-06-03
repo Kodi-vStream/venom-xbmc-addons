@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import progress, siteManager, VSlog
 from resources.lib.util import Quote
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -297,11 +297,12 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    VSlog(sUrl)
 
     # Les elements post.
-    data = re.search('data-action="bookmark" data-post="([^"]+)" data-chapter="([^"]+)"', sHtmlContent)
-    post = data.group(1)
-    chapter = data.group(2)
+    id = re.search('<input type="hidden" style="display:none;" name="current_page_id" value="([^"]+)"', sHtmlContent).group(1)
+    chapter = re.search('id="wp-manga-current-chap" data-id="([^"]+)"', sHtmlContent).group(1)
 
     # On extrait une partie de la page pour eviter les doublons.
     sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
@@ -321,7 +322,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', 'salut')
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sPost', post)
+            oOutputParameterHandler.addParameter('sId', id)
             oOutputParameterHandler.addParameter('sChapter', chapter)
             oOutputParameterHandler.addParameter('sType', aEntry)
 
@@ -336,7 +337,7 @@ def RecapchaBypass():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    post = oInputParameterHandler.getValue('sPost')
+    id = oInputParameterHandler.getValue('sId')
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
@@ -356,7 +357,7 @@ def RecapchaBypass():
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('Token', test)
-        oOutputParameterHandler.addParameter('sPost', post)
+        oOutputParameterHandler.addParameter('sId', id)
         oOutputParameterHandler.addParameter('sChapter', chapter)
         oOutputParameterHandler.addParameter('sType', types)
         oGui.addEpisode(SITE_IDENTIFIER, 'getHost', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -371,12 +372,12 @@ def getHost():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     test = oInputParameterHandler.getValue('Token')
-    post = oInputParameterHandler.getValue('sPost')
+    id = oInputParameterHandler.getValue('sId')
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
     # On valide le token du coté du site
-    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + post + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
+    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + id + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
     oRequestHandler = cRequestHandler("https://voiranime.com/wp-admin/admin-ajax.php")
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
