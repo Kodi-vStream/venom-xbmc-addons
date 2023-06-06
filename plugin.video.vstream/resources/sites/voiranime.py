@@ -394,7 +394,6 @@ def getHost():
     sHtmlContent = oRequestHandler.request()
     
     sHtmlContent = sHtmlContent.replace('\\', '').replace('\\/', '/')
-    VSlog(sHtmlContent)
 
     sPattern = 'src="([^"]+)"'
 
@@ -406,7 +405,7 @@ def getHost():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            VSlog(oHoster)
+            #VSlog(oHoster)
             
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
