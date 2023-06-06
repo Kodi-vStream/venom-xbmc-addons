@@ -11,8 +11,8 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
-SITE_IDENTIFIER = 'french_stream_lol'
-SITE_NAME = 'French-stream-lol'
+SITE_IDENTIFIER = 'french_stream_is'
+SITE_NAME = 'French-stream-is'
 SITE_DESC = 'Films & séries'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
