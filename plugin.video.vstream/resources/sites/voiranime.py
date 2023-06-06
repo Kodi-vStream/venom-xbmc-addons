@@ -345,7 +345,7 @@ def RecapchaBypass():
 
     # La lib qui gere recaptcha
     from resources.lib import librecaptcha
-    test = librecaptcha.get_token(api_key="6Ld2q9gUAAAAAP9vNl23kYuST72fYsu494_B2qaZ", site_url=sUrl,
+    test = librecaptcha.get_token(api_key="6Lfd5wobAAAAACjTkOIXohTrPz9RIhNwRqRq2_R9", site_url=sUrl,
                                   user_agent=UA, gui=False, debug=True)
 
     if test is None:
@@ -393,9 +393,10 @@ def getHost():
     oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
     
+    sHtmlContent = sHtmlContent.replace('\\', '').replace('\\/', '/')
     VSlog(sHtmlContent)
 
-    sPattern = '<iframe src="([^"]+)"'
+    sPattern = 'src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -403,8 +404,9 @@ def getHost():
     if aResult[0]:
 
         for aEntry in aResult[1]:
-            sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
+            VSlog(oHoster)
             
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
