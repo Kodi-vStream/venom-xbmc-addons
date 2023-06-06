@@ -34,6 +34,10 @@ URL_SEARCH_ANIMS = (URL_SEARCH[0] + '&s=', 'showAnimes')
 URL_SEARCH_VOSTFR = (URL_SEARCH[0] + '&language=vostfr&s=', 'showAnimes')
 URL_SEARCH_VF = (URL_SEARCH[0] + '&language=vf&s=', 'showAnimes')
 
+def _getHost(url):
+    parts = url.split('//', 1)
+    host = parts[1].split('/', 1)[0]
+    return parts[0] + '//' + host + '/'
 
 def load():
     oGui = cGui()
@@ -297,8 +301,6 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    VSlog(sUrl)
 
     # Les elements post.
     id = re.search('<input type="hidden" style="display:none;" name="current_page_id" value="([^"]+)"', sHtmlContent).group(1)
@@ -344,7 +346,7 @@ def RecapchaBypass():
     # La lib qui gere recaptcha
     from resources.lib import librecaptcha
     test = librecaptcha.get_token(api_key="6Ld2q9gUAAAAAP9vNl23kYuST72fYsu494_B2qaZ", site_url=sUrl,
-                                  user_agent=UA, gui=False, debug=False)
+                                  user_agent=UA, gui=False, debug=True)
 
     if test is None:
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
@@ -378,7 +380,8 @@ def getHost():
 
     # On valide le token du coté du site
     data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + id + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
-    oRequestHandler = cRequestHandler("https://voiranime.com/wp-admin/admin-ajax.php")
+    
+    oRequestHandler = cRequestHandler(_getHost(sUrl) + "wp-admin/admin-ajax.php")
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
@@ -389,6 +392,8 @@ def getHost():
     oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
     oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
+    
+    VSlog(sHtmlContent)
 
     sPattern = '<iframe src="([^"]+)"'
 
@@ -400,6 +405,7 @@ def getHost():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
