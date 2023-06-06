@@ -240,6 +240,15 @@ class DynamicSolver(Solver, HasGrid):
         }).url
         return image
 
+#Captcha type :tileselect
+#debug :['/', 'm', '/', '0', '1', '5', 'q', 'f', 'f']
+#debug :['pmeta', ['/m/015qff', None, 2, 4, 4, None, None, []]]
+
+#Captcha type :multicaptcha
+#debug :[['/m/01pns0', None, 2, 4, 4, None, None, []], ['/m/01lynh', None, 2, 4, 4, None, None, []], ['/m/014xcs', None, 2, 4, 4, None, None, []], ['/m/0199g', None, 2, 4, 4, None, None, []], ['/m/04_sv', None, 2, 4, 4, None, None, []]]
+#debug :['pmeta', None, None, None, None, [[['/m/01pns0', None, 2, 4, 4, None, None, []], ['/m/01lynh', None, 2, 4, 4, None, None, []], ['/m/014xcs', None, 2, 4, 4, None, None, []], ['/m/0199g', None, 2, 4, 4, None, None, []], ['/m/04_sv', None, 2, 4, 4, None, None, []]], []]]
+
+#Captcha type :dynamic
 
 class MultiCaptchaSolver(Solver, HasGrid):
     def __init__(self, recaptcha, pmeta):
@@ -250,7 +259,15 @@ class MultiCaptchaSolver(Solver, HasGrid):
         self.previous_token = None
         self.previous_id = None
         self.id = "2"
-        self.metas = list(get_meta(pmeta, 5)[0])
+        
+        #patch voir dessus
+        if len(pmeta) > 2:
+            self.metas = list(get_meta(pmeta, 5)[0])
+        else:
+            self.metas = [pmeta[1]]
+
+        VSlog("debug 1:" + str(self.metas))
+        VSlog("debug 2:" + str(pmeta))
         self.next_challenge()
 
     def on_image(self, image, **kwargs):
