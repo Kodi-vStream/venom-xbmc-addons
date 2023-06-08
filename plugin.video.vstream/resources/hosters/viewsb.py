@@ -91,6 +91,11 @@ def get_embedurl(host, media_id):
         t = string.ascii_letters + string.digits
         return ''.join([random.choice(t) for _ in range(length)])
 
+    #Code pour decrypter le lien
+    #import binascii
+    #a = '375664356a494546326c4b797c7c6e75657777677862317173'
+    #print (binascii.unhexlify(a))
+        
     #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), media_id, makeid(12))
     #c1 = binascii.hexlify(x.encode('utf8')).decode('utf8')
     #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), makeid(12), makeid(12))
@@ -98,7 +103,9 @@ def get_embedurl(host, media_id):
     #x = '{0}||{1}||{2}||streamsb'.format(makeid(12), c2, makeid(12))
     #c3 = binascii.hexlify(x.encode('utf8')).decode('utf8')
     #return '{0}sources16/{1}/{2}'.format(host, c1, c3)
-
+    
     x = '{0}||{1}||{2}||streamsb'.format(makeid(12), media_id, makeid(12))
-    x = binascii.hexlify(x.encode('utf8')).decode('utf8')
-    return '{0}sources16/{1}'.format(host, x)
+    c1 = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    x = '7Vd5jIEF2lKy||nuewwgxb1qs'
+    c2 = binascii.hexlify(x.encode('utf8')).decode('utf8')
+    return '{0}/{1}7/{2}'.format(host, c2, c1)

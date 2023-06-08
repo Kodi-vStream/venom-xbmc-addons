@@ -152,6 +152,7 @@ class cHosterGui:
         except:
             sHostName = sHosterUrl
 
+        if debrid: # premiere tentative avec debrideur, si on revient ici, ce sera pour tester sans debrideur
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 f = self.getHoster('alldebrid')

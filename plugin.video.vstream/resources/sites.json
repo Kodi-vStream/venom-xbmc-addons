@@ -8,11 +8,11 @@
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
             "active": "True",
-            "url": "https://wvv.33seriestreaming.cc/"
+            "url": "https://ww1.33seriestreaming.lol/"
         },
         "_4kstreamz": {
             "label": "4kstreamz",
-            "active": "True",
+            "active": "False",
             "url": "https://www.4kstreamz.net/"
         },
         "adkami_com": {
@@ -132,7 +132,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.gg/"
+            "url": "https://vv2.french-stream.is/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -327,7 +327,7 @@
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport-live.top/"
+            "url": "https://www.streamonsport.sbs/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -336,7 +336,7 @@
         },
         "themoviedb_org": {
             "label": "The Movie Database",
-            "active": "True",
+            "active": "True",	
             "url": "https://www.themoviedb.org/"
         },
         "toonanime": {
@@ -397,12 +397,12 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.boo/"
+            "url": "https://www.wawacity.quest/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "url": "https://wiflix.family/"
+            "url": "https://www.wiflix.surf/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",

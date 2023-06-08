@@ -34,6 +34,10 @@ URL_SEARCH_ANIMS = (URL_SEARCH[0] + '&s=', 'showAnimes')
 URL_SEARCH_VOSTFR = (URL_SEARCH[0] + '&language=vostfr&s=', 'showAnimes')
 URL_SEARCH_VF = (URL_SEARCH[0] + '&language=vf&s=', 'showAnimes')
 
+def _getHost(url):
+    parts = url.split('//', 1)
+    host = parts[1].split('/', 1)[0]
+    return parts[0] + '//' + host + '/'
 
 def load():
     oGui = cGui()
@@ -299,9 +303,8 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     # Les elements post.
-    data = re.search('data-action="bookmark" data-post="([^"]+)" data-chapter="([^"]+)"', sHtmlContent)
-    post = data.group(1)
-    chapter = data.group(2)
+    id = re.search('<input type="hidden" style="display:none;" name="current_page_id" value="([^"]+)"', sHtmlContent).group(1)
+    chapter = re.search('id="wp-manga-current-chap" data-id="([^"]+)"', sHtmlContent).group(1)
 
     # On extrait une partie de la page pour eviter les doublons.
     sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
@@ -321,7 +324,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', 'salut')
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sPost', post)
+            oOutputParameterHandler.addParameter('sId', id)
             oOutputParameterHandler.addParameter('sChapter', chapter)
             oOutputParameterHandler.addParameter('sType', aEntry)
 
@@ -336,14 +339,14 @@ def RecapchaBypass():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    post = oInputParameterHandler.getValue('sPost')
+    id = oInputParameterHandler.getValue('sId')
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
     # La lib qui gere recaptcha
     from resources.lib import librecaptcha
-    test = librecaptcha.get_token(api_key="6Ld2q9gUAAAAAP9vNl23kYuST72fYsu494_B2qaZ", site_url=sUrl,
-                                  user_agent=UA, gui=False, debug=False)
+    test = librecaptcha.get_token(api_key="6Lfd5wobAAAAACjTkOIXohTrPz9RIhNwRqRq2_R9", site_url=sUrl,
+                                  user_agent=UA, gui=False, debug=True)
 
     if test is None:
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
@@ -356,7 +359,7 @@ def RecapchaBypass():
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('Token', test)
-        oOutputParameterHandler.addParameter('sPost', post)
+        oOutputParameterHandler.addParameter('sId', id)
         oOutputParameterHandler.addParameter('sChapter', chapter)
         oOutputParameterHandler.addParameter('sType', types)
         oGui.addEpisode(SITE_IDENTIFIER, 'getHost', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -371,13 +374,14 @@ def getHost():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     test = oInputParameterHandler.getValue('Token')
-    post = oInputParameterHandler.getValue('sPost')
+    id = oInputParameterHandler.getValue('sId')
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
     # On valide le token du coté du site
-    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + post + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
-    oRequestHandler = cRequestHandler("https://voiranime.com/wp-admin/admin-ajax.php")
+    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + id + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
+    
+    oRequestHandler = cRequestHandler(_getHost(sUrl) + "wp-admin/admin-ajax.php")
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
@@ -388,8 +392,10 @@ def getHost():
     oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
     oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
+    
+    sHtmlContent = sHtmlContent.replace('\\', '').replace('\\/', '/')
 
-    sPattern = '<iframe src="([^"]+)"'
+    sPattern = 'src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -397,8 +403,10 @@ def getHost():
     if aResult[0]:
 
         for aEntry in aResult[1]:
-            sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
+            #VSlog(oHoster)
+            
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
