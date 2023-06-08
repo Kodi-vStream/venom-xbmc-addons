@@ -132,7 +132,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.gg/"
+            "url": "https://vv2.french-stream.is/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -336,7 +336,7 @@
         },
         "themoviedb_org": {
             "label": "The Movie Database",
-            "active": "True",
+            "active": "True",	
             "url": "https://www.themoviedb.org/"
         },
         "toonanime": {
