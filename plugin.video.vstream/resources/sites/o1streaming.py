@@ -226,14 +226,14 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sMovieTitle = sMovieTitle + ' Saison ' + aEntry[1]
+            sDisplayTitle = sMovieTitle + ' Saison ' + aEntry[1]
 
             # oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'wp-admin/admin-ajax.php')
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -311,10 +311,14 @@ def showLinks():
                 sLang = 'VF'
                 if '-VOSTFR' in sHost:
                     sLang = 'VOSTFR'
-                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '').replace(' ', '').capitalize()
+                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '').replace(' ', '').capitalize().strip()
 
-                oHoster = cHosterGui().checkHoster(sHost)
+                if sHost:
+                    oHoster = cHosterGui().checkHoster(sHost)
+                else:
+                    oHoster = cHosterGui().checkHoster(sUrl2)
                 if oHoster:
+                    sHost = oHoster.getDisplayName()
                     sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
