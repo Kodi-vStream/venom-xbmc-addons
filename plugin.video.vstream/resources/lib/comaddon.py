@@ -453,6 +453,7 @@ class siteManager:
 
     SITES = 'sites'
     ACTIVE = 'active'
+    CLOUDFLARE = 'cloudflare'
     LABEL = 'label'
     URL_MAIN = 'url'
 
@@ -484,9 +485,13 @@ class siteManager:
             self.data = json.load(open(self.propertiesPath))
             
 
-    # sites désactivé par la team
+    # site désactivé par la team
     def isEnable(self, sourceName):
         return self.getDefaultProperty(sourceName, self.ACTIVE) == 'True'
+
+    # site identifié par la team comme étant protégé par Cloudflare, false par défaut si non renseigné
+    def isCloudFlare(self, sourceName):
+        return self.getDefaultProperty(sourceName, self.CLOUDFLARE) == 'True'
 
     
     # sites désactivé par l'utilisateur
