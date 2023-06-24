@@ -459,7 +459,7 @@ class PasteContent:
             if links:
                 return links
             else:
-                dialog().VSinfo('Certains liens nécessitent un Compte Premium')
+                dialog().VSinfo('Certains liens ne sont pas disponibles')
 
         return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
