@@ -264,14 +264,14 @@ def showMovies(sSearch=''):
         sSearchText = oUtil.CleanName(sSearchText)
 
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'class="image">.+?<a href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?span class="([^"]+).+?<p>(.*?)<\/p'
+        sPattern = 'class="image".+?href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?span class="([^"]+).+?<p>(.*?)</p'
         sType = oParser.parseSingleResult(sUrl, '\?post_types=(.+?)&')  # pour filtrage entre film et série
     else:
         sTypeYear = oInputParameterHandler.getValue('sTypeYear')
         if sTypeYear:
-            sPattern = '<article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div>'
+            sPattern = 'article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)href="([^"]+).+?texto">(.*?)</div'
         else:
-            sPattern = '<article id="post-\d+".+?img src="([^"]+).+?alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div'
+            sPattern = 'article id="post-\d+".+?-src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)href="([^"]+).+?(?:|span>(\d{4}).+?)texto">(.*?)</div'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -320,9 +320,9 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1]
                 if aEntry[2]:
                     sQual = aEntry[2]
-                if aEntry[3]:
-                    sYear = aEntry[3]
-                sUrl = aEntry[4]
+                sUrl = aEntry[3]
+                if aEntry[4]:
+                    sYear = aEntry[4]
                 if aEntry[5]:
                     sDesc = aEntry[5]
 
@@ -332,7 +332,6 @@ def showMovies(sSearch=''):
             except:
                 pass
 
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -341,8 +340,10 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/serie' in sUrl:
+                sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
+                sDisplayTitle = ('%s [%s](%s)') % (sTitle, sQual, sYear)
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -359,7 +360,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'span>Page .+?de (\d+).+?href="([^"]+)"><i id='
+    sPattern = 'span>Page .+?de (\d+).+?href="([^"]+)"><i id="nextpagination'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sNumberMax = aResult[1][0][0]
@@ -381,28 +382,25 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = ">([^<]+)</span><span class='title|numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)"
+    sPattern = 'class="numerando">(.+?)</div><div class="episodiotitle"><a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]Saison ' + aEntry[0] + '[/COLOR]')
 
-            else:
-                sUrl = aEntry[2]
-                SxE = re.sub('(\d+) - (\d+)', ' Saison \g<1> Episode \g<2>', aEntry[1])
-                sTitle = sMovieTitle + SxE
+            SxE = re.sub('(\d+) - (\d+)', ' Saison \g<1> Episode \g<2>', aEntry[0])
+            sUrl = aEntry[1]
 
-                sDisplayTitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
+            sTitle = sMovieTitle + SxE
+            sDisplayTitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -419,9 +417,9 @@ def showLink():
     sHtmlContent = oRequest.request()
 
     if '/films/' in sUrl:
-        sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
+        sPattern = 'player_option" data-type="movie" data-post="(\d+)" data-nume="(\d+).+?flags/(.+?).png'
     else:
-        sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?flags/(.+?).png"
+        sPattern = 'player_option" data-type="tv" data-post="(\d+)" data-nume="(\d+).+?flags/(.+?).png'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -446,7 +444,7 @@ def showLink():
                 continue
 
             sTitle = ('%s (%s)') % (sMovieTitle, sLang.upper())
-            sTitle = sTitle + '[COLOR coral] Serveur#' + dnum + '[/COLOR]'
+            sTitle = sTitle + '[COLOR coral] Serveur N°' + dnum + '[/COLOR]'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
