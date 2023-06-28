@@ -356,6 +356,8 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
+        sMediaUrl = oGuiElement.getMediaUrl()
+
         # Formatage nom episode
         sCat = oGuiElement.getCat()
         if sCat and int(sCat) == 8:  # Nom de l'épisode
@@ -377,10 +379,16 @@ class cGui:
             except:
                 data['title'] = itemTitle
                 pass
+            
+            # release du lien
+            if sMediaUrl:
+                data['plot'] = sMediaUrl
         else:
-            # Permets d'afficher toutes les informations pour les films.
+            # Permet d'afficher toutes les informations pour les films.
             data['title'] = itemTitle
-
+            if sMediaUrl:   # release du lien
+                data['tagline'] = sMediaUrl
+            
         if ":" in str(data.get('duration')):
             # Convertion en seconde, utile pour le lien final.
             data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))

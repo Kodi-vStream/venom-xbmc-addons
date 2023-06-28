@@ -15,6 +15,7 @@ class cHosterGui:
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
+        oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
 
@@ -44,6 +45,11 @@ class cHosterGui:
                 sCat = '8'   # ...  On est maintenant au niveau "Episode"
         else:
             sCat = '5'     # Divers
+        
+        sMediaFile = oHoster.getMediaFile()
+        if sMediaFile:
+            oGuiElement.setMediaUrl(sMediaFile)
+
         oGuiElement.setCat(sCat)
         oOutputParameterHandler.addParameter('sCat', sCat)
 

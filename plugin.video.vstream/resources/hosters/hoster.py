@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+from resources.lib.util import Unquote
 
 
 class iHoster:
@@ -38,6 +40,21 @@ class iHoster:
 
     def getMediaLink(self):
         return self._getMediaLinkForGuest()
+
+    # nom du fichier, interessant pour afficher la release
+    def getMediaFile(self):
+        if not self._url:
+            return None
+        if self._url[-4:] not in '.mkv.avi.mp4.m4v.iso':
+            return None
+        
+        sMediaFile = self._url[:-4]
+        sMediaFile = Unquote(sMediaFile.split('/')[-1])
+        sMediaFile = re.sub('TM\d+TM', '', sMediaFile)
+        sMediaFile = re.sub('RES-.+?-RES', '', sMediaFile)
+        sMediaFile = sMediaFile.replace('.', ' ')
+        sMediaFile = sMediaFile.replace('_', ' ')
+        return sMediaFile
 
     def _getMediaLinkForGuest(self):
         raise NotImplementedError()
