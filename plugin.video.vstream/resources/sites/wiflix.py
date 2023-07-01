@@ -122,7 +122,7 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
 
-        pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&all_word_seach=1&catlist[]=1'
+        pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
