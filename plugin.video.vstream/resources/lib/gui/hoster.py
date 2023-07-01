@@ -78,6 +78,12 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
+
+        if sMediaFile:  # Afficher le nom du fichier plutot que le titre
+            if self.ADDON.getSetting('display_info_file') == 'true':
+                oGuiElement.setRawTitle(sMediaFile)
+
+
         # gestion NextUp
         oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
         oOutputParameterHandler.addParameter('sourceFav', sFav)    # source d'origine
