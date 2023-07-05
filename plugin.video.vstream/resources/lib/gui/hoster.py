@@ -36,7 +36,6 @@ class cHosterGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         oGuiElement.setFunction('play')
-        oGuiElement.setTitle(oHoster.getDisplayName())
 
         # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
@@ -46,10 +45,6 @@ class cHosterGui:
         else:
             sCat = '5'     # Divers
         
-        sMediaFile = oHoster.getMediaFile()
-        if sMediaFile:
-            oGuiElement.setMediaUrl(sMediaFile)
-
         oGuiElement.setCat(sCat)
         oOutputParameterHandler.addParameter('sCat', sCat)
 
@@ -79,9 +74,16 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
 
+        sMediaFile = oHoster.getMediaFile()
         if sMediaFile:  # Afficher le nom du fichier plutot que le titre
+            oGuiElement.setMediaUrl(sMediaFile)
             if self.ADDON.getSetting('display_info_file') == 'true':
-                oGuiElement.setRawTitle(sMediaFile)
+                oHoster.setDisplayName(sMediaFile)
+                oGuiElement.setRawTitle(oHoster.getDisplayName())
+            else:
+                oGuiElement.setTitle(oHoster.getDisplayName())
+        else:
+            oGuiElement.setTitle(oHoster.getDisplayName())
 
 
         # gestion NextUp
