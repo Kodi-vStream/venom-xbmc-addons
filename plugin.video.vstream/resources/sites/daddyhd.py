@@ -252,10 +252,10 @@ def getHosterIframe(url, referer):
         except Exception as e:
             pass
 
+    referer = url
     sPattern = '<iframe src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        referer = url
         for url in aResult:
             if url.startswith("./"):
                 url = url[1:]
@@ -281,6 +281,6 @@ def getHosterIframe(url, referer):
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
         sHosterUrl = sHosterUrl.replace('index', 'mono')
-        return True, sHosterUrl + '|referer=' + url
+        return True, sHosterUrl + '|referer=' + referer
 
     return False, False
