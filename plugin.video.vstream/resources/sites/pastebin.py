@@ -32,9 +32,10 @@ SETTING_PASTE_ID = SITE_IDENTIFIER + '_id_'
 SETTING_PASTE_LABEL = SITE_IDENTIFIER + '_label_'
 UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
+BLACKLIST_APPLIED = "BLACKLIST APPLIED"
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
-#MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2023', 'showMovies')
+# MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2023', 'showMovies')
 MOVIE_NEWS = ('movie/now_playing', 'showTMDB')
 # MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
 MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
@@ -1886,9 +1887,9 @@ def showResolution():
 
     # Create BLACKLIST APPLIED folder if RESOLUTIONS_BACKLIST is not empty
     if RESOLUTIONS_BACKLIST != "":
-      sUrl = siteUrl + '&sRes=' + 'BLACKLIST APPLIED'
+      sUrl = siteUrl + '&sRes=' + BLACKLIST_APPLIED
       oOutputParameterHandler.addParameter('siteUrl', sUrl)
-      oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'BLACKLIST APPLIED', 'hd.png', oOutputParameterHandler)
+      oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', BLACKLIST_APPLIED, 'hd.png', oOutputParameterHandler)
         
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
@@ -2190,7 +2191,7 @@ def showMovies(sSearch=''):
                     listRes.append('')
 
             if sRes:
-                if sRes == 'BLACKLIST APPLIED':
+                if sRes == BLACKLIST_APPLIED:
                     # Extract the resolution that are blacklisted from listRes
                     oldListRes = listRes
                     listRes = []
@@ -2205,10 +2206,7 @@ def showMovies(sSearch=''):
 
                 for res in listRes:
                     # Set bValid = True if sRest = BLACKLIST APPLIED because it is like we got each sRes in res
-                    if sRes == "BLACKLIST APPLIED":
-                        bValid = True
-                        break
-                    if sRes in res:
+                    if sRes == BLACKLIST_APPLIED or sRes in res:
                         bValid = True
                         break
 
@@ -2577,7 +2575,7 @@ def getHosterList(siteUrl):
 
                     # On vérifie la résolution attendue si pas uptostream
                     # And different than BLACKLIST APPLIED
-                    if sRes and sRes not in resMovie and sRes != "BLACKLIST APPLIED":
+                    if sRes and sRes not in resMovie and sRes != BLACKLIST_APPLIED:
                         if pbContent.getUptoStream() == 2:
                             continue
 
@@ -2602,7 +2600,7 @@ def getHosterList(siteUrl):
                         linkToAdd = False
                         if sRes:    # Recherche d'une résolution en particulier
                             # if sRes = BLACKLIST APPLIED check that res are not in RESOLUTIONS_BACKLIST
-                            if sRes == "BLACKLIST APPLIED":
+                            if sRes == BLACKLIST_APPLIED:
                                 if res not in RESOLUTIONS_BACKLIST.strip().split(','):
                                     linkToAdd = True
                             elif res and res != 'ori':
