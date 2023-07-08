@@ -23,7 +23,7 @@ class cHoster(iHoster):
         self._url = re.sub('-*\d{3,4}x\d{3,4}', '', self._url)
         self._url = self._url.replace('https', 'http')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 

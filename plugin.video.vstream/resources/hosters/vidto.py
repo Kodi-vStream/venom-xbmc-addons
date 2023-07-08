@@ -18,7 +18,7 @@ class cHoster(iHoster):
         self._url = re.sub(r'\-.*\.html', '', self._url)
         self._url = 'http://vidto.me/' + str(self._url)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 

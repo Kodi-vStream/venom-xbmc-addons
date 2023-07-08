@@ -1273,3 +1273,11 @@ msgstr "Add to existing list"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Select a list"
+
+msgctxt "#31213"
+msgid "Auto play"
+msgstr ""
+
+msgctxt "#31214"
+msgid "Accepted language for auto play"
+msgstr ""

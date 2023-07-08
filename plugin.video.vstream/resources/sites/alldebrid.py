@@ -201,7 +201,7 @@ def showseriesHoster(sSearch=''):
         if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle, oInputParameterHandler=oInputParameterHandler)
             oGui.setEndOfDirectory()
     except:
         pass
@@ -273,7 +273,7 @@ def showHosters():
     if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 

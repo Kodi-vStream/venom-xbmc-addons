@@ -10,7 +10,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'jawcloud', 'Jawcloud')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = ''
 
         oRequest = cRequestHandler(self._url)

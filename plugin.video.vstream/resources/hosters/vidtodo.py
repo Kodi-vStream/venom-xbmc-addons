@@ -37,7 +37,7 @@ class cHoster(iHoster):
         Src = re.search('<video src="(.+?)"', sHtmlContent)
         return Base.group(1) + Src.group(1)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = ''
 
         oParser = cParser()

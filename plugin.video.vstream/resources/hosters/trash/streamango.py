@@ -43,7 +43,7 @@ class cHoster(iHoster):
 
         return _0x59b81a
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()

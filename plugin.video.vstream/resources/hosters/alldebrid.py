@@ -20,7 +20,7 @@ class cHoster(iHoster):
     def setDisplayName(self, displayName):
         self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + self.__sRealHost + '[/COLOR]'
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
         if token_Alldebrid:
             sUrl_Bypass = "https://api.alldebrid.com/v4/link/unlock?agent=service&version=1.0-&apikey=" + \

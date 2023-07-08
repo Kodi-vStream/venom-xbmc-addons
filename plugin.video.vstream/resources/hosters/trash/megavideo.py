@@ -30,14 +30,14 @@ class cHoster(iHoster):
 
         return url;
 
-    def getMediaLink(self):
+    def getMediaLink(self, autoPlay = False):
         oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (oPremiumHandler.isPremiumModeAvailable()):
             sUsername = oPremiumHandler.getUsername()
             sPassword = oPremiumHandler.getPassword()
             return self._getMediaLinkByPremiumUser(sUsername, sPassword);
 
-        return self._getMediaLinkForGuest();
+        return self._getMediaLinkForGuest(autoPlay);
 
     def __getIdFromUrl(self):
         sPattern = "v=([^&]+)"
@@ -48,7 +48,7 @@ class cHoster(iHoster):
 
         return ''
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         sId = self.__getIdFromUrl()
 
         self._url = 'http://www.megavideo.com/xml/videolink.php?v=' + str(sId)

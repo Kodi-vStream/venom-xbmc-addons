@@ -21,7 +21,7 @@ class cHoster(iHoster):
 
         return ''
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         sId = self.__getIdFromUrl(self._url)
         web_url = 'https://player.vimeo.com/video/' + sId
 

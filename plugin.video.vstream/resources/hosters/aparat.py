@@ -13,7 +13,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'aparat', 'Aparat')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         VideoType = 2  # dl mp4 lien existant non utilisé ici
         VideoType = 1  # m3u8
 

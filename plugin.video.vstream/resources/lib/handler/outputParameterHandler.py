@@ -32,3 +32,8 @@ class cOutputParameterHandler:
     def exist(self, sParamName):
         if sParamName in self.__aParams:
             return sParamName
+
+    def mergeUnexistingInfos(self, parameterHandler):
+        for value in parameterHandler.__aParams:
+            if value not in self.__aParams:
+                self.__aParams[value] = parameterHandler.__aParams[value]

@@ -12,7 +12,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'allvid', 'Allvid')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         #print self._url
         api_call = False
 

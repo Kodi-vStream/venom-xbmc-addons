@@ -118,11 +118,12 @@ class main:
             if isHome(sSiteName, sFunction):
                 return
 
+            if isSearch(sSiteName, sFunction):
+                return
+
             if isTrakt(sSiteName, sFunction):
                 return
 
-            if isSearch(sSiteName, sFunction):
-                return
 
             if sSiteName == 'globalRun':
                 __import__('resources.lib.runscript', fromlist=['runscript'])
@@ -277,6 +278,17 @@ def isHome(sSiteName, sFunction):
         return True
     return False
 
+def isSearch(sSiteName, sFunction):
+    if sSiteName == 'cSearch' or sSiteName == 'globalSearch':
+        oSearch = cSearch()
+        if sSiteName == 'globalSearch':
+            exec("oSearch.searchGlobal()")
+        else:
+            exec("oSearch." + sFunction + "()")
+        return True
+    return False
+
+
 
 def isTrakt(sSiteName, sFunction):
     if sSiteName == 'cTrakt':
@@ -285,33 +297,6 @@ def isTrakt(sSiteName, sFunction):
         function()
         return True
     return False
-
-
-def isSearch(sSiteName, sFunction):
-    if sSiteName == 'globalSearch':
-        oSearch = cSearch()
-        exec("oSearch.searchGlobal()")
-        return True
-    return False
-
-
-def _pluginSearch(plugin, sSearchText):
-
-    # Appeler la source en mode Recherche globale
-    window(10101).setProperty('search', 'true')
-
-    try:
-        plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
-        function = getattr(plugins, plugin['search'][1])
-        sUrl = plugin['search'][0] + str(sSearchText)
-
-        function(sUrl)
-
-        VSlog('Load Search: ' + str(plugin['identifier']))
-    except:
-        VSlog(plugin['identifier'] + ': search failed')
-
-    window(10101).setProperty('search', 'false')
 
 
 main()

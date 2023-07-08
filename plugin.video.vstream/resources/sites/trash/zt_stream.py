@@ -425,10 +425,11 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
-def showMoviesLinks():
+def showMoviesLinks(oInputParameterHandler = False):
     oGui = cGui()
     oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
     if not sDisplayTitle:  # Si on arrive par un marque-page
@@ -591,9 +592,10 @@ def showSeriesLinks():
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showHosters(oInputParameterHandler = False):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')

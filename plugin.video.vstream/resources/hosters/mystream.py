@@ -16,7 +16,7 @@ class cHoster(iHoster):
     def setUrl(self, url):
         self._url = str(url).replace('https://mystream.to/watch/', 'https://embed.mystream.to/')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')

@@ -396,9 +396,10 @@ def showEpisodes():
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showHosters(oInputParameterHandler = False):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -421,6 +422,7 @@ def showHosters():
             sQual = tab[2*i+(n+1)][1]
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
+            oInputParameterHandler.addParameter('sQual', sQual)
 
             # Petit hack pour conserver le nom de domaine du site
             # necessaire pour userload.
@@ -431,6 +433,6 @@ def showHosters():
             if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()

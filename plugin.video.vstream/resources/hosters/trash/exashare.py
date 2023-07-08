@@ -19,7 +19,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'exashare', 'Exashare')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
 
         oRequest = cRequestHandler(self._url)

@@ -185,10 +185,11 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
-def showHosters():
+def showHosters(oInputParameterHandler = False):
     oGui = cGui()
     oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -233,6 +234,6 @@ def showHosters():
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sLink2, sThumb)
+                    cHosterGui().showHoster(oGui, oHoster, sLink2, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()

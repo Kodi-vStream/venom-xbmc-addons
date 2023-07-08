@@ -40,7 +40,7 @@ class cRechercheHandler:
     def setCat(self, sCat):
         if not sCat:
             return False
-        self.__sCat = sCat
+        self.__sCat = str(sCat)
         return self.__sCat
 
     def getCat(self):

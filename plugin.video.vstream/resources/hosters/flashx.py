@@ -274,7 +274,7 @@ class cHoster(iHoster):
     def setUrl(self, url):
         self._url = 'http://' + self.getHost(url) + '/embed.php?c=' + self.__getIdFromUrl(url)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
 
         oParser = cParser()

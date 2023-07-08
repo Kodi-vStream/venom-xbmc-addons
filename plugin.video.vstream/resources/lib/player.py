@@ -29,7 +29,7 @@ class cPlayer(xbmc.Player):
 
     ADDON = addon()
 
-    def __init__(self, *args):
+    def __init__(self, oInputParameterHandler=False, *args):
 
         sPlayerType = self.__getPlayerType()
         xbmc.Player.__init__(self, sPlayerType)
@@ -37,7 +37,8 @@ class cPlayer(xbmc.Player):
         self.Subtitles_file = []
         self.SubtitleActive = False
 
-        oInputParameterHandler = cInputParameterHandler()
+        if not oInputParameterHandler:
+            oInputParameterHandler = cInputParameterHandler()
         self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         self.sTitle = oInputParameterHandler.getValue('sFileName')
         if self.sTitle:
@@ -85,8 +86,7 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sUrl):
-
-        # Lancement d'une vidéo sans avoir arrêté la précédente
+        # Lancement d'une vidéo sans avoir arreté la précedente
         self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
         if self.isPlaying():
             sEpisode = str(oGuiElement.getEpisode())
@@ -119,7 +119,7 @@ class cPlayer(xbmc.Player):
         player_conf = self.ADDON.getSetting('playerPlay')
         # Si lien dash, methode prioritaire
         if splitext(urlparse(sUrl).path)[-1] in [".mpd", ".m3u8"]:
-            if isKrypton() == True:
+            if isKrypton():
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream', 'inputstream.adaptive')
                 if '.m3u8' in sUrl:

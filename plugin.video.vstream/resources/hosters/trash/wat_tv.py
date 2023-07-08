@@ -57,7 +57,7 @@ class cHoster(iHoster):
         token = md5.new(key + sLoc + timesec).hexdigest() + '/' + timesec
         return token
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
 

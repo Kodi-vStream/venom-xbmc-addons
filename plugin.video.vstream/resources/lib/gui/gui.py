@@ -25,15 +25,20 @@ class cGui:
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
     displaySeason = addon().getSetting('display_season_title')
-
     # Gérer les résultats de la recherche
     searchResults = {}
     searchResultsSemaphore = threading.Semaphore()
 
+    def emptySearchResult(self, siteName):
+        cGui.searchResultsSemaphore.acquire()
+        cGui.searchResults[siteName] = []  # vider le tableau de résultats
+        cGui.searchResultsSemaphore.release()
+
     def getEpisodeListing(self):
         return self.episodeListing
 
-    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
+    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='',
+            sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
@@ -162,9 +167,10 @@ class cGui:
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler='', sDesc=""):
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
-    def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
+    def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler='', oInputParameterHandler = False):
         # Pour gérer l'enchainement des épisodes
-        oInputParameterHandler = cInputParameterHandler()
+        if not oInputParameterHandler:
+            oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
         oOutputParameterHandler.addParameter('movieUrl', oInputParameterHandler.getValue('movieUrl'))
@@ -609,6 +615,10 @@ class cGui:
         return sItemUrl
 
     def setEndOfDirectory(self, forceViewMode=False):
+        # On n'affiche pas si on fait une recherche
+        if window(10101).getProperty('playVideo') == 'true':
+            return
+
         iHandler = cPluginHandler().getPluginHandle()
 
         if not self.listing:

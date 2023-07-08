@@ -263,7 +263,7 @@ def showHosters():
                     if oHoster:
                         oHoster.setDisplayName(title)
                         oHoster.setFileName(title)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
             else:
 
                 sHosterUrl = aEntry
@@ -271,6 +271,6 @@ def showHosters():
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()

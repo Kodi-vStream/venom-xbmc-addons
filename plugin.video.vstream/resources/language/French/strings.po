@@ -1260,7 +1260,7 @@ msgid "Remaining sites: %s"
 msgstr "Sites restants : %s"
 
 msgctxt "#31209"
-msgid "Results: %s"
+msgid "Results: [COLOR deepskyblue]%s[/COLOR]"
 msgstr "Résultats : [COLOR deepskyblue]%s[/COLOR]"
 
 msgctxt "#31210"
@@ -1274,3 +1274,11 @@ msgstr "Ajouter à une liste existante"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Choisissez une liste"
+
+msgctxt "#31213"
+msgid "Auto play"
+msgstr "Lecture automatique"
+
+msgctxt "#31214"
+msgid "Accepted language for auto play"
+msgstr "Langue acceptée pour le player automatique"

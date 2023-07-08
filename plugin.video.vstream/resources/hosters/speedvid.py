@@ -21,7 +21,7 @@ class cHoster(iHoster):
         host = parts[0] + '//' + parts[1].split('/', 1)[0]
         return host
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url.replace('sn', 'embed'))
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Host', 'www.speedvid.net')

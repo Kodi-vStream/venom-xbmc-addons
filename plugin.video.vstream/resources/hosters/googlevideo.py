@@ -36,7 +36,7 @@ class cHoster(iHoster):
     def getFormatedUrl(self, host, media_id):
         return 'https://%s/%s' % (host, media_id)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         r = self.get_host_and_id(self._url)
 
         # si lien deja decode

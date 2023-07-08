@@ -19,7 +19,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(self._url, sPattern)
         self._url = 'http://azerfile.com/'+str(aResult[1][0])
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
