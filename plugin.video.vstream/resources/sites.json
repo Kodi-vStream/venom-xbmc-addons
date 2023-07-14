@@ -72,7 +72,7 @@
         },
         "daddyhd": {
             "label": "DaddyHD",
-            "active": "True",
+            "active": "False",
             "url": "https://daddylivehd.sx/"
         },
         "debrid_link": {
