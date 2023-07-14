@@ -3,7 +3,7 @@
 
 import re
 
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
