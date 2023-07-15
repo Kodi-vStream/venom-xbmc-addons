@@ -13,7 +13,6 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.parser import cParser
 from resources.lib.util import QuotePlus
 
 
@@ -357,6 +356,8 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
+        sMediaUrl = oGuiElement.getMediaUrl()
+
         # Formatage nom episode
         sCat = oGuiElement.getCat()
         if sCat and int(sCat) == 8:  # Nom de l'épisode
@@ -378,10 +379,16 @@ class cGui:
             except:
                 data['title'] = itemTitle
                 pass
+            
+            # release du lien
+            if sMediaUrl:
+                data['plot'] = sMediaUrl
         else:
-            # Permets d'afficher toutes les informations pour les films.
+            # Permet d'afficher toutes les informations pour les films.
             data['title'] = itemTitle
-
+            if sMediaUrl:   # release du lien
+                data['tagline'] = sMediaUrl
+            
         if ":" in str(data.get('duration')):
             # Convertion en seconde, utile pour le lien final.
             data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
@@ -534,9 +541,12 @@ class cGui:
     # Recherche similaire
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler=''):
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        sFileName = oGuiElement.getItemValue('tvshowtitle')
+        if not sFileName:
+            sFileName = oGuiElement.getFileName()
+        oOutputParameterHandler.addParameter('sFileName', sFileName)
 
         self.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewSimil', self.ADDON.VSlang(30213))
 
@@ -692,7 +702,12 @@ class cGui:
         sPluginPath = cPluginHandler().getPluginPath()
 
         oInputParameterHandler = cInputParameterHandler()
-        sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
+        if oInputParameterHandler.exist('sFileName'):
+            sCleanTitle = oInputParameterHandler.getValue('sFileName') 
+        else:
+            sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
+            # sCleanTitle = cUtil().titleWatched(sCleanTitle)
+            
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -712,6 +727,7 @@ class cGui:
         return True
 
     def selectPage(self):
+        from resources.lib.parser import cParser
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         # sParams = oInputParameterHandler.getAllParameter()

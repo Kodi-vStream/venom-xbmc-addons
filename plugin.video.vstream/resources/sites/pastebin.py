@@ -459,7 +459,7 @@ class PasteContent:
             if links:
                 return links
             else:
-                dialog().VSinfo('Certains liens nécessitent un Compte Premium')
+                dialog().VSinfo('Certains liens ne sont pas disponibles')
 
         return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
@@ -2556,8 +2556,8 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    listLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
-                    for url, res, lang in listLinks:
+                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    for url, res, lang in resolvedLinks:
                         if 'unknown' in lang:
                             lang = ''
                         else:

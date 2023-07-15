@@ -131,14 +131,17 @@ class cRechercheHandler:
 
         sitesManager = siteManager()
 
+        use_flaresolverr = addon().getSetting("use_flaresolverr") == 'true'   # Utiliser FlareSolverrr
+
         aPlugins = []
         aFileNames = self.__getFileNamesFromFolder(sFolder)
         for sFileName in aFileNames:
             if sitesManager.isEnable(sFileName):
                 if sitesManager.isActive(sFileName):
-                    aPlugin = self.importPlugin(sFileName, sCat)
-                    if aPlugin:
-                        aPlugins.append(aPlugin)
+                    if use_flaresolverr or not sitesManager.isCloudFlare(sFileName):
+                        aPlugin = self.importPlugin(sFileName, sCat)
+                        if aPlugin:
+                            aPlugins.append(aPlugin)
 
         return aPlugins
 

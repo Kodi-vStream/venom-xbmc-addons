@@ -1246,6 +1246,14 @@ msgctxt "#31205"
 msgid "Display"
 msgstr ""
 
+msgctxt "#31206"
+msgid "Use FlareSolverr"
+msgstr ""
+
+msgctxt "#31207"
+msgid "Display file infos"
+msgstr ""
+
 msgctxt "#31208"
 msgid "Remaining sites: %s"
 msgstr ""

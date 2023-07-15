@@ -223,7 +223,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="fa fa-play-circle-o"></i>([^<]+)</div>|embedURL" href="([^"]+)" title="([^"]+)" target="seriePlayer'
+    sPattern = 'class="fa fa-play-circle-o"><\/i>([^<]+)<\/div>|href="([^"]+)" title="([^"]+)" target="seriePlayer'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sethost = set()
 

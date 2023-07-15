@@ -62,6 +62,7 @@
         "cinemay_cc": {
             "label": "Cinemay_cc",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -72,7 +73,7 @@
         "daddyhd": {
             "label": "DaddyHD",
             "active": "True",
-            "url": "https://daddylivehd.sx/"
+            "url": "https://d.daddylivehd.sx/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -102,6 +103,7 @@
         "filmoflix": {
             "label": "Filmoflix",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.filmoflix.club/"
         },
         "filmspourenfants": {
@@ -157,7 +159,7 @@
         "ianime": {
             "label": "Ianime",
             "active": "True",
-            "url": "https://www.ianimes.org/"
+            "url": "https://www.ianimes.cc/"
         },
         "illimitestreaming": {
             "label": "Illimitestreaming",
@@ -167,6 +169,7 @@
         "k_streaming": {
             "label": "K_Streaming",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://streaming-films.net/"
         },
         "kepliz_com": {
@@ -207,6 +210,7 @@
         "mesfilms": {
             "label": "Mes Films",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://mesfilms.lol/"
         },
         "mysteriam": {
@@ -282,6 +286,7 @@
         "series_en_streaming": {
             "label": "Series en Streaming",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://ww1.series-en-streaming.xyz/"
         },
         "series_stream": {
@@ -312,6 +317,7 @@
         "streaming_series": {
             "label": "Streaming-Series",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://streaming-series.la/"
         },
         "streamingdivx": {
@@ -322,7 +328,7 @@
         "streaminz": {
             "label": "Streaminz",
             "active": "True",
-            "url": "https://streaminz.ink/"
+            "url": "https://streaminze.com/"
         },
         "streamonsport": {
             "label": "Streamonsport",
@@ -336,7 +342,7 @@
         },
         "themoviedb_org": {
             "label": "The Movie Database",
-            "active": "True",	
+            "active": "True",
             "url": "https://www.themoviedb.org/"
         },
         "toonanime": {
@@ -356,8 +362,8 @@
         },
         "uptobox_live": {
             "label": "Uptobox Live",
-            "active": "False",
-            "url": "https://uptobox.live/"
+            "active": "True",
+            "url": "https://api.uptobox.mov/"
         },
         "vf_film": {
             "label": "VF Film",
@@ -397,12 +403,12 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.quest/"
+            "url": "https://www.wawacity.foo/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "url": "https://www.wiflix.surf/"
+            "url": "https://www.wiflix.voto/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",

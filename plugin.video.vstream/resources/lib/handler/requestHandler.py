@@ -253,7 +253,9 @@ class cRequestHandler:
         if self.oResponse is not None:
             if self.oResponse.status_code in [503, 403]:
                 if "Forbidden" not in sContent:
-                    # Default
+                    
+                    # Tenter par FlareSolverr
+                    
                     CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
 
                     json_response = False

@@ -30,7 +30,8 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="information-view" type="bool" label="31102" default="false"/>
-        <setting id="display_season_title" type="bool" label="31204" default="true"/>        
+        <setting id="display_season_title" type="bool" label="31204" default="true"/>
+        <setting id="display_info_file" type="bool" label="31207" default="false"/>
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
@@ -58,7 +59,8 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
         <setting id="history-view" type="bool" label="30016" default="true"/>
         <setting type="sep"/>
-        <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
+        <setting id="use_flaresolverr" type="bool" label="31206" default="false"/>
+        <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1" enable="eq(-1,true)"/>
 
         <!--parametres invisibles -->
         <setting id="ZT" type="text" label="" default="" visible="false"/>

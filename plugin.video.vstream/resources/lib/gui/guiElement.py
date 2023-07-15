@@ -300,6 +300,10 @@ class cGuiElement:
 
         return sTitle2
 
+    # Permet de forcer le titre sans aucun traitement
+    def setRawTitle(self, sTitle):
+        self.__sTitle = sTitle
+        
     def setTitle(self, sTitle):
         # Nom en clair sans les langues, qualités, et autres décorations
         self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
@@ -330,9 +334,6 @@ class cGuiElement:
 
     def getCleanTitle(self):
         return self.__sCleanTitle
-
-   # def setTitleWatched(self, sTitleWatched):
-       # self.__sTitleWatched = sTitleWatched
 
     def getTitleWatched(self):
         return self.__sTitleWatched

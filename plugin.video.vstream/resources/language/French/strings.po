@@ -1247,6 +1247,14 @@ msgctxt "#31205"
 msgid "Display"
 msgstr "Affichage"
 
+msgctxt "#31206"
+msgid "Use FlareSolverr"
+msgstr "Utiliser FlareSolverr"
+
+msgctxt "#31207"
+msgid "Display file infos"
+msgstr "Afficher les infos média du lien (si disponible)"
+
 msgctxt "#31208"
 msgid "Remaining sites: %s"
 msgstr "Sites restants : %s"

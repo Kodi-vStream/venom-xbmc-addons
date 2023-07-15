@@ -15,6 +15,7 @@ class cHosterGui:
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
+        oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
 
@@ -35,7 +36,6 @@ class cHosterGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         oGuiElement.setFunction('play')
-        oGuiElement.setTitle(oHoster.getDisplayName())
 
         # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
@@ -44,6 +44,7 @@ class cHosterGui:
                 sCat = '8'   # ...  On est maintenant au niveau "Episode"
         else:
             sCat = '5'     # Divers
+        
         oGuiElement.setCat(sCat)
         oOutputParameterHandler.addParameter('sCat', sCat)
 
@@ -71,6 +72,19 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+
+
+        sMediaFile = oHoster.getMediaFile()
+        if sMediaFile:  # Afficher le nom du fichier plutot que le titre
+            oGuiElement.setMediaUrl(sMediaFile)
+            if self.ADDON.getSetting('display_info_file') == 'true':
+                oHoster.setDisplayName(sMediaFile)
+                oGuiElement.setRawTitle(oHoster.getDisplayName())
+            else:
+                oGuiElement.setTitle(oHoster.getDisplayName())
+        else:
+            oGuiElement.setTitle(oHoster.getDisplayName())
+
 
         # gestion NextUp
         oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
