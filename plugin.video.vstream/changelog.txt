@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.6.0***
+- Cloudflare : Pas de recherche parmi les sources Cloudlare si FlareSolverr n'est pas activé
+- MétaDonnées : Option pour afficher le nom complet du fichier (si disponible)
+- Recherche : Meilleurs résultats par la recherche contextuelle
 
 *** 2.5.0***
 - Mes contenus : Historique de visionnage
