@@ -13,6 +13,7 @@ class iHoster:
         self._pluginIdentifier = pluginIdentifier
         self.color = color
         self._url = None
+        self._mediaFile = None
 
     def getPluginIdentifier(self):
         return self._pluginIdentifier
@@ -29,6 +30,9 @@ class iHoster:
     def setDisplayName(self, displayName):
         self._displayName = displayName + ' [COLOR ' + self.color + ']' + self._defaultDisplayName + '[/COLOR]'
 
+    def setMediaFile(self, mediaFile):
+        self._mediaFile = mediaFile
+
     def isDownloadable(self):
         return True
 
@@ -43,12 +47,15 @@ class iHoster:
 
     # nom du fichier, interessant pour afficher la release
     def getMediaFile(self):
-        if not self._url:
-            return None
-        if self._url[-4:] not in '.mkv.avi.mp4.m4v.iso':
+        mediaFile = self._mediaFile
+        if not mediaFile: 
+            mediaFile = self._url
+            if not mediaFile:
+                return None
+        if mediaFile[-4:] not in '.mkv.avi.mp4.m4v.iso':
             return None
         
-        sMediaFile = self._url[:-4]
+        sMediaFile = mediaFile[:-4]
         sMediaFile = Unquote(sMediaFile.split('/')[-1])
         sMediaFile = re.sub('TM\d+TM', '', sMediaFile)
         sMediaFile = re.sub('RES-.+?-RES', '', sMediaFile)
