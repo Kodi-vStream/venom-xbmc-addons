@@ -362,8 +362,8 @@
         },
         "uptobox_live": {
             "label": "Uptobox Live",
-            "active": "False",
-            "url": "https://uptobox.live/"
+            "active": "True",
+            "url": "https://api.uptobox.mov/"
         },
         "vf_film": {
             "label": "VF Film",
