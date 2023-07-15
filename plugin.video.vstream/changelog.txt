@@ -13,7 +13,7 @@ Historique des modifications
 ==================================================================================
 
 *** 2.6.0***
-- Cloudflare : Pas de recherche parmi les sources Cloudlare si FlareSolverr n'est pas activé
+- Cloudflare : Pas de recherche parmi les sources Cloudflare si FlareSolverr n'est pas activé
 - MétaDonnées : Option pour afficher le nom complet du fichier (si disponible)
 - Recherche : Meilleurs résultats par la recherche contextuelle
 
