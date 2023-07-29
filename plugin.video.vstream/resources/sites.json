@@ -302,7 +302,7 @@
         "siteuptobox": {
             "label": "Mon Compte Uptobox",
             "active": "True",
-            "url": "https://uptobox.com/"
+            "url": "https://uptobox.link/"
         },
         "skyanimes": {
             "label": "Sky-Animes",
@@ -408,6 +408,7 @@
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.wiflix.voto/"
         },
         "youtitou_com": {
