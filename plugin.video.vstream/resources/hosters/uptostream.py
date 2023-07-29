@@ -7,12 +7,13 @@ import requests
 import xbmc
 
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, CountdownDialog, VSPath
+from resources.lib.comaddon import dialog, VSlog, CountdownDialog, VSPath, siteManager
 from resources.lib.config import GestionCookie
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.parser import cParser
+from resources.sites import siteuptobox
 
 
 class cHoster(iHoster):
@@ -52,14 +53,15 @@ class cHoster(iHoster):
         api_call = False
         SubTitle = False
         filecode = self._url.split('/')[-1].split('?')[0]
+        URL_MAIN = siteManager().getUrlMain(siteuptobox.SITE_IDENTIFIER)
 
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
         if token:
-            r = requests.get('https://uptobox.eu/api/user/me?token=' + token).json()
+            r = requests.get(URL_MAIN + 'api/user/me?token=' + token).json()
         if token and r["data"]["premium"]:
             status = ''
-            url1 = "https://uptobox.eu/api/streaming?token=%s&file_code=%s" % (token, filecode)
+            url1 = "%sapi/streaming?token=%s&file_code=%s" % (URL_MAIN, token, filecode)
             try:
                 oRequestHandler = cRequestHandler(url1)
                 dict_liens = oRequestHandler.request(jsonDecode=True)
@@ -80,7 +82,7 @@ class cHoster(iHoster):
 
             s = requests.Session()
             s.headers.update({"Cookie": cookies})
-            r = s.get('https://uptobox.eu/api/streaming?file_code=' + filecode).json()
+            r = s.get(URL_MAIN + 'api/streaming?file_code=' + filecode).json()
 
             if r["statusCode"] != 0:  # Erreur
                 dialog().VSinfo(r["data"])
