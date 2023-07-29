@@ -4,9 +4,10 @@
 
 from resources.hosters.hoster import iHoster
 from resources.hosters.uptostream import cHoster as uptostreamHoster
-from resources.lib.comaddon import dialog, VSlog, addon
+from resources.lib.comaddon import dialog, VSlog, addon, siteManager
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.sites import siteuptobox
 
 
 class cHoster(iHoster):
@@ -55,8 +56,13 @@ class cHoster(iHoster):
             return self._getMediaLinkForGuest()
 
     def _getMediaLinkForGuest(self):
-        self._url = self._url.replace('uptobox.com/', 'uptostream.eu/')
-        self._url = self._url.replace('uptobox.eu/', 'uptostream.eu/')
+        URL_MAIN = siteManager().getUrlMain(siteuptobox.SITE_IDENTIFIER)
+        site_extension = '.' + URL_MAIN.split('.')[1]
+
+        self._url = self._url.replace('uptobox.com/', 'uptostream' + site_extension)
+        self._url = self._url.replace('uptobox.eu/', 'uptostream' + site_extension)
+        self._url = self._url.replace('uptobox.link/', 'uptostream' + site_extension)
+        self._url = self._url.replace('/uptobox.', '/uptostream.')
 
         # On redirige vers le hoster uptostream
         oHoster = uptostreamHoster()
@@ -69,14 +75,18 @@ class cHoster(iHoster):
         if not token:
             return self._getMediaLinkForGuest()
 
+        URL_MAIN = siteManager().getUrlMain(siteuptobox.SITE_IDENTIFIER)
+        site_extension = '.' + URL_MAIN.split('.')[1]
         fileCode = self._url.split('/')[-1].split('?')[0]
-        url1 = "https://uptobox.eu/api/link?token=%s&file_code=%s" % (token, fileCode)
+        url1 = URL_MAIN + "api/link?token=%s&file_code=%s" % (token, fileCode)
         try:
             oRequestHandler = cRequestHandler(url1)
             dict_liens = oRequestHandler.request(jsonDecode=True)
             statusCode = dict_liens["statusCode"]
             if statusCode == 0:  # success
-                return True, dict_liens["data"]["dlLink"]
+                sUrl = dict_liens["data"]["dlLink"]
+                sUrl = sUrl.replace('.com/', site_extension)
+                return True, sUrl
 
             if statusCode == 16:  # Waiting needed
                 status = "Pas de compte Premium"  # dict_liens["data"]["waiting"]

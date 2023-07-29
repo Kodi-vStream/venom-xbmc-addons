@@ -32,7 +32,9 @@ SITE_DESC = 'Fichiers sur compte UpToBox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 NB_FILES = 100
 #BURL = URL_MAIN + '?op=my_files'
-API_URL = 'https://uptobox.eu/api/user/files?token=none&orderBy=file_date_inserted&dir=desc'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+
+API_URL = URL_MAIN + 'api/user/files?token=none&orderBy=file_date_inserted&dir=desc'
 URL_MOVIE = ('&path=//', 'showMedias')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
