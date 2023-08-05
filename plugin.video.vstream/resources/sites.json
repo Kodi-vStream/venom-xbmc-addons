@@ -327,13 +327,13 @@
         },
         "streaminz": {
             "label": "Streaminz",
-            "active": "True",
+            "active": "False",
             "url": "https://streaminze.com/"
         },
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport.sbs/"
+            "url": "https://www.streamonsport2.sbs/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -348,7 +348,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://wvvw.toonanime.cc/"
+            "url": "https://v2.toonanime.tv/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -388,7 +388,7 @@
         "voiranime": {
             "label": "voiranime",
             "active": "True",
-            "url": "https://v2.voiranime.com/"
+            "url": "https://v5.voiranime.com/"
         },
         "voirseries_best": {
             "label": "VoirSeries",
@@ -403,7 +403,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.foo/"
+            "url": "https://www.wawacity.homes/"
         },
         "wiflix": {
             "label": "WiFlix",
