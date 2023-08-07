@@ -17,7 +17,7 @@ class cHoster(iHoster):
         api_call = ''
 
         oParser = cParser()
-        sPattern = '"hls":\s*"([^"]+)"'
+        sPattern = '["\']hls["\']:\s*["\']([^"\']+)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
