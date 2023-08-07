@@ -18,7 +18,7 @@ SITE_DESC = 'Toutes les chaines de Sport'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-SPORT_GENRES = ('p/all-sports-tv-schedule-full-hd.html', 'showGenres')
+SPORT_GENRES = ('p/full-schedule_17.html', 'showGenres')
 
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
@@ -181,7 +181,7 @@ def showMoviesLinks():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '%s' % sTitle
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br ')
+    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br/')
 
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
