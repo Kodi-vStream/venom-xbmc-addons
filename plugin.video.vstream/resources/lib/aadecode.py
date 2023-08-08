@@ -222,20 +222,29 @@ class AADecoder(object):
 # version 2 si l'autre fonctionne pas.
 # https://github.com/alfa-addon/addon/blob/master/plugin.video.alfa/lib/aadecode.py
 # ------------------------------------------------------------
-# Modified by jsergio
+# Modified by jsergio, gujal
+# https://github.com/Gujal00/ResolveURL/blob/master/script.module.resolveurl/lib/resolveurl/lib/aadecode.py
 
 
-def decodeAA(text):
+def decodeAA(text, alt=False):
     text = re.sub(r"\s+|/\*.*?\*/", "", text)
-    data = text.split("+(ﾟДﾟ)[ﾟoﾟ]")[1]
-    chars = data.split("+(ﾟДﾟ)[ﾟεﾟ]+")[1:]
+    if alt:
+        data = text.split("+(ﾟɆﾟ)[ﾟoﾟ]")[1]
+        chars = data.split("+(ﾟɆﾟ)[ﾟεﾟ]+")[1:]
+        char1 = "ღ"
+        char2 = "(ﾟɆﾟ)[ﾟΘﾟ]"
+    else:
+        data = text.split("+(ﾟДﾟ)[ﾟoﾟ]")[1]
+        chars = data.split("+(ﾟДﾟ)[ﾟεﾟ]+")[1:]
+        char1 = "c"
+        char2 = "(ﾟДﾟ)['0']"
 
     txt = ""
     for char in chars:
         char = char \
             .replace("(oﾟｰﾟo)", "u") \
-            .replace("c", "0") \
-            .replace("(ﾟДﾟ)['0']", "c") \
+            .replace(char1, "0") \
+            .replace(char2, "c") \
             .replace("ﾟΘﾟ", "1") \
             .replace("!+[]", "1") \
             .replace("-~", "1+") \
@@ -255,7 +264,8 @@ def decodeAA(text):
                 c = ""
             except:
                 pass
-        if subchar != '': txt += subchar + "|"
+        if subchar != '':
+            txt += subchar + "|"
     txt = txt[:-1].replace('+', '')
 
     txt_result = "".join([chr(int(n, 8)) for n in txt.split('|')])
@@ -270,13 +280,13 @@ def toStringCases(txt_result):
         if "+(" in txt_result:
             m3 = True
             try:
-                sum_base = "+" + re.search(".toString...(\d+).", txt_result, re.DOTALL).groups(1)
+                sum_base = "+" + re.search(r".toString...(\d+).", txt_result, re.DOTALL).groups(1)
             except:
                 sum_base = ""
-            txt_pre_temp = re.findall("..(\d),(\d+).", txt_result, re.DOTALL)
+            txt_pre_temp = re.findall(r"..(\d),(\d+).", txt_result, re.DOTALL)
             txt_temp = [(n, b) for b, n in txt_pre_temp]
         else:
-            txt_temp = re.findall('(\d+)\.0.\w+.([^\)]+).', txt_result, re.DOTALL)
+            txt_temp = re.findall(r'(\d+)\.0.\w+.([^\)]+).', txt_result, re.DOTALL)
         for numero, base in txt_temp:
             code = toString(int(numero), eval(base + sum_base))
             if m3:
