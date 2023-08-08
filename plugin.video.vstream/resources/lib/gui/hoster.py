@@ -199,7 +199,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload']
+                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload' ]
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -217,6 +217,12 @@ class cHosterGui:
 
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
+
+        if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName):
+            return self.getHoster('vidguard')
+
+        if ('filelions' in sHostName) or ('shoooot' in sHostName):
+            return self.getHoster('filelions')
 
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
