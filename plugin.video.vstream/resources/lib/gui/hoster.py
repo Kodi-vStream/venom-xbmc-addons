@@ -23,6 +23,8 @@ class cHosterGui:
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         site = oInputParameterHandler.getValue('site')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
+        sSeason = oInputParameterHandler.getValue('sSeason')
+        sEpisode = oInputParameterHandler.getValue('sEpisode')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         movieUrl = oInputParameterHandler.getValue('movieUrl')
         movieFunc = oInputParameterHandler.getValue('movieFunc')
@@ -59,31 +61,36 @@ class cHosterGui:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
             
+        sMediaFile = oHoster.getMediaFile()
+        if sMediaFile:  # Afficher le nom du fichier plutot que le titre
+            oGuiElement.setMediaUrl(sMediaFile)
+            if self.ADDON.getSetting('display_info_file') == 'true':
+                oHoster.setDisplayName(sMediaFile)
+                oGuiElement.setTitle(oHoster.getFileName())  # permet de calculer le cleanTitle
+                oGuiElement.setRawTitle(oHoster.getDisplayName())   # remplace le titre par le lien
+            else:
+                oGuiElement.setTitle(oHoster.getDisplayName())
+        else:
+            oGuiElement.setTitle(oHoster.getDisplayName())
+
+
         title = oGuiElement.getCleanTitle()
+        tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
 
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
+        oOutputParameterHandler.addParameter('tvShowTitle', tvShowTitle)
         oOutputParameterHandler.addParameter('sTitle', title)
+        oOutputParameterHandler.addParameter('sSeason', sSeason)
+        oOutputParameterHandler.addParameter('sEpisode', sEpisode)
         oOutputParameterHandler.addParameter('sLang', sLang)
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
-
-
-        sMediaFile = oHoster.getMediaFile()
-        if sMediaFile:  # Afficher le nom du fichier plutot que le titre
-            oGuiElement.setMediaUrl(sMediaFile)
-            if self.ADDON.getSetting('display_info_file') == 'true':
-                oHoster.setDisplayName(sMediaFile)
-                oGuiElement.setRawTitle(oHoster.getDisplayName())
-            else:
-                oGuiElement.setTitle(oHoster.getDisplayName())
-        else:
-            oGuiElement.setTitle(oHoster.getDisplayName())
 
 
         # gestion NextUp
@@ -199,7 +206,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload' ]
+                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
