@@ -865,7 +865,6 @@ class cTrakt:
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
         sSeason = False
-        sEpisode = False
 
         # Film, serie, anime, saison, episode
         if sType not in ('1', '2', '3', '4', '8'):
@@ -875,24 +874,24 @@ class cTrakt:
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
-            sFileName = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
                 if self.ADDON.getSetting('trakt_tvshows_activate_scrobbling') == 'false':
                     return
                 
-                sTitle = oInputParameterHandler.getValue('tvshowtitle')
+                sTitle = oInputParameterHandler.getValue('tvShowTitle')
                 sSeason = oInputParameterHandler.getValue('sSeason')
                 if not sSeason:
                     sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
                     sEpisode = oInputParameterHandler.getValue('sEpisode')
                 if not sEpisode:
+                    sFileName = oInputParameterHandler.getValue('sFileName')
                     sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sFileName).group(2)
             else:
                 if self.ADDON.getSetting('trakt_movies_activate_scrobbling') == 'false':
                     return
-                sTitle = sFileName
+                sTitle = oInputParameterHandler.getValue('sFileName')
 
             sAction = URL_API + 'sync/history'
 
