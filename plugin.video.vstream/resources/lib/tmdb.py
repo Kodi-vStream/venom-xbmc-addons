@@ -564,7 +564,7 @@ class cTMDb:
             'trailer': '',
             'tagline': meta.get('name') if media_type == "episode" else meta.get('tagline'),
             'genre': '',
-            'studio': "",
+            'studio': '',
             'status': meta.get('status', ""),
             'cast': '',
             'crew': '',
