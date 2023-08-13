@@ -211,7 +211,7 @@ def showYears():
     oGui = cGui()
     # https://www3.mystream.zone/release/2020
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1982, 2023)):
+    for i in reversed(range(1982, 2024)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + sYear + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)

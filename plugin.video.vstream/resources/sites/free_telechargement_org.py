@@ -262,7 +262,7 @@ def showGenre(basePath):
 def showMovieYears():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1950, 2023)):
+    for i in reversed(range(1950, 2024)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
