@@ -92,7 +92,7 @@ def showYears():
     oGui = cGui()
 
     from itertools import chain
-    generator = chain([1966, 1972, 1987, 1988, 1990, 1991, 1992], range(1994, 2023))
+    generator = chain([1966, 1972, 1987, 1988, 1990, 1991, 1992], range(1994, 2024))
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(list(generator)):

@@ -119,6 +119,7 @@ class cUtil:
         title = title.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
         title = title.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
         title = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', title.lower())
+        title = re.sub(' +', ' ', title)  # vire espace double au milieu
         # title = QuotePlus(title)
         # title = title.decode('string-escape')
         return title

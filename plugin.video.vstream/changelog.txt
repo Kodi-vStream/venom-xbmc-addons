@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.6.3***
+- Trakt : Correction pour le suivi sur le compte
+- Marqué vu : Correction pour la marque lors des enchainements d'épisodes
+
 *** 2.6.0***
 - Cloudflare : Pas de recherche parmi les sources Cloudflare si FlareSolverr n'est pas activé
 - MétaDonnées : Option pour afficher le nom complet du fichier (si disponible)

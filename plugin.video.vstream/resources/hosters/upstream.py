@@ -43,7 +43,6 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult_1[1])
             sHtmlContent = sUnpacked
             sPattern = 'sources: *\[\{file:"([^"]+)"'
-            oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
                 api_call = aResult[1][0]

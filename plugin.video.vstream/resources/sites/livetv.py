@@ -267,7 +267,9 @@ def showHosters():  # affiche les videos disponible du live
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?(?:allowFullScreen=|width).+?src="([^"]+)".+?</iframe>'
+#    sPattern = '<iframe.+?(?:allowFullScreen=|width).+?src="([^"]+)".+?</iframe>'
+    sPattern = '<iframe +(?:allowFullScreen|width).+?src="([^"]+)".+?<\/iframe>'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -299,6 +301,7 @@ def showHosters():  # affiche les videos disponible du live
                         aResult = re.findall(sPattern, sHtmlContent2)
                         if aResult:
                             url = aResult[0] + idChannel
+
 
         if 'sportlevel' in url:
             oRequestHandler = cRequestHandler(url)
@@ -686,7 +689,7 @@ def showHosters():  # affiche les videos disponible du live
                 Host = '190-2-146-56.livesports24.online'
                 sHosterUrl = 'https://' + Host + '/' + aResult[0] + '.m3u8'
 
-        if 'hdsoccerstreams.net' in url:  # Pas terminer
+        if 'hdsoccerstreams.net' in url:  # Pas terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = '<script>fid="(.+?)"'
@@ -700,14 +703,56 @@ def showHosters():  # affiche les videos disponible du live
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent3 = oRequestHandler.request()
 
-        if 'lato.sx' in url:  # Pas terminer
+        if 'voodc' in url:  # Pas terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
-            sPattern2 = '<script>fid=["\'](.+?)["\']'
+            sPattern2 = '<script type="text/javascript" src="([^"]+)'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                url2 = 'https:' + aResult[0]
+                Referer = url
+                oRequestHandler = cRequestHandler(url2)
+                # oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', Referer)
+                sHtmlContent2 = oRequestHandler.request()
+                
+                sPattern2 = 'var r = "player="\+embedded\+"&e=([^"]+)'
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    url2 = 'https://voodc.com/player.php?player=d&e=' + aResult[0]
+                    Referer = url
+                    oRequestHandler = cRequestHandler(url2)
+                    # oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addHeaderEntry('Referer', Referer)
+                    sHtmlContent2 = oRequestHandler.request()
+                    sPattern2 = '"file": \'([^\']+)'
+                    aResult = re.findall(sPattern2, sHtmlContent2)
+                    if aResult:
+                        sHosterUrl = aResult[0]
+                                
+
+        if 'acagem' in url:  # Pas terminé
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = '<script>fid +="(.+?)"'
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 fid = aResult[0]
-                url2 = 'https://yourjustajoo.com/embedred.php?player=desktop&live=' + fid
+                url = 'https://stsgmrs.com/panel/gen.php?playerid=%s' % fid
+                Referer = url
+
+
+        if 'lato.sx' in url or '1l1l' in url:
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = '<script>fid=["\'](.+?)["\'].+?src=\'//([^/]+)([^\']+)'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                fid = aResult[0][0]
+                site = 'https://' + aResult[0][1]
+                host = aResult[0][2]
+                url2 = '%s/%s?player=desktop&live=%s' % (site, host.replace('.js', '.php'), fid)
+                
                 Referer = url
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -718,15 +763,33 @@ def showHosters():  # affiche les videos disponible du live
                 aResult = re.findall(sPattern2, sHtmlContent3)
                 if aResult:
                     func = aResult[0]
-                 
-                    # sPattern2 = 'function %s\(\) +{ +return\(\[(.+?)\]' % func
-                    # sPattern2 = 'function %s\(\) +{ +return\(\[([^\[]+)\]' % func
                     sPattern2 = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
                     aResult = re.findall(sPattern2, sHtmlContent3)
-                    
                     if aResult:
-                        sHosterUrl = aResult[0].replace('"', '').replace(',', '')
-    
+                        sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
+                        sHosterUrl += '|referer=' + site
+
+
+        if 'wizospor' in url:
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = '<div id="[^"]+".+?ThePlayerJS\(\'[^\']+\',\'([^\']+)'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                url2 = 'https://sharecast.ws/player/' + aResult[0]
+                Referer = url
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('Referer', Referer)
+                sHtmlContent2 = oRequestHandler.request()
+
+                sPattern2 = '"player","([^"]+)",{\'([^\']+)'
+
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+                    sHosterUrl += '|referer=https://sharecast.ws/'
+
+
         if 'thesports4u.net' in url or 'soccerstreams' in url or 'all.ive' in url:  # Fini
             if 'all.ive' in url:
                 oRequestHandler = cRequestHandler(url)
@@ -1341,6 +1404,12 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         return aResult[0] + '|referer=' + referer
+
+    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return aResult[0] + '|referer=' + referer
+
 
     return False
 

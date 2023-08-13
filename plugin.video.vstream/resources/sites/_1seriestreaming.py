@@ -71,7 +71,7 @@ def showSerieYears():
     # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1955], range(1957, 2023))
+    generator = chain([1955], range(1957, 2024))
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(list(generator)):

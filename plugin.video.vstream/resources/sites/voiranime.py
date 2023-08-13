@@ -405,7 +405,6 @@ def getHost():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            #VSlog(oHoster)
             
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
