@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-from resources.lib.comaddon import siteManager, VSlog
+from resources.lib.comaddon import siteManager 
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -175,7 +175,7 @@ def showMovieYearsTVShow():
 def showMovieYears(sTypeSerie=''):
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(2001, 2023)):  # pas grand chose 32 - 90
+    for i in reversed(range(2001, 2024)):  # pas grand chose 32 - 90
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + sTypeSerie)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
