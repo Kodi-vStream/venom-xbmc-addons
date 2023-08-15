@@ -435,8 +435,9 @@ def Hoster_ShareCast(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
-        url = ('https://' + aResult[0][1] + '/hls/' + aResult[0][0]  + '/live.m3u8')
-        return True, url  #'|User-Agent=' + UA + '&Referer=' + Quote(url)
+        site = 'https://' + aResult[0][1]
+        url = (site + '/hls/' + aResult[0][0]  + '/live.m3u8')
+        return True, url  + '|Referer=' + Quote(site)
 
     return False, False
 
@@ -527,12 +528,23 @@ def getHosterIframe(url, referer):
             if b:
                 return True, url
 
+    sPattern = 'player.load\({source: (.+?)\('
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        func = aResult[0]
+        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+        aResult = re.findall(sPattern, sHtmlContent)
+        if aResult:
+            referer = url
+            sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
+            return True, sHosterUrl + '|referer=' + referer
+
     sPattern = ';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        url = aResult[0]
-        if '.m3u8' in url:
-            return True, url  # + '|User-Agent=' + UA + '&Referer=' + referer
+        sHosterUrl = aResult[0]
+        if '.m3u8' in sHosterUrl:
+            return True, sHosterUrl  # + '|User-Agent=' + UA + '&Referer=' + referer
 
     sPattern = "onload=\"ThePlayerJS\('.+?','([^\']+)"
     aResult = re.findall(sPattern, sHtmlContent)
