@@ -122,7 +122,7 @@ def showSerieGenres():
 
     listeGenre = [('Action et aventure', 'action&adventure'),
                   ('Animation', 'animation'),
-                  ('Comedie', 'comedie'),
+                  ('Comédie', 'comedie'),
                   ('Crime', 'crime'),
                   ('Documentaire', 'documentaire'),
                   ('Drame', 'drame'),
