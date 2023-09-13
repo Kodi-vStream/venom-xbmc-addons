@@ -382,7 +382,7 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="numerando">(.+?)</div><div class="episodiotitle"><a href="([^"]+)'
+    sPattern = "class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -417,9 +417,9 @@ def showLink():
     sHtmlContent = oRequest.request()
 
     if '/films/' in sUrl:
-        sPattern = 'player_option" data-type="movie" data-post="(\d+)" data-nume="(\d+).+?flags/(.+?).png'
+        sPattern = "player_option' data-type='movie' data-post='(\d+)' data-nume='(\d+)'.+?flags/(.+?).png"
     else:
-        sPattern = 'player_option" data-type="tv" data-post="(\d+)" data-nume="(\d+).+?flags/(.+?).png'
+        sPattern = "player_option' data-type='tv' data-post='(\d+)' data-nume='(\d+)'.+?flags/(.+?).png"
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
