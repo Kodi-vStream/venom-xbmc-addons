@@ -332,8 +332,8 @@
         },
         "streaminz": {
             "label": "Streaminz",
-            "active": "False",
-            "url": "https://streaminze.com/"
+            "active": "True",
+            "url": "https://streaminze.org/"
         },
         "streamonsport": {
             "label": "Streamonsport",
