@@ -200,7 +200,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "http://livetv.sx"
+            "url": "http://62.182.83.65/"
         },
         "lsdb": {
             "label": "Liveset Database",
