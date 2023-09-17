@@ -51,7 +51,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "False",
+            "active": "True",
             "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
