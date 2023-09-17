@@ -10,11 +10,6 @@
             "active": "True",
             "url": "https://ww1.33seriestreaming.lol/"
         },
-        "_4kstreamz": {
-            "label": "4kstreamz",
-            "active": "False",
-            "url": "https://www.4kstreamz.net/"
-        },
         "adkami_com": {
             "label": "Adkami",
             "active": "True",
@@ -23,11 +18,6 @@
         "alldebrid": {
             "label": "AllDebrid",
             "active": "True"
-        },
-        "alloflix": {
-            "label": "Alloflix",
-            "active": "False",
-            "url": "https://vf.alloflix.com/"
         },
         "animecomplet": {
             "label": "AnimeComplet",
