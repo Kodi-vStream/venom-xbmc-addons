@@ -25,7 +25,7 @@ SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showSeries')
 SERIE_VIEWS = (URL_MAIN + 'meilleures-series-vf', 'showSeries')
 SERIE_LIST = (URL_MAIN, 'showAlpha')
 SERIE_GENRES = (True, 'showGenres')
-SERIE_ANNEES = (True, 'showSerieYears')
+# SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH = ('', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
@@ -51,8 +51,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -203,6 +203,7 @@ def showSaisons():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
@@ -219,19 +220,15 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '1SerieStreaming" src="([^"]+).+?original: </span>([^<]+)|seasonbar" href="([^"]+)">Saison <span>([^<]+)'
+    sPattern = 'seasonbar" href="([^"]+)">Saison <span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            if 'no-poster.svg' not in aEntry[0]:
-                sThumb = aEntry[0]
-            else:
-                sThumb = sThumb
-            sTitle = aEntry[1] + ' Saison ' + aEntry[3]
-            sUrl = aEntry[2]
+            sUrl = aEntry[0]
+            sTitle = sMovieTitle + ' Saison ' + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
