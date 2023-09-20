@@ -127,8 +127,8 @@ def showMovies3():  # affiche les videos disponible du live
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
 
 
-    
-    sPattern="([A-Z]{2,2})\](.*?)(\r\n)(.*?)[\[<]"
+    sPattern="<(a (.*?))\[([A-Z]{2,2})\]((.*?)<)"
+    #sPattern="([A-Z]{2,2})\](.*?)(\r\n)(.*?)[\[<]"
     aMatches = re.compile(sPattern, re.MULTILINE | re.DOTALL).findall(sHtmlContent)
     
    
@@ -150,7 +150,7 @@ def showMovies3():  # affiche les videos disponible du live
             VSlog(txt )
     
             sPattern = "acestream://[a-z0-9]{10,}"
-            aMatchesACE = re.compile(sPattern, re.MULTILINE).findall(txt[3])
+            aMatchesACE = re.compile(sPattern, re.MULTILINE).findall(txt[0])
 
             for aEntry in aMatchesACE:
 
@@ -158,7 +158,7 @@ def showMovies3():  # affiche les videos disponible du live
                 #    VSlog(SITE_NAME + ' - showMovies3 - ' + ' aEntry['+str(y)+']=' + txt + '. ')
 
                 sUrl4 = ''.join(aEntry)
-                sMovieTitle2 = txt[0]+ " " + txt[1]
+                sMovieTitle2 = txt[2]+ " " + txt[4]
                 sThumb = ''
 
                 VSlog(SITE_NAME + ' - showMovies3 - ' + ' sUrl4=' + sUrl4 + '. sMovieTitle2 .' + sMovieTitle2 + '.')
