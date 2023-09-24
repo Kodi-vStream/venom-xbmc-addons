@@ -19,20 +19,10 @@
             "label": "AllDebrid",
             "active": "True"
         },
-        "animecomplet": {
-            "label": "AnimeComplet",
-            "active": "False",
-            "url": "https://ianime-fr.com/"
-        },
         "animeultime": {
             "label": "Anime Ultime",
             "active": "True",
             "url": "http://www.anime-ultime.net/"
-        },
-        "asia_insane": {
-            "label": "Asia Insane",
-            "active": "False",
-            "url": "https://www.asia-insane.biz/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -75,11 +65,6 @@
             "active": "True",
             "url": "https://documentaire.io/"
         },
-        "ducine": {
-            "label": "Du Cin\u00e9",
-            "active": "False",
-            "url": "https://www.ducine.site/"
-        },
         "enstream": {
             "label": "EnStream",
             "active": "True",
@@ -88,6 +73,7 @@
         "extreme_down": {
             "label": "ExtremeDown",
             "active": "False",
+            "cloudflare": "True",
             "url": "https://www.extreme-down.al/"
         },
         "filmoflix": {
@@ -105,11 +91,6 @@
             "label": "Films pour Enfants",
             "active": "True",
             "url": "https://films-pour-enfants.com/"
-        },
-        "filmstreamingy": {
-            "label": "FilmstreamingY",
-            "active": "False",
-            "url": "https://www.film-streamingk.biz/"
         },
         "free_telechargement_org": {
             "label": "Free Telechargement",
@@ -129,7 +110,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://vv2.french-stream.is/"
+            "url": "https://w2.french-stream.is/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -159,7 +140,7 @@
         "illimitestreaming": {
             "label": "Illimitestreaming",
             "active": "False",
-            "url": "https://www.illimitestreaming.co/"
+            "url": "https://www.illimitestreaming.top/"
         },
         "k_streaming": {
             "label": "K_Streaming",
@@ -171,16 +152,6 @@
             "label": "Kepliz",
             "active": "True",
             "url": "https://zadriv.com/"
-        },
-        "kstreamingfilm": {
-            "label": "K streaming Film",
-            "active": "False",
-            "url": "https://kstreamingfilm.xyz/"
-        },
-        "leet365": {
-            "label": "leet365",
-            "active": "False",
-            "url": "https://leet365.cc/vip2.php?d"
         },
         "les_docus": {
             "label": "Les docus",
@@ -197,11 +168,6 @@
             "active": "False",
             "url": "https://lsdb.eu"
         },
-        "mamcin": {
-            "label": "Mamcin",
-            "active": "False",
-            "url": "https://www.mamcin.com/"
-        },
         "mesfilms": {
             "label": "Mes Films",
             "active": "True",
@@ -212,11 +178,6 @@
             "label": "MySteriam",
             "active": "True",
             "url": "https://www.inmysteriam.fr/"
-        },
-        "mystream_zone": {
-            "label": "MyStream",
-            "active": "False",
-            "url": "https://www3.mystream.zone/"
         },
         "neko_sama": {
             "label": "Neko Sama",
@@ -273,21 +234,11 @@
             "active": "True",
             "url": ""
         },
-        "serie_streaming": {
-            "label": "S\u00e9rie Streaming",
-            "active": "False",
-            "url": "https://serie-streaming.plus/"
-        },
         "series_en_streaming": {
             "label": "Series en Streaming",
             "active": "True",
             "cloudflare": "True",
             "url": "https://ww1.series-en-streaming.xyz/"
-        },
-        "series_stream": {
-            "label": "Series Stream",
-            "active": "False",
-            "url": "https://wwv.series-stream.cc/"
         },
         "siteonefichier": {
             "label": "Mon Compte 1Fichier",
@@ -303,11 +254,6 @@
             "label": "Sky-Animes",
             "active": "True",
             "url": "http://www.sky-animes.com/"
-        },
-        "stream_complet": {
-            "label": "Stream Complet",
-            "active": "False",
-            "url": "https://ww.streamcomplet.click/"
         },
         "streaming_series": {
             "label": "Streaming-Series",
@@ -350,25 +296,10 @@
             "active": "True",
             "url": "https://www.imdb.com/"
         },
-        "topreplay": {
-            "label": "TopReplay",
-            "active": "False",
-            "url": "https://vww.topreplay.cc/"
-        },
         "uptobox_live": {
             "label": "Uptobox Live",
             "active": "False",
             "url": "https://api.uptobox.mov/"
-        },
-        "vf_film": {
-            "label": "VF Film",
-            "active": "False",
-            "url": "https://vf-film.top/"
-        },
-        "vf_serie": {
-            "label": "VF S\u00e9rie",
-            "active": "False",
-            "url": "https://vf-serie.site/"
         },
         "vfilms": {
             "label": "VFilms",
