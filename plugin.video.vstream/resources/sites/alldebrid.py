@@ -9,13 +9,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import addon
 
 SITE_IDENTIFIER = 'alldebrid'
 SITE_NAME = '[COLOR violet]Alldebrid[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
 
-ITEM_PAR_PAGE = 20
+ITEM_PAR_PAGE = 25
 
 
 def load():
@@ -25,6 +25,7 @@ def load():
     URL_HOST = oAddon.getSetting('urlmain_alldebrid')
     ALL_ALL = (URL_HOST + 'links/', 'showLiens')
     ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnets')
+    ALL_HISTO = (URL_HOST + 'history/', 'showLiens')
     ALL_INFORMATION = ('https://alldebrid.fr', 'showInfo')
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -34,8 +35,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ALL_MAGNETS[0])
     oGui.addDir(SITE_IDENTIFIER, ALL_MAGNETS[1], 'Magnets', 'films.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', ALL_HISTO[0])
+    oGui.addDir(SITE_IDENTIFIER, ALL_HISTO[1], 'Historique', 'annees.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', ALL_INFORMATION[0])
-    oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Information sur les hébergeurs ', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Informations sur les hébergeurs ', 'host.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -58,43 +62,32 @@ def showLiens(sSearch=''):
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
     sPattern = '<a href="(.+?)">([^<>]+)</a>'
 
+    oHoster = cHosterGui()
+    hosterLienDirect = oHoster.getHoster('lien_direct')
+ 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0]:
+    else:
         nbItem = 0
         index = 0
-        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-
             index += 1
             if index <= numItem:
                 continue
 
             numItem += 1
             nbItem += 1
-            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[1]
             sUrl2 = sUrl + aEntry[0]
-            sThumb = ''
-            sDesc = ''
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            progress_.VSclose(progress_)
-
+            
+            hosterLienDirect.setDisplayName(sTitle)
+            hosterLienDirect.setFileName(sTitle)
+            oHoster.showHoster(oGui, hosterLienDirect, sUrl2, sTitle)
+            
             if not sSearch:
                 if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
                     numPage += 1
@@ -105,7 +98,7 @@ def showLiens(sSearch=''):
                     oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showMagnets(sSearch=''):
@@ -126,7 +119,6 @@ def showMagnets(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
-    # Pattern servant à retrouver les éléments dans la page
     sPattern = '<a href="(.+?)">([^<]+)</a>'
 
     oParser = cParser()
@@ -136,8 +128,6 @@ def showMagnets(sSearch=''):
         nbItem = 0
         index = 0
 
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
 
             index += 1
@@ -146,10 +136,6 @@ def showMagnets(sSearch=''):
 
             numItem += 1
             nbItem += 1
-            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[0]
             sUrl2 = sUrl + aEntry[1]
 
@@ -172,8 +158,6 @@ def showMagnets(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'movies.png', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -221,7 +205,6 @@ def showseriesHoster(sSearch=''):
     if aResult[0]:
         nbItem = 0
         index = 0
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
 
             index += 1
@@ -229,11 +212,6 @@ def showseriesHoster(sSearch=''):
                 continue
             numItem += 1
             nbItem += 1
-
-            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[1]
             sUrl2 = sUrl + aEntry[0]
             sThumb = ''
@@ -256,8 +234,6 @@ def showseriesHoster(sSearch=''):
                     oOutputParameterHandler.addParameter('numPage', numPage)
                     oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
-
-            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -295,25 +271,16 @@ def showInfo():
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sDisponible = aEntry[0].replace('downloaders_available', 'Disponible')\
-                                   .replace('downloaders_unavailable', 'Non Disponible')
+        for aEntry in sorted(aResult[1], key=lambda host: host[1]):
+            sDisponible = aEntry[0].replace('downloaders_available', '[COLOR green]Disponible[/COLOR]')\
+                                   .replace('downloaders_unavailable', '[COLOR red]Non Disponible[/COLOR]')
             sHebergeur = aEntry[1]
 
-            sDisplayTitle = ('%s (%s)') % (sHebergeur, sDisponible)
+            sDisplayTitle = ('%s - %s') % (sHebergeur, sDisponible)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
 
             oGui.addText(SITE_IDENTIFIER, sDisplayTitle)
 
-        progress_.VSclose(progress_)
-
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
