@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
-from resources.lib.util import cUtil, Unquote
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmsetvideos'
 SITE_NAME = 'FilmS et VideoS'
@@ -103,7 +103,6 @@ def showSearch():
         return
 
 
-
 def showMovieGenres():
     oGui = cGui()
 
@@ -140,7 +139,6 @@ def showSerieGenres():
                   ('Western', 'western')
                   ]
 
-          
     oOutputParameterHandler = cOutputParameterHandler()
     for genre_title, genre_url in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tv/genre/' + genre_url + '/')
@@ -171,9 +169,9 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     sPattern = '<div class=".+?fluid card"><a href="\/([^"]+)".+?h4>([^<]+).+?<.+?(data-ids="([^\"]+)|<div type="Genre")'
-    
+
     series_noms = []
-                              
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -200,7 +198,7 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = sTitle
             sTmdbId = aEntry[3]
-            
+
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
@@ -252,7 +250,7 @@ def showSaisons():
     sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     if not sTmdbId:
         sTmdbId = ''
-        
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -269,7 +267,7 @@ def showSaisons():
             sUrl2 = aEntry[0]
             if sTmdbId != aEntry[3]:    # filtre des saisons selon l'id de la série
                 continue
-            
+
             sSaison = aEntry[1]
             sTitle = ("%s Saison %s") % (sMovieTitle, sSaison)
 
@@ -380,7 +378,7 @@ def showMovieLinks():
             sHoster = aEntry[1]
 
             if sHoster in hosters:
-                continue                  # un seul lien par hoster
+                continue  # un seul lien par hoster
             hosters.append(sHoster)
 
             oHoster = cHosterGui().checkHoster(sHoster)
