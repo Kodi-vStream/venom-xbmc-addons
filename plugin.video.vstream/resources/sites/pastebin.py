@@ -307,7 +307,7 @@ class PasteContent:
 
         # Lecture en cache
         if sContent:
-            lines = eval(sContent)       # trop long
+            lines = eval(sContent)       # TODO trop long
             if lines[0].startswith('#'):    # paste index
                 if renew: # renouveller le cache du paste index
                     threading.Timer(10, renewPaste, args=(pasteBin, )).start()
@@ -429,10 +429,15 @@ class PasteContent:
             progress_.VSclose(progress_)
 
     def resolveLink(self, pasteBin, link):
-        if not self.movies:
-            return [(self.HEBERGEUR+link, 'ori', 'ori')]
+        # if not self.movies:
+        #     return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
-        if 'uptobox' in self.HEBERGEUR:
+        uptobox = False
+        if 'uptobox' in self.HEBERGEUR or 'uptobox' in link:
+            uptobox = True
+        elif not self.HEBERGEUR and not 'http' in link:
+            uptobox = True  # si rien de précisé, on part sur du uptobox 
+        if uptobox:
             # Recherche d'un compte premium valide
             from resources.lib.handler.premiumHandler import cPremiumHandler
             links = None
@@ -442,16 +447,16 @@ class PasteContent:
                     links = self._resolveLink(pasteBin, link)
                 if not links:
                     self.keyUpto = None
-                    self.keyReald = cPremiumHandler('realdebrid').getToken()
-                    if self.keyReald:
-                        links = self._resolveLink(pasteBin, link)
-                if not links:
-                    self.keyReald = None
                     self.keyAlld = cPremiumHandler('alldebrid').getToken()
                     if self.keyAlld:
                         links = self._resolveLink(pasteBin, link)
+                if not links:
+                    self.keyAlld = None
+                    self.keyReald = cPremiumHandler('realdebrid').getToken()
+                    if self.keyReald:
+                        links = self._resolveLink(pasteBin, link)
                         if not links:
-                            self.keyAlld = None
+                            self.keyReald = None
 
             # Un compte avec un des trois débrideurs
             if not links and (self.keyUpto or self.keyAlld or self.keyReald):
@@ -460,6 +465,7 @@ class PasteContent:
                 return links
             else:
                 dialog().VSinfo('Certains liens ne sont pas disponibles')
+                return [(None, None, None)]
 
         return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
@@ -2409,7 +2415,27 @@ def showHosters():
     listRes = getHosterList(siteUrl)
 
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
-    sortedRes = sorted(listRes.keys(), key=trie_res)
+    sorted(listRes.keys(), key=trie_res)
+
+    if addon().getSetting('hoster_alldebrid_url'):
+        for res in sorted(listRes.keys(), key=trie_res):
+            for sHosterUrl, lang in listRes[res]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                sUrl = sHosterUrl
+
+                sDisplayName = sTitle
+                if res:
+                    displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
+                    sDisplayName += ' [%s]' % displayRes
+                if lang:
+                    sDisplayName += ' (%s)' % lang
+        
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
+        oGui.setEndOfDirectory()
+        return
+
 
     hosterLienDirect = oHosterGui.getHoster('lien_direct')
     
@@ -2439,6 +2465,36 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
+def showHoster():
+    from resources.lib.gui.hoster import cHosterGui
+    oHosterGui = cHosterGui()
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    link, paste = oInputParameterHandler.getValue('siteUrl').split('|')
+    hosterLienDirect = oHosterGui.getHoster('lien_direct')
+
+    pbContent = PasteContent()
+    resolvedLinks = pbContent.resolveLink(paste, link)
+    for sHosterUrl, res, lang in resolvedLinks:
+        if sHosterUrl:
+            if not sHosterUrl.startswith('http'):
+                sHosterUrl = 'http://' + sHosterUrl
+    
+            if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
+                oHoster = hosterLienDirect
+            else:
+                oHoster = oHosterGui.checkHoster(sHosterUrl)
+    
+            if oHoster:
+                sDisplayName = sTitle
+                oHoster.setDisplayName(sDisplayName)
+                oHoster.setFileName(sTitle)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
+
+    oGui.setEndOfDirectory()
+
+
 # Retrouve tous les liens disponibles pour un film ou un épisode, gère les groupes multipaste
 def getHosterList(siteUrl):
     # Pour supporter les caractères '&' et '+' dans les noms alors qu'ils sont réservés
@@ -2454,6 +2510,7 @@ def getHosterList(siteUrl):
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
     searchTitle = aParams['sTitle'].replace(' | ', ' & ')
+    urlAD = addon().getSetting('hoster_alldebrid_url')
 
     if sRes == UNCLASSIFIED:
         sRes = ''
@@ -2556,8 +2613,15 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    if urlAD:
+                        resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+                    else:
+                        resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    
                     for url, res, lang in resolvedLinks:
+                        if not url:
+                            continue
+                        
                         if 'unknown' in lang:
                             lang = ''
                         else:
