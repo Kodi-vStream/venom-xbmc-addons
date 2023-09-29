@@ -22,11 +22,12 @@ def load():
     oGui = cGui()
     oAddon = addon()
 
+    URL_MAIN = 'https://alldebrid.fr'
     URL_HOST = oAddon.getSetting('urlmain_alldebrid')
     ALL_ALL = (URL_HOST + 'links/', 'showLiens')
-    ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnets')
+    ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnetsVideos')
     ALL_HISTO = (URL_HOST + 'history/', 'showLiens')
-    ALL_INFORMATION = ('https://alldebrid.fr', 'showInfo')
+    ALL_INFORMATION = (URL_MAIN, 'showInfo')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ALL_ALL[0])
@@ -42,6 +43,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Informations sur les hébergeurs ', 'host.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 
 def showLiens(sSearch=''):
@@ -101,7 +103,54 @@ def showLiens(sSearch=''):
     oGui.setEndOfDirectory()
 
 
-def showMagnets(sSearch=''):
+
+def showMagnetsVideos(sSearch=''):
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchTV', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showMagnetsMovie', 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showMagnetsTV', 'Séries', 'series.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+def showMagnetsTV(sSearch=''):
+    showMagnets(True, sSearch)
+    
+def showMagnetsMovie(sSearch=''):
+    showMagnets(False, sSearch)
+
+
+def showSearchMovie():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if sSearchText:
+        showMagnetsMovie(sSearchText)
+        oGui.setEndOfDirectory()
+        return
+    
+def showSearchTV():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if sSearchText:
+        showMagnetsTV(sSearchText)
+        oGui.setEndOfDirectory()
+        return
+    
+def showMagnets(series, sSearch=''):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -136,8 +185,11 @@ def showMagnets(sSearch=''):
 
             numItem += 1
             nbItem += 1
-            sTitle = aEntry[0]
-            sUrl2 = sUrl + aEntry[1]
+            sTitle = aEntry[1]
+            sUrl2 = sUrl + aEntry[0]
+
+            if sSearch and sSearch.upper() not in sTitle.upper():
+                continue    # Filtre de recherche
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -151,19 +203,25 @@ def showMagnets(sSearch=''):
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
                     oOutputParameterHandler.addParameter('numPage', numPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
+                    if series:
+                        oGui.addNext(SITE_IDENTIFIER, 'showMagnetsTV', 'Page ' + str(numPage), oOutputParameterHandler)
+                    else:
+                        oGui.addNext(SITE_IDENTIFIER, 'showMagnetsMovie', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
-            if 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
-            else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'movies.png', sThumb, sDesc, oOutputParameterHandler)
+            isMovie = 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2
+                
+            if not series and isMovie:
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
+            elif series and not isMovie:
+                oGui.addTV(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showseriesHoster(sSearch=''):
     oGui = cGui()
+    oHosterGui = cHosterGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -181,11 +239,11 @@ def showseriesHoster(sSearch=''):
         resp = s.head(sUrl)
         result = resp.headers['location']
         sHosterUrl = result
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        oHoster = oHosterGui.checkHoster(sHosterUrl)
         if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
+            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
             oGui.setEndOfDirectory()
     except:
         pass
@@ -203,53 +261,13 @@ def showseriesHoster(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        nbItem = 0
-        index = 0
+        oHoster = oHosterGui.getHoster('lien_direct')
         for aEntry in aResult[1]:
-
-            index += 1
-            if index <= numItem:
-                continue
-            numItem += 1
-            nbItem += 1
+            sHosterUrl = sUrl + aEntry[0]
             sTitle = aEntry[1]
-            sUrl2 = sUrl + aEntry[0]
-            sThumb = ''
-            sDesc = ''
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-            if not sSearch:
-                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
-                    numPage += 1
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                    oOutputParameterHandler.addParameter('numItem', numItem)
-                    oOutputParameterHandler.addParameter('numPage', numPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
-                    break
-
-    oGui.setEndOfDirectory()
-
-
-def showHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    sHosterUrl = sUrl
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster:
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
+            oHoster.setDisplayName(sTitle)
+            oHoster.setFileName(sTitle)
+            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sTitle)
 
     oGui.setEndOfDirectory()
 
