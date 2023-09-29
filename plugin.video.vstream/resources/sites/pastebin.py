@@ -2407,7 +2407,6 @@ def showEpisodesLinks(siteUrl=''):
 
 def showHosters():
     from resources.lib.gui.hoster import cHosterGui
-    oHosterGui = cHosterGui()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
@@ -2417,51 +2416,21 @@ def showHosters():
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
     sorted(listRes.keys(), key=trie_res)
 
-    if addon().getSetting('hoster_alldebrid_url'):
-        for res in sorted(listRes.keys(), key=trie_res):
-            for sHosterUrl, lang in listRes[res]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                sUrl = sHosterUrl
-
-                sDisplayName = sTitle
-                if res:
-                    displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
-                    sDisplayName += ' [%s]' % displayRes
-                if lang:
-                    sDisplayName += ' (%s)' % lang
-        
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
-        oGui.setEndOfDirectory()
-        return
-
-
-    hosterLienDirect = oHosterGui.getHoster('lien_direct')
-    
     for res in sorted(listRes.keys(), key=trie_res):
-        displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
         for sHosterUrl, lang in listRes[res]:
-
-            if not sHosterUrl.startswith('http'):
-                sHosterUrl = 'http://' + sHosterUrl
-
-            if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
-                oHoster = hosterLienDirect
-            else:
-                oHoster = oHosterGui.checkHoster(sHosterUrl)
-
-            if oHoster:
-                sDisplayName = sTitle
-                if displayRes:
-                    sDisplayName += ' [%s]' % displayRes
-                if lang:
-                    sDisplayName += ' (%s)' % lang
-
-                oHoster.setDisplayName(sDisplayName)
-                oHoster.setFileName(sTitle)
-                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
-
+            oOutputParameterHandler = cOutputParameterHandler()
+            sUrl = sHosterUrl
+    
+            sDisplayName = sTitle
+            if res:
+                displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
+                sDisplayName += ' [%s]' % displayRes
+            if lang:
+                sDisplayName += ' (%s)' % lang
+    
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -2510,7 +2479,6 @@ def getHosterList(siteUrl):
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
     searchTitle = aParams['sTitle'].replace(' | ', ' & ')
-    urlAD = addon().getSetting('hoster_alldebrid_url')
 
     if sRes == UNCLASSIFIED:
         sRes = ''
@@ -2613,10 +2581,8 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    if urlAD:
-                        resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
-                    else:
-                        resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+#                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     
                     for url, res, lang in resolvedLinks:
                         if not url:
