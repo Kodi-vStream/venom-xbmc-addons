@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -283,7 +284,7 @@ def showSaisons():
         sPattern = 'fsynopsis"><p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = re.sub('Regarder ' + sMovieTitle + ' en streaming FR et VOSTFR HD ', '', aResult[1][0])
     except:
         pass
 
@@ -377,10 +378,10 @@ def showHosters():
             sPattern = 'fsynopsis"><p>([^<]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
-                sDesc = aResult[1][0]
+                sDesc = re.sub('Regarder gratuit Film ' + sMovieTitle + ' en streaming VF ou VOSTFR Complet ',
+                               '', aResult[1][0])
         except:
             pass
-
 
     if isSerie:  # episode d'une série
         sPattern = 'data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+).+?icon/([^.]+).+?images/([^.]+)'

@@ -395,16 +395,19 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('siteonefichier', 'load', self.addons.VSlang(30327), 'sites/siteonefichier.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('alldebrid', 'load', 'AllDebrid', 'sites/alldebrid.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
         oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
         oGui.addDir('cTrakt', 'getLoad', self.addons.VSlang(30214), 'trakt.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('siteuptobox', 'load', 'Uptobox', 'sites/siteuptobox.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('siteonefichier', 'load', self.addons.VSlang(30327), 'sites/siteonefichier.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        # oGui.addDir('siteuptobox', 'load', 'Uptobox', 'sites/siteuptobox.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 

@@ -30,7 +30,7 @@ class cParser:
                       .replace('&rsquo;', "'").replace('&lsquo;', '\'').replace('&nbsp;', '').replace('&#8217;', "'")\
                       .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'').replace('&#39;', '\'')\
                       .replace('&#038;', '&').replace('&iuml;', 'ï').replace('&#8220;', '"').replace('&#8221;', '"')\
-                      .replace('–', '-').replace('—', '-').replace('&#58;', ':')
+                      .replace('–', '-').replace('—', '-').replace('&#58;', ':').replace('&#233;', 'é')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))

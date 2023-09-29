@@ -9,7 +9,7 @@ from resources.hosters.hoster import iHoster
 class cHoster(iHoster):
 
     def __init__(self):
-        iHoster.__init__(self, 'tomacloud', 'tomacloud')
+        iHoster.__init__(self, 'tomacloud', 'Tomacloud')
 
     def isDownloadable(self):
         return False

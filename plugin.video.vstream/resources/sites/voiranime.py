@@ -303,7 +303,7 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     # Les elements post.
-    id = re.search('<input type="hidden" style="display:none;" name="current_page_id" value="([^"]+)"', sHtmlContent).group(1)
+    id = re.search('<input type="hidden"[^<>]+name="current_page_id" value="([^"]+)"', sHtmlContent).group(1)
     chapter = re.search('id="wp-manga-current-chap" data-id="([^"]+)"', sHtmlContent).group(1)
 
     # On extrait une partie de la page pour eviter les doublons.
