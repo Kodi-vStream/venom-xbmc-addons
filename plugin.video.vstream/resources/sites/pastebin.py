@@ -1851,7 +1851,7 @@ def showYears():
 
 
 # Trie des résolutions
-resOrder = ['8K', '2160P', '4K', '1080P', 'fullHD', '720P', 'HD', 'SD', '576P', '540P', '480P', '360P']
+resOrder = ['8K', '2160P', '4K', '1080P', 'fullHD', '720P', 'HD', 'SD', '576P', '540P', '480P', '360P', '']
 
 
 def trie_res(key):
@@ -2322,13 +2322,6 @@ def showSerieSaisons():
                     listRes.add(res)
 
 
-#     # Une seule saison, directement les épisodes
-#     if len(saisons) == 1:
-#         key, res = saisons.items()
-#         siteUrl += '&sSaison=' + key
-#         showEpisodesLinks(siteUrl)
-#         return
-
     # Proposer les différentes saisons
     oOutputParameterHandler = cOutputParameterHandler()
     saisons = sorted(saisons.items(), key=lambda saison: saison[0])
@@ -2338,22 +2331,11 @@ def showSerieSaisons():
         if sSaison.isdigit():
             sDisplaySaison = 'S{:02d}'.format(int(sSaison))
 
-        if len(res) == 0:
-            sUrl = siteUrl + '&sSaison=' + sSaison
-            sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
-            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-        else:
-            for resolution in res:
-                sUrl = siteUrl + '&sSaison=' + sSaison
-                sDisplayTitle = ('%s %s') % (searchTitle, sDisplaySaison)
-                if resolution:
-                    sUrl += '&sRes=' + resolution
-                    sDisplayTitle += ' [%s]' % resolution
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
-                oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+        sUrl = siteUrl + '&sSaison=' + sSaison
+        sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
+        oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -2406,23 +2388,23 @@ def showEpisodesLinks(siteUrl=''):
 
 
 def showHosters():
-    from resources.lib.gui.hoster import cHosterGui
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     listRes = getHosterList(siteUrl)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
     sorted(listRes.keys(), key=trie_res)
-
     for res in sorted(listRes.keys(), key=trie_res):
         for sHosterUrl, lang in listRes[res]:
-            oOutputParameterHandler = cOutputParameterHandler()
             sUrl = sHosterUrl
     
             sDisplayName = sTitle
             if res:
+                oOutputParameterHandler.addParameter('sRes', res)
                 displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
                 sDisplayName += ' [%s]' % displayRes
             if lang:
@@ -2487,6 +2469,7 @@ def getHosterList(siteUrl):
     listEpisodes = []
     listRes = {}
     listeIDs = getPasteList(pasteID)
+    urls = [] # pour détecter les liens en double
 
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)
@@ -2587,6 +2570,10 @@ def getHosterList(siteUrl):
                     for url, res, lang in resolvedLinks:
                         if not url:
                             continue
+                        
+                        if url in urls: # retrait des liens en double
+                            continue
+                        urls.append(url)
                         
                         if 'unknown' in lang:
                             lang = ''
