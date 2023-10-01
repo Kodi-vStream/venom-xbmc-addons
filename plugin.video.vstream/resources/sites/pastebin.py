@@ -296,8 +296,12 @@ class PasteContent:
     # 3 = uptostream
     # 4 = uptobox + uptostream
     def getUptoStream(self):
+        addons = addon()
         if not self.upToStream:
-            mode = int(addon().getSetting("hoster_uptobox_mode_default"))
+            if addons.getSetting("hoster_uptobox_premium"): # pas uptobox premium -> mode direct
+                mode = 2
+            else:   
+                mode = int(addons.getSetting("hoster_uptobox_mode_default"))
             self.upToStream = 4-mode
         return self.upToStream
 
