@@ -312,7 +312,7 @@ def showEpisodes():
         if aResult[0]:
             sMovieTitle = sMovieTitle + ' Saison ' + aResult[1][0]
 
-    sPattern = 'id="s-desc">([^<]+)'
+    sPattern = '</style><p class="desc-text">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'french stream lol'
     if aResult[0]:
@@ -426,16 +426,14 @@ def showMovieLinks():
     sPattern = '<li>\s*<a.*?href="([^"]+).+?<\/i>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sHosterName = ''
-
     if aResult[0]:
         for aEntry in aResult[1]:
 
+            #  supprime le premier lien qui est ensuite reproposé avec la langue
             if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1]:
-                sHosterName = aEntry[1].strip()
                 continue
             sLang = aEntry[1].strip()
-            sDisplayTitle = '%s (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sHosterName)
+            sDisplayTitle = '%s (%s)' %(sMovieTitle, sLang)
 
             sHosterUrl = aEntry[0]
             if 'http' not in sHosterUrl:  # liens nazes du site url
@@ -452,7 +450,7 @@ def showMovieLinks():
 
 def cleanDesc(sDesc):
     oParser = cParser()
-    sPattern = '(Résumé.+?streaming Complet)'
+    sPattern = '(Résumé.+?</p> )'
     aResult = oParser.parse(sDesc, sPattern)
 
     if aResult[0]:
