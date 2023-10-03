@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.6.5***
+- alldebrid : Meilleur accès à son compte : liens, magnets, historique
+
 *** 2.6.3***
 - Trakt : Correction pour le suivi sur le compte
 - Marqué vu : Correction pour la marque lors des enchainements d'épisodes

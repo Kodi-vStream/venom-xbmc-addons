@@ -296,8 +296,12 @@ class PasteContent:
     # 3 = uptostream
     # 4 = uptobox + uptostream
     def getUptoStream(self):
+        addons = addon()
         if not self.upToStream:
-            mode = int(addon().getSetting("hoster_uptobox_mode_default"))
+            if addons.getSetting("hoster_uptobox_premium"): # pas uptobox premium -> mode direct
+                mode = 2
+            else:   
+                mode = int(addons.getSetting("hoster_uptobox_mode_default"))
             self.upToStream = 4-mode
         return self.upToStream
 
@@ -307,7 +311,7 @@ class PasteContent:
 
         # Lecture en cache
         if sContent:
-            lines = eval(sContent)       # trop long
+            lines = eval(sContent)       # TODO trop long
             if lines[0].startswith('#'):    # paste index
                 if renew: # renouveller le cache du paste index
                     threading.Timer(10, renewPaste, args=(pasteBin, )).start()
@@ -429,10 +433,15 @@ class PasteContent:
             progress_.VSclose(progress_)
 
     def resolveLink(self, pasteBin, link):
-        if not self.movies:
-            return [(self.HEBERGEUR+link, 'ori', 'ori')]
+        # if not self.movies:
+        #     return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
-        if 'uptobox' in self.HEBERGEUR:
+        uptobox = False
+        if 'uptobox' in self.HEBERGEUR or 'uptobox' in link:
+            uptobox = True
+        elif not self.HEBERGEUR and not 'http' in link:
+            uptobox = True  # si rien de précisé, on part sur du uptobox 
+        if uptobox:
             # Recherche d'un compte premium valide
             from resources.lib.handler.premiumHandler import cPremiumHandler
             links = None
@@ -442,16 +451,16 @@ class PasteContent:
                     links = self._resolveLink(pasteBin, link)
                 if not links:
                     self.keyUpto = None
-                    self.keyReald = cPremiumHandler('realdebrid').getToken()
-                    if self.keyReald:
-                        links = self._resolveLink(pasteBin, link)
-                if not links:
-                    self.keyReald = None
                     self.keyAlld = cPremiumHandler('alldebrid').getToken()
                     if self.keyAlld:
                         links = self._resolveLink(pasteBin, link)
+                if not links:
+                    self.keyAlld = None
+                    self.keyReald = cPremiumHandler('realdebrid').getToken()
+                    if self.keyReald:
+                        links = self._resolveLink(pasteBin, link)
                         if not links:
-                            self.keyAlld = None
+                            self.keyReald = None
 
             # Un compte avec un des trois débrideurs
             if not links and (self.keyUpto or self.keyAlld or self.keyReald):
@@ -460,6 +469,7 @@ class PasteContent:
                 return links
             else:
                 dialog().VSinfo('Certains liens ne sont pas disponibles')
+                return [(None, None, None)]
 
         return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
@@ -1845,7 +1855,7 @@ def showYears():
 
 
 # Trie des résolutions
-resOrder = ['8K', '2160P', '4K', '1080P', 'fullHD', '720P', 'HD', 'SD', '576P', '540P', '480P', '360P']
+resOrder = ['8K', '2160P', '4K', '1080P', 'fullHD', '720P', 'HD', 'SD', '576P', '540P', '480P', '360P', '']
 
 
 def trie_res(key):
@@ -2316,13 +2326,6 @@ def showSerieSaisons():
                     listRes.add(res)
 
 
-#     # Une seule saison, directement les épisodes
-#     if len(saisons) == 1:
-#         key, res = saisons.items()
-#         siteUrl += '&sSaison=' + key
-#         showEpisodesLinks(siteUrl)
-#         return
-
     # Proposer les différentes saisons
     oOutputParameterHandler = cOutputParameterHandler()
     saisons = sorted(saisons.items(), key=lambda saison: saison[0])
@@ -2332,22 +2335,11 @@ def showSerieSaisons():
         if sSaison.isdigit():
             sDisplaySaison = 'S{:02d}'.format(int(sSaison))
 
-        if len(res) == 0:
-            sUrl = siteUrl + '&sSaison=' + sSaison
-            sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
-            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-        else:
-            for resolution in res:
-                sUrl = siteUrl + '&sSaison=' + sSaison
-                sDisplayTitle = ('%s %s') % (searchTitle, sDisplaySaison)
-                if resolution:
-                    sUrl += '&sRes=' + resolution
-                    sDisplayTitle += ' [%s]' % resolution
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
-                oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+        sUrl = siteUrl + '&sSaison=' + sSaison
+        sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
+        oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -2400,38 +2392,57 @@ def showEpisodesLinks(siteUrl=''):
 
 
 def showHosters():
-    from resources.lib.gui.hoster import cHosterGui
-    oHosterGui = cHosterGui()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     listRes = getHosterList(siteUrl)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
-    sortedRes = sorted(listRes.keys(), key=trie_res)
-
-    hosterLienDirect = oHosterGui.getHoster('lien_direct')
-    
+    sorted(listRes.keys(), key=trie_res)
     for res in sorted(listRes.keys(), key=trie_res):
-        displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
         for sHosterUrl, lang in listRes[res]:
+            sUrl = sHosterUrl
+    
+            sDisplayName = sTitle
+            if res:
+                oOutputParameterHandler.addParameter('sRes', res)
+                displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
+                sDisplayName += ' [%s]' % displayRes
+            if lang:
+                sDisplayName += ' (%s)' % lang
+    
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
 
+
+def showHoster():
+    from resources.lib.gui.hoster import cHosterGui
+    oHosterGui = cHosterGui()
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    link, paste = oInputParameterHandler.getValue('siteUrl').split('|')
+    hosterLienDirect = oHosterGui.getHoster('lien_direct')
+
+    pbContent = PasteContent()
+    resolvedLinks = pbContent.resolveLink(paste, link)
+    for sHosterUrl, res, lang in resolvedLinks:
+        if sHosterUrl:
             if not sHosterUrl.startswith('http'):
                 sHosterUrl = 'http://' + sHosterUrl
-
+    
             if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
                 oHoster = hosterLienDirect
             else:
                 oHoster = oHosterGui.checkHoster(sHosterUrl)
-
+    
             if oHoster:
                 sDisplayName = sTitle
-                if displayRes:
-                    sDisplayName += ' [%s]' % displayRes
-                if lang:
-                    sDisplayName += ' (%s)' % lang
-
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sTitle)
                 oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
@@ -2462,6 +2473,7 @@ def getHosterList(siteUrl):
     listEpisodes = []
     listRes = {}
     listeIDs = getPasteList(pasteID)
+    urls = [] # pour détecter les liens en double
 
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)
@@ -2556,8 +2568,17 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+#                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
+                    
                     for url, res, lang in resolvedLinks:
+                        if not url:
+                            continue
+                        
+                        if url in urls: # retrait des liens en double
+                            continue
+                        urls.append(url)
+                        
                         if 'unknown' in lang:
                             lang = ''
                         else:

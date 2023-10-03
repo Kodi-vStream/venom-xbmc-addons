@@ -17,9 +17,9 @@ SITE_DESC = 'Films & séries'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'xfsearch/genre-1/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
-MOVIE_VOSTFR = (URL_MAIN + 'film/film-sous-titre/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'xfsearch/version-film/VOSTFR/', 'showMovies')
 MOVIE_VF_FRENCH = (URL_MAIN + 'xfsearch/version-film/French/', 'showMovies')
 MOVIE_VF_TRUEFRENCH = (URL_MAIN + 'xfsearch/version-film/TrueFrench/', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'xfsearch/qualit/HDLight/', 'showMovies')
@@ -27,8 +27,8 @@ MOVIE_NETFLIX = (URL_MAIN + 'film/film-netflix/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'xfsearch/version-serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
-SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 's-tv/s-vf/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 's-tv/s-vostfr/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
@@ -153,7 +153,7 @@ def showMovieGenres():
                   'romance', 'science-fiction', 'thriller', 'western']
 
     for igenre in listegenre:
-        liste.append([igenre.capitalize(), URL_MAIN + igenre + '/'])
+        liste.append([igenre.capitalize(), URL_MAIN + 'xfsearch/genre-1/' + igenre + '/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -195,7 +195,7 @@ def showMovies(sSearch=''):
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
 
-        # sUrl = URL_SEARCH[0]  # sert a rien
+        # sUrl = URL_SEARCH[0]  # ne sert à rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
@@ -224,7 +224,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]*)'
+    sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -240,16 +240,16 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = aEntry[1].replace('/red.php?src=', '').replace('&.webp', '')
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[2]
+            sTitle = aEntry[2].replace('Saisn', 'Saison')
 
             if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
-                if '- Saison' in aEntry[2]:
+                if '- Saison' in sTitle:
                     continue
             if bSearchSerie:
-                if '- Saison' not in aEntry[2]:
+                if '- Saison' not in sTitle:
                     continue
 
             # Filtre de recherche
@@ -263,9 +263,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
+            if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl or 's-tv' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif bSearchSerie is True or '- Saison' in aEntry[2]:
+            elif bSearchSerie is True or '- Saison' in sTitle:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -312,7 +312,7 @@ def showEpisodes():
         if aResult[0]:
             sMovieTitle = sMovieTitle + ' Saison ' + aResult[1][0]
 
-    sPattern = 'id="s-desc">([^<]+)'
+    sPattern = '</style><p class="desc-text">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'french stream lol'
     if aResult[0]:
@@ -383,7 +383,7 @@ def showSerieLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
-        # dans cas ou il n'y a qu'un seul lien il n'y a pas de reference  dans <div id="episodexx" class="fullsfeature">
+        # dans cas où il n'y a qu'un seul lien, il n'y a pas de référence dans <div id="episodexx" class="fullsfeature">
         # le pattern devient alors normalement hs
         if sFirst_Url:
             sHosterUrl = sFirst_Url
@@ -426,21 +426,19 @@ def showMovieLinks():
     sPattern = '<li>\s*<a.*?href="([^"]+).+?<\/i>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sHosterName = ''
-
     if aResult[0]:
         for aEntry in aResult[1]:
 
+            #  supprime le premier lien qui est ensuite reproposé avec la langue
             if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1]:
-                sHosterName = aEntry[1].strip()
                 continue
             sLang = aEntry[1].strip()
-            sDisplayTitle = '%s [%s] (%s)' %(sMovieTitle, sLang, sHosterName)
-            
+            sDisplayTitle = '%s (%s)' %(sMovieTitle, sLang)
+
             sHosterUrl = aEntry[0]
             if 'http' not in sHosterUrl:  # liens nazes du site url
                 continue
-            
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
                 oHoster.setDisplayName(sDisplayTitle)
@@ -449,9 +447,10 @@ def showMovieLinks():
 
     oGui.setEndOfDirectory()
 
+
 def cleanDesc(sDesc):
     oParser = cParser()
-    sPattern = '(Résumé.+?streaming Complet)'
+    sPattern = '(Résumé.+?</p> )'
     aResult = oParser.parse(sDesc, sPattern)
 
     if aResult[0]:
