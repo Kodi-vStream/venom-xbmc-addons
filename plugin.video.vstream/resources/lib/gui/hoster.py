@@ -298,6 +298,9 @@ class cHosterGui:
         if ('dood' in sHostName) or ('dooood' in sHostName):
             return self.getHoster('dood')
 
+        if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
+            return self.getHoster('dood')
+
         if ('voe' in sHostName):
             return self.getHoster('voe')
 
