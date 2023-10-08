@@ -46,7 +46,7 @@ class cHosterGui:
                 sCat = '8'   # ...  On est maintenant au niveau "Episode"
         else:
             sCat = '5'     # Divers
-        
+
         oGuiElement.setCat(sCat)
         oOutputParameterHandler.addParameter('sCat', sCat)
 
@@ -60,14 +60,14 @@ class cHosterGui:
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
-            
+
         sMediaFile = oHoster.getMediaFile()
         if sMediaFile:  # Afficher le nom du fichier plutot que le titre
             oGuiElement.setMediaUrl(sMediaFile)
             if self.ADDON.getSetting('display_info_file') == 'true':
                 oHoster.setDisplayName(sMediaFile)
                 oGuiElement.setTitle(oHoster.getFileName())  # permet de calculer le cleanTitle
-                oGuiElement.setRawTitle(oHoster.getDisplayName())   # remplace le titre par le lien
+                oGuiElement.setRawTitle(oHoster.getDisplayName())  # remplace le titre par le lien
             else:
                 oGuiElement.setTitle(oHoster.getDisplayName())
         else:
@@ -94,10 +94,11 @@ class cHosterGui:
 
 
         # gestion NextUp
-        oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
-        oOutputParameterHandler.addParameter('sourceFav', sFav)    # source d'origine
+        oOutputParameterHandler.addParameter('sourceName', site)  # source d'origine
+        oOutputParameterHandler.addParameter('sourceFav', sFav)  # source d'origine
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
+        oOutputParameterHandler.addParameter('realHoster', oHoster.getRealHost())
 
         # gestion Lecture en cours
         oOutputParameterHandler.addParameter('movieUrl', movieUrl)
@@ -157,7 +158,7 @@ class cHosterGui:
         if not sHosterUrl:
             return False
 
-        
+
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
         sHosterUrl = sHosterUrl.split('?')[0]
@@ -178,6 +179,9 @@ class cHosterGui:
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 f = self.getHoster('alldebrid')
                 #mise a jour du nom
+                sRealHost = self.checkHoster(sHosterUrl, False)
+                if sRealHost:
+                    sHostName = sRealHost.getPluginIdentifier()
                 f.setRealHost(sHostName)
                 return f
 
@@ -185,6 +189,9 @@ class cHosterGui:
             if self.ADDON.getSetting('hoster_realdebrid_premium') == 'true':
                 f = self.getHoster('realdebrid')
                 #mise a jour du nom
+                sRealHost = self.checkHoster(sHosterUrl, False)
+                if sRealHost:
+                    sHostName = sRealHost.getPluginIdentifier()
                 f.setRealHost(sHostName)
                 return f
 
@@ -196,7 +203,7 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'uptostream', 'speedvid', 'netu', 'letsupload',
+                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'uptostream', 'speedvid', 'letsupload',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
@@ -204,9 +211,9 @@ class cHosterGui:
                             'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
+                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload']
+                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload', 'darkibox']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -221,6 +228,9 @@ class cHosterGui:
 
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
+
+        if ('vido' in sHostName):
+            return self.getHoster('vudeo')
 
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
@@ -298,11 +308,17 @@ class cHosterGui:
         if ('dood' in sHostName) or ('dooood' in sHostName):
             return self.getHoster('dood')
 
+        if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
+            return self.getHoster('dood')
+
         if ('voe' in sHostName):
             return self.getHoster('voe')
 
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
             return self.getHoster('allow_redirects')
+
+        if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName):
+            return self.getHoster('netu')
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
@@ -392,7 +408,7 @@ class cHosterGui:
                     from resources.lib.player import cPlayer
                     oPlayer = cPlayer()
 
-                    # sous titres ?
+                    # sous-titres ?
                     if len(aLink) > 2:
                         oPlayer.AddSubtitles(aLink[2])
 
