@@ -213,7 +213,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload']
+                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload', 'darkibox']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
