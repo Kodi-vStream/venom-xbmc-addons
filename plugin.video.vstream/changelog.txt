@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.6.7***
+- Alldebrid : Accès aux hosters qui ne sont pas pris en compte par alldebrid
+- Episodes : Enchainement des épisodes lorsque Alldebrid est actif
+
 *** 2.6.5***
 - alldebrid : Meilleur accès à son compte : liens, magnets, historique
 
