@@ -68,6 +68,8 @@ class UpNext:
         sParams = oOutputParameterHandler.getParameterAsUri()
 
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        sRealHoster = oInputParameterHandler.getValue('realHoster')
+
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
@@ -76,7 +78,7 @@ class UpNext:
             # sauvegarde des parametres d'appel
             oldParams = sys.argv[2]
 
-            sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sRes, sHosterIdentifier)
+            sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sRes, sRealHoster)
 
             # restauration des anciens params
             sys.argv[2] = oldParams
@@ -101,6 +103,7 @@ class UpNext:
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
+            oOutputParameterHandler.addParameter('realHoster', sRealHoster)
             oOutputParameterHandler.addParameter('sourceName', sSiteName)
             oOutputParameterHandler.addParameter('sFileName', sFileName)
             oOutputParameterHandler.addParameter('sTitle', sFileName)
@@ -224,7 +227,7 @@ class UpNext:
                 oHoster = cHosterGui().checkHoster(aParams['sHost'])
                 if not oHoster:
                     continue
-                hostName = oHoster.getPluginIdentifier()
+                hostName = oHoster.getRealHost()
                 if hostName != sHosterIdentifier:
                     continue
 

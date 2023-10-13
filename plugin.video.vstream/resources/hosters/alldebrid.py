@@ -10,15 +10,12 @@ from resources.lib.comaddon import VSlog
 
 
 class cHoster(iHoster):
+    
     def __init__(self):
         iHoster.__init__(self, 'alldebrid', 'Alldebrid', 'violet')
-        self.__sRealHost = ''
-
-    def setRealHost(self, host):
-        self.__sRealHost = "/" + host
-
+    
     def setDisplayName(self, displayName):
-        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + self.__sRealHost + '[/COLOR]'
+        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + "/" + self.getRealHost() + '[/COLOR]'
 
     def _getMediaLinkForGuest(self):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
@@ -32,12 +29,12 @@ class cHoster(iHoster):
         sHtmlContent = json.loads(oRequest.request())
 
         if 'error' in sHtmlContent:
-            if sHtmlContent['error']['code'] == 'LINK_HOST_NOT_SUPPORTED':
+            if sHtmlContent['error']['code'] in ('LINK_HOST_NOT_SUPPORTED', 'LINK_DOWN'):
                 # si alldebrid ne prend pas en charge ce type de lien, on retourne le lien pour utiliser un autre hoster
                 return False, self._url
             else:
                 VSlog('Hoster Alldebrid - Error: ' + sHtmlContent["error"]['code'])
-                return False, False
+                return False, self._url   # quelque soit l'erreur, on retourne le lien pour utiliser un autre hoster
 
         api_call = HostURL = sHtmlContent["data"]["link"]
         try:

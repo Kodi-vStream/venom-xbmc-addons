@@ -182,9 +182,6 @@ class cUtil:
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(1), '')
-            self.__Episode = ('%02d' % int(string.group(2)))
-            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
-            self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
         return sTitle, False

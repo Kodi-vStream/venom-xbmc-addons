@@ -263,7 +263,7 @@ class PasteContent:
     DIRECTOR = -1   # (optionnel) - Réalisateur au format id : nom
     CAST = -1       # (optionnel) - Acteurs au format id : nom
     NETWORK = -1    # (optionnel) - Diffuseur au format id : nom
-    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'
+#    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'
     movies = False  # Liste des liens, avec épisodes pour les séries
     URLS = -1       # Liste des liens, avec épisodes pour les séries
     chiffrer = None
@@ -339,6 +339,7 @@ class PasteContent:
 
         # Calcul des index de chaque champ
         self.PASTE = 0
+        hebergeur = None
         for champ in entete:
             champ = champ.strip()
 
@@ -346,7 +347,7 @@ class PasteContent:
                 hebergeur = champ.split('=')
                 champ = 'URLS'
                 if len(hebergeur) > 1:
-                    self.HEBERGEUR = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
+                    hebergeur = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
             if champ in dir(self):
                 setattr(self, champ, self.PASTE)
             self.PASTE += 1
@@ -363,6 +364,11 @@ class PasteContent:
         for k in lines[1:]:
             line = k.split(";")
             line.append(pasteBin)
+            if hebergeur:
+                if sMedia in ('film', 'divers'):
+                    line[self.URLS] = hebergeur + line[self.URLS]
+                else:    # series/ anime, pluisieurs liens
+                    line[self.URLS] = line[self.URLS].replace(":'", ":'" + hebergeur)
             links.append(line)
 
         # renouveler le contenu d'un paste
@@ -433,14 +439,14 @@ class PasteContent:
             progress_.VSclose(progress_)
 
     def resolveLink(self, pasteBin, link):
-        # if not self.movies:
-        #     return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
         uptobox = False
-        if 'uptobox' in self.HEBERGEUR or 'uptobox' in link:
+        if 'uptobox' in link:
             uptobox = True
-        elif not self.HEBERGEUR and not 'http' in link:
-            uptobox = True  # si rien de précisé, on part sur du uptobox 
+        # elif not 'http' in link:
+        #     uptobox = True  # si rien de précisé, on part sur du uptobox
+        
+        # ces liens sont chiffrés, il faut les déchiffrer
         if uptobox:
             # Recherche d'un compte premium valide
             from resources.lib.handler.premiumHandler import cPremiumHandler
@@ -471,7 +477,7 @@ class PasteContent:
                 dialog().VSinfo('Certains liens ne sont pas disponibles')
                 return [(None, None, None)]
 
-        return [(self.HEBERGEUR+link, 'ori', 'ori')]
+        return [(link, 'ori', 'ori')]
 
     def _resolveLink(self, pasteBin, link):
 
@@ -2568,7 +2574,7 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+                    resolvedLinks = [(link + '|' + movie[pbContent.PASTE], "ori", "ori")]
 #                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     
                     for url, res, lang in resolvedLinks:
