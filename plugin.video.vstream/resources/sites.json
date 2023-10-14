@@ -334,7 +334,7 @@
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://www.wiflix.voto/"
         },
         "youtitou_com": {
