@@ -16,7 +16,7 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         self.orig_image = BytesIO(image)
         self.width = width
         self.height = height
-        self.temp_file = '' #self.create_temp_image()
+        self.temp_file = self.create_temp_image()
         self.border_img = None
         self.frame_x = (self.getWidth() - self.width) // 2  # Centered horizontally
         self.frame_y = (self.getHeight() - self.height) // 2  # Centered vertically
@@ -37,6 +37,7 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         downloaded_image = xbmcvfs.File(filePath, 'wb')
         downloaded_image.write(self.orig_image.read())
         downloaded_image.close()
+        return ""
         
         #temp_file = NamedTemporaryFile(suffix=".jpg")
         #self.orig_image.seek(0)
