@@ -360,7 +360,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'span>Page .+?de (\d+).+?href="([^"]+)"><i id="nextpagination'
+    sPattern = 'span>Page.+? de (\d+).+?current.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sNumberMax = aResult[1][0][0]
