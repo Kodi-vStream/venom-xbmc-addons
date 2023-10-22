@@ -43,6 +43,10 @@ class cHoster(iHoster):
 
     def setUrl(self, url):
         host = self.__getHost(url)
+
+        if '&autoplay=' in url:
+            url=url.split('&')[:-1][0]
+        
         if '=' in url:
             id  = url.split('=')[-1]
         else:
