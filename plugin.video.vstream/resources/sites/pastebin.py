@@ -348,6 +348,8 @@ class PasteContent:
                 champ = 'URLS'
                 if len(hebergeur) > 1:
                     hebergeur = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
+                else:
+                    hebergeur = None
             if champ in dir(self):
                 setattr(self, champ, self.PASTE)
             self.PASTE += 1
@@ -440,7 +442,7 @@ class PasteContent:
 
     def resolveLink(self, pasteBin, link):
 
-        uptobox = False
+        uptobox = True
         if 'uptobox' in link:
             uptobox = True
         # elif not 'http' in link:
@@ -469,7 +471,7 @@ class PasteContent:
                             self.keyReald = None
 
             # Un compte avec un des trois débrideurs
-            if not links and (self.keyUpto or self.keyAlld or self.keyReald):
+            if not links:# and (self.keyUpto or self.keyAlld or self.keyReald):
                 links = self._resolveLink(pasteBin, link)
             if links:
                 return links
@@ -491,6 +493,11 @@ class PasteContent:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyAlld, 0)
         elif self.keyReald:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, 1)
+        elif self.movies:
+            links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, -1)
+        else:
+            links = [(link, "ori", "ori")]
+            status = "ok"
 
         if status != 'ok':  # Certains liens en erreur
             VSlog('Erreur : ' + str(status))
@@ -2430,12 +2437,12 @@ def showHoster():
     from resources.lib.gui.hoster import cHosterGui
     oHosterGui = cHosterGui()
     oGui = cGui()
+    pbContent = PasteContent()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    link, paste = oInputParameterHandler.getValue('siteUrl').split('|')
+    link, paste, pbContent.movies = oInputParameterHandler.getValue('siteUrl').split('|')
     hosterLienDirect = oHosterGui.getHoster('lien_direct')
 
-    pbContent = PasteContent()
     resolvedLinks = pbContent.resolveLink(paste, link)
     for sHosterUrl, res, lang in resolvedLinks:
         if sHosterUrl:
@@ -2574,7 +2581,7 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = [(link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+                    resolvedLinks = [(link + '|' + movie[pbContent.PASTE] + '|' + ('TRUE' if pbContent.movies else 'FALSE'), "ori", "ori")]
 #                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     
                     for url, res, lang in resolvedLinks:
