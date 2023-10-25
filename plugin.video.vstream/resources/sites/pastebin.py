@@ -2406,6 +2406,8 @@ def showEpisodesLinks(siteUrl=''):
 
 def showHosters():
     oGui = cGui()
+    from resources.lib.gui.hoster import cHosterGui
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -2427,9 +2429,16 @@ def showHosters():
             if lang:
                 sDisplayName += ' (%s)' % lang
     
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
+            link, paste, movies = sUrl.split('|')
+            if movies == 'FALSE':
+                oHoster = oHosterGui.checkHoster(link)
+                oHoster.setDisplayName(sDisplayName)
+                oHoster.setFileName(sTitle)
+                oHosterGui.showHoster(oGui, oHoster, link, '')
+            else:
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
