@@ -367,10 +367,15 @@ class PasteContent:
             line = k.split(";")
             line.append(pasteBin)
             if hebergeur:
+                link = line[self.URLS]
                 if sMedia in ('film', 'divers'):
-                    line[self.URLS] = hebergeur + line[self.URLS]
+                    if "'" in link:
+                        link = link.replace("['", "['" + hebergeur)
+                        line[self.URLS] = link.replace(", '", ", '" + hebergeur)
+                    else:
+                        line[self.URLS] = hebergeur + link
                 else:    # series/ anime, pluisieurs liens
-                    line[self.URLS] = line[self.URLS].replace(":'", ":'" + hebergeur)
+                    line[self.URLS] = link.replace(":'", ":'" + hebergeur)
             links.append(line)
 
         # renouveler le contenu d'un paste
@@ -2321,6 +2326,10 @@ def showSerieSaisons():
                     continue
 
             numSaison = serie[pbContent.SAISON].strip()
+            
+            if numSaison.isdigit():
+                numSaison = '%02d' % int(numSaison)
+            
             if numSaison not in saisons:
                 saisons[numSaison] = set()
 
@@ -2432,9 +2441,10 @@ def showHosters():
             link, paste, movies = sUrl.split('|')
             if movies == 'FALSE':
                 oHoster = oHosterGui.checkHoster(link)
-                oHoster.setDisplayName(sDisplayName)
-                oHoster.setFileName(sTitle)
-                oHosterGui.showHoster(oGui, oHoster, link, '')
+                if oHoster:
+                    oHoster.setDisplayName(sDisplayName)
+                    oHoster.setFileName(sTitle)
+                    oHosterGui.showHoster(oGui, oHoster, link, '')
             else:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -2515,12 +2525,6 @@ def getHosterList(siteUrl):
                         continue
                     found = True
 
-            # Filtrage par saison
-            if searchSaison and pbContent.SAISON >= 0:
-                sSaisons = movie[pbContent.SAISON].strip()
-                if sSaisons and searchSaison != sSaisons:
-                    continue
-
             # sinon, recherche par titre/année
             if not found:
                 # Filtrage par années
@@ -2533,6 +2537,15 @@ def getHosterList(siteUrl):
                 sTitle = movie[pbContent.TITLE].strip()
                 if sTitle != searchTitle:
                     continue
+
+            # Filtrage par saison
+            if searchSaison and pbContent.SAISON >= 0:
+                sSaisons = movie[pbContent.SAISON].strip()
+                if sSaisons:
+                    if sSaisons.isdigit:
+                        sSaisons = '%02d' % int(sSaisons)
+                    if searchSaison != sSaisons:
+                        continue
 
             links = movie[pbContent.URLS]
 
