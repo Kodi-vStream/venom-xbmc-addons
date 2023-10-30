@@ -240,6 +240,11 @@
             "cloudflare": "True",
             "url": "https://ww1.series-en-streaming.xyz/"
         },
+        "sitedarkibox": {
+            "label": "darkiBox",
+            "active": "True",
+            "url": "https://darkibox.com/"
+        },
         "siteonefichier": {
             "label": "Mon Compte 1Fichier",
             "active": "True",
