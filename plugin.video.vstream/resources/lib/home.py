@@ -401,6 +401,9 @@ class cHome:
         oGui.addDir('alldebrid', 'load', 'AllDebrid', 'sites/alldebrid.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('sitedarkibox', 'load', 'darkiBox', 'sites/sitedarkibox.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
         oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
