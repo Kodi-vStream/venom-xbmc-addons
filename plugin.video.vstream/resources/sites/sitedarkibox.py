@@ -184,8 +184,8 @@ def showFile(sPath='', sSearch=''):
 
         # nécessite un débrideur
         sDisplayTitle = sTitle
-        if not file['canplay']:
-            sDisplayTitle += '[COLOR violet] *[/COLOR]' 
+        # if not file['canplay']:
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
 
         sHosterUrl = URL_MAIN + file['file_code']
 
@@ -487,8 +487,8 @@ def showMovies(oGui, content):
             sDisplayTitle += ' (%s)' % sLang
 
         # nécessite un débrideur
-        if not file['canplay']:
-            sDisplayTitle += '[COLOR violet] *[/COLOR]' 
+        # if not file['canplay']:
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -691,8 +691,8 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
             sDisplayTitle += '(%s)' % sLang
         
         # nécessite un débrideur
-        if not file['canplay']:
-            sDisplayTitle += '[COLOR violet] *[/COLOR]' 
+        # if not file['canplay']:
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
 
         sHosterUrl = URL_MAIN + file['file_code']
         
