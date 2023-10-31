@@ -223,7 +223,7 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '<a href="([^"]+)"><div class="thumb"><div class="th-in"><div class="th-img img-resp-v"><img class=" ls-is-cached lazyloaded" src="([^"]+)" alt="\d+ Season"><figcaption>(Saison \d+)<\/figcaption>'
+    sPattern = '<a href="([^"]+)"> *<div class="thumb"> *<div class="th-in"> *<div class="th-img img-resp-v"> *<img class=" ls-is-cached lazyloaded" src="([^"]+)" alt="\d+ Season"> *<figcaption>(Saison \d+)<\/figcaption>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
