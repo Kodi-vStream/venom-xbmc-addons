@@ -208,7 +208,7 @@ class cHosterGui:
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
-                            'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
+                            'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
@@ -299,6 +299,9 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
+        if ('upvid' in sHostName) or ('opvid' in sHostName):
+            return self.getHoster('upvid')
+            
         if ('estream' in sHostName) and not ('widestream' in sHostName):
             return self.getHoster('estream')
 
