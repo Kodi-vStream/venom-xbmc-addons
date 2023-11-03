@@ -13,7 +13,6 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
 
-    # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -175,6 +174,14 @@ class cHosterGui:
             sHostName = sHosterUrl
 
         if debrid: # premiere tentative avec debrideur, si on revient ici, ce sera pour tester sans debrideur
+
+# NON, Il faut passer par alldebrid car darkibox est bloqué dans certains pays
+            # Priorité au compte darkibox pour les liens darkino
+            # if self.ADDON.getSetting('hoster_darkibox_premium') == 'true':
+            #     sRealHost = self.checkHoster(sHosterUrl, False)
+            #     if sRealHost and 'darkibox' in sRealHost.getPluginIdentifier():
+            #         return sRealHost
+
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 f = self.getHoster('alldebrid')
