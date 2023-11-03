@@ -34,7 +34,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Derniers ajouts)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_BOX[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_BOX[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
@@ -88,7 +88,6 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
-        VSlog(URL_MAIN + 'search')
         bvalid, stoken, scookie = getTokens()
         if bvalid:
             #oUtil = cUtil()
@@ -183,7 +182,11 @@ def showHosters():
             sDataUrl = aEntry[0]
             sHost = aEntry[1].capitalize().strip()
 
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, oHoster.getPluginIdentifier())
             lien = URL_MAIN + "ll/captcha?hash=" + sDataUrl
 
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
