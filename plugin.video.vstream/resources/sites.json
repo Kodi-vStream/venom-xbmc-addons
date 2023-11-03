@@ -343,6 +343,12 @@
             "cloudflare": "False",
             "url": "https://www.wiflix.voto/"
         },
+        "wilifilm": {
+            "label": "Wilifilm",
+            "active": "True",
+            "cloudflare": "False",
+            "url": "https://wilifilm.com/"
+        },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
             "active": "True",
