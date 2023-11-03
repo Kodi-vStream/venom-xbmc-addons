@@ -308,7 +308,7 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('dood' in sHostName) or ('dooood' in sHostName):
+        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName):
             return self.getHoster('dood')
 
         if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
