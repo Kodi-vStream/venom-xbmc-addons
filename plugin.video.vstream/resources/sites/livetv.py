@@ -70,7 +70,12 @@ def showLive():
                 break
 
             sUrl3 = URL_MAIN + aEntry[0]
-            sTitle2 = aEntry[1] + ' ' + aEntry[2]
+            heure = int (aEntry[2][0:2])
+            heure -= 1  # heure d'hiver
+            if heure == -1:
+                heure = 23
+            sTitle2 = '%s %d%s' % (aEntry[1], heure, aEntry[2][2:])
+            sDisplayTitle = sTitle2
 
             try:
                 sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
@@ -85,7 +90,7 @@ def showLive():
 
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sTitle2, 'sport.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -188,7 +193,13 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
                     sDateTime = re.findall('(\d+) ([\S]+).+?(\d+)(:\d+)', str(sDate))
                     if sDateTime:
                         sMonth = mois.index(sDateTime[0][1])
-                        sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, int(sDateTime[0][2]), sDateTime[0][3])
+                        heure = int(sDateTime[0][2])
+                        
+                        heure -=1   # heure d'hiver
+                        if heure == -1:
+                            heure = 23
+                        
+                        sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, heure, sDateTime[0][3])
                 except Exception as e:
                     pass
 
@@ -715,8 +726,8 @@ def showHosters():  # affiche les videos disponible du live
                 # oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent2 = oRequestHandler.request()
-                
-                sPattern2 = 'var r = "player="\+embedded\+"&e=([^"]+)'
+
+                sPattern2 = 'var r = embedded\+"([^"]+)'
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     url2 = 'https://voodc.com/player.php?player=d&e=' + aResult[0]
@@ -1061,8 +1072,8 @@ def showHosters():  # affiche les videos disponible du live
 
             urlApi = 'https://api.livesports24.online/gethost'
             sHtmlContent2 = ''
-            channel = url.split('/')[4]
             try:
+                channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
@@ -1078,7 +1089,6 @@ def showHosters():  # affiche les videos disponible du live
                     host = aResult[0]
             else:
                 urlApi = 'https://api.livesports24.online:8443/gethost'
-                channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
