@@ -156,9 +156,16 @@ def showMovies():
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sDate = aEntry[0]
             sTitle = aEntry[1].strip()
-            sDisplayTitle = sDate + ' - ' + sTitle.strip()
+
+            # heure d'été/hiver
+            sDate = aEntry[0]
+            heure = int(sDate[0:2])
+            heure += 1
+            if heure == 24:
+                heure = 0
+            sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.strip())
+
             sTitle = sDate + ' ' + sTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -180,19 +187,22 @@ def showMoviesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '%s' % sTitle
+    sPattern = sTitle
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br/')
 
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    # on enleve l'heure qui peut être fausse, heure d'été/hiver
+    sTitle = sTitle[5:]
+    
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sDisplayTitle = sTitle = aEntry[1].strip()
+            sDisplayTitle = sTitle + ' - ' + aEntry[1].strip()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

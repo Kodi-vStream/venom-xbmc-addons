@@ -145,8 +145,16 @@ def showMovies():
         for aEntry in aResult[1]:
             sDate = aEntry[1]
             sTitle = aEntry[2]
-            sDisplayTitle = sDate + ' - ' + sTitle.strip()
+            
             sTitle = sDate + ' ' + sTitle
+            
+            # heure d'été/hiver
+            heure = int(sDate[0:2])
+            heure += 1
+            if heure == 24:
+                heure = 0
+            sDate = '%02d:%s' % (heure, sDate[3:])
+            sDisplayTitle = sDate + ' - ' + aEntry[2].strip()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -180,6 +188,9 @@ def showHoster():
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    # on enleve l'heure qui peut être fausse, heure d'été/hiver
+    sTitle = sTitle[5:]
+    
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
@@ -214,7 +225,6 @@ def showLink():
     bvalid, shosterurl = getHosterIframe(sUrl, siterefer)
     if bvalid:
         sHosterUrl = shosterurl
-
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()

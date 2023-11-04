@@ -160,7 +160,7 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
+            "active": "False",
             "url": "https://livetv724.me/"
         },
         "lsdb": {
