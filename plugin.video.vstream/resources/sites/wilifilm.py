@@ -142,6 +142,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
+    if not sSearch:
         oGui.setEndOfDirectory()
 
 
