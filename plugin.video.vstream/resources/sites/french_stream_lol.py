@@ -318,7 +318,7 @@ def showEpisodes():
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
-    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?data-rel="([^"]+).+?</i>([^<]+)'
+    sPattern = '<div class="episode-title">([^:]+).+?episode=.+?-([^"]+).+?data-url.+?"([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sLang = ''
@@ -328,29 +328,39 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                sLang = aEntry[0].replace('-tab', '').replace('"', '')
+                sLang = aEntry[1].replace('-tab', '').replace('"', '')
                 bFind = True
+                sEpisode = aEntry[0]
 
-            if bFind and aEntry[1]:
-                sFirst_Url = aEntry[1]
-                sRel_Episode = aEntry[2]
-                if sRel_Episode == "ABCDE":
-                    sEpisode = 'Episode 2'
-                else:
-                    sEpisode = aEntry[3]
+            if bFind and aEntry[0]:
+                sFirst_Url = aEntry[2]
+                if not 'http' in sFirst_Url :
+                    continue
+            
+                sHoster = re.findall('https:\/\/([^.]+)', sFirst_Url) 
+                sHoster = sHoster[0]
+                oHoster = cHosterGui().checkHoster(sHoster)
+            if not oHoster:
+                continue 
+                
+                #sRel_Episode = aEntry[2]
+                #if sRel_Episode == "ABCDE":
+                    #sEpisode = 'Episode 2'
+                #else:
+                    #sEpisode = aEntry[3]
 
-                sTitle = sMovieTitle + ' ' + sEpisode
-                sDisplayTitle = sTitle + ' (' + sLang + ')'
+            sTitle = sMovieTitle + ' ' + sEpisode
+            sDisplayTitle = ' %s (%s) [COLOR skyblue]%s[/COLOR]' % (sTitle,  sLang,  sHoster )
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oOutputParameterHandler.addParameter('sLang', sLang)
-                oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
-                oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            #oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
+            oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

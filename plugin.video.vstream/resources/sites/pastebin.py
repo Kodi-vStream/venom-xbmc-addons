@@ -263,7 +263,7 @@ class PasteContent:
     DIRECTOR = -1   # (optionnel) - Réalisateur au format id : nom
     CAST = -1       # (optionnel) - Acteurs au format id : nom
     NETWORK = -1    # (optionnel) - Diffuseur au format id : nom
-    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'
+#    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'
     movies = False  # Liste des liens, avec épisodes pour les séries
     URLS = -1       # Liste des liens, avec épisodes pour les séries
     chiffrer = None
@@ -339,6 +339,7 @@ class PasteContent:
 
         # Calcul des index de chaque champ
         self.PASTE = 0
+        hebergeur = None
         for champ in entete:
             champ = champ.strip()
 
@@ -346,7 +347,9 @@ class PasteContent:
                 hebergeur = champ.split('=')
                 champ = 'URLS'
                 if len(hebergeur) > 1:
-                    self.HEBERGEUR = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
+                    hebergeur = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
+                else:
+                    hebergeur = None
             if champ in dir(self):
                 setattr(self, champ, self.PASTE)
             self.PASTE += 1
@@ -363,6 +366,16 @@ class PasteContent:
         for k in lines[1:]:
             line = k.split(";")
             line.append(pasteBin)
+            if hebergeur:
+                link = line[self.URLS]
+                if sMedia in ('film', 'divers'):
+                    if "'" in link:
+                        link = link.replace("['", "['" + hebergeur)
+                        line[self.URLS] = link.replace(", '", ", '" + hebergeur)
+                    else:
+                        line[self.URLS] = hebergeur + link
+                else:    # series/ anime, pluisieurs liens
+                    line[self.URLS] = link.replace(":'", ":'" + hebergeur)
             links.append(line)
 
         # renouveler le contenu d'un paste
@@ -433,14 +446,14 @@ class PasteContent:
             progress_.VSclose(progress_)
 
     def resolveLink(self, pasteBin, link):
-        # if not self.movies:
-        #     return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
-        uptobox = False
-        if 'uptobox' in self.HEBERGEUR or 'uptobox' in link:
+        uptobox = True
+        if 'uptobox' in link:
             uptobox = True
-        elif not self.HEBERGEUR and not 'http' in link:
-            uptobox = True  # si rien de précisé, on part sur du uptobox 
+        # elif not 'http' in link:
+        #     uptobox = True  # si rien de précisé, on part sur du uptobox
+        
+        # ces liens sont chiffrés, il faut les déchiffrer
         if uptobox:
             # Recherche d'un compte premium valide
             from resources.lib.handler.premiumHandler import cPremiumHandler
@@ -463,7 +476,7 @@ class PasteContent:
                             self.keyReald = None
 
             # Un compte avec un des trois débrideurs
-            if not links and (self.keyUpto or self.keyAlld or self.keyReald):
+            if not links:# and (self.keyUpto or self.keyAlld or self.keyReald):
                 links = self._resolveLink(pasteBin, link)
             if links:
                 return links
@@ -471,7 +484,7 @@ class PasteContent:
                 dialog().VSinfo('Certains liens ne sont pas disponibles')
                 return [(None, None, None)]
 
-        return [(self.HEBERGEUR+link, 'ori', 'ori')]
+        return [(link, 'ori', 'ori')]
 
     def _resolveLink(self, pasteBin, link):
 
@@ -485,6 +498,11 @@ class PasteContent:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyAlld, 0)
         elif self.keyReald:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, 1)
+        elif self.movies:
+            links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, -1)
+        else:
+            links = [(link, "ori", "ori")]
+            status = "ok"
 
         if status != 'ok':  # Certains liens en erreur
             VSlog('Erreur : ' + str(status))
@@ -2308,6 +2326,10 @@ def showSerieSaisons():
                     continue
 
             numSaison = serie[pbContent.SAISON].strip()
+            
+            if numSaison.isdigit():
+                numSaison = '%02d' % int(numSaison)
+            
             if numSaison not in saisons:
                 saisons[numSaison] = set()
 
@@ -2393,6 +2415,8 @@ def showEpisodesLinks(siteUrl=''):
 
 def showHosters():
     oGui = cGui()
+    from resources.lib.gui.hoster import cHosterGui
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -2414,9 +2438,17 @@ def showHosters():
             if lang:
                 sDisplayName += ' (%s)' % lang
     
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
+            link, paste, movies = sUrl.split('|')
+            if movies == 'FALSE':
+                oHoster = oHosterGui.checkHoster(link)
+                if oHoster:
+                    oHoster.setDisplayName(sDisplayName)
+                    oHoster.setFileName(sTitle)
+                    oHosterGui.showHoster(oGui, oHoster, link, '')
+            else:
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -2424,12 +2456,12 @@ def showHoster():
     from resources.lib.gui.hoster import cHosterGui
     oHosterGui = cHosterGui()
     oGui = cGui()
+    pbContent = PasteContent()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    link, paste = oInputParameterHandler.getValue('siteUrl').split('|')
+    link, paste, pbContent.movies = oInputParameterHandler.getValue('siteUrl').split('|')
     hosterLienDirect = oHosterGui.getHoster('lien_direct')
 
-    pbContent = PasteContent()
     resolvedLinks = pbContent.resolveLink(paste, link)
     for sHosterUrl, res, lang in resolvedLinks:
         if sHosterUrl:
@@ -2493,12 +2525,6 @@ def getHosterList(siteUrl):
                         continue
                     found = True
 
-            # Filtrage par saison
-            if searchSaison and pbContent.SAISON >= 0:
-                sSaisons = movie[pbContent.SAISON].strip()
-                if sSaisons and searchSaison != sSaisons:
-                    continue
-
             # sinon, recherche par titre/année
             if not found:
                 # Filtrage par années
@@ -2511,6 +2537,15 @@ def getHosterList(siteUrl):
                 sTitle = movie[pbContent.TITLE].strip()
                 if sTitle != searchTitle:
                     continue
+
+            # Filtrage par saison
+            if searchSaison and pbContent.SAISON >= 0:
+                sSaisons = movie[pbContent.SAISON].strip()
+                if sSaisons:
+                    if sSaisons.isdigit:
+                        sSaisons = '%02d' % int(sSaisons)
+                    if searchSaison != sSaisons:
+                        continue
 
             links = movie[pbContent.URLS]
 
@@ -2568,7 +2603,7 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = [(pbContent.HEBERGEUR + link + '|' + movie[pbContent.PASTE], "ori", "ori")]
+                    resolvedLinks = [(link + '|' + movie[pbContent.PASTE] + '|' + ('TRUE' if pbContent.movies else 'FALSE'), "ori", "ori")]
 #                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     
                     for url, res, lang in resolvedLinks:

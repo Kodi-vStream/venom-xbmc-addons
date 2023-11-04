@@ -12,6 +12,13 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.7.0***
+- Darkibox : Prise en charge du compte premium
+- Darkibox : Pouvoir parcourir son compte
+- Pastebin : Mixer des hebergeurs différents parmi les codes d'un même index
+- Netu : Interface pour résoudre l'accès à l'hébergeur
+
+
 *** 2.6.7***
 - Alldebrid : Accès aux hosters qui ne sont pas pris en compte par alldebrid
 - Episodes : Enchainement des épisodes lorsque Alldebrid est actif

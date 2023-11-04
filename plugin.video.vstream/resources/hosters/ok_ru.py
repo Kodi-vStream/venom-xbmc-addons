@@ -2,8 +2,10 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 
+py3 = True
 try:  # Python 2
     import urllib2
+    py3 = False
 except ImportError:  # Python 3
     import urllib.request as urllib2
 
@@ -34,11 +36,12 @@ class cHoster(iHoster):
         sHost = v[0]
         web_url = 'http://' + sHost + '/videoembed/' + sId
 
-        HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+        # HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
+        #            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
         St=requests.Session()
         sHtmlContent = St.get(web_url).content.decode('utf-8')
+#        sHtmlContent = St.get(web_url, headers = HEADERS).content.decode('utf-8')
         oParser = cParser()
 
         sHtmlContent = oParser.abParse(sHtmlContent, 'data-options=', '" data-player-container', 14)
@@ -50,9 +53,12 @@ class cHoster(iHoster):
         if page:
             url = []
             qua = []
+            numLien = 1
             for x in page['videos']:
                 url.append(x['url'])
-                qua.append(x['name'])
+#                qua.append(x['name'])
+                qua.append('Lien %d' % numLien)
+                numLien += 1
 
             # Si au moins 1 url
             if url:
@@ -60,7 +66,8 @@ class cHoster(iHoster):
                 api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
-            api_call = api_call + '|Referer=' + self._url
+            if py3:     # pour le support de inputstream
+                api_call = api_call.replace('&ct=0', '&ct=6')
             return True, api_call
 
         return False, False

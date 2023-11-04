@@ -145,8 +145,16 @@ def showMovies():
         for aEntry in aResult[1]:
             sDate = aEntry[1]
             sTitle = aEntry[2]
-            sDisplayTitle = sDate + ' - ' + sTitle.strip()
+            
             sTitle = sDate + ' ' + sTitle
+            
+            # heure d'été/hiver
+            heure = int(sDate[0:2])
+            heure += 1
+            if heure == 24:
+                heure = 0
+            sDate = '%02d:%s' % (heure, sDate[3:])
+            sDisplayTitle = sDate + ' - ' + aEntry[2].strip()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -180,6 +188,9 @@ def showHoster():
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    # on enleve l'heure qui peut être fausse, heure d'été/hiver
+    sTitle = sTitle[5:]
+    
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
@@ -214,7 +225,6 @@ def showLink():
     bvalid, shosterurl = getHosterIframe(sUrl, siterefer)
     if bvalid:
         sHosterUrl = shosterurl
-
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
@@ -253,15 +263,16 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         import base64
-        code = aResult[0]
-        try:
-            if isMatrix():
-                code = base64.b64decode(code).decode('ascii')
-            else:
-                code = base64.b64decode(code)
-            return True, code + '|Referer=' + url
-        except Exception as e:
-            pass
+        for code in aResult:
+            try:
+                if isMatrix():
+                    code = base64.b64decode(code).decode('ascii')
+                else:
+                    code = base64.b64decode(code)
+                if '.m3u8' in code:
+                    return True, code + '|Referer=' + url
+            except Exception as e:
+                pass
 
     referer = url
     sPattern = '<iframe src=["\']([^"\']+)["\']'
@@ -278,6 +289,17 @@ def getHosterIframe(url, referer):
             if b:
                 return True, url
 
+    sPattern = 'player.load\({source: (.+?)\('
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        func = aResult[0]
+        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+        aResult = re.findall(sPattern, sHtmlContent)
+        if aResult:
+            referer = url
+            sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
+            return True, sHosterUrl + '|referer=' + referer
+
     sPattern = ';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -292,6 +314,14 @@ def getHosterIframe(url, referer):
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
         sHosterUrl = sHosterUrl.replace('index', 'mono')
+        return True, sHosterUrl + '|referer=' + referer
+
+    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
         return True, sHosterUrl + '|referer=' + referer
 
     return False, False

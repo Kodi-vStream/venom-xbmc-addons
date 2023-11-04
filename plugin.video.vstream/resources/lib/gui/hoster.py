@@ -13,7 +13,6 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
 
-    # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -175,6 +174,14 @@ class cHosterGui:
             sHostName = sHosterUrl
 
         if debrid: # premiere tentative avec debrideur, si on revient ici, ce sera pour tester sans debrideur
+
+# NON, Il faut passer par alldebrid car darkibox est bloqué dans certains pays
+            # Priorité au compte darkibox pour les liens darkino
+            # if self.ADDON.getSetting('hoster_darkibox_premium') == 'true':
+            #     sRealHost = self.checkHoster(sHosterUrl, False)
+            #     if sRealHost and 'darkibox' in sRealHost.getPluginIdentifier():
+            #         return sRealHost
+
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 f = self.getHoster('alldebrid')
@@ -208,7 +215,7 @@ class cHosterGui:
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
-                            'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
+                            'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
@@ -299,13 +306,16 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
+        if ('upvid' in sHostName) or ('opvid' in sHostName):
+            return self.getHoster('upvid')
+            
         if ('estream' in sHostName) and not ('widestream' in sHostName):
             return self.getHoster('estream')
 
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('dood' in sHostName) or ('dooood' in sHostName):
+        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName):
             return self.getHoster('dood')
 
         if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
@@ -317,7 +327,7 @@ class cHosterGui:
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
             return self.getHoster('allow_redirects')
 
-        if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName):
+        if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
             return self.getHoster('netu')
 
         # frenchvid et clone

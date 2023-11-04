@@ -26,7 +26,7 @@
         },
         "bd_streams": {
             "label": "BD STREAMS",
-            "active": "True",
+            "active": "False",
             "url": "https://www.bd-streams.tk/"
         },
         "buzzmonclick_com": {
@@ -42,7 +42,7 @@
         "cinemay_cc": {
             "label": "Cinemay_cc",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -67,7 +67,7 @@
         },
         "enstream": {
             "label": "EnStream",
-            "active": "True",
+            "active": "False",
             "url": "https://wvw.enstream.cam/"
         },
         "extreme_down": {
@@ -129,7 +129,7 @@
         },
         "hds_fm": {
             "label": "Hds-fm",
-            "active": "True",
+            "active": "False",
             "url": "https://www1.hds.fm/"
         },
         "ianime": {
@@ -140,7 +140,7 @@
         "illimitestreaming": {
             "label": "Illimitestreaming",
             "active": "False",
-            "url": "https://www.illimitestreaming.top/"
+            "url": "https://fr.illimitestreaming.top/"
         },
         "k_streaming": {
             "label": "K_Streaming",
@@ -151,7 +151,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://topkiv.com/"
+            "url": "https://iramiv.com/"
         },
         "les_docus": {
             "label": "Les docus",
@@ -160,8 +160,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
-            "url": "http://62.182.83.65/"
+            "active": "False",
+            "url": "https://livetv724.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -172,7 +172,7 @@
             "label": "Mes Films",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://mesfilms.sbs/"
+            "url": "https://mesfilms.top/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -236,9 +236,14 @@
         },
         "series_en_streaming": {
             "label": "Series en Streaming",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://ww1.series-en-streaming.xyz/"
+        },
+        "sitedarkibox": {
+            "label": "darkiBox",
+            "active": "True",
+            "url": "https://darkibox.com/"
         },
         "siteonefichier": {
             "label": "Mon Compte 1Fichier",
@@ -247,7 +252,7 @@
         },
         "siteuptobox": {
             "label": "Mon Compte Uptobox",
-            "active": "True",
+            "active": "False",
             "url": "https://uptobox.link/"
         },
         "skyanimes": {
@@ -257,24 +262,25 @@
         },
         "streaming_series": {
             "label": "Streaming-Series",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://streaming-series.la/"
         },
         "streamingdivx": {
             "label": "StreamingDivx",
-            "active": "True",
+            "active": "False",
             "url": "https://www.streamingdivx.tel/"
         },
         "streaminz": {
             "label": "Streaminz",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://streaminze.org/"
         },
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport.ru/"
+            "url": "https://www.streamonsport4.sbs/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -289,7 +295,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v2.toonanime.tv/"
+            "url": "https://v5.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -304,7 +310,7 @@
         "vfilms": {
             "label": "VFilms",
             "active": "True",
-            "url": "https://wwvv.vfilms.live/"
+            "url": "https://www.vfilms.xyz/"
         },
         "viki_com": {
             "label": "Viki",
@@ -329,13 +335,19 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.rocks/"
+            "url": "https://www.wawacity.kim/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://www.wiflix.voto/"
+        },
+        "wilifilm": {
+            "label": "Wilifilm",
+            "active": "True",
+            "cloudflare": "False",
+            "url": "https://wilifilm.com/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
