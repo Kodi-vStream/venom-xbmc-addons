@@ -118,7 +118,7 @@ class cHoster(iHoster):
         api_call = aResult[1][0]
 
         if api_call:
-            headers4 = {'user-agent': UA
+            headers4 = {'user-agent': UA,
                         'Referer': self._url
                         }
             return True, api_call + '|' + urlencode(headers4)
