@@ -42,7 +42,7 @@
         "cinemay_cc": {
             "label": "Cinemay_cc",
             "active": "True",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -160,8 +160,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "False",
-            "url": "https://livetv724.me/"
+            "active": "True",
+            "url": "https://livetv.sx/"
         },
         "lsdb": {
             "label": "Liveset Database",

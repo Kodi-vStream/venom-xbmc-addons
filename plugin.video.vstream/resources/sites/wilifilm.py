@@ -90,8 +90,8 @@ def showMovies(sSearch=''):
     if sSearch:
         bvalid, stoken, scookie = getTokens()
         if bvalid:
-            #oUtil = cUtil()
-            #sSearchText = oUtil.CleanName(sSearch)
+            oUtil = cUtil()
+            sSearchText = oUtil.CleanName(sSearch)
             sSearch = sSearch.replace(' ', '+').replace('%20', '+')
             pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
@@ -106,7 +106,6 @@ def showMovies(sSearch=''):
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
             sHtmlContent = oRequestHandler.request()
-            
         else:
             oGui.addText(SITE_IDENTIFIER)
             return
@@ -131,11 +130,16 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sThumb = aEntry[0]
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
+    if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()

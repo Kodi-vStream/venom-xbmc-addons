@@ -5,7 +5,7 @@ import base64
 import re
 import xbmc
 
-from resources.lib.comaddon import progress, isMatrix, siteManager
+from resources.lib.comaddon import isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -62,15 +62,15 @@ def showLive():
 
     if aResult[0]:
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl3 = URL_MAIN + aEntry[0]
-            sTitle2 = aEntry[1] + ' ' + aEntry[2]
+            heure, canal = aEntry[2].split(':')
+            heure = int(heure) - 1  # heure d'hiver
+            if heure == -1:
+                heure = 23
+            sTitle2 = '%s %d:%s' % (aEntry[1], heure, canal)
+            sDisplayTitle = sTitle2
 
             try:
                 sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
@@ -85,9 +85,7 @@ def showLive():
 
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sTitle2, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -149,13 +147,8 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
     else:
         mois = ['filler', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre']
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = ''
             taglive = ''
             sTitle2 = aEntry[1].replace('<br>', ' ')
@@ -188,7 +181,13 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
                     sDateTime = re.findall('(\d+) ([\S]+).+?(\d+)(:\d+)', str(sDate))
                     if sDateTime:
                         sMonth = mois.index(sDateTime[0][1])
-                        sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, int(sDateTime[0][2]), sDateTime[0][3])
+                        heure = int(sDateTime[0][2])
+                        
+                        heure -=1   # heure d'hiver
+                        if heure == -1:
+                            heure = 23
+                        
+                        sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, heure, sDateTime[0][3])
                 except Exception as e:
                     pass
 
@@ -199,8 +198,6 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sDisplayTitle, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -223,14 +220,8 @@ def showMovies3():  # affiche les videos disponible du live
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sLang = aEntry[0]
             sLang = cUtil().unescape(sLang)
             try:
@@ -249,8 +240,6 @@ def showMovies3():  # affiche les videos disponible du live
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addDir(SITE_IDENTIFIER, 'showHosters', sTitle, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -715,8 +704,8 @@ def showHosters():  # affiche les videos disponible du live
                 # oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent2 = oRequestHandler.request()
-                
-                sPattern2 = 'var r = "player="\+embedded\+"&e=([^"]+)'
+
+                sPattern2 = 'var r = embedded\+"([^"]+)'
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     url2 = 'https://voodc.com/player.php?player=d&e=' + aResult[0]
@@ -742,7 +731,7 @@ def showHosters():  # affiche les videos disponible du live
                 Referer = url
 
 
-        if 'lato.sx' in url or '1l1l' in url:
+        if 'lato.sx' in url or '1l1l' in url or 'bedsport' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = '<script>fid=["\'](.+?)["\'].+?src=\'//([^/]+)([^\']+)'
@@ -1056,13 +1045,13 @@ def showHosters():  # affiche les videos disponible du live
                     if aResult1:
                         sHosterUrl = aResult1[0]
 
-        if ('shd' in url) or ('hd' in url and 'streamhd' not in url and 'hdsportslive' not in url and 'airhdx'
-                              not in url and 'wizhd' not in url):
+        if not sHosterUrl and (('shd' in url) or ('hd' in url and 'streamhd' not in url and 'hdsportslive' not in url and 'airhdx'
+                              not in url and 'wizhd' not in url)):
 
             urlApi = 'https://api.livesports24.online/gethost'
             sHtmlContent2 = ''
-            channel = url.split('/')[4]
             try:
+                channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
@@ -1078,7 +1067,6 @@ def showHosters():  # affiche les videos disponible du live
                     host = aResult[0]
             else:
                 urlApi = 'https://api.livesports24.online:8443/gethost'
-                channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
@@ -1422,7 +1410,7 @@ def getHosterIframe(url, referer):
         oRequestHandler = cRequestHandler(aResult[0])
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
-        sHosterUrl = sHosterUrl.replace('index', 'mono')
+#        sHosterUrl = sHosterUrl.replace('index', 'mono')
         return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
