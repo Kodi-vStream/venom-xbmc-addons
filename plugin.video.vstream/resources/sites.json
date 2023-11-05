@@ -42,7 +42,7 @@
         "cinemay_cc": {
             "label": "Cinemay_cc",
             "active": "True",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
