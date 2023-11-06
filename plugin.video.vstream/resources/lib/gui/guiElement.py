@@ -242,9 +242,13 @@ class cGuiElement:
         sa = ep = ''
         m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
         if m:
-            sTitle = sTitle.replace(m.group(0), '')
             sa = m.group(3)
             ep = m.group(7)
+            if ep=='264' or ep=='265':  # echape les codecs X264 et x265
+                sa = ep = ''
+            else:
+                sTitle = sTitle.replace(m.group(0), '')
+                
         else:  # Juste l'épisode
             m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
