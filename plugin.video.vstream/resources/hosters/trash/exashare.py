@@ -9,6 +9,7 @@ except ImportError:  # Python 3
     import urllib.request as urllib2
 
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.util import urlEncode
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import xbmc
@@ -49,7 +50,7 @@ class cHoster(iHoster):
                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                        'Content-Type': 'application/x-www-form-urlencoded'}
 
-            postdata = urllib.urlencode(POST_Data)
+            postdata = urlEncode(POST_Data)
 
             req = urllib2.Request(POST_Url,postdata,headers)
 

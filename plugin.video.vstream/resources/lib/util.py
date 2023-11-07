@@ -2,12 +2,14 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import isMatrix
 
-try:
+try:        # python 2
     import htmlentitydefs
     import urllib
-except ImportError:
+    import urlparse
+except ImportError:     # python 3
     import html.entities as htmlentitydefs
     import urllib.parse as urllib
+    urlparse = urllib
 
 import unicodedata
 import re
@@ -235,4 +237,4 @@ def urlEncode(sUrl):
 
 
 def urlHostName(sUrl):  # retourne le hostname d'une Url
-    return urllib.urlparse(sUrl).hostname
+    return urlparse.urlparse(sUrl).hostname
