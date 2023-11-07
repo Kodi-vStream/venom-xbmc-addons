@@ -6,13 +6,16 @@
 from io import BytesIO
 from tempfile import NamedTemporaryFile
 
+from resources.lib.comaddon import isMatrix
 import xbmcgui
+import xbmc
+import xbmcvfs
 from xbmcgui import Control
-from xbmcvfs import translatePath
 
 
 class CaptchaWindow(xbmcgui.WindowDialog):
-    def __init__(self, image: bytes, width: int, height: int):
+#    def __init__(self, image: bytes, width: int, height: int):
+    def __init__(self, image, width, height):
         self.orig_image = BytesIO(image)
         self.width = width
         self.height = height
@@ -33,7 +36,6 @@ class CaptchaWindow(xbmcgui.WindowDialog):
     def create_temp_image(self):
         
         filePath = 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw'
-        import xbmcvfs
         downloaded_image = xbmcvfs.File(filePath, 'wb')
         downloaded_image.write(self.orig_image.read())
         downloaded_image.close()
@@ -47,9 +49,12 @@ class CaptchaWindow(xbmcgui.WindowDialog):
 
     @property
     def border_img_path(self):
-        return translatePath(
-            "special://home/addons/plugin.video.vstream/resources/lib/waaw/resources/media/border90.png"
-        )
+        path = "special://home/addons/plugin.video.vstream/resources/lib/waaw/resources/media/border90.png"
+        if isMatrix():
+            path = xbmcvfs.translatePath(path)
+        else:
+            path = xbmc.translatePath(path)
+        return path
 
     @property
     def solution_x(self):
@@ -119,10 +124,10 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         # Calculate the position of the Submit button
         submit_button_width = 200
         submit_button_height = 100
-        submit_button_x = self.frame_x + (self.width - submit_button_width) // 2
-        submit_button_y = self.frame_y + (self.height - submit_button_height) // 2
+        submit_button_x = self.frame_x + self.width - submit_button_width//4
+        submit_button_y = self.frame_y + self.height - submit_button_height//4
         textOffsetX = (
-            submit_button_width - len("Submit") * 12
+            submit_button_width - len("VALIDER") * 14
         ) // 2  # Center text horizontally
         textOffsetY = (submit_button_height - 12) // 2  # Center text vertically
 
@@ -131,7 +136,7 @@ class CaptchaWindow(xbmcgui.WindowDialog):
             submit_button_y,
             submit_button_width,
             submit_button_height,
-            " Submit",
+            " VALIDER",
             textOffsetX=textOffsetX,
             textOffsetY=textOffsetY,
         )
@@ -143,14 +148,16 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         )
         self.addControl(self.border_img)
 
-    def update_border_img(self, x: int, y: int):
+    # def update_border_img(self, x: int, y: int):
+    def update_border_img(self, x, y):
         self.border_img.setPosition(self.frame_x + x, self.frame_y + y)
 
-    def close(self) -> None:
+    def _close_dialog(self):
         #self.temp_file.close()
-        return super().close()
+        return self.close()
 
-    def onControl(self, control: Control) -> None:
+    def onControl(self, control):
+#    def onControl(self, control: Control) -> None:
         # if left arrow is clicked and border is not at the left edge, move left
         if control.getId() == self.left_arrow.getId() and self.frame_x > self.orig_x:
             self.frame_x -= 10
@@ -176,11 +183,12 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         # if submit button is clicked, close
         elif control.getId() == self.submit_button.getId():
             self.finished = True
-            self.close()
-        else:
-            super().onControl(control)
+            self._close_dialog()
+        # else:
+        #     super(self).onControl(control)
 
-    def onAction(self, action: xbmcgui.Action) -> None:
+#    def onAction(self, action: xbmcgui.Action) -> None:
+    def onAction(self, action):
         # if left arrow is pressed and border is not at the left edge, move left
         if action == xbmcgui.ACTION_MOVE_LEFT and self.frame_x > self.orig_x:
             self.frame_x -= 10
@@ -206,9 +214,9 @@ class CaptchaWindow(xbmcgui.WindowDialog):
         # if enter is pressed, close
         elif action == xbmcgui.ACTION_SELECT_ITEM:
             self.finished = True
-            self.close()
+            self._close_dialog()
         # if close button is pressed, close
         if action == xbmcgui.ACTION_NAV_BACK:
-            self.close()
-        else:
-            super().onAction(action)
+            self._close_dialog()
+        # else:
+        #     super(self).onAction(action)
