@@ -10,12 +10,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.upnext import UpNext
-from resources.lib.util import cUtil, Unquote
-
-try:  # Python 2
-    from urlparse import urlparse
-except ImportError:  # Python 3
-    from urllib.parse import urlparse
+from resources.lib.util import cUtil, Unquote, urlHostName
 
 from os.path import splitext
 
@@ -117,7 +112,7 @@ class cPlayer(xbmc.Player):
 
         player_conf = self.ADDON.getSetting('playerPlay')
         # Si lien dash, methode prioritaire
-        mpd = splitext(urlparse(sUrl).path)[-1] in [".mpd", ".m3u8"]
+        mpd = splitext(urlHostName(sUrl))[-1] in [".mpd", ".m3u8"]
         mpd |= '&ct=6&' in sUrl     # mpd venant de ok.ru, n'a pas d'extension
         if mpd:
             if isKrypton() == True:

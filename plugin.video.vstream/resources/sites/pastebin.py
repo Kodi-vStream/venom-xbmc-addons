@@ -355,27 +355,32 @@ class PasteContent:
             self.PASTE += 1
 
         # On vérifie le type de média s'il est demandé
-        if self.movies and sMedia and len(lines) > 1:
-            sMediaPaste = 'film'
-            if self.CAT >= 0:
-                sMediaPaste = lines[1].split(";")[self.CAT]
+        sMediaPaste = 'film'     # par défaut si non défini
+        if self.CAT >= 0:
+            sMediaPaste = lines[1].split(";")[self.CAT]
+        if sMedia and len(lines) > 1:
             if sMedia != sMediaPaste:
                 return []
 
+        isFilm = sMediaPaste in ('film', 'divers')
         links = []
         for k in lines[1:]:
             line = k.split(";")
             line.append(pasteBin)
+
+            # remettre l'hebergeur en prefixe du lien
             if hebergeur:
                 link = line[self.URLS]
-                if sMedia in ('film', 'divers'):
+                if isFilm:
                     if "'" in link:
                         link = link.replace("['", "['" + hebergeur)
                         line[self.URLS] = link.replace(", '", ", '" + hebergeur)
                     else:
                         line[self.URLS] = hebergeur + link
-                else:    # series/ anime, pluisieurs liens
-                    line[self.URLS] = link.replace(":'", ":'" + hebergeur)
+                else:    # series/ anime, plusieurs liens
+                    link = link.replace(":'", ": '" + hebergeur) # format en ligne
+                    line[self.URLS] = link.replace(": '", ": '" + hebergeur)  # format du cache
+
             links.append(line)
 
         # renouveler le contenu d'un paste
