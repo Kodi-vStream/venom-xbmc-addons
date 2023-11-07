@@ -236,9 +236,6 @@ class cHosterGui:
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
-        if ('vido' in sHostName):
-            return self.getHoster('vudeo')
-
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
 
