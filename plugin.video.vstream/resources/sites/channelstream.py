@@ -13,7 +13,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import Quote
+from resources.lib.util import Quote, urlHostName
 
 from datetime import datetime, timedelta
 
@@ -104,6 +104,10 @@ def showHoster():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if not sUrl.startswith ('http'):
         sUrl = URL_MAIN + sUrl
+    else:   # remplacer par la bonne adresse
+        domain = urlHostName(sUrl)
+        sUrl = sUrl.replace('https://' + domain, URL_MAIN)
+
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -111,10 +115,12 @@ def showHoster():
     sMeta = 0
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setTimeout(8)
     sHtmlContent = oRequestHandler.request()
 
     # Double Iframe a passer.
-    sPattern = "document\.getElementById\('video'\)\.src='([^']+)'.+?>([^<]+)<"
+#    sPattern = "document\.getElementById\('video'\)\.src='([^']+)'.+?>([^<]+)<"
+    sPattern = 'document\.getElementById\(\'video\'\)\.src=\'([^\']+)\'.+?>([^<]+)<.+?<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[1]:  # Pas de flux
@@ -123,7 +129,8 @@ def showHoster():
 
     for entry in aResult[1]:
         oOutputParameterHandler = cOutputParameterHandler()
-        iframeURL1 = entry[0]
+        
+        iframeURL1 = entry[2]
         canal = entry[1]
         sMovieTitle = sTitle
         if canal not in sMovieTitle:
@@ -146,19 +153,20 @@ def showHoster():
         oGuiElement.setCat(sCat)
         oGuiElement.setMeta(sMeta)
 
-        if 'dailymotion' in iframeURL1:
-            oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
-            oOutputParameterHandler.addParameter('sMediaUrl', iframeURL1)
-            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)  # variable manquante
-            oOutputParameterHandler.addParameter('sFileName', sMovieTitle)
-            oGuiElement.setFunction('play')
-            oGuiElement.setSiteName('cHosterGui')
-            oGui.addHost(oGuiElement, oOutputParameterHandler)  # addHost absent ???? del 20/08/2021
-            cGui.CONTENT = 'movies'
-            oGui.setEndOfDirectory()
-            return
+        # if 'dailymotion' in iframeURL1:
+        #     oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
+        #     oOutputParameterHandler.addParameter('sMediaUrl', iframeURL1)
+        #     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)  # variable manquante
+        #     oOutputParameterHandler.addParameter('sFileName', sMovieTitle)
+        #     oGuiElement.setFunction('play')
+        #     oGuiElement.setSiteName('cHosterGui')
+        #     oGui.addHost(oGuiElement, oOutputParameterHandler)  # addHost absent ???? del 20/08/2021
+        #     cGui.CONTENT = 'movies'
+        #     oGui.setEndOfDirectory()
+        #     return
 
         oRequestHandler = cRequestHandler(iframeURL1)
+        oRequestHandler.setTimeout(8)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
         sHtmlContent = oRequestHandler.request()
@@ -180,6 +188,7 @@ def showHoster():
     
             if not sHosterUrl:
                 oRequestHandler = cRequestHandler(iframeURL1)
+                oRequestHandler.setTimeout(2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 sHtmlContent = oRequestHandler.request()
     
@@ -193,6 +202,9 @@ def showHoster():
                         sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
                     else:
                         sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
+
+        if not sHosterUrl:
+            sHosterUrl = getHosterIframe(iframeURL1, sUrl)
 
         if sHosterUrl:
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -263,3 +275,95 @@ def getHosterPrimetubsub(url, referer):
     url = aResult[1][0][1]
 
     return url + '|User-Agent=' + UA + '&Referer=' + Quote(referer)
+
+
+# Traitement générique
+def getHosterIframe(url, referer):
+
+    if not url.startswith('http'):
+        url = URL_MAIN + url
+
+    oRequestHandler = cRequestHandler(url)
+    if referer:
+        oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = str(oRequestHandler.request())
+    if not sHtmlContent:
+        return False
+
+    referer = url
+    
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sHtmlContent = cPacker().unpack(sstr)
+
+    sPattern = '.atob\("(.+?)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        import base64
+        for code in aResult:
+            try:
+                if isMatrix():
+                    code = base64.b64decode(code).decode('ascii')
+                else:
+                    code = base64.b64decode(code)
+                if '.m3u' in code:
+                    return code + '|Referer=' + referer
+            except Exception as e:
+                pass
+    
+    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        for url in aResult:
+            if url.startswith("./"):
+                url = url[1:]
+            if not url.startswith("http"):
+                if not url.startswith("//"):
+                    url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
+                url = "https:" + url
+            url = getHosterIframe(url, referer)
+            if url:
+                return url
+
+    sPattern = 'player.load\({source: (.+?)\('
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        func = aResult[0]
+        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+        aResult = re.findall(sPattern, sHtmlContent)
+        if aResult:
+            referer = url
+            sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
+            return sHosterUrl + '|referer=' + referer
+
+    sPattern = ';var.+?src=["\']([^"\']+)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        url = aResult[0]
+        if '.m3u8' in url:
+            return url
+
+    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+#        sHosterUrl = sHosterUrl.replace('index', 'mono')
+        return sHosterUrl + '|referer=' + referer
+
+    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+        return sHosterUrl + '|referer=' + referer
+
+    return False
+
+
