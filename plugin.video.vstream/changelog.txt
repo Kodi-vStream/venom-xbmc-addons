@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.7.2***
+- Python 2 : Compatibilité Kodi 18
+
+
 *** 2.7.0***
 - Darkibox : Prise en charge du compte premium
 - Darkibox : Pouvoir parcourir son compte
