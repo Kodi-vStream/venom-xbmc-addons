@@ -711,11 +711,10 @@ def searchEpisode(sTitle):
     m = re.search('(^S| S|\.S|_S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *| *_ *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
-        if int(sa) <100:
-            ep = m.group(7)
-        else:
-            sa = ''
-    else:  # Juste l'épisode
+        ep = m.group(7)
+        if int(sa)<100 and int(ep) <264:    # echape les codecs X264 et x265
+            sa = ep =''
+    if not ep:  # Juste l'épisode
         m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
         if m:
             ep = m.group(4)
