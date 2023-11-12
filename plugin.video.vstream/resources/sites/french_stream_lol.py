@@ -350,7 +350,7 @@ def showEpisodes():
                     # sEpisode = aEntry[3]
 
             sTitle = sMovieTitle + ' ' + sEpisode
-            sDisplayTitle = ' %s (%s) [COLOR coral]%s[/COLOR]' % (sTitle,  sLang.upper(),  sHoster)
+            sDisplayTitle = ' %s (%s) [COLOR coral]%s[/COLOR]' % (sTitle,  sLang.upper(),  sHoster.capitalize())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
