@@ -1717,6 +1717,7 @@ def showGroupeDetails():
     aParams = dict(param.split('=') for param in params.split('&'))
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
     sGroupe = aParams['sGroupe'].replace('+', ' ') + ':' if 'sGroupe' in aParams else None
+    sMedia = aParams['sMedia']
 
     pbContent = PasteContent()
     groupes = set()
@@ -1724,9 +1725,9 @@ def showGroupeDetails():
     if sGroupe:
         listeIDs = getPasteList(pasteID)
         for pasteBin in listeIDs:
-            movies = pbContent.getLines(pasteBin)
-            try:
-                for movie in movies:
+            movies = pbContent.getLines(pasteBin, sMedia)
+            for movie in movies:
+                try:
                     groupe = movie[pbContent.GROUPES].strip().replace("''", '')
                     if groupe:
                         groupe = eval(groupe)
@@ -1734,8 +1735,8 @@ def showGroupeDetails():
                             for gr in groupe:
                                 if gr.startswith(sGroupe):
                                     groupes.add(gr)
-            except Exception as e:
-                pass
+                except Exception as e:
+                    pass
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sGroupe in sorted(groupes):
