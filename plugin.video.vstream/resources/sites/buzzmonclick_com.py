@@ -109,7 +109,7 @@ def showMovies(sSearch=''):
             # mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', sTitle)
-            sTitle = re.sub(', (?:Replay|Video)$', '', sTitle)
+            sTitle = re.sub(', (?:Replay|Video|Vidéo|vidéo)', '', sTitle)
             sUrl = aEntry[1]
             sThumb = aEntry[2]
 
@@ -131,7 +131,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
+    sPattern = 'class="nextpostslink" rel="next".+?href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -153,9 +153,14 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'wp-block-button.+?(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
+    sHtmlContent = oParser.abParse(sHtmlContent, '#555555;', 'section-box')
+    sPattern = "(?:href=|src=)\"([^\"]+)\".+?value=\'([^\']+)\'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if not aResult[0]:
+        sPattern = 'wp-block-button.+?(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -178,20 +183,32 @@ def showLinks():
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    oHoster = None
 
-    if 'forum-tv' in sUrl:
+    if 'generated' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = 'window.location.href = "([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sHosterUrl = aResult[1][0]
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+    elif 'dood.forum-tv.org' in sUrl:
+        showDoodHosters(sMovieTitle, sUrl)
+
+    elif 'forum-tv' in sUrl:
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
         s = requests.Session()
-
         response = s.get(sUrl, headers={'User-Agent': UA})
         sHtmlContent = str(response.content)
         cookie_string = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.items()])
 
-        oParser = cParser()
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -216,7 +233,7 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 sHosterUrl = aResult[1][0]
-                oHoster = False
+                oHoster = None
                 
                 if 'replay.forum-tv.org' in sHosterUrl: 
                     oRequestHandler = cRequestHandler(sHosterUrl)
@@ -233,17 +250,14 @@ def showHosters():
                 else:
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-                if oHoster:
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         sHosterUrl = sUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster:
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    if oHoster:
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
     
@@ -260,7 +274,10 @@ def showDoodHosters(sMovieTitle, sUrl):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sHost = aEntry[1]
-
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+            
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

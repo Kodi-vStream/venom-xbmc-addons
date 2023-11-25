@@ -23,6 +23,12 @@ class cHoster(iHoster):
         if aResult[0] is True:
             api_call = aResult[1][0]
 
+        if not api_call:
+            sPattern = 'jwplayer\("vplayer"\)\.setup\({ *sources: \[\{file:"([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0] is True:
+                api_call = aResult[1][0]
+    
         if api_call:
             return True, api_call #+ '|User-Agent=' + UA + '&Referer=' + self._url + '&Origin=https://vidfast.co'
 
