@@ -561,18 +561,20 @@ def showHosters():
     else:
         sHtmlContent = oParser.abParse(sHtmlContentBck, '<div id="link">', 'onclick')
         sHtmlContent = sHtmlContent.replace('&nbsp;', '')
-        sPattern = 'href="([^"]+)"'
+        sPattern = '<b>([^<]+)</b> *</br>.+?href="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             oOutputParameterHandler = cOutputParameterHandler()
-            for sUrl in aResult[1]:
+            for aEntry in aResult[1]:
+                sUrl = aEntry[1]
                 if len(sUrl) <10:
                     continue
+                sTitle = '%s - [%s]' % (sMovieTitle, aEntry[0])
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
