@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.vstream" name="vStream" version="2.7.2" provider-name="venom-xbmc-addons">
+<addon id="plugin.video.vstream" name="vStream" version="2.7.3" provider-name="venom-xbmc-addons">
     <requires>
 
         <trycatch>
