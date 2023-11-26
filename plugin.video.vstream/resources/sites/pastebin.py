@@ -1685,8 +1685,7 @@ def showGroupes():
                         for gr in groupe:
                             if ':' in gr:
                                 grID = gr.split(':')[0]
-                                if grID not in sousGroupe:
-                                    sousGroupe.add(grID)
+                                sousGroupe.add(grID)
                             else:
                                 groupesPerso.add(gr)
             except Exception as e:
@@ -2411,7 +2410,7 @@ def showEpisodesLinks(siteUrl=''):
 
         if str(episode).isdigit():
             if sSaison.isdigit():
-                episode = '{} E{:02d}'.format(sDisplaySaison, int(episode))
+                episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
             else:
                 episode = 'E{:02d}'.format(int(episode))
         else:
