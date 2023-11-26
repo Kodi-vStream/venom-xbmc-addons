@@ -473,7 +473,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     # parfois présent, plus sure que de réduire la regex
-    sHtmlContent = re.sub('</font>', '', sHtmlContent)
+    sHtmlContentBck = sHtmlContent = re.sub('</font>', '', sHtmlContent)
 
     # recuperation nom de la release
     if 'elease :' in sHtmlContent:
@@ -557,6 +557,24 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    else:
+        sHtmlContent = oParser.abParse(sHtmlContentBck, '<div id="link">', 'onclick')
+        sHtmlContent = sHtmlContent.replace('&nbsp;', '')
+        sPattern = '<b>([^<]+)</b> *</br>.+?href="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            oOutputParameterHandler = cOutputParameterHandler()
+            for aEntry in aResult[1]:
+                sUrl = aEntry[1]
+                if len(sUrl) <10:
+                    continue
+                sTitle = '%s - [%s]' % (sMovieTitle, aEntry[0])
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

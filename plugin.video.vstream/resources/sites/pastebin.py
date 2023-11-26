@@ -1685,8 +1685,7 @@ def showGroupes():
                         for gr in groupe:
                             if ':' in gr:
                                 grID = gr.split(':')[0]
-                                if grID not in sousGroupe:
-                                    sousGroupe.add(grID)
+                                sousGroupe.add(grID)
                             else:
                                 groupesPerso.add(gr)
             except Exception as e:
@@ -1717,6 +1716,7 @@ def showGroupeDetails():
     aParams = dict(param.split('=') for param in params.split('&'))
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
     sGroupe = aParams['sGroupe'].replace('+', ' ') + ':' if 'sGroupe' in aParams else None
+    sMedia = aParams['sMedia']
 
     pbContent = PasteContent()
     groupes = set()
@@ -1724,9 +1724,9 @@ def showGroupeDetails():
     if sGroupe:
         listeIDs = getPasteList(pasteID)
         for pasteBin in listeIDs:
-            movies = pbContent.getLines(pasteBin)
-            try:
-                for movie in movies:
+            movies = pbContent.getLines(pasteBin, sMedia)
+            for movie in movies:
+                try:
                     groupe = movie[pbContent.GROUPES].strip().replace("''", '')
                     if groupe:
                         groupe = eval(groupe)
@@ -1734,8 +1734,8 @@ def showGroupeDetails():
                             for gr in groupe:
                                 if gr.startswith(sGroupe):
                                     groupes.add(gr)
-            except Exception as e:
-                pass
+                except Exception as e:
+                    pass
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sGroupe in sorted(groupes):
@@ -2361,9 +2361,10 @@ def showSerieSaisons():
         sDisplaySaison = sSaison
         if sSaison.isdigit():
             sDisplaySaison = 'S{:02d}'.format(int(sSaison))
-
+            sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
+        else:
+            sDisplayTitle = '[' + sDisplaySaison + ']' + ' - ' + searchTitle
         sUrl = siteUrl + '&sSaison=' + sSaison
-        sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
         oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
@@ -2394,6 +2395,8 @@ def showEpisodesLinks(siteUrl=''):
     listeEpisodes = set()
     for episode in lines:
         for numEpisode in episode.keys():
+            numEpisode = str(numEpisode).replace('E', '')
+            numEpisode = int(numEpisode)
             if numEpisode not in listeEpisodes:
                 listeEpisodes.add(numEpisode)
 
@@ -2406,7 +2409,10 @@ def showEpisodesLinks(siteUrl=''):
         sUrl = siteUrl + '&sEpisode=' + str(episode)
 
         if str(episode).isdigit():
-            episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
+            if sSaison.isdigit():
+                episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
+            else:
+                episode = 'E{:02d}'.format(int(episode))
         else:
             episode = '{}{}'.format(sDisplaySaison, episode)
         sDisplayTitle = searchTitle + ' - ' + episode
@@ -2547,7 +2553,7 @@ def getHosterList(siteUrl):
             if searchSaison and pbContent.SAISON >= 0:
                 sSaisons = movie[pbContent.SAISON].strip()
                 if sSaisons:
-                    if sSaisons.isdigit:
+                    if sSaisons.isdigit():
                         sSaisons = '%02d' % int(sSaisons)
                     if searchSaison != sSaisons:
                         continue
