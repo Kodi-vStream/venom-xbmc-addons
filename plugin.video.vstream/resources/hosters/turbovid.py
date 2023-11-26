@@ -2,14 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.parser import cParser
+from resources.lib.util import urlEncode
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog, isMatrix
 from resources.lib.aadecode import AADecoder
 
 import re
 import base64
-from urllib.parse import urlencode
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
@@ -32,6 +32,7 @@ def decode(chars, b):
         state[j] = v
         i = i + 1
     
+    bMatrix = isMatrix()
 
     i = 0
     j = 0
@@ -43,8 +44,10 @@ def decode(chars, b):
         v = state[i]
         state[i] = state[j]
         state[j] = v
-        #optsData += chr(ord(b[bi]) ^ state[(state[i] + state[j]) % 256])
-        optsData += chr(b[bi] ^ state[(state[i] + state[j]) % 256])
+        if bMatrix:
+            optsData += chr(b[bi] ^ state[(state[i] + state[j]) % 256])
+        else:
+            optsData += chr(ord(b[bi]) ^ state[(state[i] + state[j]) % 256])
         bi = bi + 1
 
     return optsData
@@ -121,6 +124,6 @@ class cHoster(iHoster):
             headers4 = {'user-agent': UA,
                         'Referer': self._url
                         }
-            return True, api_call + '|' + urlencode(headers4)
+            return True, api_call + '|' + urlEncode(headers4)
 
         return False, False

@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import siteManager, VSlog
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -26,6 +26,7 @@ MOVIE_BOX = (URL_MAIN + 'films-box-office', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
+
 def load():
     oGui = cGui()
 
@@ -35,7 +36,7 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Derniers ajouts)', 'films.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_BOX[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_BOX[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
 
@@ -46,6 +47,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -73,6 +75,7 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYears():
     oGui = cGui()
@@ -116,28 +119,34 @@ def showMovies(sSearch=''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
-    sPattern = '<img class="lazyload" data-src="([^"]+)".+?<div class="movie-details existing-details"><div class="name"><a href="([^"]+)" title="[^"]+">([^<>]+)<'
+
+    sPattern = '<img class="lazyload" data-src="([^"]+)".+?class="name"><a href="([^"]+)" title="[^"]+">([^<]+)'
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    sHtmlContent = oParser.abParse(sHtmlContent, 'title yellow', '')
+    aResult = oParser.parse(sHtmlContent.replace('<br>', ''), sPattern)
 
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+
+            sThumb = aEntry[0]
+            sThumb = re.sub('/w\d+/', '/w342/', sThumb)
+            # si 'no-poster.svg' dans sThumb lien invalide
+            if 'no-poster.svg' in sThumb:
+                continue
             sUrl = aEntry[1]
             sTitle = aEntry[2]
-            sThumb = aEntry[0]
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
-            
+                    continue  # Filtre de recherche
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, "", oOutputParameterHandler)
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -162,6 +171,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False, 'none'
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -173,7 +183,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<li class="part" data-url="([^"]+)">.+?<div class="part-name">([^<>]+)'
+    sPattern = '<li class="part" data-url="([^"]+)">.+?<div class="part-name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -184,13 +194,13 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sDataUrl = aEntry[0]
-            sHost = aEntry[1].capitalize().strip()
+            sHost = aEntry[1].strip()
 
             oHoster = cHosterGui().checkHoster(sHost)
             if not oHoster:
                 continue
 
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, oHoster.getPluginIdentifier())
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, oHoster.getPluginIdentifier().capitalize())
             lien = URL_MAIN + "ll/captcha?hash=" + sDataUrl
 
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -201,6 +211,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showHostersLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -210,11 +221,11 @@ def showHostersLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = 'src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -228,6 +239,7 @@ def showHostersLinks():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def getTokens():
     oParser = cParser()

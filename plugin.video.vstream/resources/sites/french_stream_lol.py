@@ -195,7 +195,7 @@ def showMovies(sSearch=''):
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
 
-        # sUrl = URL_SEARCH[0]  # ne sert à rien
+        # sUrl = URL_SEARCH[0] # ne sert à rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
@@ -334,30 +334,30 @@ def showEpisodes():
 
             if bFind and aEntry[0]:
                 sFirst_Url = aEntry[2]
-                if not 'http' in sFirst_Url :
+                if 'http' not in sFirst_Url:
                     continue
-            
-                sHoster = re.findall('https:\/\/([^.]+)', sFirst_Url) 
+
+                sHoster = re.findall('https:\/\/([^.]+)', sFirst_Url)
                 sHoster = sHoster[0]
                 oHoster = cHosterGui().checkHoster(sHoster)
             if not oHoster:
-                continue 
-                
-                #sRel_Episode = aEntry[2]
-                #if sRel_Episode == "ABCDE":
-                    #sEpisode = 'Episode 2'
-                #else:
-                    #sEpisode = aEntry[3]
+                continue
+
+                # sRel_Episode = aEntry[2]
+                # if sRel_Episode == "ABCDE":
+                    # sEpisode = 'Episode 2'
+                # else:
+                    # sEpisode = aEntry[3]
 
             sTitle = sMovieTitle + ' ' + sEpisode
-            sDisplayTitle = ' %s (%s) [COLOR skyblue]%s[/COLOR]' % (sTitle,  sLang,  sHoster )
+            sDisplayTitle = ' %s (%s) [COLOR coral]%s[/COLOR]' % (sTitle,  sLang.upper(),  sHoster.capitalize())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sLang', sLang)
-            #oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
+            # oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
             oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
             oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)

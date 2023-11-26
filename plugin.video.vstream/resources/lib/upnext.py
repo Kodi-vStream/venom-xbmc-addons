@@ -305,7 +305,10 @@ class UpNext:
                 addons.setSetting('upnext', 'false')
                 return False
 
-            addon_xml = xbmc.translatePath('special://home/addons/%s/addon.xml' % upnext_id)
+            if isMatrix():
+                addon_xml = xbmcvfs.translatePath('special://home/addons/%s/addon.xml' % upnext_id)
+            else:
+                addon_xml = xbmc.translatePath('special://home/addons/%s/addon.xml' % upnext_id)
             if xbmcvfs.exists(addon_xml):  # si addon.xml existe, add-on présent mais désactivé
 
                 # Impossible d'activer UpNext ou si on confirme de ne pas vouloir l'utiliser

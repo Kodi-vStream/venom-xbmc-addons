@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//plugin.video.vstream/default.py=utf-8
 encoding//plugin.video.vstream/resources/hosters/alldebrid.py=utf-8
+encoding//plugin.video.vstream/resources/hosters/darkibox.py=utf-8
 encoding//plugin.video.vstream/resources/hosters/hoster.py=utf-8
 encoding//plugin.video.vstream/resources/hosters/letwatch.py=utf-8
 encoding//plugin.video.vstream/resources/hosters/mystream.py=utf-8
