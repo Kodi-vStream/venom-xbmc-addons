@@ -274,6 +274,8 @@ class cGuiElement:
             if ep:
                 self.__Episode = ep
                 self.addItemValues('Episode', self.__Episode)
+                if not self.__Season:
+                    self.__Season = 1   # forcer pour les séries sans saison
 
         # on repasse en utf-8
         if not isMatrix():
