@@ -201,7 +201,7 @@ class UpNext:
             if sLang and 'sLang' in aParams and UnquotePlus(aParams['sLang']) != sLang:
                 continue  # La langue est connue, mais ce n'est pas la bonne
 
-            if sRes and 'sRes' in aParams and aParams['sRes'] != sRes:
+            if sRes and 'sRes' in aParams and aParams['sRes'].replace('+', ' ') != sRes:
                 continue  # La Resolution est connue, mais ce n'est pas celle recherchée
 
             if sSaison and 'sSeason' in aParams and aParams['sSeason'] and int(aParams['sSeason']) != int(sSaison):
