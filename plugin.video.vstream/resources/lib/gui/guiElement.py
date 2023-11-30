@@ -52,6 +52,7 @@ class cGuiElement:
         self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
         self.poster = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('backdrop_tmdb')
+        self.sDecoColor = self.addons.getSetting('deco_color')
         # For meta search
         # TmdbId the movie database https://developers.themoviedb.org/
         self.__TmdbId = ''
@@ -82,7 +83,7 @@ class cGuiElement:
         return self.__sType
 
     def setCat(self, sCat):
-        self.__sCat = sCat
+        self.__sCat = int(sCat)
 
     def getCat(self):
         return self.__sCat
@@ -155,7 +156,7 @@ class cGuiElement:
         return self.__ResumeTime
 
     def setMeta(self, sMeta):
-        self.__sMeta = sMeta
+        self.__sMeta = int(sMeta)
 
     def getMeta(self):
         return self.__sMeta
@@ -191,6 +192,7 @@ class cGuiElement:
         return self.__sFunctionName
 
     def TraiteTitre(self, sTitle):
+        bMatrix = isMatrix()
 
         # convertion unicode ne fonctionne pas avec les accents
         try:
@@ -200,7 +202,7 @@ class cGuiElement:
             sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
                            .replace(' — saison', ' saison')
 
-            if not isMatrix():
+            if not bMatrix:
                 sTitle = sTitle.decode('utf-8')
         except:
             pass
@@ -235,8 +237,7 @@ class cGuiElement:
             sTitle = '%s (%s) ' % (sTitle, self.__Date)
 
         # recherche les Tags restant : () ou [] sauf tag couleur
-        sDecoColor = self.addons.getSetting('deco_color')
-        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.sDecoColor + ']\\1[/COLOR]', sTitle)
 
         # Recherche saisons et episodes si séries ou animes
         sa = ep = ''
@@ -278,7 +279,7 @@ class cGuiElement:
                     self.__Season = 1   # forcer pour les séries sans saison
 
         # on repasse en utf-8
-        if not isMatrix():
+        if not bMatrix:
             try:
                 sTitle = sTitle.encode('utf-8')
             except:
@@ -299,12 +300,12 @@ class cGuiElement:
         self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
-            sTitle2 = '[COLOR %s]%s[/COLOR] ' % (sDecoColor, sTitle2)
+            sTitle2 = '[COLOR %s]%s[/COLOR] ' % (self.sDecoColor, sTitle2)
 
         sTitle2 = sTitle2 + sTitle
 
         if self.__Year:
-            sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, sDecoColor, self.__Year)
+            sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.sDecoColor, self.__Year)
 
         return sTitle2
 
@@ -694,13 +695,13 @@ class cGuiElement:
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        sCat = str(self.getCat())
+        sCat = self.getCat()
         try:
-            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
+            if sCat and sCat in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
                 if self.getWatched():
                     self.addItemValues('playcount', 1)
         except:
-            sCat = False
+            sCat = None
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
         self.addItemProperties('sCleanTitle', self.getFileName())
@@ -716,8 +717,8 @@ class cGuiElement:
 
         if sCat:
             self.addItemProperties('sCat', sCat)
-            mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video',
-                          '6': 'video', '7': 'season', '8': 'episode', '9': 'tvshow'}
+            mediatypes = {1: 'movie', 2: 'tvshow', 3: 'tvshow', 4: 'season', 5: 'video',
+                          6: 'video', 7: 'season', 8: 'episode', 9: 'tvshow'}
             if sCat in mediatypes.keys():
                 mediatype = mediatypes.get(sCat)
                 self.addItemValues('mediatype', mediatype)  # video, movie, tvshow, season, episode, musicvideo

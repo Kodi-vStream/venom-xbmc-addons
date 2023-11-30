@@ -227,8 +227,8 @@ class cPlayer(xbmc.Player):
                         # Marquer VU dans la BDD Vstream
                         sTitleWatched = self.infotag.getOriginalTitle()
                         if sTitleWatched:
-                            if sEpisode :   # changement d'épisode suite à un enchainement automatique
-                                sTitle = sTitleWatched  # l'épisode vu et non pas le nouveau qui vient de démarrer
+                            if sEpisode :   # changement d'épisode suite à un enchainement automatique, fin de l'épisode précédent
+                                sTitle = '%s S%sE%s' % (self.tvShowTitle, self.sSaison, sEpisode)
                             else:
                                 sTitle = self.sTitle
                             meta = {}
