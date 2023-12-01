@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.7.4***
+- Suivi des épisodes : Correction enchainement, en cours de lecture, trakt
+
 *** 2.7.2***
 - Python 2 : Compatibilité Kodi 18
 
