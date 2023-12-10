@@ -16,10 +16,9 @@ SITE_DESC = 'films et vidéos'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/?filter=year', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
-
-SERIE_NEWS = (URL_MAIN + 'tv/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'tv/?filter=year', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VF = (URL_MAIN + 'seriesenstreaming/series-vf/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'seriesenstreaming/series-vostfr/', 'showMovies')
