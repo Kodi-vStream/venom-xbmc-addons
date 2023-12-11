@@ -457,7 +457,9 @@ def showMovieLinks():
     sDesc = 'FilmoFlix'
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
-
+    sStart = '<ul class="player-list">'
+    sEnd = '<div class="clearfix"></div>'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = "lien fx-row.+?\"getxfield.+?(\d+).+?\'([^\']*).+?'([^\']*).+?images.([^\.]+).+?pl-5\">([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -467,9 +469,9 @@ def showMovieLinks():
 
             videoId = aEntry[0]
             xfield = aEntry[1]
-            token = aEntry[2]
+            token = 'undefined'
             # images :aEntry[3] (VF).png
-            sQual = aEntry[4]
+            sQual = aEntry[2]
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
             sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + videoId + '&xfield=' + xfield + '&token=' + token
@@ -504,7 +506,7 @@ def showMovieHosters():
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)'
+    sPattern = '<iframe.+?replace\("([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
