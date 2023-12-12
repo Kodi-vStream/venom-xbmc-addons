@@ -245,7 +245,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            if '/series' not in sUrl2:
+            if '/series' not in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -389,7 +389,7 @@ def showSerieLinks():
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
-            sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
+            sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hosterName)
 
@@ -425,7 +425,7 @@ def showSerieHosters():
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)'
+    sPattern = '<iframe src=\'([^\']+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sHosterUrl = aResult[1][0]
