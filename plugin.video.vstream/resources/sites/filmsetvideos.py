@@ -267,7 +267,7 @@ def showSaisons():
         for aEntry in reversed(aResult[1]):
 
             sUrl2 = aEntry[0]
-            if sTmdbId != aEntry[3]:  # filtre des saisons selon l'id de la série
+            if sTmdbId and sTmdbId != aEntry[3]:  # filtre des saisons selon l'id de la série
                 continue
 
             sSaison = aEntry[1]
