@@ -51,7 +51,7 @@ class cHosterGui:
 
         if (oInputParameterHandler.exist('sMeta')):
             sMeta = oInputParameterHandler.getValue('sMeta')
-            oGuiElement.setMeta(int(sMeta))
+            oGuiElement.setMeta(sMeta)
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
@@ -407,9 +407,9 @@ class cHosterGui:
                     oGuiElement.setSiteUrl(siteUrl)
                     oGuiElement.setMediaUrl(aLink[1])
                     oGuiElement.setFileName(sFileName)
-                    oGuiElement.setTitle(sTitle)
                     oGuiElement.setCat(sCat)
-                    oGuiElement.setMeta(int(sMeta))
+                    oGuiElement.setMeta(sMeta)
+                    oGuiElement.setTitle(sTitle)
                     oGuiElement.getInfoLabel()
 
                     from resources.lib.player import cPlayer

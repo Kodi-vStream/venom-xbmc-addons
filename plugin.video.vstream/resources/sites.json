@@ -8,7 +8,7 @@
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
             "active": "True",
-            "url": "https://ww1.33seriestreaming.lol/"
+            "url": "https://www.33seriestreaming.vin/"
         },
         "adkami_com": {
             "label": "Adkami",
@@ -80,7 +80,7 @@
             "label": "Filmoflix",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.filmoflix.club/"
+            "url": "https://www.wishflix.live/"
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
@@ -161,7 +161,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv.sx/"
+            "url": "https://livetv737.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -284,7 +284,7 @@
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://telecharger-streaming.org/"
         },
         "themoviedb_org": {
