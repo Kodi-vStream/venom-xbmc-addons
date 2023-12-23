@@ -13,7 +13,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.util import cUtil
 
 
-
 SITE_IDENTIFIER = 'sitedarkibox'
 SITE_NAME = '[COLOR dodgerblue]Compte DarkiBox[/COLOR]'
 SITE_DESC = 'Fichiers sur compte DarkiBox'
@@ -28,6 +27,7 @@ URL_MOVIE = (API_URL_FILE, 'showMedias')
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 headers = {'User-Agent': UA}
 
+
 '''
         "sitedarkibox": {
             "label": "darkiBox",
@@ -35,6 +35,7 @@ headers = {'User-Agent': UA}
             "url": "https://darkibox.com/"
         },
 '''
+
 
 def load():
     oGui = cGui()
@@ -104,23 +105,21 @@ def showFile(sPath='', sSearch=''):
     oPremiumHandler = cPremiumHandler('darkibox')
     sToken = oPremiumHandler.getToken()
 
-    
     # pagination
     numPage = 1
     if '&page=' in siteUrl:
         numPage = int(re.search('&page=(\d+)', siteUrl).group(1))
 
-
     # menu de recherche
-    if not sSearch and numPage == 1 :
+    if not sSearch and numPage == 1:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', fldId)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
-        
+
         # les dossiers en premier, sur la première page seulement
         apiUrl = URL_MAIN + API_URL_FOLDER + '&key=%s' % sToken
         apiUrl += '&fld_id=%d' % fldId
-    
+
         oRequestHandler = cRequestHandler(apiUrl)
         sHtmlContent = oRequestHandler.request()
         content = json.loads(sHtmlContent)
@@ -128,12 +127,12 @@ def showFile(sPath='', sSearch=''):
             dialog().VSinfo(content['msg'])
             oGui.setEndOfDirectory()
             return
-        
+
         content = content['result']
         if not content:
             oGui.setEndOfDirectory()
             return
-    
+
         if 'folders' in content:
             folders = sorted(content['folders'], key=lambda f: f['name'].upper())
             for folder in folders:
@@ -141,13 +140,12 @@ def showFile(sPath='', sSearch=''):
                 folderdId = folder['fld_id']
                 if not isMatrix():
                     sTitle = sTitle.encode('utf-8')
-                    
+
                 sTitle = oUtil.unescape(sTitle)
                 sUrl = API_URL_FILE + '&fld_id=%d' % folderdId
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
-
 
     # les fichiers
     if sSearch:
@@ -155,11 +153,11 @@ def showFile(sPath='', sSearch=''):
     else:
         sUrl = API_URL_FILE
 
-    if fldId >=0:
+    if fldId >= 0:
         sUrl += '&fld_id=%d' % fldId
     sUrl = sUrl + '&page=%d' % numPage
     apiUrl = URL_MAIN + sUrl + '&key=%s' % sToken
-    
+
     oRequestHandler = cRequestHandler(apiUrl)
     sHtmlContent = oRequestHandler.request()
     content = json.loads(sHtmlContent)
@@ -167,7 +165,7 @@ def showFile(sPath='', sSearch=''):
         dialog().VSinfo(content['msg'])
         oGui.setEndOfDirectory()
         return
-    
+
     content = content['result']
     if not content:
         oGui.setEndOfDirectory()
@@ -181,13 +179,13 @@ def showFile(sPath='', sSearch=''):
         sTitle = file['title']
         if not isMatrix():
             sTitle = sTitle.encode('utf-8')
-            
+
         sTitle = oUtil.unescape(sTitle)
 
         # nécessite un débrideur
         sDisplayTitle = sTitle
         # if not file['canplay']:
-        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]'
 
         sHosterUrl = URL_MAIN + file['file_code']
 
@@ -211,7 +209,8 @@ def showFile(sPath='', sSearch=''):
 
     oGui.setEndOfDirectory()
 
-def showMedias(sSearch = ''):
+
+def showMedias(sSearch=''):
 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -222,7 +221,7 @@ def showMedias(sSearch = ''):
         sCat = re.search('&cat=(.+?)(&|$)', siteUrl).group(1)
     else:
         sCat = ''
-    
+
     if sSearch:
         sSiteUrl = sSearch
         sCat = sMovieTitle
@@ -231,7 +230,8 @@ def showMedias(sSearch = ''):
         fldId = int(re.search('&fld_id=(\d+)', siteUrl).group(1))
 
     if sMovieTitle and not sCat:
-        if 'FILM' in sMovieTitle or 'MOVIE' in sMovieTitle or 'DISNEY' in sMovieTitle or '3D' in sMovieTitle or '4K' in sMovieTitle or 'DOCUMENTAIRE' in sMovieTitle or 'DOCS' in sMovieTitle:
+        if 'FILM' in sMovieTitle or 'MOVIE' in sMovieTitle or 'DISNEY' in sMovieTitle or '3D' in sMovieTitle or\
+           '4K' in sMovieTitle or 'DOCUMENTAIRE' in sMovieTitle or 'DOCS' in sMovieTitle:
             sCat = 'film'
         elif 'MANGA' in sMovieTitle or 'JAPAN' in sMovieTitle:
             sCat = 'anime'
@@ -254,13 +254,13 @@ def showMedias(sSearch = ''):
 
     # menu de recherche
     if not sSearch:
-        if numPage == 1 :
+        if numPage == 1:
             if isMovie:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', URL_MOVIE[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', 'film')
                 oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Films)', 'search.png', oOutputParameterHandler)
-    
+
             if isTvShow:
                 if 'sSeason' not in siteUrl:
                     oOutputParameterHandler = cOutputParameterHandler()
@@ -268,18 +268,17 @@ def showMedias(sSearch = ''):
                     oOutputParameterHandler.addParameter('sMovieTitle', 'serie')
                     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Séries)', 'search.png', oOutputParameterHandler)
 
-    
         # parcourir un dossier virtuel, séparateur ':'
         searchFolder = ''
         if sSiteUrl[-1:] == ':':
             idxFolder = sSiteUrl.rindex('/')
             searchFolder = sSiteUrl[idxFolder+1:-1]
             sSiteUrl = sSiteUrl[:idxFolder]
-    
+
         apiUrl = URL_MAIN + API_URL_FOLDER + '&key=%s' % sToken
         if fldId:
             apiUrl += '&fld_id=%d' % fldId
-    
+
         oRequestHandler = cRequestHandler(apiUrl)
         sHtmlContent = oRequestHandler.request()
         content = json.loads(sHtmlContent)
@@ -287,13 +286,12 @@ def showMedias(sSearch = ''):
             dialog().VSinfo(content['msg'])
             oGui.setEndOfDirectory()
             return
-    
-        
+
         content = content['result']
         if not content:
             oGui.setEndOfDirectory()
             return
-    
+
         if isTvShow or isAnime:
             nbFile = showSeries(oGui, content, searchFolder, numPage)
         # ajout des dossiers en premier, sur la première page seulement
@@ -306,13 +304,13 @@ def showMedias(sSearch = ''):
     else:
         sUrl = API_URL_FILE
         if isTvShow or isAnime:
-            sUrl = API_URL_FILE_TVSHOW        
+            sUrl = API_URL_FILE_TVSHOW
     if fldId:
         sUrl += '&fld_id=%d' % fldId
-    if isMovie: 
+    if isMovie:
         sUrl += '&page=%d' % numPage
     apiUrl = URL_MAIN + sUrl + '&key=%s' % sToken
-    
+
     oRequestHandler = cRequestHandler(apiUrl)
     sHtmlContent = oRequestHandler.request()
     content = json.loads(sHtmlContent)
@@ -320,7 +318,7 @@ def showMedias(sSearch = ''):
         dialog().VSinfo(content['msg'])
         oGui.setEndOfDirectory()
         return
-    
+
     content = content['result']
     if not content:
         oGui.setEndOfDirectory()
@@ -330,8 +328,8 @@ def showMedias(sSearch = ''):
         sSeason = False
         if 'sSeason' in sSiteUrl:
             sSeason = sSiteUrl.split('sSeason=')[1]
-        
-        if 'files' in content and len(content['files'])>0 :
+
+        if 'files' in content and len(content['files']) > 0:
             nbFile = showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason)
         # else:
         #     nbFile = showSeries(oGui, content, searchFolder, numPage)
@@ -355,10 +353,10 @@ def showMedias(sSearch = ''):
     oGui.setEndOfDirectory()
 
 
-def addFolders(oGui, content, sSearchCat, searchFolder = None):
+def addFolders(oGui, content, sSearchCat, searchFolder=None):
     oUtil = cUtil()
 
-    # dossiers trier par ordre alpha
+    # dossiers trié par ordre alpha
     folders = sorted(content['folders'], key=lambda f: f['name'].upper())
     fldId = ''
 
@@ -398,17 +396,17 @@ def addFolders(oGui, content, sSearchCat, searchFolder = None):
                 sTitle = subName
 
         if sTitle.startswith('REP_'):
-            sTitle=sTitle.replace('REP_', '')
+            sTitle = sTitle.replace('REP_', '')
         elif sTitle.startswith('00_'):
-            sTitle=sTitle.replace('00_', '')
-        
+            sTitle = sTitle.replace('00_', '')
+
         # format du genre "REP_:"
         if not sTitle:
-            return addFolders(oGui, content, sSearchCat, subName)           
-            
+            return addFolders(oGui, content, sSearchCat, subName)
+
         if sTitle.startswith('RES-') and sTitle.endswith('-RES'):
-            sTitle=sTitle.replace('RES-', '[').replace('-RES', ']')
-        
+            sTitle = sTitle.replace('RES-', '[').replace('-RES', ']')
+
         if sSearchCat:
             if sSearchCat == 'serie':
                 sThumb = 'series.png'
@@ -447,12 +445,10 @@ def addFolders(oGui, content, sSearchCat, searchFolder = None):
             else:
                 sCat = None
                 sThumb = 'genres.png'
-        
 
         sUrl = API_URL_FILE + '&fld_id=%d' % fldId
         if sCat:
             sUrl += '&cat=%s' % sCat
-        
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -462,7 +458,7 @@ def addFolders(oGui, content, sSearchCat, searchFolder = None):
 def showMovies(oGui, content):
     oUtil = cUtil()
     nbFile = 0
-    
+
     # ajout des fichiers
     for file in content['files']:
         sTitle = file['title']
@@ -477,30 +473,30 @@ def showMovies(oGui, content):
                 continue
             # enlever l'extension
             sTitle = sTitle[:-4]
-    
+
         # on passe en utf-8
         if not isMatrix():
             try:
                 sTitle = sTitle.encode('utf-8')
             except:
                 pass
-            
+
         # recherche des métadonnées
-        sMovieTitle = sTitle 
+        sMovieTitle = sTitle
         pos = len(sMovieTitle)
         sYear, pos = getYear(sMovieTitle, pos)
         sRes, pos = getReso(sMovieTitle, pos)
         sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
         sLang, pos = getLang(sMovieTitle, pos)
-    
+
         sMovieTitle = sMovieTitle[:pos].replace('.', ' ').replace('_', ' ').strip()
-    
+
         # un peu de nettoyage
-        if not 'customer' in sMovieTitle.lower():
+        if 'customer' not in sMovieTitle.lower():
             sMovieTitle = re.sub('(?i)' + re.escape('custom'), '', sMovieTitle)
-       
+
         nbFile += 1
-        
+
         sDisplayTitle = sMovieTitle
         if sRes:
             sDisplayTitle += ' [%s]' % sRes
@@ -509,8 +505,8 @@ def showMovies(oGui, content):
 
         # nécessite un débrideur
         # if not file['canplay']:
-        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
-        
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]'
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -522,13 +518,15 @@ def showMovies(oGui, content):
 
     return nbFile
 
+
 def showSeries(oGui, content, searchFolder, numPage):
     oUtil = cUtil()
 
-    # dossiers trier par ordre alpha
+    # dossiers trié par ordre alpha
     folders = content['folders']
-    if len(folders) == 0: return 0
-     
+    if len(folders) == 0:
+        return 0
+
     folders = sorted(folders, key=lambda f: f['name'].upper())
 
     numSeries = 0
@@ -540,7 +538,7 @@ def showSeries(oGui, content, searchFolder, numPage):
 
     # sous-dossiers en premier
     if numPage == 1:
-#        subFolders = set()
+       # subFolders = set()
         for folder in folders:
             sTitle = folder['name']
             fldId = folder['fld_id']
@@ -555,9 +553,9 @@ def showSeries(oGui, content, searchFolder, numPage):
                 sThumb = 'genres.png'
 
                 if sTitle.startswith('REP_'):
-                    sTitle=sTitle.replace('REP_', '')
+                    sTitle = sTitle.replace('REP_', '')
                 elif sTitle.startswith('00_'):
-                    sTitle=sTitle.replace('00_', '')
+                    sTitle = sTitle.replace('00_', '')
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -569,14 +567,14 @@ def showSeries(oGui, content, searchFolder, numPage):
         if not isMatrix():
             sTitle = sTitle.encode('utf-8')
         sTitle = oUtil.unescape(sTitle)
-        
+
         # if searchFolder and not sTitle.startswith(searchFolder):
         if searchFolder and searchFolder.upper() not in sTitle.upper():
             continue
 
         if 'REP_' in sTitle[0:4] or '00_' in sTitle[0:3]:
             continue
-        
+
         numSeries += 1
         if numSeries <= offset:
             continue
@@ -590,13 +588,13 @@ def showSeries(oGui, content, searchFolder, numPage):
         sUrl = API_URL_FILE + '&fld_id=%d' % fldId
         sUrl += '&cat=serie'
         sUrl += '&page=%d' % 0
-        
+
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
-        
+
         saison = None
         if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper():
             saison = re.search('(\d+)', sTitle)
@@ -612,7 +610,7 @@ def showSeries(oGui, content, searchFolder, numPage):
             sYear, pos = getYear(sMovieTitle, pos)
             sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
             sMovieTitle = sMovieTitle[:pos]
-            
+
             sUrl += '&sSeason=%d' % saison
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -628,7 +626,7 @@ def showSeries(oGui, content, searchFolder, numPage):
         nbSeries += 1
         if nbSeries == NB_FILES:
             break
-            
+
     return nbSeries
 
 
@@ -637,19 +635,19 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
     if not sSeason:
         nbFile = 0
         saisons = set()
-        
+
         # Recherche des saisons
         for file in content['files']:
             nbFile += 1
             sTitle = file['title']
             if not isMatrix():
                 sTitle = sTitle.encode('utf-8')
-                
+
             # Recherche saisons et episodes
             sa, ep = searchEpisode(sTitle)
             if sa:
                 saisons.add(int(sa))
-    
+
         # plusieurs saisons, on les découpe
         if len(saisons) > 0:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -660,12 +658,11 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
             return nbFile
-    
-    
+
     pos = len(sMovieTitle)
     sYear, pos = getYear(sMovieTitle, pos)
     sMovieTitle = sMovieTitle[:pos]
-    
+
     # ajout des fichiers
     nbFile = 0
     oOutputParameterHandler = cOutputParameterHandler()
@@ -673,7 +670,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
         sFileName = file['title']
         if not isMatrix():
             sFileName = sFileName.encode('utf-8')
-            
+
         # Recherche saisons et episodes
         sa, ep = searchEpisode(sFileName)
         if sSeason:
@@ -682,50 +679,50 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
                     continue
             else:
                 sa = sSeason
-        
+
         if ep:
             sTitle = 'E' + ep + ' ' + sMovieTitle
             if sa:
                 sTitle = 'S' + sa + sTitle
-        
+
         pos = len(sFileName)
         sRes, pos = getReso(sFileName, pos)
         sLang, pos = getLang(sFileName, pos)
-        
+
         if not ep:
             sTitle = sFileName[:pos]
 
         sDisplayTitle = sTitle
-        
+
         if sRes:
             sDisplayTitle += '[%s]' % sRes
         if sLang:
             sDisplayTitle += '(%s)' % sLang
-        
+
         # nécessite un débrideur
         # if not file['canplay']:
-        #     sDisplayTitle += '[COLOR violet] *[/COLOR]' 
+        #     sDisplayTitle += '[COLOR violet] *[/COLOR]'
 
         sHosterUrl = URL_MAIN + file['file_code']
-        
+
         nbFile += 1
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'tv.png', file['thumbnail'], '', oOutputParameterHandler)
-        
+
     return nbFile
 
-    
+
 # Recherche saisons et episodes
 def searchEpisode(sTitle):
-    sa = ep =''
+    sa = ep = ''
     m = re.search('(^S|\WS|_*S|saison|season) *(\d+)(\W*E|_*E|\W*Ep|_*Ep|x|\W*\wpisode|\W*Épisode| *Etape) *(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(2)
         ep = m.group(4)
         if int(sa) == 1 and int(ep) > 264:    # echape les codecs X264 et x265
-            sa = ep =''
+            sa = ep = ''
     if not ep:  # Juste l'épisode
         m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
         if m:
@@ -739,13 +736,14 @@ def searchEpisode(sTitle):
 
     return sa, ep
 
+
 # recherche d'une serie par son nom en parcourant tous les dossiers
 def searchSeries(fldId, searchName):
 
     oGui = cGui()
     sToken = cPremiumHandler('darkibox').getToken()
     apiUrl = URL_MAIN + API_URL_FOLDER + '&key=%s' % sToken + '&fld_id=' + fldId
-    
+
     # recherches des dossiers "series" à la racine
     oRequestHandler = cRequestHandler(apiUrl)
     sHtmlContent = oRequestHandler.request()
@@ -764,7 +762,6 @@ def searchSeries(fldId, searchName):
     oGui.setEndOfDirectory()
 
 
-                
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -785,29 +782,31 @@ def getYear(sMovieTitle, pos):
     y, pos = _getTag(sMovieTitle, sPattern, pos)
     if y:
         return y, pos
-    
+
     # sinon sans les parenthèses
     sPattern = ['[^\w]([0-9]{4})[^\w]']
     return _getTag(sMovieTitle, sPattern, pos)
 
 
 def getLang(sMovieTitle, pos):
-    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', '.(FRENCH)', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
+    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', '.(FRENCH)', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]',
+                '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
     return _getTag(sMovieTitle, sPattern, pos)
 
 
 def getReso(sMovieTitle, pos):
-    
+
     sPattern = ['RES-(.+?)-RES']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if not sRes:
-        sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)', '.(HDLIGHT)', '.(4K)', '.(UHD)', '\d{3,4}P', '.(HDRIP)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBDL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
+        sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)',
+                    '.(HDLIGHT)', '.(4K)', '.(UHD)', '\d{3,4}P', '.(HDRIP)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)',
+                    '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBDL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
         sRes, pos = _getTag(sMovieTitle, sPattern, pos)
         if sRes:
             sRes = sRes.replace('2160P', '4K')
-    
-    return sRes, pos
 
+    return sRes, pos
 
 
 def getIdTMDB(sMovieTitle, pos):
@@ -824,7 +823,7 @@ def _getTag(sMovieTitle, tags, pos):
             if not ret and l > 1:
                 ret = aResult.group(l-1)
             p = sMovieTitle.index(aResult.group(0))
-            if p<pos and p > 3:
+            if pos > p > 3:
                 pos = p
             return ret.upper(), pos
     return False, pos
