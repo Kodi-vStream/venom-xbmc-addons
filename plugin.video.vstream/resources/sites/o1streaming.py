@@ -256,7 +256,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sTitle = aEntry[0]
+            sTitle = aEntry[0].replace(' Streaming', '')
             sUrl = aEntry[1]
             # if sUrl.startswith('/'):
                 # sUrl = URL_MAIN + sUrl
