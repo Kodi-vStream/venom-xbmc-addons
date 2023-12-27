@@ -7,7 +7,7 @@
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "True",
+            "active": "False",
             "url": "https://www.33seriestreaming.vin/"
         },
         "adkami_com": {
@@ -109,7 +109,7 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "True",
+            "active": "False",
             "url": "https://french-stream.moe/"
         },
         "frenchanimes": {
