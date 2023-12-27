@@ -340,7 +340,7 @@
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://www.wiflix.voto/"
         },
         "wilifilm": {
