@@ -225,7 +225,7 @@ def ShowSxE():
                 break
 
             sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
+            sUrl2 = URL_MAIN +   aEntry[0]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
