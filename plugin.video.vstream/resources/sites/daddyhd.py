@@ -23,6 +23,8 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 SPORT_SPORTS = ('/', 'load')
 SPORT_GENRES = ('schedule/schedule-generated.json', 'showGenres')
 
+# extra stream : schedule-extra-generated.json
+
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
@@ -120,7 +122,7 @@ def showGenres():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png',  '', sTitle, oOutputParameterHandler)
 
             
     oGui.setEndOfDirectory()
@@ -166,7 +168,7 @@ def showMovies():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-                oGui.addDir(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'genres.png', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png',  '', sTitle, oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -209,7 +211,7 @@ def showHoster():
                     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
                     oOutputParameterHandler.addParameter('sDesc', eventName)
         
-                    oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+                    oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', eventName, oOutputParameterHandler)
             
             
     oGui.setEndOfDirectory()
