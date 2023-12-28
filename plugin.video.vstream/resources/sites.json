@@ -41,7 +41,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
@@ -95,7 +95,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.wtf/"
+            "url": "https://www.free-telecharger.art/"
         },
         "freebox": {
             "label": "Freebox",
@@ -161,7 +161,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv737.me/"
+            "url": "https://livetv746.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -172,7 +172,7 @@
             "label": "Mes Films",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://mesfilms.top/"
+            "url": "https://mesfilms.net/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -186,7 +186,7 @@
         },
         "neuf_docu": {
             "label": "9Docu",
-            "active": "True",
+            "active": "False",
             "url": "https://9docu.org/"
         },
         "neymartv": {
@@ -273,14 +273,14 @@
         },
         "streaminz": {
             "label": "Streaminz",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://streaminze.org/"
         },
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport4.sbs/"
+            "url": "https://primefoot.ru/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -335,7 +335,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.kim/"
+            "url": "https://www.wawacity.boats/"
         },
         "wiflix": {
             "label": "WiFlix",
