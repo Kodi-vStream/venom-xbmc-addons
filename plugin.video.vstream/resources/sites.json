@@ -78,7 +78,7 @@
         },
         "filmoflix": {
             "label": "Filmoflix",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://www.wishflix.live/"
         },
