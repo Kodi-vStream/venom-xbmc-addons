@@ -11,6 +11,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
+try:    import json
+except: import simplejson as json
+
 
 SITE_IDENTIFIER = 'daddyhd'
 SITE_NAME = 'DaddyHD'
@@ -18,32 +21,37 @@ SITE_DESC = 'Chaines de Sport et de Divertissement'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-SPORT_GENRES = ('/', 'showGenres')
+SPORT_GENRES = ('schedule/schedule-generated.json', 'showGenres')
+
+# extra stream : schedule-extra-generated.json
 
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
 # chaines
 channels = {
-    116: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
-    117: ['bein Sports 2', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
-    118: ['bein Sports 3', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
-    119: ['RMC Sport 1', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
-    120: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
-    121: ['Canal+', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
-    122: ['Canal+ Sport', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG']
+    116: ['bein Sports 1', 'https://12.webhd.ru/ddh2/premium116/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
+    117: ['bein Sports 2', 'https://12.webhd.ru/ddh2/premium117/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
+    118: ['bein Sports 3', 'https://12.webhd.ru/ddh2/premium118/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
+    119: ['RMC Sport 1', 'https://12.webhd.ru/ddh2/premium119/tracks-v1a1/mono.m3u8', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
+    120: ['RMC Sport 2', 'https://12.webhd.ru/ddh1/premium120/tracks-v1a1/mono.m3u8', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
+    121: ['Canal+', 'https://12.webhd.ru/ddh2/premium121/tracks-v1a1/mono.m3u8', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
+    122: ['Canal+ Sport', 'https://12.webhd.ru/ddh2/premium122/tracks-v1a1/mono.m3u8', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG'],
+    463: ['Canal+ Foot', 'https://12.webhd.ru/ddy4/premium463/tracks-v1a1/mono.m3u8', 'https://thumb.canalplus.pro/bran/unsafe/870x486/image/62dab6a90b84c/uploads/media/C+FOOT_213x160.png'],
+    645: ["L'équipe", 'https://12.webhd.ru/ddy5/premium645/tracks-v1a1/mono.m3u8', 'https://upload.wikimedia.org/wikipedia/commons/4/4a/L%27Equipe_logo.png'],
+    318: ["Golf Channel USA", 'https://12.webhd.ru/ddy3/premium318/tracks-v1a1/mono.m3u8', 'https://www.golfchannel.fr/upload/media/golf-channel-600af6fe955c3.png'],
+    494: ['bein Sports MAX 4', 'https://12.webhd.ru/ddy5/premium494/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png'],
+    495: ['bein Sports MAX 5', 'https://12.webhd.ru/ddy5/premium495/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/FE2dOGMxn1waqAFYxqsGxXKkvCo=/788714-5MAX.png'],
+    496: ['bein Sports MAX 6', 'https://12.webhd.ru/ddy5/premium496/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/beNacZewwA5WqFglPAwOaD4n5QA=/788715-6MAX.png'],
+    497: ['bein Sports MAX 7', 'https://12.webhd.ru/ddy5/premium497/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/6IXXUorOrK_n756SjT6a2Ko7jiM=/788716-7MAX.png'],
+    498: ['bein Sports MAX 8', 'https://12.webhd.ru/ddy5/premium498/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/6aOfeAugcgMy93nrOfk8NAacALs=/788717-8MAX.png'],
+    499: ['bein Sports MAX 9', 'https://12.webhd.ru/ddy5/premium499/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/etM_TIm1DmhWr0TZ_CbWGJvaTdQ=/788718-9MAX.png'],
+    500: ['bein Sports MAX 10', 'https://12.webhd.ru/ddy5/premium500/tracks-v1a1/mono.m3u8', 'https://images.beinsports.com/LxFG3ZG88jlFsOyWo_C7o4mdY7M=/788719-10MAX.png']
     }
 
+
+
 # PROBLEME DE DEBIT et fait planter kodi
-    # 463: ['Canal+ Foot', 'https://thumb.canalplus.pro/bran/unsafe/870x486/image/62dab6a90b84c/uploads/media/C+FOOT_213x160.png'],
-    # 645: ["L'équipe", 'https://upload.wikimedia.org/wikipedia/commons/4/4a/L%27Equipe_logo.png'],
-    # 494: ['bein Sports MAX 4', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png'],
-    # 495: ['bein Sports MAX 5', 'https://images.beinsports.com/FE2dOGMxn1waqAFYxqsGxXKkvCo=/788714-5MAX.png'],
-    # 496: ['bein Sports MAX 6', 'https://images.beinsports.com/beNacZewwA5WqFglPAwOaD4n5QA=/788715-6MAX.png'],
-    # 497: ['bein Sports MAX 7', 'https://images.beinsports.com/6IXXUorOrK_n756SjT6a2Ko7jiM=/788716-7MAX.png'],
-    # 498: ['bein Sports MAX 8', 'https://images.beinsports.com/6aOfeAugcgMy93nrOfk8NAacALs=/788717-8MAX.png'],
-    # 499: ['bein Sports MAX 9', 'https://images.beinsports.com/etM_TIm1DmhWr0TZ_CbWGJvaTdQ=/788718-9MAX.png'],
-    # 500: ['bein Sports MAX 10', 'https://images.beinsports.com/LxFG3ZG88jlFsOyWo_C7o4mdY7M=/788719-10MAX.png']
 
 
 def load():
@@ -62,42 +70,37 @@ def load():
 
 def showTV():
     oGui = cGui()
+    oHosterGui = cHosterGui()
+    hosterLienDirect = oHosterGui.getHoster('lien_direct')
 
-    sUrl = URL_MAIN + '/cast/stream-%d.php'
-    chaines = [116, 117, 118, 119, 120, 121, 122]
+    chaines = [116, 117, 118, 119, 120, 121, 122, 463, 645, 318, 494, 495, 496, 497, 498, 499, 500]
 
-    oOutputParameterHandler = cOutputParameterHandler()
     for iChannel in chaines:
         channel = channels.get(iChannel)
         sDisplayTitle = channel[0]
-        sThumb = channel[1]
-        oOutputParameterHandler.addParameter('siteUrl', sUrl % iChannel)
-        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
+        sUrl = channel[1] + '|referer=https://weblivehdplay.ru/'
+        sThumb = channel[2]
+        hosterLienDirect.setDisplayName(sDisplayTitle)
+        hosterLienDirect.setFileName(sDisplayTitle)
+        oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
 
 def showGenres():
     oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
-    sUrl = URL_MAIN
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
 
-    oParser = cParser()
-    sPattern = '<h2 style="background-color:cyan">([^<]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
-        sportGenre = {}
-        oOutputParameterHandler = cOutputParameterHandler()
-        for sTitle in aResult[1]:
-            if 'Schedule' in sTitle:
-                break
+    sportGenre = {}
+    for days in result:
+        shows = result[days]
+        for sTitle in shows:
             if 'Tv Show' in sTitle:
                 continue
 
@@ -110,218 +113,168 @@ def showGenres():
             sDisplayTitle = sDisplayTitle.replace('Alpine Ski', 'Ski')
             sDisplayTitle = sDisplayTitle.replace('Rugby Union', 'Rugby à XV')
             sDisplayTitle = sDisplayTitle.replace('Sailing / Boating', 'Voile')
+            
+            if sDisplayTitle in sportGenre:
+                continue
             sportGenre[sDisplayTitle] = sTitle
 
-        for sDisplayTitle, sTitle in sorted(sportGenre.items()):
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+    for sDisplayTitle, sTitle in sorted(sportGenre.items()):
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png',  '', sTitle, oOutputParameterHandler)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', oOutputParameterHandler)
-
+            
     oGui.setEndOfDirectory()
 
 
 def showMovies():
-    oGui = cGui()
-    oParser = cParser()
-    sUrl = URL_MAIN
 
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<h2 style="background-color:cyan">%s</h2>' % sTitle
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<h2 style="background-color:cyan">')
+    result = json.loads(sHtmlContent)
 
-    sPattern = '<hr>(<strong>|)(\d+:\d+) (.+?)<'#span.+?href="([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+#    mois = ['filler', 'January', 'February', 'March', 'April', 'May', 'June', 'juilly', 'aout', 'September', 'October', 'November', 'December']
+    for days in result:
+        
+#Wednesday 27th December 2023 - Schedule Time UK GMT+1
+        # date = days.strip().split(' ')
+        # numJour = date[1][0:-2]
+        # numMois = mois.index(date[2])
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            sDate = aEntry[1]
-            sTitle = aEntry[2]
+        shows = result[days]
+        for showName in shows:
+            if showName != sMovieTitle:
+                continue
+
+            show = shows[showName]
+            for events in show:
+                timeEvent = events['time']
+                heure, minute = timeEvent.split(':')
+                heure = int(heure)
+                heure = 0 if heure == 23 else heure +1
+#                dateEvent = '%s/%s' % (numJour, numMois)
+#                time = '%s %s' % (dateEvent, timeEvent)
+                time = '%02d:%s' % (heure, minute)
+                sTitle = events['event']
             
-            sTitle = sDate + ' ' + sTitle
-            
-            # heure d'été/hiver
-            heure = int(sDate[0:2])
-            heure += 1
-            if heure == 24:
-                heure = 0
-            sDate = '%02d:%s' % (heure, sDate[3:])
-            sDisplayTitle = sDate + ' - ' + aEntry[2].strip()
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-
-            oGui.addDir(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', oOutputParameterHandler)
-
+                sDisplayTitle = '%s - %s' % (time, sTitle)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png',  '', sTitle, oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
 def showHoster():
     oGui = cGui()
-    oParser = cParser()
-    urlMain = URL_MAIN
+
+    oOutputParameterHandler = cOutputParameterHandler()
 
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(urlMain)
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
 
-    # enlève les accents qui gènent
-    sTitle2 = re.sub('[^a-zA-Z0-9:. ]', '#', sTitle)
-    if sTitle2 != sTitle:
-        sTitle2 = sTitle[:sTitle2.index('#')]
-    sPattern = '>%s' % sTitle2
+    for days in result:
+        shows = result[days]
+        for showName in shows:
+            show = shows[showName]
+            for events in show:
+                timeEvent = events['time']
+                eventName = events['event']
+                
+                if sMovieTitle != eventName:
+                    continue
 
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
-
-    sPattern = 'href="([^"]+).+?rel=".+?>([^\(]+)'
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    # on enleve l'heure qui peut être fausse, heure d'été/hiver
-    sTitle = sTitle[5:]
-    
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
-        # total = len(aResult[1])
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            sUrl = aEntry[0].replace('/stream/', '/embed/')
-            sDisplayTitle = sTitle + ' (' + aEntry[1].strip() + ')'
-
-            if 'http' not in sUrl:
-                sUrl = urlMain[:-1] + sUrl
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-
-            oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
-
+                heure, minute = timeEvent.split(':')
+                heure = int(heure)
+                heure = 0 if heure == 23 else heure +1
+                time = '%02d:%s' % (heure, minute)
+            
+                channels = events['channels']
+                for channel in channels:
+                    channelName = channel['channel_name']
+                    channelId = channel['channel_id']
+            
+                    sDisplayTitle = '%s - %s [%s]' % (time, eventName[0:30], channelName)
+                    oOutputParameterHandler.addParameter('siteUrl', channelId)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+                    oOutputParameterHandler.addParameter('sDesc', eventName)
+        
+                    oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', eventName, oOutputParameterHandler)
+            
+            
     oGui.setEndOfDirectory()
 
 
 def showLink():
     oGui = cGui()
 
+    oHosterGui = cHosterGui()
+    hosterLienDirect = oHosterGui.getHoster('lien_direct')
+
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    siterefer = oInputParameterHandler.getValue('siterefer')
-    sHosterUrl = ''
+    channel = oInputParameterHandler.getValue('siteUrl')
 
-    bvalid, shosterurl = getHosterIframe(sUrl, siterefer)
-    if bvalid:
-        sHosterUrl = shosterurl
+    sDisplayTitle = sMovieTitle.replace('[', '[1 - ')
+    sUrl = 'https://12.webhd.ru/ddh1/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
 
-    if sHosterUrl:
-        sHosterUrl = sHosterUrl.strip()
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster:
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sDisplayTitle = sMovieTitle.replace('[', '[2 - ')
+    sUrl = 'https://12.webhd.ru/ddh2/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
 
+    sDisplayTitle = sMovieTitle.replace('[', '[3 - ')
+    sUrl = 'https://12.webhd.ru/ddy2/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+
+    sDisplayTitle = sMovieTitle.replace('[', '[4 - ')
+    sUrl = 'https://12.webhd.ru/ddy3/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+
+    sDisplayTitle = sMovieTitle.replace('[', '[5 - ')
+    sUrl = 'https://12.webhd.ru/ddy4/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+
+    sDisplayTitle = sMovieTitle.replace('[', '[6 - ')
+    sUrl = 'https://12.webhd.ru/ddy5/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+            
+    sDisplayTitle = sMovieTitle.replace('[', '[7 - ')
+    sUrl = 'https://12.webhd.ru/esx3/premium%s/tracks-v1a1/mono.m3u8' % channel
+    sUrl = sUrl + '|referer=https://weblivehdplay.ru/'
+    hosterLienDirect.setDisplayName(sDisplayTitle)
+    hosterLienDirect.setFileName(sDisplayTitle)
+    oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+            
     oGui.setEndOfDirectory()
 
-
-# Traitement générique
-def getHosterIframe(url, referer):
-
-    if not url.startswith('http'):
-        url = URL_MAIN + url
-
-    oRequestHandler = cRequestHandler(url)
-    if referer:
-        oRequestHandler.addHeaderEntry('Referer', referer)
-    sHtmlContent = str(oRequestHandler.request())
-    if not sHtmlContent:
-        return False, False
-
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        from resources.lib.packer import cPacker
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sHtmlContent = cPacker().unpack(sstr)
-
-    sPattern = '.atob\("(.+?)"'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        import base64
-        for code in aResult:
-            try:
-                if isMatrix():
-                    code = base64.b64decode(code).decode('ascii')
-                else:
-                    code = base64.b64decode(code)
-                if '.m3u8' in code:
-                    return True, code + '|Referer=' + url
-            except Exception as e:
-                pass
-
-    referer = url
-    sPattern = '<iframe src=["\']([^"\']+)["\']'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        for url in aResult:
-            if url.startswith("./"):
-                url = url[1:]
-            if not url.startswith("http"):
-                if not url.startswith("//"):
-                    url = '//' + referer.split('/')[2] + url  # ajout du nom de domaine
-                url = "https:" + url
-            b, url = getHosterIframe(url, referer)
-            if b:
-                return True, url
-
-    sPattern = 'player.load\({source: (.+?)\('
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        func = aResult[0]
-        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
-        aResult = re.findall(sPattern, sHtmlContent)
-        if aResult:
-            referer = url
-            sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
-            return True, sHosterUrl + '|referer=' + referer
-
-    sPattern = ';var.+?src=["\']([^"\']+)["\']'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        url = aResult[0]
-        if '.m3u8' in url:
-            return True, url
-
-    sPattern = '[^/]source.+?["\'](https.+?)["\']'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
-        oRequestHandler.request()
-        sHosterUrl = oRequestHandler.getRealUrl()
-        sHosterUrl = sHosterUrl.replace('index', 'mono')
-        return True, sHosterUrl + '|referer=' + referer
-
-    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
-        oRequestHandler.request()
-        sHosterUrl = oRequestHandler.getRealUrl()
-        return True, sHosterUrl + '|referer=' + referer
-
-    return False, False

@@ -7,8 +7,8 @@
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "True",
-            "url": "https://ww1.33seriestreaming.lol/"
+            "active": "False",
+            "url": "https://www.33seriestreaming.vin/"
         },
         "adkami_com": {
             "label": "Adkami",
@@ -41,7 +41,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://cinemay.cc/"
         },
@@ -78,9 +78,9 @@
         },
         "filmoflix": {
             "label": "Filmoflix",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
-            "url": "https://www.filmoflix.club/"
+            "url": "https://www.wishflix.live/"
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
@@ -95,7 +95,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.wtf/"
+            "url": "https://www.free-telecharger.art/"
         },
         "freebox": {
             "label": "Freebox",
@@ -109,7 +109,7 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "True",
+            "active": "False",
             "url": "https://french-stream.moe/"
         },
         "frenchanimes": {
@@ -161,7 +161,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv.sx/"
+            "url": "https://livetv746.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -172,7 +172,7 @@
             "label": "Mes Films",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://mesfilms.top/"
+            "url": "https://mesfilms.net/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -186,7 +186,7 @@
         },
         "neuf_docu": {
             "label": "9Docu",
-            "active": "True",
+            "active": "False",
             "url": "https://9docu.org/"
         },
         "neymartv": {
@@ -273,18 +273,18 @@
         },
         "streaminz": {
             "label": "Streaminz",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://streaminze.org/"
         },
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport4.sbs/"
+            "url": "https://primefoot.ru/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://telecharger-streaming.org/"
         },
         "themoviedb_org": {
@@ -295,7 +295,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v5.toonanime.co/"
+            "url": "https://v6.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -335,12 +335,12 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.kim/"
+            "url": "https://www.wawacity.boats/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://www.wiflix.voto/"
         },
         "wilifilm": {

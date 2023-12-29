@@ -18,7 +18,7 @@ SITE_DESC = 'Toutes les chaines de Sport'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-SPORT_GENRES = ('p/full-schedule_17.html', 'showGenres')
+SPORT_GENRES = ('p/full-schedule.html', 'showGenres')
 
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
@@ -102,7 +102,7 @@ def showGenres():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<h3> (.+?) <\/h3>.+?&#9989;'
+    sPattern = '<h3> (.+?) <\/h3> <div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:

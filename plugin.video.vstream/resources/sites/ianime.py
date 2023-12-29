@@ -363,7 +363,11 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = cutSearch(sHtmlContent, typeSearch)
+
+        sHtmlContent2 = cutSearch(sHtmlContent, typeSearch)
+        # Si ca rate on prend tout, car les section ne sont pas fiables
+        if "watch" in sHtmlContent2:
+            sHtmlContent = sHtmlContent2
 
     else:
         oInputParameterHandler = cInputParameterHandler()
