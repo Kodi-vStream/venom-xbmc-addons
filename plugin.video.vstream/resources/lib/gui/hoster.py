@@ -230,6 +230,9 @@ class cHosterGui:
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
 
+        if ('embedwish' in sHostName) or ('streamwish' in sHostName):
+            return self.getHoster('streamwish')
+
         if ('guccihide' in sHostName) or ('streamhide' in sHostName):
             return self.getHoster('streamhide')
 
@@ -242,7 +245,7 @@ class cHosterGui:
         if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName):
             return self.getHoster('vidguard')
 
-        if ('filelions' in sHostName) or ('shoooot' in sHostName):
+        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName):
             return self.getHoster('filelions')
 
         if ('playvidto' in sHostName):
@@ -312,7 +315,7 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName):
+        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName) or ('d0o0d' in sHostName):
             return self.getHoster('dood')
 
         if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
