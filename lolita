@@ -1,0 +1,16 @@
+https://github.com/lesueurnicolas27/Mamvst.git
+echo "# Mamvst" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:lesueurnicolas27/Mamvst.git
+git push -u origin main
+
+git remote add origin git@github.com:lesueurnicolas27/Mamvst.git
+git branch -M main
+git push -u origin main
+
+https://github.com/Kodi-vStream/Kodi-vStream.github.io.git
+git@github.com:Kodi-vStream/Kodi-vStream.github.io.git
+gh repo clone Kodi-vStream/Kodi-vStream.github.io
