@@ -10,10 +10,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
 
-SITE_IDENTIFIER = 'YoAirf'
-SITE_NAME = 'Yo-Airf'
-SITE_DESC = 'Séries en continue ' 
-#URL_MAIN='www.blieseries.uno'
+
+SITE_IDENTIFIER = 'blueseries'
+SITE_NAME = 'blueseries'
+SITE_DESC = 'Streaming des séries'
+#URL_MAIN='www.blueseries.uno'
 URL_MAIN = URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_NEWS = (URL_MAIN + 'regarder-series/', 'showMovies')
@@ -99,25 +100,16 @@ def showSearch():
         return
 
 def showSerieGenres():
-    showGenres(URL_MAIN + 'regarder-series/', '_s')
-
-
-def showGenres(urltype, s):
     oGui = cGui()
-
-    liste = []
-    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire', 'horreur',
-                  'musical', 'famille', 'fantastique', 'guerre', 'historique', 'policier', 'romance',
-                  'science-fiction', 'thriller', 'western']
-
-   
-
-    for igenre in listegenre:
-        liste.append([igenre.capitalize(), urltype + igenre + s + '/'])
+    listegenre = [['Action', 'action_s'], ['Animation', 'animation_s'], ['Aventure', 'aventure_s'], ['Biopic', 'biopic-s'], ['Comédie', 'comedie_s'],
+             ['Documentaire', 'documentaire-s'], ['Drame', 'drame_s'], ['Famille', 'famille-s'],
+             ['Fantastique', 'fantastique_s'], ['Guerre', 'guerre_s'], ['Historique', 'historique_s'], ['Horreur', 'horreur_s'],
+             ['Judiciaire', 'judiciare-s'], ['Musique', 'musical_s'], ['Policier', 'policier_s'], ['Romance', 'romance_s'],
+             ['Science-Fiction', 'science_fiction_s'], ['Thriller', 'thriller_s'],['western', 'western_s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    for sTitle, sUrl in listegenre:
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'regarder-series/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -172,7 +164,7 @@ def showMovies(sSearch=''):
             sLang = aEntry[3].strip()
 
 
-            sDisplayTitle = sTitle + ' {Série}'
+            sDisplayTitle = sTitle
             sDisplayTitle = sDisplayTitle + ' (' + sLang + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -276,7 +268,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            sEpisode = aEntry[1] + '  ' + aEntry[2]  .replace('é', 'e').strip() # épisode 2
+            sEpisode = aEntry[1] + '  ' + aEntry[2].replace('é', 'e').strip() # épisode 2
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sTitle = sMovieTitle + ' ' + sEpisode
@@ -316,7 +308,7 @@ def showSerieLinks():
 
             videoId = aEntry[0]
             xfield = aEntry[1]
-            hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
+            hosterName = xfield.replace('_', ' ').capitalize().replace('-vf', ' (VF)').replace('-vostfr', ' (VOSTFR)')
 
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
