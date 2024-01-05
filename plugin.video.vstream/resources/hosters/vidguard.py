@@ -1,9 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 from resources.lib.aadecode import decodeAA
 from resources.lib.util import cUtil
 
@@ -33,32 +34,44 @@ class cHoster(iHoster):
         sPattern = '<script\s*src="(/assets/videojs/ad/[^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
+        #Surement inutile mais je laisse pour compatibilité
         if aResult[0] is True:
             url = self.__getHost() + aResult[1][0]
             
             oRequest = cRequestHandler(url)
             oRequest.addHeaderEntry('Referer', self._url)
             sHtmlContent = oRequest.request()
+
+        #with open('c:\\test.txt', 'w', encoding='utf-8') as f:
+        #    f.write(sHtmlContent)
+
+        sPattern = 'n(ﾟωﾟ.+?);"\);<\/script'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if aResult[0]:
             
-            sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
+            code = aResult[1][0]
+            code = code.replace('\\u002b', '+')
+            code = code.replace('\\u0027', "'")
+            code = code.replace('\\u0022', '"')
+            code = code.replace('\\/', '/')
+            code = code.replace('\\\\', '\\')
+            code = code.replace('\\"', '"')
+            sHtmlContent = decodeAA(code, True)
+            
+            sPattern = 'Label":"([^"]+)","URL":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                # initialisation des tableaux
+                url = []
+                qua = []
+                for i in aResult[1]:
+                    url2 = str(i[1])
+                    url2 = url2.encode().decode('unicode-escape')
+                    url.append(sig_decode(url2))
+                    qua.append(str(i[0]))
 
-            if aResult[0] is True:
-                sHtmlContent = decodeAA(aResult[1][0], True)
-                
-                sPattern = 'Label":"([^"]+)","URL":"([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if aResult[0]:
-                    # initialisation des tableaux
-                    url = []
-                    qua = []
-                    for i in aResult[1]:
-                        url2 = str(i[1])
-                        url2 = url2.encode().decode('unicode-escape')
-                        url.append(sig_decode(url2))
-                        qua.append(str(i[0]))
-
-                    api_call = dialog().VSselectqual(qua, url) + '|Referer=' + self._url
+                api_call = dialog().VSselectqual(qua, url) + '|Referer=' + self._url
 
         if api_call:
             return True, api_call
