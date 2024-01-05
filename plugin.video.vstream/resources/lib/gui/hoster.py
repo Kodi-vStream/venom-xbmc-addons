@@ -217,7 +217,7 @@ class cHosterGui:
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
                             'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo', 'turbovid',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
-                            'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
+                            'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload', 'darkibox']
@@ -242,7 +242,7 @@ class cHosterGui:
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
 
-        if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName):
+        if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
 
         if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName):
