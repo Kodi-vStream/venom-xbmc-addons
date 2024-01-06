@@ -29,6 +29,11 @@
             "active": "False",
             "url": "https://www.bd-streams.tk/"
         },
+        "blueseries": {
+            "label": "BLUEseries",
+            "active": "True",
+            "url": "https://www.blueseries.uno/"
+        },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
             "active": "True",
