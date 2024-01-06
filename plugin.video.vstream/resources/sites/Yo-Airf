@@ -9,37 +9,38 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'blueseries'
-SITE_NAME = 'blueseries'
+SITE_NAME = 'BLUEseries'
 SITE_DESC = 'Streaming des séries'
-#URL_MAIN='www.blueseries.uno'
+
 URL_MAIN = URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_NEWS = (URL_MAIN + 'regarder-series/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
-SERIE_VF = (URL_MAIN + 'regarder-series/series-vf/', 'showMovies')
-SERIE_VOSTFR = (URL_MAIN + 'regarder-series/series-vostfr/', 'showMovies')
+SERIE_ANNEES = (URL_MAIN, 'showSerieYears')
+SERIE_LIST = (URL_MAIN, 'showSerieAlpha')
+SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/series-vostfr/', 'showMovies')
 
-key_search_series = '#searchsomeseries'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
-URL_SEARCH_SERIES = (key_search_series, 'showMovies')
+URL_SEARCH_SERIES = ('', 'showMovies')
 
-# recherche utilisé quand on n'utilise pas le globale
-MY_SEARCH_SERIES = (True, 'showSearchSerie')
+# recherche utilisée quand on n'utilise pas le globale
+MY_SEARCH_SERIES = (True, 'showSearch')
 
 # Menu GLOBALE HOME
 SERIE_SERIES = (True, 'showMenuTvShows')
 
 
 def load():
+    showMenuTvShows()
+
+def showMenuTvShows():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Series', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
 
@@ -49,45 +50,16 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Série (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Série (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
-
-
-def showMenuTvShows():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Série(Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Série(VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Série (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-def showSearchSerie():
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard()
-    if sSearchText:
-        sUrl = key_search_series + sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
 
 
 def showSearch():
@@ -98,6 +70,20 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
+def showSerieAlpha():
+    import string
+
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    listalpha = ['1']
+    listalpha.extend(list(string.ascii_lowercase))
+    for alpha in listalpha:
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'catalog/' + alpha + '&cat=2')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + str(alpha).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 def showSerieGenres():
     oGui = cGui()
@@ -115,18 +101,29 @@ def showSerieGenres():
     oGui.setEndOfDirectory()
 
 
+def showSerieYears():
+    oGui = cGui()
+#    import datetime
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1930, 2022)):  #int(datetime.datetime.now().year) + 1)):
+        sYear = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear  + '&cat=2')
+        oOutputParameterHandler.addParameter('sYear', sYear)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
-    bSearchSerie = False
-
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
+        
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
-        if key_search_series in sSearch:
-            sSearch = sSearch.replace(key_search_series, '')
-            bSearchSerie = True
-
         pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         oRequest = cRequestHandler(URL_SEARCH[0])
         oRequest.setRequestType(1)
@@ -143,8 +140,8 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # ref thumb title years
-    sPattern = '<article class="movie-box.+?img src="([^"]+)".+?a href="([^"]+)" title="([^"]+)".+?séries (\w+)'
+    # thumb url title
+    sPattern = '<article class="movie-box.+?img src="([^"]+)".+?a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -161,17 +158,16 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
-            sLang = aEntry[3].strip()
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
-            sDisplayTitle = sDisplayTitle + ' (' + sLang + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sLang', sLang)
-        
             
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -215,11 +211,11 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'property="og:description".+?content="([^"]+)'
+    sPattern = '<div class="description">.+?<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'BetaSeries'
+    sDesc = ''
     if aResult[0]:
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
+        sDesc = aResult[1][0]
 
     sPattern = '<span class="part12">([^<]*)</span>.+?<div class="spoiler1-body">.+?<a\s+href="([^"]+)/'
     aResult = oParser.parse(sHtmlContent, sPattern)
