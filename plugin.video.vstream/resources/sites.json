@@ -147,6 +147,11 @@
             "active": "False",
             "url": "https://fr.illimitestreaming.top/"
         },
+		"juststream": {
+            "label": "JustStream",
+            "active": "True",
+            "url": "https://juststream.voto/"
+        },
         "k_streaming": {
             "label": "K_Streaming",
             "active": "False",
