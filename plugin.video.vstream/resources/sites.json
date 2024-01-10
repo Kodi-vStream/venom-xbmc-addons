@@ -24,6 +24,11 @@
             "active": "True",
             "url": "http://www.anime-ultime.net/"
         },
+	"animeultra": {
+            "label": "Anime Ultra",
+            "active": "True",
+            "url": "https://w1.animesultra.net/"
+        },
         "bd_streams": {
             "label": "BD STREAMS",
             "active": "False",
