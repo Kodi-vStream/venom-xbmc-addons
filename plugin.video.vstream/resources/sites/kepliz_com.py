@@ -125,9 +125,10 @@ def showMovies(sSearch=''):
 
         sSearch = sSearch[:20]  # limite de caractere sinon bug de la recherche
         siteName = sMainUrl.split('/')[2].split('.')[0]
-        oRequestHandler = cRequestHandler(sMainUrl + 'home/%s/' % siteName)
+        sUrl = sMainUrl + 'home/{0!s}'.format(siteName)
+        oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('searchword', sSearch.replace(' ', '+'))
+        oRequestHandler.addParameters('searchword', sSearch)
         sABPattern = '<div class="column24"'
     else:
         oInputParameterHandler = cInputParameterHandler()
