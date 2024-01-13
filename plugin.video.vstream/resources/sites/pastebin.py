@@ -2409,10 +2409,7 @@ def showEpisodesLinks(siteUrl=''):
         sUrl = siteUrl + '&sEpisode=' + str(episode)
 
         if str(episode).isdigit():
-            if sSaison.isdigit():
-                episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
-            else:
-                episode = 'E{:02d}'.format(int(episode))
+            episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
         else:
             episode = '{}{}'.format(sDisplaySaison, episode)
         sDisplayTitle = searchTitle + ' - ' + episode
