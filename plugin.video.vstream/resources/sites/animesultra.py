@@ -10,17 +10,17 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
-from resources.lib.util import urlEncode
+from resources.lib.comaddon import siteManager
+from resources.lib.util import urlEncode, cUtil
 
 try:
     xrange
 except NameError:
     xrange = range
 
-SITE_IDENTIFIER = 'animeultra'
-SITE_NAME = 'Animeultra'
-SITE_DESC = 'anime en VF/VOSTFR'
+SITE_IDENTIFIER = 'animesultra'
+SITE_NAME = 'Animes Ultra'
+SITE_DESC = 'Regarder gratuitement vos animes VF/VOSTFR préférés'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
@@ -30,7 +30,7 @@ ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-vostfr/', 'showMovies')
 ANIM_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
@@ -106,8 +106,10 @@ def showMovies(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
+        oUtil = cUtil()
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
+        sSearchText = oUtil.CleanName(sSearch)
 
         query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search', '1'))
         data = urlEncode(query_args)
@@ -128,7 +130,7 @@ def showMovies(sSearch=''):
     if "/films/" in sUrl:
         sPattern = '<article class="short__story.+?href="([^"]+).+?data-src="([^"]+)" alt="([^"]+).+?pg">([^<]+).+?text">([^<]+)'
     else:
-        sPattern = '<div class="tick-item tick-eps">.+?img data-src="([^"]+).+?alt="([^"]+).+?href="([^"]+)'
+        sPattern = 'rtl"><div class="tick-item tick-eps">.+?img data-src="([^"]+).+?alt="([^"]+).+?href="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -137,14 +139,8 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[2]
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
@@ -156,8 +152,11 @@ def showMovies(sSearch=''):
                 sLang = ""
             else:
                 sLang = aEntry[1].split(" ")[-1]
-                sTitle = aEntry[1]
+                sTitle = aEntry[1].replace(" VF", "").replace(" VOSTFR", "")
                 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = ('%s (%s)') % (sTitle,  sLang.upper())
 
@@ -167,8 +166,6 @@ def showMovies(sSearch=''):
             
 
             oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -212,15 +209,9 @@ def ShowSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[1]
+            sTitle = aEntry[1].replace(" VF", "").replace(" VOSTFR", "")
             sUrl2 = aEntry[0]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -229,9 +220,7 @@ def ShowSxE():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('id', sID)
 
-            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -257,27 +246,22 @@ def seriesHosters():
     sHtmlContent = oRequestHandler.request(jsonDecode=True)['html']
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sPattern = '<div id=\\"content_player_' + aEntry[1] + '\\".+?>(.+?)<'
             aResult1 = oParser.parse(sHtmlContent, sPattern)
             hostClass = aEntry[0]
 
             for aEntry1 in aResult1[1]:
-                # sTitle = sMovieTitle  + " [COLOR coral]" + hostClass.capitalize() + "[/COLOR]"
-                #sHosterUrl = aEntry1
                 if 'https' in aEntry1:
                     sHosterUrl = aEntry1
                 elif hostClass == "cdnt":
                     sHosterUrl = "https://lb.toonanime.xyz/playlist/" + aEntry1 + "/" + str(round(time.time() * 1000))
+                elif hostClass == "sibnet":
+                    sHosterUrl = "https://video.sibnet.ru/shell.php?videoid=" + aEntry1 + "/"
                 else:
                     continue
                     
+                sHosterUrl = sHosterUrl.replace("////", "//")
 
                 if "toonanime" in sHosterUrl:
                     oHoster = cHosterGui().checkHoster(".mp4")
@@ -288,7 +272,5 @@ def seriesHosters():
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
