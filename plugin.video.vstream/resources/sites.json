@@ -24,10 +24,10 @@
             "active": "True",
             "url": "http://www.anime-ultime.net/"
         },
-	"animeultra": {
-            "label": "Anime Ultra",
+        "animesultra": {
+            "label": "Animes Ultra",
             "active": "True",
-            "url": "https://w1.animesultra.net/"
+            "url": "https://w2.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -152,7 +152,7 @@
             "active": "False",
             "url": "https://fr.illimitestreaming.top/"
         },
-		"juststream": {
+        "juststream": {
             "label": "JustStream",
             "active": "True",
             "url": "https://juststream.pics/"
