@@ -17,6 +17,7 @@ encoding//plugin.video.vstream/resources/hosters/uptostream.py=utf-8
 encoding//plugin.video.vstream/resources/hosters/vudeo.py=utf-8
 encoding//plugin.video.vstream/resources/lib/ba.py=utf-8
 encoding//plugin.video.vstream/resources/lib/bookmark.py=utf-8
+encoding//plugin.video.vstream/resources/lib/cloudflare.py=utf-8
 encoding//plugin.video.vstream/resources/lib/comaddon.py=utf-8
 encoding//plugin.video.vstream/resources/lib/config.py=utf-8
 encoding//plugin.video.vstream/resources/lib/db.py=utf-8
