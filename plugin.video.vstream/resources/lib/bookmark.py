@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+import xbmc
+
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, xbmc
+from resources.lib.comaddon import dialog, addon, isMatrix
 from resources.lib.util import UnquotePlus
 
 SITE_IDENTIFIER = 'cFav'
@@ -19,66 +20,67 @@ class cFav:
     DIALOG = dialog()
     ADDON = addon()
 
-    # effacement direct par menu
-    def delBookmarksMenu(self):
-        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_bookmark()
+    # Suppression d'un bookmark, d'une catégorie, ou tous les bookmarks
+    def delBookmark(self):
+        oInputParameterHandler = cInputParameterHandler()
+        if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+            return False
+
+        sAll = oInputParameterHandler.exist('sAll')
+        sCat = oInputParameterHandler.getValue('sCat')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        sTitle = oInputParameterHandler.getValue('sCleanTitle')
+        # sTitle = cUtil().CleanName(sTitle)
+        with cDb() as db:
+            db.del_bookmark(siteUrl, sTitle, sCat, sAll)
         return True
 
-    # avec confirmation pour les autres
-    def delBookmarks(self):
-        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_bookmark()
+    # Suppression d'un bookmark depuis un Widget
+    def delBookmarkMenu(self):
+        if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+            return False
+
+        sTitle = xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        siteUrl = xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+        with cDb() as db:
+            db.del_bookmark(siteUrl, sTitle)
+
         return True
 
     def getBookmarks(self):
         oGui = cGui()
 
         # Comptages des marque-pages
-        row = cDb().get_bookmark()
+        with cDb() as db:
+            row = db.get_bookmark()
 
-        compt = [0, 0, 0, 0, 0, 0, 0, 0]
+        compt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
 
-        # sTitle = '[COLOR khaki]Vous avez %s marque-page[/COLOR]' % (len(row))
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        # oGui.addText(SITE_IDENTIFIER, sTitle)
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(compt[1])), 'mark.png', oOutputParameterHandler)
+        total = compt[1] + compt[7]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(compt[2])), 'mark.png', oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('sCat', '3')
-        # oGui.addDir(SITE_IDENTIFIER, 'getFav()', 'Pages', 'news.png', oOutputParameterHandler)
+        total = compt[2] + compt[3] + compt[4] + compt[8]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '6')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(compt[6])), 'mark.png', oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('sCat', '7')
-        # oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30088), str(compt[7])), 'mark.png', oOutputParameterHandler)
+        total = compt[6]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        total = compt[3] + compt[4] + compt[5]
+        oOutputParameterHandler.addParameter('sCat', '5')
+        total = compt[5]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
-        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
-
-        # A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
-        if compt[0] > 0:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sCat', '0')
-            oGui.addDir(SITE_IDENTIFIER, 'getFav', '[COLOR red]Erreur /!\ lien à supprimer!!! (' + str(compt[0]) + ')[/COLOR]', 'mark.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -86,33 +88,56 @@ class cFav:
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
 
-        row = cDb().get_bookmark()
+        # Comptages des marque-pages
+        with cDb() as db:
+            row = db.get_bookmark()
 
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
-            gen = (x for x in row if x[5] in sCat)
+
+            # Série, Animes, Saison et Episodes sont visibles dans les marques-page "Séries"
+            catList = ('2', '3', '4', '8')
+            if sCat in catList:
+                sCat = 2
+                cGui.CONTENT = 'tvshows'
+            else:
+                catList = ('1', '7')    # films, saga
+                cGui.CONTENT = 'movies'
+                if sCat in catList:
+                    sCat = 1
+                else:
+                    catList = sCat
+                    cGui.CONTENT = 'videos'
+            gen = (x for x in row if x['cat'] in catList)
         else:
-            sCat = '5'
-            gen = (x for x in row if x[5] not in ('1', '2', '6'))
+            oGui.setEndOfDirectory()
+            return
 
         for data in gen:
 
             try:
-                title = data[1].encode('utf-8')
+                title = data['title'].encode('utf-8')
             except:
-                title = data[1]
+                title = data['title']
+
+            thumbnail = data['icon']
 
             try:
-                thumbnail = data[6].encode('utf-8')
-            except:
-                thumbnail = data[6]
+                try:
+                    siteurl = data['siteurl'].encode('utf-8')
+                except:
+                    siteurl = data['siteurl']
 
-            try:
-                siteurl = UnquotePlus(data[2])
-                site = data[3]
-                function = data[4]
-                cat = data[5]
-                fanart = data[7]
+                if isMatrix():
+                    siteurl = UnquotePlus(siteurl.decode('utf-8'))
+                    title = str(title, 'utf-8')
+                else:
+                    siteurl = UnquotePlus(siteurl)
+
+                site = data['site']
+                function = data['fav']
+                cat = data['cat']
+                fanart = data['fanart']
 
                 if thumbnail == '':
                     thumbnail = 'False'
@@ -137,33 +162,53 @@ class cFav:
                 oGuiElement.setTitle(title)
                 oGuiElement.setFileName(title)
                 oGuiElement.setIcon("mark.png")
-                if (cat  == '1'):
-                    cGui.CONTENT = 'movies'
-                    oGuiElement.setMeta(cat)
+                if (cat  == '1'):           # Films
+                    oGuiElement.setMeta(1)
                     oGuiElement.setCat(1)
-                elif (cat == '2'):
-                    cGui.CONTENT = 'tvshows'
-                    oGuiElement.setMeta(cat)
+                elif (cat == '2'):          # Séries
+                    oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
+                elif (cat == '3'):          # Anime
+                    oGuiElement.setMeta(4)
+                    oGuiElement.setCat(3)
+                elif (cat == '4'):          # Saisons
+                    oGuiElement.setMeta(5)
+                    oGuiElement.setCat(4)
+                elif (cat == '5'):          # Divers
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(5)
+                elif (cat == '6'):          # TV (Officiel)
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(6)
+                elif (cat == '7'):          # Saga
+                    oGuiElement.setMeta(3)
+                    oGuiElement.setCat(7)
+                elif (cat == '8'):          # Episodes
+                    oGuiElement.setMeta(6)
+                    oGuiElement.setCat(8)
                 else:
                     oGuiElement.setMeta(0)
                     oGuiElement.setCat(cat)
                 oGuiElement.setThumbnail(thumbnail)
                 oGuiElement.setFanart(fanart)
+                oGuiElement.addItemProperties('isBookmark', True)
 
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30412))
+                oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
-                    oGui.addHost(oGuiElement, oOutputParameterHandler)
+                    oGui.addHost(oGuiElement, oOutputParameterHandler)  # addHost n'existe plus
                 else:
                     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
             except:
+                oOutputParameterHandler = cOutputParameterHandler()
                 oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', sCat)
-        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
+        # La suppression n'est pas accessible lors de l'utilisation en Widget
+        if not xbmc.getCondVisibility('Window.IsActive(home)'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sCat', sCat)
+            oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -172,30 +217,36 @@ class cFav:
     def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
-        if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
-            return
-
-        if int(oInputParameterHandler.getValue('sCat')) < 1:
+        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
+        iCat = 0
+        if sCat:
+            iCat = int(sCat)
+        if iCat < 1 or iCat > 8:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
         meta = {}
-        meta['siteurl'] = oInputParameterHandler.getValue('siteUrl')
-        meta['site'] = oInputParameterHandler.getValue('sId')
-        meta['fav'] = oInputParameterHandler.getValue('sFav')
-        meta['cat'] = oInputParameterHandler.getValue('sCat')
 
-        # ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
-        # Inutile a la prochaine version, car plus de couleurs a la base.
-        if oInputParameterHandler.getValue('sMovieTitle'):
-            meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
-        else:
-            meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+        sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+        sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+
+        if sTitle == '':
+            self.DIALOG.VSinfo('Error', 'Probleme sur le titre')
+            return
+
+        meta['siteurl'] = sSiteUrl
+        meta['title'] = sTitle
+        meta['site'] = sSite
+        meta['fav'] = sFav
+        meta['cat'] = sCat
 
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
-            cDb().insert_bookmark(meta)
+            # Comptages des marque-pages
+            with cDb() as db:
+                db.insert_bookmark(meta)
         except:
             pass

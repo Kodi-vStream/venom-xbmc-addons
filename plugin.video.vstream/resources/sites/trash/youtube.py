@@ -1,13 +1,24 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import ssl
+import re, sys, requests, random, json, string
+import xbmcplugin, xbmcvfs, xbmc
+
 return False
+
+try:  # Python 2
+    import urllib2
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-# from resources.lib.util import cUtil
+from resources.lib.util import urlEncode, Unquote, Quote, QuotePlus
 from resources.lib.player import cPlayer
 from resources.lib.config import GestionCookie
 from resources.lib.gui.hoster import cHosterGui
@@ -15,10 +26,8 @@ from resources.lib.jsunfuck import unFuckFirst
 
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, VSlog, dialog#, xbmcgui
+from resources.lib.comaddon import progress, addon, VSlog, dialog
 
-import re, urllib2, urllib, sys, requests, random, json, string
-import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'youtube'
 SITE_NAME = '[COLOR orange]Youtube[/COLOR]'
@@ -29,24 +38,24 @@ API_KEY = ''
 URL_VIEW = 'https://youtube.com/watch?v=%s'
 
 icon = 'tv.png'
-#/home/lordvenom/.kodi/
-#sRootArt = cConfig().getRootArt()
+# /home/lordvenom/.kodi/
+# sRootArt = cConfig().getRootArt()
 
-#https://developers.google.com/youtube/v3/guides/implementation/pagination
+# https://developers.google.com/youtube/v3/guides/implementation/pagination
 
 ADDON = addon()
 
 class youtube:
-    def __init__(self, ctype = 'videos', params = ''):
+    def __init__(self, ctype='videos', params=''):
         self.result = ''
         self.next = ''
 
-        params = urllib.urlencode(params)
+        params = urlEncode(params)
 
         req = urllib2.Request(URL_MAIN + ctype + '?' + params)
         try:
             gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-            response = urllib2.urlopen(req, context = gcontext)
+            response = urllib2.urlopen(req, context=gcontext)
         except:
             response = urllib2.urlopen(req)
         sHtmlContent = response.read()
@@ -66,9 +75,9 @@ class youtube:
             if search_result['kind'] == 'youtube#video':
                 videos.append({'title': search_result['snippet']['title'], 'id': search_result['id'], 'channelId': search_result['snippet']['channelId'], 'channelTitle': search_result['snippet']['channelTitle'], 'thumbnails': search_result['snippet']['thumbnails']['high']['url'], 'description': search_result['snippet']['description']})
             elif search_result['kind'] == 'youtube#channel':
-                channels.append({'title' : search_result['snippet']['title'], 'id' : search_result['id']})
+                channels.append({'title': search_result['snippet']['title'], 'id': search_result['id']})
             elif search_result['kind'] == 'youtube#playlist':
-                playlists.append({ 'title' : search_result['snippet']['title'], 'id' : search_result['id']})
+                playlists.append({ 'title': search_result['snippet']['title'], 'id': search_result['id']})
 
         self.videos = videos
         self.channels = channels
@@ -85,7 +94,7 @@ class youtube:
         return self.channels
 
     def getPlaylists(self):
-        return self.playlist
+        return self.playlists
 
 def load():
     oGui = cGui()
@@ -101,7 +110,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
@@ -180,7 +189,7 @@ def showLinks():
 
     ytb = youtube('videos', params)
     videos = ytb.getVideos()
-    #channel = result.getChannels()
+    # channel = result.getChannels()
 
     if (videos):
         total = len(videos)
@@ -193,7 +202,7 @@ def showLinks():
                 break
 
             sThumb = aEntry['thumbnails']
-            sID =  aEntry['id']
+            sID = aEntry['id']
             sTitle = aEntry['title'].encode('utf-8')
             sDesc = aEntry['description'].encode('utf-8')
             sUrl = URL_VIEW % sID
@@ -216,7 +225,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
+def __checkForNextPage(sHtmlContent):  # Affiche les page suivant si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -253,7 +262,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def showAllPlaylist():#On recupere les differentes playlist si il y en a
+def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -261,7 +270,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumbnail')
     sDesc = oInputParameterHandler.getValue('sDescription')
-    #VSlog(str(sUrl))
+    # VSlog(str(sUrl))
     if 'firstonetv' and 'Register-Login' in sUrl:
 
         session = requests.Session()
@@ -271,14 +280,14 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
                 'login': 'Login+Now'}
 
         headers = {'user-agent': UA,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Referer': 'https://www.firstonetv.net/Index',
-                    'Content-Length': str(len(data))}
+                   'Content-Type': 'application/x-www-form-urlencoded',
+                   'Referer': 'https://www.firstonetv.net/Index',
+                   'Content-Length': str(len(data))}
 
         session.post(url, data=data, headers=headers)
         cookiesDict = requests.utils.dict_from_cookiejar(session.cookies)
         getUser = re.match("{'(.+?)': '(.+?)',", str(cookiesDict))
-        #VSlog(cookiesDict)
+        # VSlog(cookiesDict)
         cookies = str(getUser.group(1)) + '=' + str(getUser.group(2))
         GestionCookie().SaveCookie('firstonetv', cookies)
         dialog().VSinfo('Authentification réussie merci de recharger la page', 'FirstOneTv', 15)
@@ -290,7 +299,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
         aResult = re.findall('<meta name="csrf-token" content="(.+?)">', sHtmlContent)
         if aResult:
             token = aResult[0]
-            #VSlog(token)
+            # VSlog(token)
             sHtmlContent = getHtml(sUrl,token)
 
     if 'firstonetv' in sUrl:
@@ -360,7 +369,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-                oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
@@ -369,7 +378,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
 
     oGui.setEndOfDirectory()
 
-def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist 'World' de IptvGratuit
+def showWorldIptvGratuit():  # On recupere les liens qui sont dans les playlist 'World' de IptvGratuit
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -381,7 +390,7 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist 'Wo
     for sUrl2 in line:
         sUrl2 = 'http' + sUrl2
         sTitle = 'Lien: ' + sUrl2
-        #cConfig().log(str(sHtmlContent))
+        # cConfig().log(str(sHtmlContent))
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -391,11 +400,11 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist 'Wo
 
     oGui.setEndOfDirectory()
 
-def getHtml(sUrl, data=None):#S'occupe des requetes
+def getHtml(sUrl, data=None):  # S'occupe des requetes
     if 'firstonetv' in sUrl:
         cookies = GestionCookie().Readcookie('firstonetv')
     if 'myfree-tivi' and 'watch' in sUrl and not data is None:
-        #VSlog(data)
+        # VSlog(data)
         cookies = GestionCookie().Readcookie('myfree_tivi')
         headers = {'Host': 'www.myfree-tivi.com',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0',
@@ -410,7 +419,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
 
         r = requests.post('https://www.myfree-tivi.com/getdata', headers=headers)
 
-    elif 'firstonetv'and '/France/' in sUrl:#On passe les redirection
+    elif 'firstonetv'and '/France/' in sUrl:  # On passe les redirection
         aResult = re.findall('Live/.+?/*[^<>]+(?:-)([^"]+)', sUrl)
         idChannel = aResult[0]
 
@@ -423,7 +432,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         oRequestHandler.addParameters('action', 'hiro')
         oRequestHandler.addParameters('result', 'get')
         data = oRequestHandler.request()
-        hiro = unFuckFirst(data)#On decode Hiro
+        hiro = unFuckFirst(data)  # On decode Hiro
 
         sPattern = '"hiro":(.+?),"hash":"(.+?)","time":(.+?),'
 
@@ -488,10 +497,10 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         VSlog(data)
     else:
         data = oRequestHandler.request()
-    #VSlog(data)
+    # VSlog(data)
     return data
 
-def parseM3U(infile):#Traite les m3u local
+def parseM3U(infile):  # Traite les m3u local
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -509,10 +518,10 @@ def parseM3U(infile):#Traite les m3u local
             inf = sHtmlContent
 
     elif not '#EXTM3U' in sUrl:
-        site= infile
+        site = infile
         user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
         headers = {'User-Agent': user_agent}
-        req = urllib2.Request(site, headers = headers)
+        req = urllib2.Request(site, headers=headers)
         inf = urllib2.urlopen(req)
     else:
         inf = infile
@@ -522,19 +531,19 @@ def parseM3U(infile):#Traite les m3u local
     except:
         pass
 
-    #cConfig().log(str(line))
-    #if not line.startswith('#EXTM3U'):
-        #return
+    # cConfig().log(str(line))
+    # if not line.startswith('#EXTM3U'):
+        # return
 
-    playlist=[]
-    song=track(None,None,None,None)
+    playlist = []
+    song = track(None, None, None, None)
     ValidEntry = False
 
     for line in inf:
 
-        line=line.strip()
+        line = line.strip()
         if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',', 1)
+            length, title = line.split('#EXTINF:')[1].split(',', 1)
             try:
                 licon = line.split('#EXTINF:')[1].partition('tvg-logo=')[2]
                 icon = licon.split('"')[1]
@@ -542,13 +551,13 @@ def parseM3U(infile):#Traite les m3u local
                 icon = 'tv.png'
             ValidEntry = True
 
-            song=track(length, title, None, icon)
+            song = track(length, title, None, icon)
         elif (len(line) != 0):
             if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
-                song.path=line
+                song.path = line
                 playlist.append(song)
-                #VSlog(playlist)
+                # VSlog(playlist)
                 song = track(None, None, None, None)
 
     try:
@@ -558,7 +567,7 @@ def parseM3U(infile):#Traite les m3u local
 
     return playlist
 
-def showWeb():#Code qui s'occupe de liens TV du Web
+def showWeb():  # Code qui s'occupe de liens TV du Web
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -575,7 +584,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Problème de lecture avec la playlist[/COLOR] ")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Problème de lecture avec la playlist[/COLOR]")
 
     else:
         total = len(playlist)
@@ -588,10 +597,10 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             if not sThumb:
                 sThumb = 'tv.png'
 
-            #les + ne peuvent pas passer
+            # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2:
-                url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
+                url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
 
             thumb = '/'.join([sRootArt, sThumb])
 
@@ -600,7 +609,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
 
-            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
+            # oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -616,27 +625,27 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
 
-def direct_epg():#Code qui gerent l'epg
+def direct_epg():  # Code qui gere l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
-    #aParams = oInputParameterHandler.getAllParameter()
+    # aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'direct')
+    sCom = cePg().view_epg(sTitle, 'direct')
 
-def soir_epg():#Code qui gerent l'epg
+def soir_epg():  # Code qui gere l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
 
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'soir')
+    sCom = cePg().view_epg(sTitle, 'soir')
 
-def enregistrement():#Code qui gerent l'epg
+def enregistrement():  # Code qui gere l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -651,14 +660,13 @@ def enregistrement():#Code qui gerent l'epg
 
     if 'plugin' in sUrl:
         url = re.findall('url=(.+?)&amp', ''.join(sUrl))
-        sUrl = urllib2.unquote(url[0])
+        sUrl = Unquote(url[0])
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
 
 def showAZ():
 
     import string
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -707,14 +715,14 @@ def showTV():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    #sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
+    # sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
     sPattern = '<title>(.+?)</title><link>(.+?)</link>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         progress_ = progress().VScreate(SITE_NAME)
 
-        #affiche par
+        # affiche par
         if (oInputParameterHandler.exist('AZ')):
             sAZ = oInputParameterHandler.getValue('AZ')
             string = filter(lambda t: t[0].strip().capitalize().startswith(sAZ), aResult[1])
@@ -740,21 +748,21 @@ def showTV():
             oGuiElement.setFileName(aEntry[0])
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
-            #oGuiElement.setThumbnail('tv.png')
+            # oGuiElement.setThumbnail('tv.png')
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
             oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def play__():#Lancer les liens
+def play__():  # Lancer les liens
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -762,7 +770,7 @@ def play__():#Lancer les liens
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    #Special url with tag
+    # Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
 
@@ -795,8 +803,8 @@ def play__():#Lancer les liens
         oPlayer = cPlayer()
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
-        #tout repetter
-        #xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+        # tout repetter
+        # xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
         oPlayer.startPlayer()
         return

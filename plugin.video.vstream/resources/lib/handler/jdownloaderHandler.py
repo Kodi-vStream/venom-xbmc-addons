@@ -1,12 +1,11 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.gui import cGui
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import addon, dialog, VSlog
 
 
 class cJDownloaderHandler:
-
     ADDON = addon()
     DIALOG = dialog()
 
@@ -22,13 +21,11 @@ class cJDownloaderHandler:
         bDownload = self.__download(sUrl)
         if (bDownload == True):
             self.DIALOG.VSinfo('Link gesendet', 'JDownloader')
-        
 
     def __checkConfig(self):
         bEnabled = self.ADDON.getSetting('jd_enabled')
         if (bEnabled == 'true'):
             return True
-
         return False
 
     def __getHost(self):
@@ -41,14 +38,12 @@ class cJDownloaderHandler:
         bAutomaticStart = self.ADDON.getSetting('jd_automatic_start')
         if (bAutomaticStart == 'true'):
             return True
-
         return False
 
     def __getLinkGrabber(self):
         bAutomaticStart = self.ADDON.getSetting('jd_grabber')
         if (bAutomaticStart == 'true'):
             return True
-
         return False
 
     def __download(self, sFileUrl):
@@ -59,7 +54,7 @@ class cJDownloaderHandler:
 
         sLinkForJd = self.__createJDUrl(sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber)
         VSlog("JD Link " + str(sLinkForJd))
-                
+
         oRequestHandler = cRequestHandler(sLinkForJd)
         oRequestHandler.request()
         return True
@@ -72,7 +67,7 @@ class cJDownloaderHandler:
         sAutomaticStart = '0'
         if (bAutomaticDownload == True):
             sAutomaticStart = '1'
-            
+
         sUrl = 'http://' + str(sHost) + ':' + str(sPort) + '/action/add/links/grabber' + str(sGrabber) + '/start' + str(sAutomaticStart) + '/' + sFileUrl
         return sUrl
 
@@ -82,15 +77,14 @@ class cJDownloaderHandler:
         sPort = self.__getPort()
 
         sLinkForJd = 'http://' + str(sHost) + ':' + str(sPort)
-        
+
         try:
             oRequestHandler = cRequestHandler(sLinkForJd)
-            sHtmlContent = oRequestHandler.request();            
+            sHtmlContent = oRequestHandler.request()
             return True
-        except Exception, e:
+        except Exception as e:
             return False
-
         return False
-   
+
 
 

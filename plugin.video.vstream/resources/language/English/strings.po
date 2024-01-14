@@ -25,7 +25,7 @@ msgid "Downloads Stopped"
 msgstr ""
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own API key."
+msgid "vStream will be faster with your own TMDB API key"
 msgstr ""
 
 msgctxt "#30006"
@@ -41,7 +41,7 @@ msgid "Fanarts Size"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Use extendedinfo"
+msgid "Use extendedinfo for the information windows"
 msgstr ""
 
 msgctxt "#30010"
@@ -321,7 +321,7 @@ msgid "Search (Movie)"
 msgstr ""
 
 msgctxt "#30079"
-msgid "Search (Tvshow/Anim)"
+msgid "Search (Tvshow)"
 msgstr ""
 
 msgctxt "#30080"
@@ -361,11 +361,11 @@ msgid "Visual search"
 msgstr ""
 
 msgctxt "#30089"
-msgid "Clear vStream Cache, Successful[CR](Important relaunch vStream)"
+msgid "Clear vStream Cache, Successful"
 msgstr ""
 
 msgctxt "#30090"
-msgid "Suppression Database, Successful[CR] (Important relaunch vStream)"
+msgid "Suppression Database, Successful"
 msgstr ""
 
 msgctxt "#30091"
@@ -445,11 +445,11 @@ msgid "Children"
 msgstr ""
 
 msgctxt "#30110"
-msgid "Database to be delete"
+msgid "Database to delete"
 msgstr ""
 
 msgctxt "#30111"
-msgid ""
+msgid "List"
 msgstr ""
 
 msgctxt "#30112"
@@ -476,6 +476,14 @@ msgctxt "#30117"
 msgid "TV replay"
 msgstr ""
 
+msgctxt "#30118"
+msgid "Search (Anim)"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Live"
+msgstr ""
+
 msgctxt "#30120"
 msgid "Movies"
 msgstr ""
@@ -486,6 +494,18 @@ msgstr ""
 
 msgctxt "#30122"
 msgid "Animes"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Search (Dramas)"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Dramas"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Continue watching"
 msgstr ""
 
 msgctxt "#30127"
@@ -561,7 +581,7 @@ msgid "Trailer"
 msgstr ""
 
 msgctxt "#30213"
-msgid "Search Similar"
+msgid "Search"
 msgstr ""
 
 msgctxt "#30214"
@@ -600,6 +620,10 @@ msgctxt "#30222"
 msgid "Delete:"
 msgstr ""
 
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""
@@ -625,7 +649,7 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30308"
-msgid "History"
+msgid "Search history"
 msgstr ""
 
 msgctxt "#30309"
@@ -692,6 +716,14 @@ msgctxt "#30327"
 msgid "1Fichier"
 msgstr ""
 
+msgctxt "#30328"
+msgid "Token"
+msgstr ""
+
+msgctxt "#30329"
+msgid "Token (Optional)"
+msgstr ""
+
 msgctxt "#30330"
 msgid "Search"
 msgstr ""
@@ -701,7 +733,15 @@ msgid "Calendar"
 msgstr ""
 
 msgctxt "#30332"
-msgid "Iptv (official)"
+msgid "TV (Official)"
+msgstr ""
+
+msgctxt "#30333"
+msgid "Activate Premium"
+msgstr ""
+
+msgctxt "#30334"
+msgid "Free or Premium Token"
 msgstr ""
 
 msgctxt "#30340"
@@ -869,7 +909,7 @@ msgid "Enable/Disable sources"
 msgstr ""
 
 msgctxt "#30421"
-msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
+msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR] Valid vStream, only then click YES"
 msgstr ""
 
 msgctxt "#30422"
@@ -997,7 +1037,7 @@ msgid "Always ask me"
 msgstr ""
 
 msgctxt "#30453"
-msgid "Continue streaming via Uptostream"
+msgid "Continue streaming via UpToStream"
 msgstr ""
 
 msgctxt "#30454"
@@ -1054,4 +1094,59 @@ msgstr ""
 
 msgctxt "#30470"
 msgid "Addon dnspython missing"
+msgstr ""
+
+msgctxt "#30480"
+msgid "Small loading spinner"
+msgstr ""
+
+# upnext
+msgctxt "#30505"
+msgid "Would you like to automatically play the next episode?"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Automatically play the next episode"
+msgstr ""
+
+msgctxt "#31000"
+msgid "Multimedia folder URL (Optional)"
+msgstr ""
+
+msgctxt "#31101"
+msgid "Url"
+msgstr ""
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
+msgstr ""
+
+
+msgctxt "#31103"
+msgid "Allow adult content"
+msgstr ""
+
+
+msgctxt "#31200"
+msgid "Choose the number of items to display"
+msgstr ""
+
+msgctxt "#31201"
+msgid "View: Seasons (recommended 50-51-500-501-508)"
+msgstr ""
+
+msgctxt "#31202"
+msgid "View: Episodes (recommended 50-51-500-501-508)"
+msgstr ""
+
+msgctxt "#31203"
+msgid "IP address for Flaresolverr"
+msgstr ""
+
+msgctxt "#31204"
+msgid "Display season and episode in title"
+msgstr ""
+
+msgctxt "#31205"
+msgid "Display"
 msgstr ""

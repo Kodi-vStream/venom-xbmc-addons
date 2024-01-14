@@ -4,11 +4,56 @@
 - Support: https://kodi-vstream.github.io/
 ==================================================================================
 ==================================================================================
-- Auteurs : Venom, TmpName, Arias800
-==================================================================================
-Merci au contributeur de la bêta.
-- Razorex/Kodigoal/Chataigne73/Sizanic
+- Auteurs : LordVenom, TmpName, Arias800, Razorex, Sizanic, Yodidon, et Cie
+https://github.com/Kodi-vStream/venom-xbmc-addons/graphs/contributors
 ==================================================================================
 ==================================================================================
+Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
+
+*** 1.6.0***
+- Meilleur support des sous-titres
+- Meilleur support de Uptostream
+- Métadonnées dans l'enchainement des épisodes
+- Amélioration sur l'affichage des métadonnées (numérotation des épisodes, ...)
+
+*** 1.5.0***
+- Contrat de licence sur l'utilisation du code vStream
+- Meilleure intégration de DNSPython
+- Amélioration des performances
+- Amélioration sur l'affichage des métadonnées (sagas, titre des épisodes, ...)
+- Meilleur support de Uptostream
+
+*** 1.4.0***
+- En cours de lecture : ajout d'une section avec les médias commencés
+
+*** 1.3.0***
+- Métadonnées : informations média pour les épisodes
+
+*** 1.2.0***
+- UpNext : Enchainement automatique des épisodes
+- Reprise d'un média commencé, même en changeant de source
+- Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
+- Métadonnées : informations média (pochette et description) pour les saisons
+
+*** 1.1.0***
+- F4mProxy : Suppression de la dépendance
+- Sous-titre : Chargement automatique du premier
+- Uptobox : Meilleure gestion
+- IPTV : Suppression des listes d'IPTV
+
+*** 1.0.0***
+- UrlResolver : compatibilité Matrix
+- TRAKT : Pagination dans les menus
+- TMDB : Affichage d'un QR Code pour activer la clef API
+- Recherche sous Matrix : Insensibilité à la casse des lettres
+
+*** 0.8.6***
+- Sablier réduit pour améliorer les performances de navigation
+- Nouvelle clef TMDB pour les Métadonnées
+- Recherche "japAnimes" séparée de la recherche "Séries".
+- De nouvelles sources pour les japAnimes
+- Menu "Dramas" et recherche "Dramas"
+- Autoriser le contenu Adulte
+- Permettre l'utilisation de la fenetre d'information du skin

@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-import htmlentitydefs
-import re
+from resources.lib.comaddon import xbmc, isMatrix
+
+try:
+    import htmlentitydefs
+    import urllib
+except ImportError:
+    import html.entities as htmlentitydefs
+    import urllib.parse as urllib
+
 import unicodedata
-import urllib
-import urllib2
+import re
+import string
+
+
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
-
-
 class cUtil:
     # reste a transformer la class en fonction distante.
-
     def CheckOrd(self, label):
         count = 0
         try:
@@ -26,30 +32,26 @@ class cUtil:
         return count
 
     def CheckOccurence(self, str1, str2):
+        ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'is', 'the',
+                       'in', 'of', 'and', 'mais', 'ou', 'no', 'dr', 'contre', 'dans', 'qui', 'et', 'donc', 'or', 'ni',
+                       'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you',
+                       'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'its', 'our']
 
-        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une', 'des', 'the']
+        str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
+        str2 = str2.replace(':', ' ').replace('-', ' ')
 
-        str1 = str1.replace('+', ' ').replace('%20', ' ')
-        str1 = str1.lower()
-        str2 = str2.lower()
-
-        try:
-            str1 = unicode(str1, 'utf-8')
-        except:
-            pass
-
-        try:
-            str2 = unicode(str2, 'utf-8')
-        except:
-            pass
-
-        str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
-        str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
+        str1 = self.CleanName(str1.replace('.', ' '))
+        str2 = self.CleanName(str2.replace('.', ' '))
 
         i = 0
+        list2 = str2.split(' ')      # Comparaison mot à mot
         for part in str1.split(' '):
-            if (part in str2) and (part not in Ignoreliste):
-                i += 1
+            if part in ignoreListe:  # Mots à ignorer
+                continue
+            if len(part) == 1:       # Ignorer une seule lettre
+                continue
+            if part in list2:
+                i += 1               # Nombre de mots correspondants
         return i
 
     def removeHtmlTags(self, sValue, sReplace=''):
@@ -58,7 +60,6 @@ class cUtil:
 
     def formatTime(self, iSeconds):
         iSeconds = int(iSeconds)
-
         iMinutes = int(iSeconds / 60)
         iSeconds = iSeconds - (iMinutes * 60)
         if (iSeconds < 10):
@@ -68,24 +69,6 @@ class cUtil:
             iMinutes = '0' + str(iMinutes)
 
         return str(iMinutes) + ':' + str(iSeconds)
-
-    def DecoTitle2(self, string):
-
-        # on vire ancienne deco en cas de bug
-        string = re.sub('\[\/*COLOR.*?\]', '', str(string))
-
-        # pr les tag Crochet
-        string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
-        # pr les tag parentheses
-        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
-        # pr les series
-        string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
-
-        # vire doubles espaces
-        string = re.sub(' +', ' ', string)
-
-        return string
 
     def unescape(self, text):
         def fixup(m):
@@ -99,23 +82,62 @@ class cUtil:
                         return unichr(int(text[2:-1]))
                 except ValueError:
                     pass
+                except NameError:
+                    if text[:3] == '&#x':
+                        return chr(int(text[3:-1], 16))
+                    else:
+                        return chr(int(text[2:-1]))
             else:
                 # named entity
                 try:
                     text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
                 except KeyError:
                     pass
+                except NameError:
+                    text = chr(htmlentitydefs.name2codepoint[text[1:-1]])
+
             return text  # leave as is
         return re.sub('&#?\w+;', fixup, text)
 
+    def titleWatched(self, title):
+        if not isMatrix():
+            if isinstance(title, str):
+                # Must be encoded in UTF-8
+                try:
+                    title = title.decode('utf8')
+                except AttributeError:
+                    pass
+
+            title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+
+        # cherche la saison et episode puis les balises [color]titre[/color]
+        # title, saison = self.getSaisonTitre(title)
+        # title, episode = self.getEpisodeTitre(title)
+        # supprimer les balises
+        title = re.sub(r'\[.*\]|\(.*\)', r'', str(title))
+        title = title.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
+        # title = re.sub(r'[0-9]+?', r'', str(title))
+        title = title.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
+        title = title.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
+        title = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', title.lower())
+        # title = QuotePlus(title)
+        # title = title.decode('string-escape')
+        return title
+
     def CleanName(self, name):
-        # vire accent et '\'
-        try:
-            name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
-        except:
-            pass
-        name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-        name = name.encode('utf-8')  # on repasse en utf-8
+        if not isMatrix():
+            # vire accent et '\'
+            try:
+                name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
+            except:
+                pass
+
+            try:
+                name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+                name = name.encode('utf-8')  # on repasse en utf-8
+            except TypeError:
+                # name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
+                pass
 
         # on cherche l'annee
         annee = ''
@@ -130,16 +152,13 @@ class cUtil:
         name = name.replace("'", " ")
         # vire caractere special
         # name = re.sub('[^a-zA-Z0-9 ]', '', name)
-        # Modif du 15/12 caractere special
         name = re.sub('[^a-zA-Z0-9 : -]', '', name)
         # tout en minuscule
         name = name.lower()
-        # vire espace double
+        # vire espace debut et fin
+        name = name.strip()
+        # vire espace double au milieu
         name = re.sub(' +', ' ', name)
-
-        # vire espace a la fin
-        if name.endswith(' '):
-            name = name[:-1]
 
         # on remet l'annee
         if annee:
@@ -148,7 +167,6 @@ class cUtil:
         return name
 
     def FormatSerie(self, string):
-
         # vire doubles espaces
         string = re.sub(' +', ' ', string)
 
@@ -160,12 +178,8 @@ class cUtil:
         if string.startswith(' '):
             string = string[1:]
 
-        # convertion unicode
-        string = string.decode('utf-8')
-
         SXEX = ''
-        # m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])', string, re.UNICODE)
-        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
+        m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
         if m:
             # ok y a des episodes
             string = string.replace(m.group(1), '')
@@ -194,13 +208,35 @@ class cUtil:
         # reconvertion utf-8
         return string.encode('utf-8')
 
+    def getSerieTitre(self, sTitle):
+        serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
+        serieTitle = re.sub('[- –]+$', '', serieTitle)
+
+        if '|' in serieTitle:
+            serieTitle = serieTitle[:serieTitle.index('|')]
+
+        # on repasse en utf-8
+        if not isMatrix():
+            return serieTitle.encode('utf-8')
+        return serieTitle
+
+    def getEpisodeTitre(self, sTitle):
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
+        if string:
+            sTitle = sTitle.replace(string.group(1), '')
+            self.__Episode = ('%02d' % int(string.group(2)))
+            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
+            self.addItemValues('Episode', self.__Episode)
+            return sTitle, True
+
+        return sTitle, False
+
     def EvalJSString(self, s):
         s = s.replace(' ', '')
         try:
             s = s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0')
-            s = re.sub(r'(\([^()]+)\+\[\]\)', '(\\1)*10)',s)  # si le bloc fini par +[] >> *10
+            s = re.sub(r'(\([^()]+)\+\[\]\)', '(\\1)*10)', s)  # si le bloc fini par +[] >> *10
             s = re.sub(r'\[([^\]]+)\]', 'str(\\1)', s)
-            # s = s.replace('[', '(').replace(']', ')')
             if s[0] == '+':
                 s = s[1:]
             val = int(eval(s))
@@ -236,102 +272,8 @@ def QuotePlus(sUrl):
 
 
 def QuoteSafe(sUrl):
-    return urllib.quote(sUrl, safe = ':/')
+    return urllib.quote(sUrl, safe=':/')
 
 
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
-
-
-def Noredirection():
-    class NoRedirection(urllib2.HTTPErrorProcessor):
-        def http_response(self, request, response):
-            return response
-
-        https_response = http_response
-
-    opener = urllib2.build_opener(NoRedirection)
-    return opener
-
-
-# deprecier utiliser comaddon dialog()
-# def updateDialogSearch(dialog, total, site):
-#     global COUNT
-#     COUNT += 1
-#     iPercent = int(float(COUNT * 100) / total)
-#     dialog.update(iPercent, 'Chargement: ' + str(site))
-
-
-# def VStranslatePath(location):
-#     #ex util.VStranslatePath('special://logpath/') > http://kodi.wiki/view/Special_protocol
-#     #d'apres Kodi ne doit pas etre utiliser sur les special://
-#     return xbmc.translatePath(location).decode('utf-8')
-
-
-def GetGooglUrl(url):
-    if 'http://goo.gl' in url:
-        try:
-            headers = {'User-Agent': 'Mozilla 5.10', 'Host': 'goo.gl', 'Connection': 'keep-alive'}
-            request = urllib2.Request(url, None, headers)
-            reponse = urllib2.urlopen(request)
-            url = reponse.geturl()
-        except:
-            pass
-    return url
-
-
-def GetTinyUrl(url):
-    if not 'tinyurl' in url:
-        return url
-
-    # Lien deja connu ?
-    if '://tinyurl.com/h7c9sr7' in url:
-        url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
-    elif '://tinyurl.com/jxblgl5' in url:
-        url = url.replace('://tinyurl.com/jxblgl5/', '://streamin.to/')
-    elif '://tinyurl.com/q44uiep' in url:
-        url = url.replace('://tinyurl.com/q44uiep/', '://openload.co/')
-    elif '://tinyurl.com/jp3fg5x' in url:
-        url = url.replace('://tinyurl.com/jp3fg5x/', '://allmyvideos.net/')
-    elif '://tinyurl.com/kqhtvlv' in url:
-        url = url.replace('://tinyurl.com/kqhtvlv/', '://openload.co/embed/')
-    elif '://tinyurl.com/lr6ytvj' in url:
-        url = url.replace('://tinyurl.com/lr6ytvj/', '://netu.tv/')
-    elif '://tinyurl.com/kojastd' in url:
-        url = url.replace('://tinyurl.com/kojastd/', '://www.rapidvideo.com/embed/')
-    elif '://tinyurl.com/l3tjslm' in url:
-        url = url.replace('://tinyurl.com/l3tjslm/', '://hqq.tv/player/')
-    elif '://tinyurl.com/n34gtt7' in url:
-        url = url.replace('://tinyurl.com/n34gtt7/', '://vidlox.tv/')
-    elif '://tinyurl.com/kdo4xuk' in url:
-        url = url.replace('://tinyurl.com/kdo4xuk/', '://watchers.to/')
-    elif '://tinyurl.com/kjvlplm' in url:
-        url = url.replace('://tinyurl.com/kjvlplm/', '://streamango.com/')
-    elif '://tinyurl.com/kt3owzh' in url:
-        url = url.replace('://tinyurl.com/kt3owzh/', '://estream.to/')
-
-    # On va chercher le vrai lien
-    else:
-        # VSlog('Decodage lien tinyurl : ' + str(url))
-
-        class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                return response
-            https_response = http_response
-
-        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
-
-        opener = urllib2.build_opener(NoRedirection)
-        opener.addheaders = headers9
-        reponse = opener.open(url, None, 5)
-
-        UrlRedirect = reponse.geturl()
-
-        if not(UrlRedirect == url):
-            url = UrlRedirect
-        elif 'Location' in reponse.headers:
-            url = reponse.headers['Location']
-
-        reponse.close()
-
-    return url

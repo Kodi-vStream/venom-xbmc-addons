@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
-# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 # Pour l'utiliser
 # from resources.lib.captcha import Captcha_Get_Reponse
-#
 
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
+try:
+    import urllib2
+except ImportError:
+    import urllib.request as urllib2
+
 import xbmcvfs
-import urllib2
+import xbmc
+import xbmcgui
 
-NewMethod = True
+from resources.lib.comaddon import dialog
+
+newMethod = True
+dialogs = dialog()
 
 
 def Captcha_Get_Reponse(img, cookie):
+
     # on telecharge l'image
     # PathCache = xbmc.translatePath(xbmcaddon.Addon("plugin.video.vstream").getAddonInfo("profile"))
     # filename  = os.path.join(PathCache, "Captcha.raw").decode("utf-8")
@@ -20,7 +28,7 @@ def Captcha_Get_Reponse(img, cookie):
 
     headers2 = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0",
-        # "Referer": url ,
+        # "Referer": url,
         "Host": "protect.ddl-island.su",
         "Accept": "image/png,image/*;q=0.8,*/*;q=0.5",
         "Accept-Language": "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4",
@@ -36,7 +44,6 @@ def Captcha_Get_Reponse(img, cookie):
         image_on_web = urllib2.urlopen(req)
         if image_on_web.headers.maintype == "image":
             buf = image_on_web.read()
-            # downloaded_image = file(filename, "wb")
             downloaded_image = xbmcvfs.File(filename, "wb")
             downloaded_image.write(buf)
             downloaded_image.close()
@@ -49,7 +56,7 @@ def Captcha_Get_Reponse(img, cookie):
     # on affiche le dialogue
     solution = ""
 
-    if NewMethod:
+    if newMethod:
         # nouveau captcha
         try:
             # affichage du dialog perso

@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-import subprocess  # , time, os
+
+#Import enregistrement
+import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog  # , xbmcgui, progress, dialog
+from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix
 
+if isMatrix():
+    #Import Serveur
+    import threading
+    from socketserver import ThreadingMixIn
+    from http.server import HTTPServer, ThreadingHTTPServer
 
 def service():
     ADDON = addon()
-    interval = ADDON.getSetting('heure_verification')
     recordIsActivate = ADDON.getSetting('enregistrement_activer')
     if recordIsActivate == 'false':
         return
@@ -19,10 +25,13 @@ def service():
         xbmcvfs.mkdir(path)
 
     recordList = xbmcvfs.listdir(path)
+    interval = ADDON.getSetting('heure_verification')
     ADDON.setSetting('path_enregistrement_programmation', path)
     recordInProgress = False
     monitor = xbmc.Monitor()
 
+    del ADDON
+    
     while not monitor.abortRequested() and not recordInProgress == True:
         if monitor.waitForAbort(int(interval)):
             break
@@ -30,7 +39,7 @@ def service():
         hour = datetime.now().strftime('%d-%H-%M') + '.py'
         if hour in str(recordList):
             hour = path + '/' + hour
-            hour = xbmc.translatePath(hour)
+            hour = VSPath(hour)
             recordInProgress = True
             VSlog('python ' + hour)
             command = 'python ' + hour
@@ -38,5 +47,30 @@ def service():
             p_status = proc.wait()
 
 
+    server_thread.join()
+
 if __name__ == '__main__':
     service()
+
+    if isMatrix():
+        if addon().getSetting('plugin_toonanime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
+            class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+                """Handle requests in a separate thread."""
+
+            def runServer():
+                from resources.lib.proxy.ProxyHTTPRequestHandler import ProxyHTTPRequestHandler
+
+                server_address = ('127.0.0.1', 2424)
+                httpd = ThreadingHTTPServer(server_address, ProxyHTTPRequestHandler)
+
+                server_thread = threading.Thread(target=httpd.serve_forever)
+                server_thread.start()
+                VSlog("Server Start")
+
+                monitor = xbmc.Monitor()
+
+                while not monitor.abortRequested():
+                    if monitor.waitForAbort(1):
+                        break
+
+                httpd.shutdown()

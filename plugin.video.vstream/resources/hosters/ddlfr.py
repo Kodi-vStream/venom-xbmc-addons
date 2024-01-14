@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -8,14 +8,14 @@ from resources.lib.comaddon import VSlog
 # import re
 import base64
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'ddlfr'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -63,37 +63,38 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer', self.__sUrl)
         sHtmlContent = oRequest.request()
-        #VSlog(sHtmlContent)
+        # VSlog(sHtmlContent)
         oParser = cParser()
         sPattern = 'JuicyCodes\.Run\("(.+?)"\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        #VSlog(aResult)
+        # VSlog(aResult)
         if (aResult[0] == True):
 
-            media =  aResult[1][0].replace('+', '')
+            media = aResult[1][0].replace('+', '')
             media = base64.b64decode(media)
 
-            #cPacker decode
+            # cPacker decode
             from resources.lib.packer import cPacker
             media = cPacker().unpack(media)
-            #VSlog(media)
-            if (media):
+            # VSlog(media)
+            if media:
 
                 sPattern = '{"file":"(.+?)","label":"(.+?)"'
                 aResult = oParser.parse(media, sPattern)
-                #VSlog(aResult)
+                # VSlog(aResult)
+
+                # initialisation des tableaux
                 if (aResult[0] == True):
-                #initialisation des tableaux
-                    url=[]
-                    qua=[]
-                #Remplissage des tableaux
+                    url = []
+                    qua = []
+                # Remplissage des tableaux
                     for i in aResult[1]:
                         url.append(str(i[0] + '|Referer=' + self.__sUrl))
                         qua.append(str(i[1]))
-                #Si une seule url
+                # Si une seule url
                     api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

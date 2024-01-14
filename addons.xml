@@ -1,25 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.8.0" provider-name="Venom, TmpName, Arias800, Razorex, Kodigoal, Sizanic, Yodidon">
+<addon id="plugin.video.vstream" name="vStream" version="1.6.0" provider-name="venom-xbmc-addons">
     <requires>
-        <import addon="xbmc.python" version="2.24.0"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
+
+        <trycatch>
+            <try>
+                <import addon="xbmc.python" version="3.0.0"/>
+            </try>
+
+            <catch>
+                <import addon="xbmc.python" version="2.24.0"/>
+            </catch>
+        </trycatch>
+
+        <import addon="repository.vstream"/>
+        <import addon="script.module.pyqrcode"/>
+        <import addon="script.module.requests"/>
+        <import addon="script.module.dnspython" optional="true"/>
         <import addon="script.module.urlresolver" optional="true"/>
-        <import addon="script.module.requests" version="2.9.1"/>
-        <import addon="script.video.F4mProxy" optional="true"/>
-        <import addon="repository.vstream" version="0.0.3"/>
-<!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
+        <import addon="script.module.selenium" optional="true"/>
+        <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>
+
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
+
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+            <item library="resources/lib/gui/menuInformation.py">
+		        <label>$ADDON[plugin.video.vstream 30208]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuAddBookmark.py">
+		        <label>$ADDON[plugin.video.vstream 30210]</label>
+				<visible>Window.IsVisible(home) + !ListItem.Property(isBookmark) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuSimil.py">
+		        <label>$ADDON[plugin.video.vstream 30213]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuDelBookmark.py">
+		        <label>$ADDON[plugin.video.vstream 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
+            </item>
+            <item library="resources/lib/gui/menuDelViewing.py">
+		        <label>$ADDON[plugin.video.vstream 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isViewing)</visible>
+            </item>
+		</menu>
+    </extension>
+
     <extension point="xbmc.service" library="service.py"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="fr_FR">vStream par Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
-        <description lang="fr_FR">vStream est un module de streaming Français, trouvez tous vos films, séries et mangas.</description>
+        <description lang="fr_FR">vStream est un module de streaming Francais, retrouvez tous vos films, series, japanimes, documentaires, reportages, concerts, sports,...</description>
         <disclaimer lang="fr_FR">vStream est un addon de streaming videos</disclaimer>
         <summary lang="fr_CA">vStream par Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
-        <description lang="fr_CA">vStream est un module de streaming Français, trouvez tous vos films, séries et mangas.</description>
+        <description lang="fr_CA">vStream est un module de streaming Francais, trouvez tous vos films, series et mangas.</description>
         <disclaimer lang="fr_CA">vStream est un addon de streaming videos</disclaimer>
         <summary lang="en_GB">vStream by Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
         <description lang="en_GB">vStream module and a French streaming, find all your movies, TV shows and mangas.</description>
@@ -45,14 +83,21 @@
 </addon>
 
 <addon id="repository.vstream"
-        name="vStream Repository"
-        version="0.0.3"
+       name="vStream Repository"
+        version="0.0.5"
         provider-name="Venom">
     <extension point="xbmc.addon.repository" name="vStream XBMC Addon Repository">
-        <checksum>https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml.md5</checksum>
+    <dir>
         <info compressed="false">https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml.md5</checksum>
         <datadir zip="true">https://github.com/Kodi-vStream/venom-xbmc-addons/raw/master/repo</datadir>
-    </extension>
+    </dir>
+    <dir>
+        <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master</datadir>
+    </dir>
+   </extension>
 
     <extension point="xbmc.addon.metadata">
         <summary lang="fr">vStream Repository</summary>

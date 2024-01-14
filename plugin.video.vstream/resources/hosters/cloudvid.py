@@ -1,12 +1,14 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#http://cloudvid.co/embed-xxxx.html
-#https://clipwatching.com/embed-xxx.html
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# http://cloudvid.co/embed-xxxx.html
+# https://clipwatching.com/embed-xxx.html
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import dialog#, VSlog
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -16,7 +18,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -62,17 +64,15 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):
+    def __getMediaLinkForGuest(self, api_call=None):
 
         sUrl = self.__sUrl
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
 
-        api_call = ''
-
         if 'File was deleted' in sHtmlContent:
-            return False,False
+            return False, False
 
         oParser = cParser()
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
@@ -83,29 +83,35 @@ class cHoster(iHoster):
 
             sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
             aResult = oParser.parse(sHtmlContent2, sPattern)
-            if (aResult[0] == True):
-            #initialisation des tableaux
-                url=[]
-                qua=[]
+            if aResult[0]:
+                # initialisation des tableaux
+                url = []
+                qua = []
                 for i in aResult[1]:
                     url.append(str(i[0]))
                     qua.append(str(i[1]))
 
-                api_call = dialog().VSselectqual(qua,url)
+                api_call = dialog().VSselectqual(qua, url)
+
+            if not api_call:
+                sPattern = 'src:"([^"]+)"'
+                aResult = oParser.parse(sHtmlContent2, sPattern)
+                if aResult[0]:
+                    api_call = aResult[1][0].replace(',','').replace('.urlset','')
 
         if not api_call:
             sPattern = 'sources: *\[{src: "([^"]+)", *type: "video/mp4"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0]:
                 api_call = aResult[1][0]
 
         if not api_call:
             sPattern = 'source src="([^"]+)" type='
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0]:
                 api_call = aResult[1][0]
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

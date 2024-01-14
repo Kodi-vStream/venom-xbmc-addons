@@ -1,11 +1,20 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://www.pstream.net/e/xxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog#, VSlog
+from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
 from resources.lib.parser import cParser
+from resources.lib.util import urlEncode
+import base64
+import json
+import re
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
+
+headers = {'User-Agent': UA,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
 class cHoster(iHoster):
 
@@ -57,31 +66,41 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        oRequest = cRequestHandler(self.__sUrl)
+        api_call = ''
+        url = self.__sUrl
+
+        oRequest = cRequestHandler(url)  
+        oRequest.addHeaderEntry('User-Agent', UA)    
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'vsuri = \'([^"]+)\';'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern =  '<script type="text/javascript" src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
-        oRequest = cRequestHandler(aResult[1][0])
+        oRequest = cRequestHandler(aResult)
         oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        oParser = cParser()
-        sPattern =  '"([^"]+)":"([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern =  'atob.+?\}\("(.+?)"'
+        code = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0]):
-            url = []
-            qua = []
-            for aEntry in aResult[1]:
-                url.append(aEntry[1])
-                qua.append(aEntry[0])
+        for i in code[1]:
+            try:
+                if isMatrix():
+                    code = base64.b64decode(i).decode('ascii')
+                else:
+                    code = base64.b64decode(i)
+                break
+            except:
+                pass
 
-            api_call = dialog().VSselectqual(qua, url)
+        api_call = json.loads(code[code.rfind("{"):])['url']
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|' + urlEncode(headers)
 
         return False, False

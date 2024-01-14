@@ -1,21 +1,28 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-# from resources.lib.handler.requestHandler import cRequestHandler
-# from resources.lib.parser import cParser
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    from urllib.error import URLError as UrlError
+
+import re
+
 from resources.hosters.hoster import iHoster
-import urllib, urllib2, re
+from resources.lib.util import urlEncode
 
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'PlayReplay'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
@@ -68,18 +75,18 @@ class cHoster(iHoster):
         vUrl = False
         sId = self.__getIdFromUrl(self.__sUrl)
 
-        query_args = {'r':'["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
+        query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
 
-        data = urllib.urlencode(query_args)
+        data = urlEncode(query_args)
         headers = {'User-Agent': 'Mozilla 5.10'}
         url = 'http://api.letitbit.net'
         request = urllib2.Request(url, data, headers)
 
         try:
             reponse = urllib2.urlopen(request)
-        except URLError, e:
-            print e.read()
-            print e.reason
+        except UrlError as e:
+            print(e.read())
+            print(e.reason)
 
         html = reponse.read()
 
@@ -89,7 +96,7 @@ class cHoster(iHoster):
         if link:
             vUrl = link[0]
 
-        #print vUrl
+        # print(vUrl)
 
         if (vUrl):
             api_call = vUrl

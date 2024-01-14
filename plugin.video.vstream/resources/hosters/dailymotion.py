@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 
 class cHoster(iHoster):
 
@@ -44,14 +44,11 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('http://dai.ly/', '')
-        self.__sUrl = self.__sUrl.replace('http://www.dailymotion.com/', '')
-        self.__sUrl = self.__sUrl.replace('https://www.dailymotion.com/', '')
-        self.__sUrl = self.__sUrl.replace('embed/', '')
-        self.__sUrl = self.__sUrl.replace('video/', '')
-        self.__sUrl = self.__sUrl.replace('sequence/', '')
-        self.__sUrl = self.__sUrl.replace('swf/', '')
-        self.__sUrl = 'http://www.dailymotion.com/embed/video/' + str(self.__sUrl)
+        if not "metadata" in self.__sUrl:
+            if 'embed/video' in self.__sUrl:
+                self.__sUrl = "https://www.dailymotion.com/player/metadata/video/" + self.__sUrl.split('/')[5]
+            else:
+                self.__sUrl = "https://www.dailymotion.com/player/metadata/video/" + self.__sUrl.split('/')[4]                
 
     def checkUrl(self, sUrl):
         return True
@@ -68,11 +65,7 @@ class cHoster(iHoster):
         qua=[]
 
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Cookie', "ff=off")
         sHtmlContent = oRequest.request()
-
 
         oParser = cParser()
 
@@ -85,13 +78,15 @@ class cHoster(iHoster):
             oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             sHtmlContent = oRequest.request()
 
-            sPattern = 'NAME="([^"]+)",PROGRESSIVE-URI="([^"]+)"'
+            sPattern = 'NAME="([^"]+)"(,PROGRESSIVE-URI="([^"]+)"|http(.+?)\#)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 for aEntry in reversed(aResult[1]):
-                    if aEntry[0] not in qua:
-                        qua.append(aEntry[0])
-                        url.append(aEntry[1])
+                    quality = aEntry[0].replace('@60', '')
+                    if quality not in qua:
+                        qua.append(quality)
+                        link = aEntry[2] if aEntry[2]  else 'http' + aEntry[3]
+                        url.append(link)
 
 
             api_call = dialog().VSselectqual(qua, url)

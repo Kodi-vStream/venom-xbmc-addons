@@ -25,7 +25,7 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<fadetime>200</fadetime>
-				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
+				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_path)]</texture>
 				<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
 
@@ -51,7 +51,7 @@
 					<right>40</right>
 					<bottom>252</bottom>
 					<fadetime>200</fadetime>
-					<!--<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>-->
+					<!--<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_path)]</texture>-->
 					<texture fallback="fanart.jpg">$INFO[Container(50).ListItem.Icon]</texture>
 					<aspectratio align="center" aligny="center">center</aspectratio>
 				</control>
@@ -467,7 +467,7 @@
 					</focusedlayout>
 					<content>
 						<item>
-							<label>[UPPERCASE]$ADDON[plugin.video.vstream 30464][/UPPERCASE] [COLOR=white]$INFO[Window(Home).Property(ListItem.duration)] $ADDON[plugin.video.vstream 30465][/COLOR]</label>
+ 							<label>[UPPERCASE]$ADDON[plugin.video.vstream 30464][/UPPERCASE] [COLOR=white]$INFO[Window(Home).Property(ListItem.durationH)]h$INFO[Window(Home).Property(ListItem.durationM)]m[/COLOR]</label>
 							<onclick>noop</onclick>
 						</item>
 					</content>
@@ -570,7 +570,7 @@
 					<bottom>0</bottom>
 					<height>20</height>
 					<font>font32_title</font>
-					<label>$INFO[Window(Home).Property(Listitem.Title)] ($INFO[Window(Home).Property(ListItem.Year)])</label>
+					<label>$INFO[Window(Home).Property(ListItem.Title)] ($INFO[Window(Home).Property(ListItem.Year)])</label>
 					<shadowcolor>black</shadowcolor>
 					<align>left</align>
 					<aligny>center</aligny>

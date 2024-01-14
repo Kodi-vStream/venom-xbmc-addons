@@ -1,20 +1,27 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-# from resources.lib.handler.requestHandler import cRequestHandler
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    from urllib.error import URLError as UrlError
+
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-import urllib2
+
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'MailRu'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -63,7 +70,7 @@ class cHoster(iHoster):
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
-        headers = {"User-Agent":UA}
+        headers = {"User-Agent": UA}
 
         req1 = urllib2.Request(self.__sUrl, None, headers)
         resp1 = urllib2.urlopen(req1)
@@ -80,41 +87,40 @@ class cHoster(iHoster):
 
         try:
             response = urllib2.urlopen(req)
-        except urllib2.URLError, e:
-            print e.read()
-            print e.reason
+        except UrlError as e:
+            print(e.read())
+            print(e.reason)
 
         data = response.read()
         head = response.headers
         response.close()
 
-        #get cookie
+        # get cookie
         cookies = ''
         if 'Set-Cookie' in head:
             oParser = cParser()
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-            #print aResult
+            # print(aResult)
             if (aResult[0] == True):
                 for cook in aResult[1]:
                     cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
-
         sPattern = '{"url":"([^"]+)",.+?"key":"(\d+p)"}'
         aResult = oParser.parse(data, sPattern)
         if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            #Remplissage des tableaux
+            # initialisation des tableaux
+            url = []
+            qua = []
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #Affichage du tableau
+            # Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, 'http:' + api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
 
         return False, False

@@ -1,36 +1,34 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
-from resources.lib.comaddon import addon, xbmc
-from resources.lib.db import cDb
-from resources.lib.util import QuoteSafe
-import re, string
+import re
+import xbmc
 
-#rouge E26543
-#jaune F7D571
-#bleu clair 87CEEC  ou skyblue / hoster
-#vert 37BCB5
-#bleu foncer 08435A / non utiliser
+from resources.lib.comaddon import addon, isMatrix, isNexus
+from resources.lib.db import cDb
+from resources.lib.util import cUtil, QuoteSafe
+
+# rouge E26543
+# jaune F7D571
+# bleu clair 87CEEC  ou skyblue / hoster
+# vert 37BCB5
+# bleu foncé 08435A / non utilisé
 
 
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
-    # COUNT = 0
-    ADDON = addon()
-    DB = cDb()
 
     def __init__(self):
 
+        self.addons = addon()
+
         # self.__sRootArt = cConfig().getRootArt()
+        self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
-        self.__sType = 'Video'
+        self.__sType = 'video'
         self.__sMeta = 0
-        self.__sPlaycount = 0
-        self.__sTrailerUrl = ''
-        self.__sMetaAddon = self.ADDON.getSetting('meta-view')
-        self.__sImdb = ''
-        self.__sTmdb = ''
+        self.__sTrailer = ''
+        self.__sMetaAddon = self.addons.getSetting('meta-view')
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
         # contient le titre qui sera coloré
@@ -39,6 +37,9 @@ class cGuiElement:
         self.__sCleanTitle = ''
         # titre considéré Vu
         self.__sTitleWatched = ''
+        self.__ResumeTime = 0   # Durée déjà lue de la vidéo
+        self.__TotalTime = 0    # Durée totale de la vidéo
+
         # contient le titre modifié pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
@@ -49,8 +50,8 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
-        self.__sDecoColor = self.ADDON.getSetting('deco_color')
-
+        self.poster = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('poster_tmdb')
+        self.fanart = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('backdrop_tmdb')
         # For meta search
         # TmdbId the movie database https://developers.themoviedb.org/
         self.__TmdbId = ''
@@ -62,13 +63,12 @@ class cGuiElement:
         self.__aProperties = {}
         self.__aContextElements = []
         self.__sSiteName = ''
-        # categorie utiliser pour marque page et recherche.
-        # 1 - movies , 2 - tvshow, - 3 misc,
-        # oGuiElement.setCat(1)
-        self.__sCat = ''
-        # cGuiElement.COUNT += 1
 
-    #def __len__(self): return self.__sCount
+        # categorie utilisé pour marque-page et recherche.
+        # 1 - movies/saga , 2 - tvshow/episode/anime, 5 - misc/Next
+        self.__sCat = ''
+
+    # def __len__(self): return self.__sCount
 
     # def getCount(self):
     #     return cGuiElement.COUNT
@@ -78,22 +78,6 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
-
-    # utiliser setImdbId
-    def setImdb(self, sImdb):
-        self.__ImdbId = sImdb
-
-    # utiliser  getImdbId
-    def getImdb(self):
-        return self.__ImdbId
-
-    # utiliser  setTmdbId
-    def setTmdb(self, sTmdb):
-        self.__TmdbId = sTmdb
-
-    # utiliser  getTmdbId
-    def getTmdb(self):
-        return self.__TmdbId
 
     def setCat(self, sCat):
         self.__sCat = sCat
@@ -107,11 +91,11 @@ class cGuiElement:
     def getMetaAddon(self):
         return self.__sMetaAddon
 
-    def setTrailerUrl(self, sTrailerUrl):
-        self.__sTrailerUrl = sTrailerUrl
+    def setTrailer(self, sTrailer):
+        self.__sTrailer = sTrailer
 
-    def getTrailerUrl(self):
-        return self.__sTrailerUrl
+    def getTrailer(self):
+        return self.__sTrailer
 
     def setTmdbId(self, data):
         self.__TmdbId = data
@@ -136,6 +120,24 @@ class cGuiElement:
 
     def getGenre(self):
         return self.__sGenre
+
+    def getSeason(self):
+        return self.__Season
+
+    def getEpisode(self):
+        return self.__Episode
+
+    def setTotalTime(self, data):
+        self.__TotalTime = data
+
+    def getTotalTime(self):
+        return self.__TotalTime
+
+    def setResumeTime(self, data):
+        self.__ResumeTime = data
+
+    def getResumeTime(self):
+        return self.__ResumeTime
 
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
@@ -162,7 +164,10 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        self.__sFileName = self.str_conv(sFileName)
+        if isMatrix():
+            self.__sFileName = sFileName
+        else:
+            self.__sFileName = cUtil().titleWatched(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -176,7 +181,7 @@ class cGuiElement:
     def TraiteTitre(self, sTitle):
 
         # Format Obligatoire a traiter via le fichier source
-        #-------------------------------------------------
+        # -------------------------------------------------
         # Episode 7 a 9 > Episode 7-9
         # Saison 1 à ? > Saison 1-?
         # Format de date > 11/22/3333 ou 11-22-3333
@@ -184,12 +189,13 @@ class cGuiElement:
         # convertion unicode ne fonctionne pas avec les accents
 
         try:
-            # traitement du titre pour les caracteres speciaux
-            sTitle = sTitle.replace('&#884;', '\'').replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
+            # traitement du titre pour les caracteres spéciaux déplacé dans parser plus global
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
-            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison')\
+                           .replace(' — Saison', ' Saison')
 
-            sTitle = sTitle.decode('utf-8')
+            if not isMatrix():
+                sTitle = sTitle.decode('utf-8')
         except:
             pass
 
@@ -207,19 +213,8 @@ class cGuiElement:
             self.__Date = str(string.group(0))
             sTitle = '%s (%s) ' % (sTitle, self.__Date)
 
-        #~ #recherche Lang
-        #~ index = {' vostfr': ' [VOSTFR]', ' vf': ' [VF]', ' truefrench': ' [TrueFrench]'}
-        #~ for cle in index:
-            #~ sTitle = sTitle.replace(cle.upper(), index[cle]).replace(cle, index[cle]).replace('(%s)' % (cle), index[cle])
-
-        #~ #recherche Qualiter
-        #~ index = {'1080i': '(1080)', '1080p': '(1080)', '1080I': '(1080)', '1080P': '(1080)', '720i': '(720)', '720p': '(720)', '720I': '(720)', '720P': '(720)'}
-        #~ for cle in index:
-            #~ sTitle = sTitle.replace(cle, index[cle]).replace('[%s]' % (cle), index[cle])
-
         # Recherche saison et episode a faire pr serie uniquement
         if True:
-            # m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', sTitle, re.UNICODE)
             m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
                 # ok y a des episodes
@@ -241,7 +236,7 @@ class cGuiElement:
                     self.addItemValues('Season', self.__Season)
 
             else:
-                # pas d'episode mais y a t il des saisons?
+                # pas d'episode mais y a t il des saisons ?
                 m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
@@ -263,7 +258,8 @@ class cGuiElement:
             sTitle = sTitle[1:]
 
         # recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
+        sDecoColor = self.addons.getSetting('deco_color')
+        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
 
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -272,36 +268,44 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
 
-        # Titre unique pour pour marquer VU (avec numéro de l'épisode pour les séries)
-        self.__sTitleWatched = self.str_conv(sTitle).replace(' ', '')
+        # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
+        self.__sTitleWatched = cUtil().titleWatched(sTitle).replace(' ', '')
         if sTitle2:
+            self.addItemValues('tvshowtitle', cUtil().getSerieTitre(sTitle))
             self.__sTitleWatched += '_' + sTitle2
+        self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
-            sTitle2 = '[COLOR %s]%s[/COLOR] ' % (self.__sDecoColor, sTitle2)
+            sTitle2 = '[COLOR %s]%s[/COLOR] ' % (sDecoColor, sTitle2)
 
         sTitle2 = sTitle2 + sTitle
 
         if self.__Year:
-            sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
+            sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, sDecoColor, self.__Year)
 
         # on repasse en utf-8
-        return sTitle2.encode('utf-8')
-
-    def getEpisodeTitre(self, sTitle):
-
-        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
-        if string:
-            sTitle = sTitle.replace(string.group(1), '')
-            self.__Episode = ('%02d' % int(string.group(2)))
-            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
-            self.addItemValues('Episode', self.__Episode)
-            return sTitle, True
-
-        return sTitle, False
+        if not isMatrix():
+            return sTitle2.encode('utf-8')
+        return sTitle2
 
     def setTitle(self, sTitle):
-        self.__sCleanTitle = sTitle
+        # Nom en clair sans les langues, qualités, et autres décorations
+        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)','', sTitle)
+        if not self.__sCleanTitle:
+            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)','', sTitle)
+
+        if isMatrix():
+            # Python 3 decode sTitle
+            try:
+                sTitle = str(sTitle.encode('latin-1'), 'utf-8')
+            except:
+                pass
+        else:
+            try:
+                sTitle = str(sTitle.strip().decode('utf-8'))
+            except:
+                pass
+
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
@@ -320,7 +324,17 @@ class cGuiElement:
         return self.__sTitleWatched
 
     def setDescription(self, sDescription):
-        self.__sDescription = sDescription
+        # Py3
+        if isMatrix():
+            try:
+                if 'Ã' in sDescription or '\\xc' in sDescription:
+                    self.__sDescription = str(sDescription.encode('latin-1'), 'utf-8')
+                else:
+                    self.__sDescription = sDescription
+            except:
+                self.__sDescription = sDescription
+        else:
+            self.__sDescription = sDescription
 
     def getDescription(self):
         return self.__sDescription
@@ -357,6 +371,9 @@ class cGuiElement:
         return self.__sFanart
 
     def setIcon(self, sIcon):
+        if not sIcon:
+            self.__sIcon = ''
+            return
         try:
             self.__sIcon = unicode(sIcon, 'utf-8')
         except:
@@ -365,11 +382,11 @@ class cGuiElement:
         self.__sIcon = QuoteSafe(self.__sIcon)
 
     def getIcon(self):
-        #if 'http' in self.__sIcon:
+        # if 'http' in self.__sIcon:
         #    return UnquotePlus(self.__sIcon)
         folder = 'special://home/addons/plugin.video.vstream/resources/art'
         path = '/'.join([folder, self.__sIcon])
-        #return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        # return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
         return path
 
     def addItemValues(self, sItemKey, mItemValue):
@@ -389,37 +406,17 @@ class cGuiElement:
         meta = {}
         meta['title'] = self.getTitleWatched()
         meta['site'] = self.getSiteUrl()
+        meta['cat'] = self.getCat()
 
-        data = self.DB.get_watched(meta)
-        return data
-
-    def str_conv(self, data):
-        if isinstance(data, str):
-            # Must be encoded in UTF-8
-            data = data.decode('utf8')
-
-        import unicodedata
-        data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-        # cherche la saison et episode puis les balises [color]titre[/color]
-        #data, saison = self.getSaisonTitre(data)
-        #data, episode = self.getEpisodeTitre(data)
-        # supprimer les balises
-        data = re.sub(r'\[.*\]|\(.*\)', r'', str(data))
-        data = data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
-        # data = re.sub(r'[0-9]+?', r'', str(data))
-        data = data.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
-        data = data.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
-        data = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', data.lower())
-        # data = QuotePlus(data)
-
-        # data = data.decode('string-escape')
+        with cDb() as db:
+            data = db.get_watched(meta)
         return data
 
     def getInfoLabel(self):
         meta = {
             'title': xbmc.getInfoLabel('ListItem.title'),
             # 'label': xbmc.getInfoLabel('ListItem.title'),
-            'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
+            # 'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
             'year': xbmc.getInfoLabel('ListItem.year'),
             'genre': xbmc.getInfoLabel('ListItem.genre'),
             'director': xbmc.getInfoLabel('ListItem.director'),
@@ -434,37 +431,45 @@ class cGuiElement:
             'tagline': xbmc.getInfoLabel('ListItem.tagline'),
             'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
             'plot': xbmc.getInfoLabel('ListItem.plot'),
-            'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
-            'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
-            'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber'),
+            'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+            'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
+            'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
             'season': xbmc.getInfoLabel('ListItem.season'),
-            'episode': xbmc.getInfoLabel('ListItem.episode')
+            'episode': xbmc.getInfoLabel('ListItem.episode'),
+            'tvshowtitle': xbmc.getInfoLabel('ListItem.tvshowtitle')
             }
 
         if 'title' in meta and meta['title']:
             meta['title'] = self.getTitle()
 
-        for key, value in meta.items():
-            self.addItemValues(key, value)
+        if 'backdrop_path' in meta and meta['backdrop_path']:
+            url = meta.pop('backdrop_path')
+            self.addItemProperties('fanart_image', url)
+            self.__sFanart = url
 
-        if 'backdrop_url' in meta and meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-            self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
-           # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            self.__sTrailerUrl = meta['trailer']
-        if 'cover_url' in meta and meta['cover_url']:
-            self.__sThumbnail = meta['cover_url']
-            self.__sPoster = meta['cover_url']
+            self.__sTrailer = meta['trailer']
+
+        if 'poster_path' in meta and meta['poster_path']:
+            url = meta.pop('poster_path')
+            self.__sThumbnail = url
+            self.__sPoster = url
+
+        # Completer au besoin
+        for key, value in meta.items():
+            if value:
+                self.addItemValues(key, value)
 
         return
 
     def getMetadonne(self):
-
         metaType = self.getMeta()
         if metaType == 0:  # non media -> on sort, et on enleve le fanart
             self.addItemProperties('fanart_image', '')
             return
+
+        from resources.lib.tmdb import cTMDb
+        TMDb = cTMDb()
 
         sTitle = self.__sFileName
 
@@ -477,6 +482,7 @@ class cGuiElement:
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3:
+            sTitle = sTitle.replace('integrales', '')
             sTitle = sTitle.replace('integrale', '')
             sTitle = sTitle.replace('2 films', '')
             sTitle = sTitle.replace('6 films', '')
@@ -488,107 +494,114 @@ class cGuiElement:
             sTitle = sTitle.replace('octalogie', '')
             sTitle = sTitle.replace('hexalogie', '')
             sTitle = sTitle.replace('tetralogie', '')
+            sTitle = sTitle.strip()
+            if sTitle.endswith(' les'):
+                sTitle = sTitle[:-4]
+            elif sTitle.endswith(' la'):
+                sTitle = sTitle[:-3]
+            elif sTitle.endswith(' l'):
+                sTitle = sTitle[:-2]
+            sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
+        # tvshow
+        if metaType in (2, 4, 5, 6):
+            tvshowtitle = self.getItemValue('tvshowtitle')
+            if tvshowtitle:
+                sTitle = tvshowtitle
 
-        if sType:
-            from resources.lib.tmdb import cTMDb
-            grab = cTMDb()
-            args = (sType, sTitle)
-            kwargs = {}
-            if (self.__ImdbId):
-                kwargs['imdb_id'] = self.__ImdbId
-            if (self.__TmdbId):
-                kwargs['tmdb_id'] = self.__TmdbId
-            if (self.__Year):
-                kwargs['year'] = self.__Year
-            if (self.__Season):
-                kwargs['season'] = self.__Season
-            if (self.__Episode):
-                kwargs['episode'] = self.__Episode
-            meta = grab.get_meta(*args, **kwargs)
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection')\
+                             .replace('4', 'anime').replace('5', 'season').replace('6', 'episode')\
+                             .replace('7', 'person').replace('8', 'network')
 
-        else:
+        meta = {}
+        try:
+            if sType:
+                args = (sType, sTitle)
+                kwargs = {}
+                if (self.__ImdbId):
+                    kwargs['imdb_id'] = self.__ImdbId
+                if (self.__TmdbId):
+                    kwargs['tmdb_id'] = self.__TmdbId
+                if (self.__Year):
+                    kwargs['year'] = self.__Year
+                if (self.__Season):
+                    kwargs['season'] = self.__Season
+                if (self.__Episode):
+                    kwargs['episode'] = self.__Episode
+
+                meta = TMDb.get_meta(*args, **kwargs)
+                if not meta:
+                    return
+            else:
+                return
+        except:
             return
 
-        # Pour les films
-        # if self.getMeta() == 1:
-            # try:
-                # from metahandler import metahandlers
-                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                # args = ('movie', self.__sFileName)
-                # kwargs = {}
-                # if (self.__TmdbId) or (self.__Year):
-                    # if (self.__ImdbId):
-                        # kwargs['imdb_id'] = self.__ImdbId
-                    # if (self.__TmdbId):
-                        # kwargs['tmdb_id'] = self.__TmdbId
-                    # if (self.__Year):
-                        # kwargs['year'] =  self.__Year
-                # meta = grab.get_meta(*args, **kwargs)
-            # except:
-                # return
+        if 'media_type' in meta:
+            meta.pop('media_type')
 
-        # Pour les series
-        # elif self.getMeta() == 2:
-            # try:
-                # from metahandler import metahandlers
-                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                # Nom a nettoyer ?
-                #attention l'annee peut mettre le bordel a cause des differences de sortie
-                # args = ('tvshow', self.__sFileName)
-                # kwargs = {}
-                # if (self.__TmdbId) or (self.__Year):
-                    # dict = {}
-                    # if (self.__ImdbId):
-                        # kwargs['imdb_id'] = self.__ImdbId
-                    # if (self.__TmdbId):
-                        # kwargs['tmdb_id'] = self.__TmdbId
-                    # if (self.__Year):
-                        # kwargs['year'] = self.__Year
-                # meta = grab.get_meta(*args, **kwargs)
-            # except:
-                # return
-        # else:
-            # return
+        if 'imdb_id' in meta:
+            imdb_id = meta.pop('imdb_id')
+            if imdb_id:
+                self.__ImdbId = imdb_id
 
-        # del meta['playcount']
-        # del meta['trailer']
+        if 'tmdb_id' in meta:
+            tmdb_id = meta.pop('tmdb_id')
+            if tmdb_id:
+                self.__TmdbId = tmdb_id
 
-        meta['title'] = self.getTitle()
+        if 'tvdb_id' in meta:
+            meta.pop('tvdb_id')
+
+        if 'backdrop_path' in meta:
+            url = meta.pop('backdrop_path')
+            if url:
+                self.addItemProperties('fanart_image', url)
+                self.__sFanart = url
+            else:
+                self.addItemProperties('fanart_image', '')
+
+        if 'poster_path' in meta:
+            url = meta.pop('poster_path')
+            if url:
+                self.__sThumbnail = url
+                self.__sPoster = url
+
+        if 'trailer' in meta and meta['trailer']:
+            self.__sTrailer = meta['trailer']
+
+        if 'guest_stars' in meta:
+            meta.pop('guest_stars')
+
+        if 'nbseasons' in meta:
+            meta['season'] = meta.pop('nbseasons')
+
+        # Retrait des tags intermédiaires
+        if 'vote' in meta:
+            meta.pop('vote')
+        if 'runtime' in meta:
+            meta.pop('runtime')
+        if 'crew' in meta:
+            meta.pop('crew')
+        if 'overview' in meta:
+            meta.pop('overview')
+        if 'vote_average' in meta:
+            meta.pop('vote_average')
+        if 'vote_count' in meta:
+            meta.pop('vote_count')
+        if 'backdrop_url' in meta:
+            meta.pop('backdrop_url')
 
         for key, value in meta.items():
             self.addItemValues(key, value)
 
-        if 'imdb_id' in meta and meta['imdb_id']:
-            self.__ImdbId = meta['imdb_id']
-
-        if 'tmdb_id' in meta and meta['tmdb_id']:
-            self.__TmdbId = meta['tmdb_id']
-
-        # if 'tvdb_id' in meta and meta['tvdb_id']:
-            # self.__TvdbId = meta['tvdb_id']
-
-        # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if 'backdrop_url' in meta and meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-            self.__sFanart = meta['backdrop_url']
-        else:
-            self.addItemProperties('fanart_image', '')
-
-        if 'trailer' in meta and meta['trailer']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            self.__sTrailerUrl = meta['trailer']
-
-        # Pas de changement de cover pour les coffrets de films
-        if metaType != 3:
-            if 'cover_url' in meta and meta['cover_url']:
-                self.__sThumbnail = meta['cover_url']
-                self.__sPoster = meta['cover_url']
         return
 
     def getItemValues(self):
-        self.addItemValues('Title', self.getTitle())
+        self.addItemValues('title', self.getTitle())
+
+        # https://kodi.wiki/view/InfoLabels
+        # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
 
         # - Video Values:
         # - genre : string (Comedy)
@@ -633,7 +646,12 @@ class cGuiElement:
         # tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
-            self.addItemValues('DBID', str(self.getTmdbId()))
+            # only for library content : self.addItemValues('DBID', str(self.getTmdbId()))
+
+        # imdbid
+        if self.getImdbId():
+            self.addItemProperties('ImdbId', str(self.getImdbId()))
+            # self.addItemValues('imdbnumber', str(self.getTmdbId()))
 
         # Utilisation des infos connues si non trouvées
         if not self.getItemValue('plot') and self.getDescription():
@@ -642,17 +660,51 @@ class cGuiElement:
             self.addItemValues('year', self.getYear())
         if not self.getItemValue('genre') and self.getGenre():
             self.addItemValues('genre', self.getGenre())
-       # if not self.getItemValue('cover_url') and self.getThumbnail():
-           # self.addItemValues('cover_url', self.getThumbnail())
-       # if not self.getItemValue('backdrop_url') and self.getPoster():
-           # self.addItemValues('backdrop_url', self.getPoster())
-        if not self.getItemValue('trailer') and self.getTrailerUrl():
-            self.addItemValues('trailer', self.getTrailerUrl())
+        # if not self.getItemValue('cover_url') and self.getThumbnail():
+            # self.addItemValues('cover_url', self.getThumbnail())
+        # if not self.getItemValue('backdrop_path') and self.getPoster():
+            # self.addItemValues('backdrop_path', self.getPoster())
+        if not self.getItemValue('trailer'):
+            if self.getTrailer():
+                self.addItemValues('trailer', self.getTrailer())
+            else:
+                self.addItemValues('trailer', 'plugin')  # Faux trailer qui ne se lance pas mais evite une erreur
+                # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        w = self.getWatched()
-        if w == 1:
-            self.addItemValues('playcount', w)
+        sCat = str(self.getCat())
+        try:
+            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
+                if self.getWatched():
+                    self.addItemValues('playcount', 1)
+        except:
+            sCat = False
+
+        self.addItemProperties('siteUrl', self.getSiteUrl())
+        self.addItemProperties('sCleanTitle', self.getFileName())
+        self.addItemProperties('sId', self.getSiteName())
+        self.addItemProperties('sFav', self.getFunction())
+        self.addItemProperties('sMeta', str(self.getMeta()))
+        if isNexus():
+            self.addItemValues('resumetime', self.getResumeTime())
+            self.addItemValues('totaltime', self.getTotalTime())
+        else:
+            self.addItemProperties('resumetime', self.getResumeTime())
+            self.addItemProperties('totaltime', self.getTotalTime())
+
+        if sCat:
+            self.addItemProperties('sCat', sCat)
+            mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video',
+                          '6': 'video', '7': 'season', '8': 'episode'}
+            if sCat in mediatypes.keys():
+                mediatype = mediatypes.get(sCat)
+                self.addItemValues('mediatype', mediatype)  # video, movie, tvshow, season, episode, musicvideo
+
+        if self.getSeason():
+            self.addItemValues('season', int(self.getSeason()))
+
+        if self.getEpisode():
+            self.addItemValues('episode', int(self.getEpisode()))
 
         return self.__aItemValues
 

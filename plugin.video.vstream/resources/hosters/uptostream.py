@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import base64
-import re
-
+from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog, xbmc, VSPath
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-
+import json, requests, re
 
 class cHoster(iHoster):
 
@@ -44,6 +42,8 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
+        if self.__sUrl[-4:] in '.mp4.avi.mkv':
+            return self.__sUrl.split('/')[3]
         return self.__sUrl.split('/')[-1]
 
     def setUrl(self, sUrl):
@@ -52,28 +52,18 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http:', 'https:')
 
     def checkSubtitle(self, sHtmlContent):
-        oParser = cParser()
-
-        # On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        # if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>", sHtmlContent, re.IGNORECASE):
-        if "<track type='vtt'" in sHtmlContent:
-
-            sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-
-            if (aResult[0] == True):
-                Files = []
-                for aEntry in aResult[1]:
-                    url = aEntry[0]
-                    label = aEntry[1]
-                    url = url + '.srt'
-
+        if sHtmlContent:
+            Files = []
+            lab = []
+            for aEntry in sHtmlContent:
+                if aEntry["label"] == "French":
+                    url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    if 'Forc' not in label:
-                        Files.append(url)
-                return Files
-
+                    Files.append(url.replace('.vtt','.srt'))
+                else:
+                    continue
+            return Files
         return False
 
     def checkUrl(self, sUrl):
@@ -84,204 +74,95 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler('uptobox')
-        if (self.oPremiumHandler.isPremiumModeAvailable()):
-            return self.__getMediaLinkForGuest(premium=True)
-
-        else:
-            VSlog('no premium')
-            return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self, premium=False):
-
+        premium = self.oPremiumHandler.isPremiumModeAvailable()
         api_call = False
-        SubTitle = ''
+        SubTitle = ""
 
-        # compte gratuit ou payant
-        token = ''
         if premium:
-            if self.oPremiumHandler.Authentificate():
-                sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
-                sPattern = "window\.token = '([^']+)';"
-                token = re.search(sPattern,sHtmlContent, re.DOTALL)
-                if token:
-                    token = token.group(1)
-
-                SubTitle = self.checkSubtitle(sHtmlContent)
+            self.oPremiumHandler.Authentificate()
         else:
-            VSlog('no Premium')
+            dialog().VSok('Ce hoster demande un login, meme gratuit.')
+            return False, False
 
-        if token:
-            sUrl2 = "https://uptostream.com/api/streaming/source/get?token={}&file_code={}".format(token, self.__getIdFromUrl())
-            sHtml = self.oPremiumHandler.GetHtml(sUrl2)
+        cookies = GestionCookie().Readcookie("uptobox")
+
+        s = requests.Session()
+        s.headers.update({"Cookie": cookies})
+
+        r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[-1]).json()
+        
+        if r["statusCode"] != 0: # Erreur
+            dialog().VSinfo(r["data"])
+            return False, False
+
+        r1 = s.get(r["data"]["user_url"]).text
+        tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
+
+        if not xbmc.getCondVisibility('system.platform.android'):
+            # Si possible on ouvre la page automatiquement dans un navigateur internet.
+            import webbrowser
+            webbrowser.open(r['data']['user_url'])
+            with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
+                js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
         else:
-            # pas de compte
-            sUrl2 = "https://uptostream.com/api/streaming/source/get?token=null&file_code={}".format(self.__getIdFromUrl())
+            import pyqrcode
+            from resources.lib.librecaptcha.gui import cInputWindowYesNo
+            qr = pyqrcode.create(r['data']['user_url'])
+            qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
+            oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+            retArg = oSolver.get()
+            DIALOG = dialog()
+            if retArg == "N":
+                return False
 
-            oRequest = cRequestHandler(sUrl2)
-            sHtml = oRequest.request()
+            js_result = s.get(r["data"]["check_url"]).json()["data"]
 
-        qua, url_list = decodeur1(sHtml)
-        if qua and url_list:
-            api_call = dialog().VSselectqual(qua, url_list)
+        #Deux modes de fonctionnement different.
+        if js_result.get("streamLinks").get('src'):
+            api_call = js_result['streamLinks']['src'].replace(".m3u8",".mpd")
+        else:
+            sPattern = "'(.+?)': {(.+?)}"
+
+            oParser = cParser()
+            aResult = oParser.parse(js_result["streamLinks"], sPattern)
+
+            url = []
+            qua = []
+            api_call = False
+
+            for aEntry in aResult[1]:
+                QUAL = aEntry[0]
+                d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
+                for aEntry1 in d:
+                    url.append(aEntry1[1])
+                    qua.append(QUAL  + ' (' + aEntry1[0] + ')')
+
+            # Affichage du tableau
+            api_call = dialog().VSselectqual(qua, url)
+
+        try:
+            SubTitle = self.checkSubtitle(js_result["subs"])
+        except:
+            VSlog("Pas de sous-titre")
 
         if (api_call):
             if SubTitle:
-                return True, api_call.replace('\\', ''), SubTitle
+                return True, api_call, SubTitle
             else:
-                return True, api_call.replace('\\', '')
+                return True, api_call
 
         return False, False
 
+    def __check_auth(self, url):
+        try:
+            js_result = json.loads(requests.get(url).content)
+        except ValueError:
+            raise ResolverError('Unusable Authorization Response')
 
-def decodeur1(Html):
-    from ast import literal_eval
-    # search list64 and his var name.
-    vl = re.search('var *(_\w+) *= *(\[[^;]+\]);', Html, re.DOTALL)
-    if vl:
-        var_name = vl.group(1)
-        list_b64 = vl.group(2)
-        # reduce html
-        start = Html.find(list_b64)
-        Html = Html[start:]
+        if js_result.get('statusCode') == 0:
+            if js_result.get('data') == "wait-pin-validation":
+                return False
+            else:
+                return js_result
 
-        list_b64 = literal_eval(list_b64)
-
-        # search ref number to re-order the b64list and the var name.
-        nrvr = re.search(var_name + ',(0x\w+)\)*; *var *([^=]+) *=', Html, re.DOTALL)
-        if nrvr:
-            number_ref = int(nrvr.group(1),16)
-            var_ref = nrvr.group(2)
-
-            i = 0
-            while i < number_ref:
-                list_b64.append(list_b64.pop(0))
-                i += 1
-
-            # search for group
-            test2 = re.findall("(?:;|;}\(\)\);)sources(.+?)};", Html, re.DOTALL)
-            if test2:
-                url = ''
-                movieID = ''
-                qua_list = []
-
-                for page in test2:
-                    tableau = {}
-                    data = page.find("={")
-                    if data != -1:
-                        Html = page[data:]
-                        if Html:
-                            i = 0
-                            vname = ''
-                            for i in xrange(len(Html)):
-                                fisrt_r = re.match("([^']+)':", Html, re.DOTALL)
-                                if fisrt_r:
-                                    vname = fisrt_r.group(1)
-                                    tableau[vname] = 'null'
-
-                                    index = len(fisrt_r.group()[:-1])
-                                    Html = Html[index:]
-
-                                whats = re.match("[:+]'([^']+)'", Html, re.DOTALL)
-                                if whats:
-                                    if vname:
-                                        ln = tableau[vname]
-                                        if not ln == 'null':
-                                            tableau[vname] = tableau[vname] + whats.group(1)
-                                        else:
-                                            tableau[vname] = whats.group(1)
-
-                                    index = len(whats.group(0))
-                                    Html = Html[index:]
-
-                                else:
-                                    whats = re.match("\+*" + var_ref + "\(\'([^']+)\' *, *\'([^']+)\'\)", Html, re.DOTALL)
-                                    if whats:
-                                        if vname:
-                                            ln = tableau[vname]
-                                            if not ln == 'null':
-                                                tableau[vname] = tableau[vname] + decoder(list_b64[int(whats.group(1), 16)], whats.group(2))
-
-                                            else:
-                                                tableau[vname] = decoder(list_b64[int(whats.group(1), 16)], whats.group(2))
-
-                                        index = len(whats.group(0))
-                                        Html = Html[index:]
-
-                                if not whats:
-                                    Html = Html[1:]
-
-                        if tableau:
-                            langFre = True  # langue par défaut si pas précisée
-                            qual = ''
-                            for i, j in tableau.items():
-                                if j.startswith('http') and j.endswith('com'):  # url
-                                    url = tableau[i] if not tableau[i] in url else url
-                                    continue
-
-                                if len(i) == 5 and len(j) >= 10 and j.isalnum() and not 'video' in j:
-                                    movieID = j if not j in movieID else movieID
-                                    continue
-
-                                if len(test2) > 1:  # s'il y a plusieurs flux
-                                    if j == 'eng':  # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
-                                        langFre = False
-
-                                if j == '360' or j == '480' or j == '720' or j == '1080':
-                                    qual = j
-
-                            if langFre and qual and qual not in qua_list:
-                                qua_list.append(qual)
-
-                qua_list.sort()
-                url_list = []
-                for qual in qua_list:
-                    url_list.append("{}/{}/{}/0/video.mp4".format(url, movieID, qual))
-
-                return qua_list, url_list
-
-
-def decoder(data, fn):
-    data = base64.b64decode(data)
-
-    secretKey = {}
-    url = ''
-    temp = ''
-    tempData = ''
-
-    for i in xrange(len(data)):
-        tempData += ("%" + format(ord(data[i]), '02x'))
-
-    data = Unquote(tempData)
-
-    x = 0
-    while x < 256:
-        secretKey[x] = x
-        x += 1
-
-    y = 0
-    x = 0
-    while x < 256:
-        y = (y + secretKey[x] + ord(fn[x % len(fn)])) % 256
-
-        temp = secretKey[x]
-        secretKey[x] = secretKey[y]
-        secretKey[y] = temp
-        x += 1
-
-    x = 0
-    y = 0
-    i = 0
-    while i < len(data.decode('utf-8')):
-
-        x = (x + 1) % 256
-        y = (y + secretKey[x]) % 256
-
-        temp = secretKey[x]
-        secretKey[x] = secretKey[y]
-        secretKey[y] = temp
-
-        url += (chr(ord(data.decode('utf-8')[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
-
-        i += 1
-
-    return url
+        raise ResolverError('Error during check authorisation.')
