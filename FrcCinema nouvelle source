@@ -417,7 +417,23 @@ def showSerieLinks():
             videoId = aEntry[0]
             xfield = aEntry[1]
 
-            hosterName = xfield
+            hosterName = sLang = ''
+            oHoster = None  # Initialisation en dehors de la boucle
+
+            if '-vostfr' in xfield:
+               hosterName, sLang = xfield.strip().split('-')
+               sLang = sLang.upper()
+            else:
+               hosterName = xfield.strip()
+
+            oHoster = cHosterGui().checkHoster(hosterName)
+
+            if not oHoster:
+               continue
+
+            # Ajouter cette logique
+            if not sLang:
+               sLang = 'VF'
            
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hosterName)
             
@@ -502,7 +518,23 @@ def showMovieLinks():
 
             videoId = aEntry[0]
             xfield = aEntry[1]
-            hosterName = xfield
+            hosterName = sLang = ''
+            oHoster = None  # Initialisation en dehors de la boucle
+
+            if '-vostfr' in xfield:
+               hosterName, sLang = xfield.strip().split('-')
+               sLang = sLang.upper()
+            else:
+               hosterName = xfield.strip()
+
+            oHoster = cHosterGui().checkHoster(hosterName)
+
+            if not oHoster:
+               continue
+
+            # Ajouter cette logique
+            if not sLang and '-vostfr' not in xfield:
+               sLang = 'VF'
            
 
             postdata = 'mod=xfield_ajax&id=' + videoId + '&name=' + xfield
