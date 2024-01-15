@@ -18,7 +18,7 @@ import string
 
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 class cUtil:
-    # reste a transformer la class en fonction distante.
+
     def CheckOrd(self, label):
         count = 0
         try:
@@ -68,8 +68,31 @@ class cUtil:
 
         return str(iMinutes) + ':' + str(iSeconds)
 
-    def unescape(self, text):
+    def formatUTF8(self, text):
+        # test si nécessaire de convertir
+        n2 = re.sub('[^a-zA-Z0-9 ]', '', text)
+        if n2 != text:
+            bMatrix = isMatrix()
+            if not bMatrix:
+                try:
+                    # converti en unicode pour aider aux convertions
+                    text = text.decode('utf8', 'ignore')    
+                except Exception as e:
+                    pass
+                
+            try:
+                text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore')
+            except Exception as e:
+                pass
+            
+            if bMatrix:
+                try:
+                    text = text.decode('utf8', 'ignore')
+                except Exception as e:
+                    pass
+        return text
 
+    def unescape(self, text):
         # determine si conversion en unicode nécessaire        
         isStr = isinstance(text, str)
 
@@ -99,17 +122,8 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def titleWatched(self, title):
-        # enlève les accents, si nécessaire
-        n2 = re.sub('[^a-zA-Z0-9 ]', '', title)
-        if n2 != title:
-            try:
-                if not isMatrix():
-                    title = title.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
-                title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore')
-                if isMatrix():
-                    title = title.decode('utf8', 'ignore')
-            except Exception as e:
-                pass
+
+        title = self.formatUTF8(title)
 
         # cherche la saison et episode puis les balises [color]titre[/color]
         # title, saison = self.getSaisonTitre(title)
@@ -147,16 +161,7 @@ class cUtil:
         name = name.replace('[', '').replace(']', '') # crochet orphelin
 
         # enlève les accents, si nécessaire
-        n2 = re.sub('[^a-zA-Z0-9 ]', '', name)
-        if n2 != name:
-            try:
-                if not isMatrix():
-                    name = name.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
-                name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore')
-                if isMatrix():
-                    name = name.decode('utf8', 'ignore')
-            except Exception as e:
-                pass
+        name = self.formatUTF8(name)
 
         # tout en minuscule
         name = name.lower()
