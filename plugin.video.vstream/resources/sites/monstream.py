@@ -9,10 +9,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
-UA = "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 #URL_MAIN='https://monstream.app/'
 SITE_IDENTIFIER = 'monstream'
 SITE_NAME = 'MonStream'
@@ -22,6 +21,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
+key_search_reality = '#searchsomereality'
 
 # Pour les Films
 MOVIE_NEWS = (URL_MAIN + 'films-t/', 'showMovies')
@@ -39,6 +39,13 @@ URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
+# télé réalité
+REPLAYTV_NEWS = (URL_MAIN + 'f/genre=reality', 'showMovies')
+REPLAYTV_REPLAYTV = (URL_MAIN + 'f/genre=reality', 'showMovies')
+URL_SEARCH_REPLAY = (key_search_reality , 'showMovies')
+URL_SEARCH_REPLAYTV = 'f/genre=reality/l.title='
+
+
 # recherche utilisé quand on n'utilise pas le globale
 MY_SEARCH_MOVIES = (True, 'showSearchMovie')
 MY_SEARCH_SERIES = (True, 'showSearchSerie')
@@ -53,14 +60,14 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher Films & Séries', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
@@ -175,7 +182,7 @@ def showSeriesGenres():
              ['Documentaire', 'documentaire-s'], ['Drame', 'drame-s'], ['Famille', 'famille-s'],
              ['Fantastique', 'fantastique-s'], ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
              ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'], ['Romance', 'romance-s'],
-             ['Science-Fiction', 'science-fiction-s'], ['Thriller', 'thriller-s'],['western', 'western-s']]
+             ['Science-Fiction', 'science-fiction-s'], ['Télé réalité', 'f/genre=reality'], ['Thriller', 'thriller-s'],['western', 'western-s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listegenre:
@@ -205,22 +212,36 @@ def showMovies(sSearch=''):
     bSearchSerie = False
 
     if sSearch:
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
+        oUtil = cUtil()
+        pdata = sSearchText = None
+        url = URL_SEARCH[0]
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
+            sSearchText = oUtil.CleanName(sSearch)
+            sSearch = sSearch.replace(' ', '+')
+            pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         if key_search_series in sSearch:
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
+            sSearchText = oUtil.CleanName(sSearch)
+            sSearch = sSearch.replace(' ', '+')
+            pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
+        if key_search_reality in sSearch:
+            sSearch = sSearch.replace(key_search_reality, '')
+            bSearchSerie = True
+            sSearchText = oUtil.CleanName(sSearch)
+            sSearch = sSearch.replace(' ', '+')
+            url = URL_MAIN + URL_SEARCH_REPLAYTV + sSearch
 
-        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
-        oRequest = cRequestHandler(URL_SEARCH[0])
+        oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9,ar;q=0.8,en-US;q=0.7,en;q=0.6')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequest.addParametersLine(pdata)
+        if pdata:
+            oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
 
     else:
@@ -229,21 +250,13 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # lien thumb titre
-    
+    # thumb titre lien
     sPattern = 'data-src="([^"]+)" alt="([^"]+).+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
    
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
             sUrl2 = aEntry[2]
             sThumb = aEntry[0]
             if 'http' not in sThumb:
@@ -257,18 +270,11 @@ def showMovies(sSearch=''):
                 if '/series-t' not in sUrl2:
                     continue
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
+
             sDisplayTitle = sTitle
-            if sSearch and not bSearchMovie and not bSearchSerie:
-                mark1 = ' Série' #pour marquer (tag) les séries lors du résultat de recherche global
-                mark2 = ' Film'  #pour marquer (tag) les films lors du résultat de recherche global
-                
-                if '/series-t' in sUrl2:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark1)       #marquage de series 
-                else:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark2)       #marquage de films
-
-            sDisplayTitle = sDisplayTitle
-
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -277,9 +283,6 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
     else:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -315,7 +318,7 @@ def showSaisons():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sDesc = 'JustStream'
+    sDesc = ''
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -410,7 +413,6 @@ def showSerieLinks():
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
