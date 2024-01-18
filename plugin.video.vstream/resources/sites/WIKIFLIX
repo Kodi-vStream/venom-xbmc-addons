@@ -9,14 +9,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
-UA = "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 #URL_MAIN='https://www.wikiflix.top/'
 SITE_IDENTIFIER = 'wikiflix'
-SITE_NAME = 'WIKIFLIX'
-SITE_DESC = 'Films Streaming Gratuit et Séries en streaming VF/VOSTFR sur WIKIFLIX'
+SITE_NAME = 'WIKIflix'
+SITE_DESC = 'Films et Séries en streaming VF/VOSTFR sur WIKIFLIX'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
@@ -52,9 +51,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher Films & Séries', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
@@ -102,7 +98,6 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Années)', 'annees.png', oOutputParameterHandler)
 
-     
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VF[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
@@ -163,7 +158,7 @@ def showMovieYears():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1955, int(datetime.datetime.now().year) + 1)):
+    for i in reversed(range(1980, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
@@ -206,13 +201,16 @@ def showMovies(sSearch=''):
     bSearchSerie = False
 
     if sSearch:
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
+
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
+        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         oRequest = cRequestHandler(URL_SEARCH[0])
@@ -236,14 +234,8 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if 'http' not in sThumb:
@@ -261,6 +253,10 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if '/images' not in sThumb:
                     continue
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
@@ -282,9 +278,6 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
     else:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -313,7 +306,6 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 #afficher les Saisons 
-
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -384,7 +376,7 @@ def showEpisodes():
             sEpisode = aEntry[1].replace('é', 'e').strip()
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
-            sTitle = sMovieTitle + '' + sEpisode
+            sTitle = sMovieTitle + ' ' + sEpisode
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -407,6 +399,8 @@ def showSerieLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
+    sTitle = sTitle.strip()
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -415,7 +409,6 @@ def showSerieLinks():
     sPattern = '<li class="ser_pl" data-id="([^"]+)" data-name="([^"]+)">'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -427,19 +420,18 @@ def showSerieLinks():
             oHoster = None  # Initialisation en dehors de la boucle
 
             if '-vostfr' in xfield:
-               hosterName, sLang = xfield.strip().split('-')
-               sLang = sLang.upper()
+                hosterName, sLang = xfield.strip().split('-')
+                sLang = sLang.upper()
             else:
-               hosterName = xfield.strip()
+                hosterName = xfield.strip()
 
             oHoster = cHosterGui().checkHoster(hosterName)
-
             if not oHoster:
-               continue
+                continue
 
             # Ajouter cette logique
             if not sLang:
-               sLang = 'VF'
+                sLang = 'VF'
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
             
@@ -462,7 +454,6 @@ def showSerieLinks():
 
 def showSerieHosters():
     oGui = cGui()
-    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -494,8 +485,6 @@ def showSerieHosters():
 
 
 def showMovieLinks():
-
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -517,7 +506,6 @@ def showMovieLinks():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = '<li class="nopl" data-id="([^"]+)" data-name="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -529,19 +517,19 @@ def showMovieLinks():
             oHoster = None  # Initialisation en dehors de la boucle
 
             if '-vostfr' in xfield:
-               hosterName, sLang = xfield.strip().split('-')
-               sLang = sLang.upper()
+                hosterName, sLang = xfield.strip().split('-')
+                sLang = sLang.upper()
             else:
-               hosterName = xfield.strip()
+                hosterName = xfield.strip()
 
             oHoster = cHosterGui().checkHoster(hosterName)
 
             if not oHoster:
-               continue
+                continue
 
             # Ajouter cette logique
             if not sLang and '-vostfr' not in xfield:
-               sLang = 'VF'
+                sLang = 'VF'
                
             postdata = 'mod=xfield_ajax&id=' + videoId + '&name=' + xfield
 
