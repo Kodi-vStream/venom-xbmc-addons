@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'dulourd'
 SITE_NAME = 'DuLourd'
@@ -104,6 +105,8 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
@@ -134,6 +137,11 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[4].strip()
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
+            
             #sLang = aEntry[2].strip()
             sYear= aEntry[1]
 
@@ -279,7 +287,7 @@ def showSerieLinks():
             xfield = aEntry[1]
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
-            # trie des hosters supportés
+            # filtre des hosters supportés
             oHoster = cHosterGui().checkHoster(hosterName)
             if not oHoster:
                 continue
