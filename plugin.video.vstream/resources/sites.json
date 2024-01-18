@@ -363,6 +363,11 @@
             "cloudflare": "True",
             "url": "https://www.wiflix.voto/"
         },
+        "wikiflix": {
+            "label": "wikiflix",
+            "active": "True",
+            "url": "https://www.wikiflix.top/"
+        },
         "wilifilm": {
             "label": "Wilifilm",
             "active": "True",
