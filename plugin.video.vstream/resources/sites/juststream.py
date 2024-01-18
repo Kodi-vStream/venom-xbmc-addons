@@ -9,11 +9,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
-UA = "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-#URL_MAIN='https://juststream.voto/'
 SITE_IDENTIFIER = 'juststream'
 SITE_NAME = 'JustStream'
 SITE_DESC = 'Votre refuge pour regarder des films et séries en streaming gratuit'
@@ -202,6 +200,8 @@ def showMovies(sSearch=''):
     bPopular = False
     
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
@@ -236,14 +236,8 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
         
@@ -258,29 +252,19 @@ def showMovies(sSearch=''):
                 if '/series-gratos' not in sUrl2:
                     continue
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
+
             sDisplayTitle = sTitle
-            if sSearch and not bSearchMovie and not bSearchSerie:
-                mark1 = ' Série' #pour marquer (tag) les séries lors du résultat de recherche global
-                mark2 = ' Film'  #pour marquer (tag) les films lors du résultat de recherche global
-                
-                if '/series-gratos' in sUrl2:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark1)
-                else:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark2)
-
-            sDisplayTitle = sDisplayTitle
-
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series-gratos' not in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            else:
+            if '/series-gratos' in sUrl2:  # Series
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
+            else:   # films
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
     else:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -310,7 +294,6 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 #afficher les Saisons 
-
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -381,7 +364,7 @@ def showEpisodes():
             sEpisode = aEntry[1]
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
-            sTitle = sMovieTitle + '  Episode ' + sEpisode
+            sTitle = sMovieTitle + ' Episode ' + sEpisode
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -412,7 +395,6 @@ def showSerieLinks():
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -425,6 +407,7 @@ def showSerieLinks():
                 hosterName, sLang = xfield.strip().split('_')
                 sLang = sLang.upper()
 
+            # filtre des hosters supportés
             oHoster = cHosterGui().checkHoster(hosterName)
             if not oHoster:
                 continue
@@ -433,7 +416,6 @@ def showSerieLinks():
             
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
-
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
