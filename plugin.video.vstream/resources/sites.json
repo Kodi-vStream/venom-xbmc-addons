@@ -188,6 +188,11 @@
             "active": "False",
             "url": "https://lsdb.eu"
         },
+        "monstream": {
+            "label": "Mon Stream",
+            "active": "True",
+            "url": "https://monstream.app/"
+        },
         "mesfilms": {
             "label": "Mes Films",
             "active": "True",
