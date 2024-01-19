@@ -110,7 +110,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.art/"
+            "url": "https://www.free-telechargement.lol/"
         },
         "freebox": {
             "label": "Freebox",
@@ -125,6 +125,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://french-stream.moe/"
         },
         "frenchanimes": {
@@ -181,7 +182,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv746.me/"
+            "url": "https://livetv751.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -221,7 +222,7 @@
         },
         "novaflix": {
             "label": "Novaflix",
-            "active": "True",
+            "active": "False",
             "url": "https://wvw.novaflix.io/"
         },
         "o1streaming": {
@@ -320,7 +321,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v6.toonanime.co/"
+            "url": "https://v7.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -360,7 +361,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.boats/"
+            "url": "https://www.wawacity.yachts/"
         },
         "wiflix": {
             "label": "WiFlix",
@@ -376,7 +377,6 @@
         "wilifilm": {
             "label": "Wilifilm",
             "active": "True",
-            "cloudflare": "False",
             "url": "https://wilifilm.com/"
         },
         "youtitou_com": {
