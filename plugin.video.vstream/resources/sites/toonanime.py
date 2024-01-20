@@ -268,15 +268,15 @@ def seriesHosters():
             if progress_.iscanceled():
                 break
 
-            sPattern = '<div id="content_player_' + aEntry[1] + '".+?>(.+?)<'
+            sPattern = '<div id=\\"content_player_' + aEntry[1] + '\\".+?>(.+?)<'
             aResult1 = oParser.parse(sHtmlContent, sPattern)
             hostClass = aEntry[0]
 
             for aEntry1 in aResult1[1]:
                 # sTitle = sMovieTitle  + " [COLOR coral]" + hostClass.capitalize() + "[/COLOR]"
 
-                if "https" in aEntry1[0]:
-                    sHosterUrl = aEntry1[0]
+                if "https" in aEntry1:
+                    sHosterUrl = aEntry1
                 elif hostClass == "cdnt":
                     sHosterUrl = "https://lb.toonanime.xyz/playlist/" + aEntry1 + "/" + str(round(time.time() * 1000))
                 else:

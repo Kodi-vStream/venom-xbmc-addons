@@ -119,15 +119,14 @@ def showMovies(sSearch=''):
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
     if sSearch:
         oUtil = cUtil()
-        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
-        sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
-        sSearchText = oUtil.CleanName(sSearchText)
-
+        sSearch = sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch[:20]  # limite de caractere sinon bug de la recherche
+
         siteName = sMainUrl.split('/')[2].split('.')[0]
-        oRequestHandler = cRequestHandler(sMainUrl + 'home/%s/' % siteName)
+        sUrl = sMainUrl + 'home/{0!s}'.format(siteName)
+        oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('searchword', sSearch.replace(' ', '+'))
+        oRequestHandler.addParameters('searchword', sSearch)
         sABPattern = '<div class="column24"'
     else:
         oInputParameterHandler = cInputParameterHandler()

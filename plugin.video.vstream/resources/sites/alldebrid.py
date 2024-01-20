@@ -212,7 +212,7 @@ def showMagnets(series, sSearch=''):
             isMovie = 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2
                 
             if not series and isMovie:
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
             elif series and not isMovie:
                 oGui.addTV(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 

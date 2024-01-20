@@ -24,10 +24,20 @@
             "active": "True",
             "url": "http://www.anime-ultime.net/"
         },
+        "animesultra": {
+            "label": "Animes Ultra",
+            "active": "True",
+            "url": "https://w2.animesultra.net/"
+        },
         "bd_streams": {
             "label": "BD STREAMS",
             "active": "False",
             "url": "https://www.bd-streams.tk/"
+        },
+        "blueseries": {
+            "label": "BLUEseries",
+            "active": "True",
+            "url": "https://www.blueseries.uno/"
         },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
@@ -65,6 +75,11 @@
             "active": "True",
             "url": "https://documentaire.io/"
         },
+        "dulourd": {
+            "label": "DuLourd",
+            "active": "True",
+            "url": "https://www.dulourd.uno/"
+        },
         "enstream": {
             "label": "EnStream",
             "active": "False",
@@ -78,9 +93,9 @@
         },
         "filmoflix": {
             "label": "Filmoflix",
-            "active": "False",
-            "cloudflare": "True",
-            "url": "https://www.wishflix.live/"
+            "active": "True",
+            "cloudflare": "False",
+            "url": "https://www.wishflix.icu/"
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
@@ -95,7 +110,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.art/"
+            "url": "https://www.free-telechargement.lol/"
         },
         "freebox": {
             "label": "Freebox",
@@ -109,7 +124,8 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "False",
+            "active": "True",
+            "cloudflare": "True",
             "url": "https://french-stream.moe/"
         },
         "frenchanimes": {
@@ -142,6 +158,11 @@
             "active": "False",
             "url": "https://fr.illimitestreaming.top/"
         },
+        "juststream": {
+            "label": "JustStream",
+            "active": "True",
+            "url": "https://juststream.pics/"
+        },
         "k_streaming": {
             "label": "K_Streaming",
             "active": "False",
@@ -161,12 +182,17 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv746.me/"
+            "url": "https://livetv751.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
             "active": "False",
             "url": "https://lsdb.eu"
+        },
+        "monstream": {
+            "label": "Mon Stream",
+            "active": "True",
+            "url": "https://monstream.app/"
         },
         "mesfilms": {
             "label": "Mes Films",
@@ -196,7 +222,7 @@
         },
         "novaflix": {
             "label": "Novaflix",
-            "active": "True",
+            "active": "False",
             "url": "https://wvw.novaflix.io/"
         },
         "o1streaming": {
@@ -295,7 +321,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v6.toonanime.co/"
+            "url": "https://v7.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -335,7 +361,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.boats/"
+            "url": "https://www.wawacity.yachts/"
         },
         "wiflix": {
             "label": "WiFlix",
@@ -343,10 +369,14 @@
             "cloudflare": "True",
             "url": "https://www.wiflix.voto/"
         },
+        "wikiflix": {
+            "label": "wikiflix",
+            "active": "True",
+            "url": "https://www.wikiflix.top/"
+        },
         "wilifilm": {
             "label": "Wilifilm",
             "active": "True",
-            "cloudflare": "False",
             "url": "https://wilifilm.com/"
         },
         "youtitou_com": {

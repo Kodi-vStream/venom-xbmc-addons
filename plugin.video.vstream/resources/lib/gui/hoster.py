@@ -210,17 +210,19 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'uptostream', 'speedvid', 'letsupload',
+                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
                             'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo', 'turbovid',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
-                            'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea', 'vido',
+                            'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
+                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload', 'darkibox']
+
+# désactivé 'uptostream', 'uptobox'
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -229,6 +231,9 @@ class cHosterGui:
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
+
+        if ('embedwish' in sHostName) or ('streamwish' in sHostName):
+            return self.getHoster('streamwish')
 
         if ('guccihide' in sHostName) or ('streamhide' in sHostName):
             return self.getHoster('streamhide')
@@ -239,10 +244,10 @@ class cHosterGui:
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
 
-        if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName):
+        if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
 
-        if ('filelions' in sHostName) or ('shoooot' in sHostName):
+        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName):
             return self.getHoster('filelions')
 
         if ('playvidto' in sHostName):
@@ -312,7 +317,7 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName):
+        if ('dood' in sHostName) or ('dooood' in sHostName) or ('ds2play' in sHostName) or ('d0o0d' in sHostName):
             return self.getHoster('dood')
 
         if ('DoodStream' in sHostName) or ('flixeo' in sHostName):
