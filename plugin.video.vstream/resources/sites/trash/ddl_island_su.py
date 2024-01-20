@@ -662,7 +662,7 @@ def showHosters():
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
             if sTitle.startswith('Telecharger ') :
                 sTitle = sTitle.replace('Telecharger ', '')
-			
+            
             #test si le host est supporte par vstream.
             oHoster = cHosterGui().checkHoster(sHost.lower())
             if  sHost == 'Revivelink':
