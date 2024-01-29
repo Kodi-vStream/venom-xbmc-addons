@@ -564,6 +564,12 @@ msgctxt "#30145"
 msgid "Download folder"
 msgstr "Dossier de téléchargement"
 
+msgctxt "#30146"
+msgid "Pastebin URL"
+msgstr "Autre hébergeur Pastebin"
+
+
+
 msgctxt "#30160"
 msgid "Quality HD"
 msgstr "Qualité HD"
