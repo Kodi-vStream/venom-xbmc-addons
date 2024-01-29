@@ -529,8 +529,11 @@ class PasteContent:
                 pass
 
         if not hasMovies:
+            pastebinUrl = addon().getSetting('pastebin_url')
+            if not pastebinUrl:
+                pastebinUrl = URL_MAIN
             from resources.lib.handler.requestHandler import cRequestHandler
-            oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
+            oRequestHandler = cRequestHandler(pastebinUrl + pasteBin)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
             if sContent.startswith('<'):
