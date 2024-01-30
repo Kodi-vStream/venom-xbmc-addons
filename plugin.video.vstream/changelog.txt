@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.8.0***
+- Pastebin : Possibilité de renseigner un hebergeur secondaire
+
 *** 2.7.6***
 - Ajout de plusieurs sources
 
