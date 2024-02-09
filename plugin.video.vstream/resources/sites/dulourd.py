@@ -25,7 +25,7 @@ SERIE_ANNEES = (True, 'showSerieYears')
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
-# recherche utilisée quand on n'utilise pas le globale
+# recherche utilisée quand on n'utilise pas la globale
 MY_SEARCH_SERIES = (True, 'showSearchSerie')
 
 # Menu GLOBALE HOME
@@ -34,6 +34,7 @@ SERIE_SERIES = (True, 'showMenuTvShows')
 
 def load():
     showMenuTvShows()
+
 
 def showMenuTvShows():
     oGui = cGui()
@@ -72,22 +73,25 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showSeriesGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action_s'], ['Animation', 'animation_s'], ['Aventure', 'aventure_s'], ['Biopic', 'biopic-s'],
-             ['Comédie', 'comedie_s'], ['Documentaire', 'documentaire-s'], ['Drame', 'drame_s'], ['Famille', 'famille-s'],
-             ['Fantastique', 'fantastique_s'], ['Guerre', 'guerre_s'], ['Historique', 'historique_s'], ['Horreur', 'horreur_s'],
-             ['Judiciaire', 'judiciare-s'], ['Musique', 'musical_s'], ['Policier', 'policier_s'], ['Romance', 'romance_s'],
-             ['Science-Fiction', 'science_fiction_s'], ['Thriller', 'thriller_s'],['western', 'western_s']]
+    listeGenre = [['Action', 'action_s'], ['Animation', 'animation_s'], ['Aventure', 'aventure_s'],
+                  ['Biopic', 'biopic-s'], ['Comédie', 'comedie_s'], ['Documentaire', 'documentaire-s'],
+                  ['Drame', 'drame_s'], ['Famille', 'famille-s'],['Fantastique', 'fantastique_s'],
+                  ['Guerre', 'guerre_s'], ['Historique', 'historique_s'], ['Horreur', 'horreur_s'],
+                  ['Judiciaire', 'judiciare-s'], ['Musique', 'musical_s'], ['Policier', 'policier_s'],
+                  ['Romance', 'romance_s'], ['Science-Fiction', 'science_fiction_s'], ['Thriller', 'thriller_s'],
+                  ['western', 'western_s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-gratos/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-    
+
 def showSerieYears():
     import datetime
     oGui = cGui()
@@ -99,6 +103,7 @@ def showSerieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -126,7 +131,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # url year lang thumb title
-    sPattern = '<article class="movie-box.+?a href="([^"]+)".+?<span class="icon-hd" title>(\w+).+?<span class="icon-voicer" title>(\w+).+?img data-src="([^"]+)".+? alt="([^"]+)"'
+    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?<span class="icon-voicer" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -141,18 +146,18 @@ def showMovies(sSearch=''):
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue  # Filtre de recherche
-            
-            #sLang = aEntry[2].strip()
-            sYear= aEntry[1]
+
+            # sLang = aEntry[2].strip()
+            sYear = aEntry[1]
 
             sDisplayTitle = '%s (%s)' % (sTitle, sYear)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-#            oOutputParameterHandler.addParameter('sLang', sLang)    # non, le liens seront proposés en plusieurs langues
+            # oOutputParameterHandler.addParameter('sLang', sLang)  # non, les liens seront proposés en plusieurs langues
             oOutputParameterHandler.addParameter('sYear', sYear)
-            
+
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
     else:
         oGui.addText(SITE_IDENTIFIER)
@@ -180,7 +185,8 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
 
     return False, 'none'
-    
+
+
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -198,7 +204,7 @@ def showSaisons():
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
-    sPattern = 'class="th-hover" href="([^"]+)".+?data-src="([^"]+)".+?<div class="titlecustom">([^<]*)'
+    sPattern = 'class="th-hover" href="([^"]+).+?data-src="([^"]+).+?<div class="titlecustom">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -207,7 +213,7 @@ def showSaisons():
 
             sUrl2 = aEntry[0]
             sSaison = aEntry[2]  # SAISON 2
-            sThumb= aEntry[1]
+            sThumb = aEntry[1]
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -221,9 +227,9 @@ def showSaisons():
         oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
-           
+
+
 def showEpisodes():
-    
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -245,7 +251,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            sEpisode = aEntry[1].replace('é', 'e').strip() # épisode 2
+            sEpisode = aEntry[1].replace('é', 'e').strip()  # épisode 2
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sTitle = sMovieTitle + ' ' + sEpisode
