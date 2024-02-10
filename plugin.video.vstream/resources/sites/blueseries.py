@@ -109,8 +109,8 @@ def showSerieYears():
     oGui = cGui()
 #    import datetime
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1930, 2024)):  # int(datetime.datetime.now().year) + 1)):
+    oOutputParameterHandler = cOutputParameterHandler()  # Pas de lien après 2022
+    for i in reversed(range(1930, 2022)):  # int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear  + '&cat=2')
         oOutputParameterHandler.addParameter('sYear', sYear)
