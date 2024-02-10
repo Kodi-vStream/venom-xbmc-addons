@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Nouvelle source de streaming FILMS ET SÉRIES
+# Nouvelle source de streaming FILMS ET SÉRIES
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
-#URL_MAIN='https://www.wikiflix.top/'
+# URL_MAIN ='https://www.wikiflix.top/'
 SITE_IDENTIFIER = 'wikiflix'
 SITE_NAME = 'WIKIflix'
 SITE_DESC = 'Films et Séries en streaming VF/VOSTFR sur WIKIFLIX'
@@ -38,7 +38,7 @@ URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
-# recherche utilisé quand on n'utilise pas le globale
+# recherche utilisée quand on n'utilise pas la globale
 MY_SEARCH_MOVIES = (True, 'showSearchMovie')
 MY_SEARCH_SERIES = (True, 'showSearchSerie')
 
@@ -51,7 +51,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
@@ -59,19 +58,17 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 
 def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -139,7 +136,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'],
+    listeGenre = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'],
                   ['Biopic', 'biopic'], ['Comédie', 'comedie'], ['Documentaire', 'documentaire'],
                   ['Drame', 'drame'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
                   ['Guerre', 'guerre'], ['Historique', 'historique'], ['Epouvante et Horreur', 'epouvante-horreur'],
@@ -147,11 +144,12 @@ def showGenres():
                   ['Science-Fiction', 'science-fiction'], ['Thriller', 'thriller'], ['western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieYears():
     import datetime
@@ -164,21 +162,25 @@ def showMovieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
+
 def showSeriesGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action-s'], ['Animation', 'animation-s'], ['Aventure', 'aventure-s'], ['Biopic', 'biopic-s'], ['Comédie', 'comedie-s'],
-             ['Documentaire', 'documentaire-s'], ['Drame', 'drame-s'], ['Famille', 'famille-s'],
-             ['Fantastique', 'fantastique-s'], ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
-             ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'], ['Romance', 'romance-s'],
-             ['Science-Fiction', 'science-fiction-s'], ['Thriller', 'thriller-s'],['western', 'western-s']]
+    listeGenre = [['Action', 'action-s'], ['Animation', 'animation-s'], ['Aventure', 'aventure-s'],
+                  ['Biopic', 'biopic-s'], ['Comédie', 'comedie-s'], ['Documentaire', 'documentaire-s'],
+                  ['Drame', 'drame-s'], ['Famille', 'famille-s'], ['Fantastique', 'fantastique-s'],
+                  ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
+                  ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'],
+                  ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-s'], ['Thriller', 'thriller-s'],
+                  ['western', 'western-s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSerieYears():
     import datetime
@@ -228,11 +230,10 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # lien thumb titre 
-    
+    # lien thumb titre
     sPattern = '<a class="short-item.*?href="([^"]*)">.*?data-src="([^"]*)".*?alt="([^"]*)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -241,12 +242,12 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
-            # le seul moyen trouver pour faire la diference entre une serie et un film dans la recherche cest le path des posters.
-            # puisque les liens des series et films sont les memes
-            # example serie https://www.wikiflix.top/8838601-sur-ecoute.html
-            # example film https://www.wikiflix.top/8833930-visages-villages.html
-            # la seule differnce réside dans le liens des images pour les series c'est (/images/poster de la series)et pour les films cest (/uploads/posts/covers/poster du film)
-               
+            # Le seul moyen trouvé pour différencier une serie d'un film dans la recherche, c'est le path des posters.
+            # Puisque les liens des series et films sont les mêmes
+            # Exemple serie https://www.wikiflix.top/8838601-sur-ecoute.html
+            # Exemple film https://www.wikiflix.top/8833930-visages-villages.html
+            # La seule différence réside dans le lien des images pour les series c'est (/images/poster de la series)et pour les films c'est (/uploads/posts/covers/poster du film)
+
             if bSearchMovie:
                 if '/images' in sThumb:
                     continue
@@ -260,13 +261,13 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
-                mark1 = 'Série' #pour marquer (tag) les séries lors du résultat de recherche global
-                mark2 = 'Film'  #pour marquer (tag) les films lors du résultat de recherche global
-                
+                mark1 = 'Série'  # pour marquer (tag) les séries lors du résultat de recherche global
+                mark2 = 'Film'   # pour marquer (tag) les films lors du résultat de recherche global
+
                 if '/images' in sThumb:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark1)       #marquage de series 
+                    sDisplayTitle = ('%s (%s)') % (sDisplayTitle, mark1)  # marquage de series
                 else:
-                    sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark2)       #marquage de films
+                    sDisplayTitle = ('%s (%s)') % (sDisplayTitle, mark2)  # marquage de films
 
             sDisplayTitle = sDisplayTitle
 
@@ -305,7 +306,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False, 'none'
 
-#afficher les Saisons 
+
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -322,7 +323,6 @@ def showSaisons():
 
     sPattern = 'grid-item" href="([^"]*)".*?data-src="([^"]*)".*?class="short-item__season">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -333,8 +333,6 @@ def showSaisons():
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sSaison = aEntry[2]  # SAISON 2
-            
-
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -372,7 +370,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            
+
             sEpisode = aEntry[1].replace('é', 'e').strip()
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -407,7 +405,7 @@ def showSerieLinks():
     cook = oRequestHandler.GetCookies()
 
     sPattern = '<li class="ser_pl" data-id="([^"]+)" data-name="([^"]+)">'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -434,10 +432,9 @@ def showSerieLinks():
                 sLang = 'VF'
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
-            
+
             postdata = 'mod=xfield_ajax&id=' + videoId + '&name=' + xfield
             sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
-
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -466,7 +463,7 @@ def showSerieHosters():
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
+    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici, mais besoin pour les films
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
 
@@ -530,7 +527,7 @@ def showMovieLinks():
             # Ajouter cette logique
             if not sLang and '-vostfr' not in xfield:
                 sLang = 'VF'
-               
+
             postdata = 'mod=xfield_ajax&id=' + videoId + '&name=' + xfield
 
             sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php'
@@ -563,7 +560,7 @@ def showMovieHosters():
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addHeaderEntry('Cookie', cook) 
+    oRequest.addHeaderEntry('Cookie', cook)
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
 
