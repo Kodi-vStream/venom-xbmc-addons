@@ -52,15 +52,15 @@ class cHoster(iHoster):
             pass
 
         oParser = cParser()
+        
+        sPattern = 'return a\s*\+\s*"(\?token=[^"&]+)["&]'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if not aResult[0]:
+            return False, False
 
         possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         fin_url = ''.join(random.choice(possible) for _ in range(10))
-
-        sPattern = 'return a\+"(\?token=[^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if not aResult[0]:
-            return False, False
 
         d = aResult[1][0]
 
