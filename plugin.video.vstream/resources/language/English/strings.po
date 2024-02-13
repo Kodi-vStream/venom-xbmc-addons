@@ -961,7 +961,7 @@ msgid "Enable sound notifications"
 msgstr ""
 
 msgctxt "#30412"
-msgid "[COLOR red]Delete entry[/COLOR]"
+msgid "[COLOR red]Remove item[/COLOR]"
 msgstr ""
 
 msgctxt "#30413"

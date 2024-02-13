@@ -963,8 +963,8 @@ msgid "Enable sound notifications"
 msgstr "Activer le son des notifications"
 
 msgctxt "#30412"
-msgid "[COLOR red]Delete entry[/COLOR]"
-msgstr "[COLOR red]Supprimer l'entrée[/COLOR]"
+msgid "[COLOR red]Remove item[/COLOR]"
+msgstr "[COLOR red]Retirer l'élément[/COLOR]"
 
 msgctxt "#30413"
 msgid "[COLOR red]Delete history[/COLOR]"
