@@ -617,6 +617,8 @@ def extractLink(html):
         for a in aResult:
             if ('adnetworkperformance' in a) or ('jquery' in a):
                 continue
+            if a.endswith(".js"):
+                continue
             if fake1 not in a and fake2 not in a:
                 final = a
                 break

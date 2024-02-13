@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Nouvelle source de streaming FILMS ET SÉRIES
+# Nouvelle source de streaming FILMS ET SÉRIES
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
-#URL_MAIN='https://monstream.app/'
+# URL_MAIN='https://monstream.app/'
 SITE_IDENTIFIER = 'monstream'
 SITE_NAME = 'MonStream'
 SITE_DESC = 'Votre refuge pour regarder des films et séries en streaming gratuit'
@@ -46,7 +46,7 @@ URL_SEARCH_REPLAY = (key_search_reality , 'showMovies')
 URL_SEARCH_REPLAYTV = 'f/genre=reality/l.title='
 
 
-# recherche utilisé quand on n'utilise pas le globale
+# recherche utilisée quand on n'utilise pas la globale
 MY_SEARCH_MOVIES = (True, 'showSearchMovie')
 MY_SEARCH_SERIES = (True, 'showSearchSerie')
 
@@ -59,7 +59,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
@@ -70,7 +69,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 
 def showMenuMovies():
     oGui = cGui()
@@ -81,7 +80,6 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -108,7 +106,6 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Années)', 'annees.png', oOutputParameterHandler)
 
-     
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VF[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
@@ -150,7 +147,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'],
+    listeGenre = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'],
                   ['Biopic', 'biopic'], ['Comédie', 'comedie'], ['Documentaire', 'documentaire'],
                   ['Drame', 'drame'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
                   ['Guerre', 'guerre'], ['Historique', 'historique'], ['Epouvante et Horreur', 'epouvante-horreur'],
@@ -158,11 +155,12 @@ def showGenres():
                   ['Science-Fiction', 'science-fiction'], ['Thriller', 'thriller'], ['western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-t/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieYears():
     import datetime
@@ -175,21 +173,25 @@ def showMovieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
+
 def showSeriesGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action-s'], ['Animation', 'animation-s'], ['Aventure', 'aventure-s'], ['Biopic', 'biopic-s'], ['Comédie', 'comedie-s'],
-             ['Documentaire', 'documentaire-s'], ['Drame', 'drame-s'], ['Famille', 'famille-s'],
-             ['Fantastique', 'fantastique-s'], ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
-             ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'], ['Romance', 'romance-s'],
-             ['Science-Fiction', 'science-fiction-s'], ['Télé réalité', 'f/genre=reality'], ['Thriller', 'thriller-s'],['western', 'western-s']]
+    listeGenre = [['Action', 'action-s'], ['Animation', 'animation-s'], ['Aventure', 'aventure-s'],
+                  ['Biopic', 'biopic-s'], ['Comédie', 'comedie-s'], ['Documentaire', 'documentaire-s'],
+                  ['Drame', 'drame-s'], ['Famille', 'famille-s'], ['Fantastique', 'fantastique-s'],
+                  ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
+                  ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'],
+                  ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-s'],
+                  ['Télé réalité', 'f/genre=reality'], ['Thriller', 'thriller-s'], ['western', 'western-s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-t/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSerieYears():
     import datetime
@@ -253,7 +255,7 @@ def showMovies(sSearch=''):
     # thumb titre lien
     sPattern = 'data-src="([^"]+)" alt="([^"]+).+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -310,7 +312,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False, 'none'
 
-#afficher les Saisons 
 
 def showSaisons():
     oGui = cGui()
@@ -328,7 +329,6 @@ def showSaisons():
 
     sPattern = 'class="th-in" href="([^"]+)".+?data-src="([^"]+)".+?title nowrap">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -339,7 +339,6 @@ def showSaisons():
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sSaison = aEntry[2]  # SAISON 2
-            
 
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
@@ -378,7 +377,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            
+
             sEpisode = aEntry[1]
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -411,7 +410,7 @@ def showSerieLinks():
     cook = oRequestHandler.GetCookies()
 
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -430,10 +429,9 @@ def showSerieLinks():
                 continue
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
-            
+
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
-
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -450,7 +448,7 @@ def showSerieLinks():
 
 def showSerieHosters():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -463,7 +461,7 @@ def showSerieHosters():
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
+    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici, mais besoin pour les films
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
 
@@ -482,8 +480,6 @@ def showSerieHosters():
 
 
 def showMovieLinks():
-
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -551,7 +547,7 @@ def showMovieHosters():
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addHeaderEntry('Cookie', cook) 
+    oRequest.addHeaderEntry('Cookie', cook)
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
 

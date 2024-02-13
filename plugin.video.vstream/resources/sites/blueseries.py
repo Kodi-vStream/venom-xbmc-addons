@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'blueseries'
 SITE_NAME = 'BLUEseries'
 SITE_DESC = 'Streaming des séries'
 
-URL_MAIN = URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_NEWS = (URL_MAIN + 'regarder-series/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
@@ -27,7 +27,7 @@ SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/series-vostfr/', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
-# recherche utilisée quand on n'utilise pas le globale
+# recherche utilisée quand on n'utilise pas la globale
 MY_SEARCH_SERIES = (True, 'showSearch')
 
 # Menu GLOBALE HOME
@@ -36,6 +36,7 @@ SERIE_SERIES = (True, 'showMenuTvShows')
 
 def load():
     showMenuTvShows()
+
 
 def showMenuTvShows():
     oGui = cGui()
@@ -71,14 +72,15 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showSerieAlpha():
     import string
 
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    listalpha = ['1']
-    listalpha.extend(list(string.ascii_lowercase))
-    for alpha in listalpha:
+    listAlpha = ['1']
+    listAlpha.extend(list(string.ascii_lowercase))
+    for alpha in listAlpha:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'catalog/' + alpha + '&cat=2')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + str(alpha).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
@@ -87,14 +89,16 @@ def showSerieAlpha():
 
 def showSerieGenres():
     oGui = cGui()
-    listegenre = [['Action', 'action_s'], ['Animation', 'animation_s'], ['Aventure', 'aventure_s'], ['Biopic', 'biopic-s'], ['Comédie', 'comedie_s'],
-             ['Documentaire', 'documentaire-s'], ['Drame', 'drame_s'], ['Famille', 'famille-s'],
-             ['Fantastique', 'fantastique_s'], ['Guerre', 'guerre_s'], ['Historique', 'historique_s'], ['Horreur', 'horreur_s'],
-             ['Judiciaire', 'judiciare-s'], ['Musique', 'musical_s'], ['Policier', 'policier_s'], ['Romance', 'romance_s'],
-             ['Science-Fiction', 'science_fiction_s'], ['Thriller', 'thriller_s'],['western', 'western_s']]
+    listeGenre = [['Action', 'action_s'], ['Animation', 'animation_s'], ['Aventure', 'aventure_s'],
+                  ['Biopic', 'biopic-s'], ['Comédie', 'comedie_s'], ['Documentaire', 'documentaire-s'],
+                  ['Drame', 'drame_s'], ['Famille', 'famille-s'], ['Fantastique', 'fantastique_s'],
+                  ['Guerre', 'guerre_s'], ['Historique', 'historique_s'], ['Horreur', 'horreur_s'],
+                  ['Judiciaire', 'judiciare-s'], ['Musique', 'musical_s'], ['Policier', 'policier_s'],
+                  ['Romance', 'romance_s'], ['Science-Fiction', 'science_fiction_s'], ['Thriller', 'thriller_s'],
+                  ['western', 'western_s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in listegenre:
+    for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'regarder-series/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -105,8 +109,8 @@ def showSerieYears():
     oGui = cGui()
 #    import datetime
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1930, 2022)):  #int(datetime.datetime.now().year) + 1)):
+    oOutputParameterHandler = cOutputParameterHandler()  # Pas de lien après 2022
+    for i in reversed(range(1930, 2022)):  # int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear  + '&cat=2')
         oOutputParameterHandler.addParameter('sYear', sYear)
@@ -122,7 +126,7 @@ def showMovies(sSearch=''):
     if sSearch:
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch)
-        
+
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         oRequest = cRequestHandler(URL_SEARCH[0])
@@ -168,7 +172,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
+
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -188,7 +192,6 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-
     sPattern = 'navigation.+?<span>\d+</span> <a href="([^"]+).+?>([^<]+)</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -199,7 +202,8 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
 
     return False, 'none'
-    
+
+
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -240,9 +244,9 @@ def showSaisons():
         oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
-           
+
+
 def showEpisodes():
-    
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -338,7 +342,7 @@ def showSerieHosters():
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
+    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici, mais besoin pour les films
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
 

@@ -153,7 +153,7 @@ def showMovies(sSearch=''):
             else:
                 sLang = aEntry[1].split(" ")[-1]
                 sTitle = aEntry[1].replace(" VF", "").replace(" VOSTFR", "")
-                
+
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue    # Filtre de recherche
@@ -163,7 +163,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
 
             oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -196,7 +195,6 @@ def ShowSxE():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    
 
     sID = sUrl.split('/')[4].split('-')[0]
 
@@ -260,7 +258,7 @@ def seriesHosters():
                     sHosterUrl = "https://video.sibnet.ru/shell.php?videoid=" + aEntry1 + "/"
                 else:
                     continue
-                    
+
                 sHosterUrl = sHosterUrl.replace("////", "//")
 
                 if "toonanime" in sHosterUrl:
