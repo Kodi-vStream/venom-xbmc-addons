@@ -2337,7 +2337,6 @@ def showSerieSaisons():
             
             if numSaison.isdigit():
                 numSaison = '%02d' % int(numSaison)
-            
             if numSaison not in saisons:
                 saisons[numSaison] = set()
 
@@ -2366,6 +2365,7 @@ def showSerieSaisons():
             sDisplaySaison = 'S{:02d}'.format(int(sSaison))
             sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
         else:
+            sDisplaySaison = sDisplaySaison.replace('Episodes ', '').replace('(', '').replace(')', '')
             sDisplayTitle = '[' + sDisplaySaison + ']' + ' - ' + searchTitle
         sUrl = siteUrl + '&sSaison=' + sSaison
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2406,6 +2406,8 @@ def showEpisodesLinks(siteUrl=''):
     sDisplaySaison = sSaison
     if sSaison.isdigit():
         sDisplaySaison = 'S{:02d}'.format(int(sSaison))
+    elif 'P' in sDisplaySaison:
+        sDisplaySaison = ''
 
     oOutputParameterHandler = cOutputParameterHandler()
     for episode in sorted(listeEpisodes):
@@ -2578,6 +2580,10 @@ def getHosterList(siteUrl):
             elif isinstance(links, dict):
                 if searchEpisode:
                     for numEpisode, link in links.items():
+                        numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
+                        if numEpisode.isdigit():
+                            numEpisode = int(numEpisode)    # enlever les 0 devant
+                        
                         if str(numEpisode) == searchEpisode:
                             listLinks.append(link)
                             break
