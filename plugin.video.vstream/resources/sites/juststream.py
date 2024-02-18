@@ -414,7 +414,7 @@ def showSerieLinks():
             if not oHoster:
                 continue
 
-            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName.capitalize())
 
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
@@ -426,6 +426,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('cook', cook)
             oOutputParameterHandler.addParameter('postdata', postdata)
+            oOutputParameterHandler.addParameter('sHost', hosterName)
 
             oGui.addLink(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
