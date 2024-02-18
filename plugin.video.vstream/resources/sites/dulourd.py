@@ -214,6 +214,8 @@ def showSaisons():
             sUrl2 = aEntry[0]
             sSaison = aEntry[2]  # SAISON 2
             sThumb = aEntry[1]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
