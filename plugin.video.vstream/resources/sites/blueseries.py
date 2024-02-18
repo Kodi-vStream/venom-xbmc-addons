@@ -145,7 +145,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # thumb url title
-    sPattern = '<article class="movie-box.+?img src="([^"]+)".+?a href="([^"]+)" title="([^"]+)"'
+    sPattern = 'article class="movie-box.+?img src="([^"]+).+?href="([^"]+)" title="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -268,7 +268,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            sEpisode = aEntry[1] + '  ' + aEntry[2].replace('é', 'e').strip() # épisode 2
+            sEpisode = aEntry[1] + ' ' + aEntry[2].replace('é', 'e').strip() # épisode 2
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sTitle = sMovieTitle + ' ' + sEpisode
