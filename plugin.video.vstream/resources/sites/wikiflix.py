@@ -246,7 +246,7 @@ def showMovies(sSearch=''):
             # Puisque les liens des series et films sont les mêmes
             # Exemple serie https://www.wikiflix.top/8838601-sur-ecoute.html
             # Exemple film https://www.wikiflix.top/8833930-visages-villages.html
-            # La seule différence réside dans le lien des images pour les series c'est (/images/poster de la series)et pour les films c'est (/uploads/posts/covers/poster du film)
+            # La seule différence réside dans le lien des images pour les series c'est (/images/poster de la series) et pour les films c'est (/uploads/posts/covers/poster du film)
 
             if bSearchMovie:
                 if '/images' in sThumb:
@@ -431,7 +431,7 @@ def showSerieLinks():
             if not sLang:
                 sLang = 'VF'
 
-            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName.capitalize())
 
             postdata = 'mod=xfield_ajax&id=' + videoId + '&name=' + xfield
             sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
@@ -443,6 +443,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('cook', cook)
             oOutputParameterHandler.addParameter('postdata', postdata)
+            oOutputParameterHandler.addParameter('sHost', hosterName)
 
             oGui.addLink(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -532,7 +533,7 @@ def showMovieLinks():
 
             sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php'
 
-            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName.capitalize())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
