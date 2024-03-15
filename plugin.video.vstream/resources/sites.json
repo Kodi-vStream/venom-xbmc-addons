@@ -63,7 +63,7 @@
         "daddyhd": {
             "label": "DaddyHD",
             "active": "True",
-            "url": "https://dlhd.sx/"
+            "url": "https://1.dlhd.sx/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -182,7 +182,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv751.me/"
+            "url": "https://livetv767.me/"
         },
         "lsdb": {
             "label": "Liveset Database",
@@ -217,7 +217,7 @@
         },
         "neymartv": {
             "label": "NeymarTV",
-            "active": "True",
+            "active": "False",
             "url": "https://www.neymartv.net/"
         },
         "novaflix": {
@@ -361,7 +361,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.yachts/"
+            "url": "https://www.wawacity.city/"
         },
         "wiflix": {
             "label": "WiFlix",

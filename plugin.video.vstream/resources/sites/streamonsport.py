@@ -534,7 +534,6 @@ def getHosterIframe(url, referer):
         sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
         aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
-            referer = url
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return True, sHosterUrl + '|referer=' + referer
 
@@ -543,7 +542,8 @@ def getHosterIframe(url, referer):
     if aResult:
         sHosterUrl = aResult[0]
         if '.m3u8' in sHosterUrl:
-            return True, sHosterUrl  # + '|User-Agent=' + UA + '&Referer=' + referer
+#            return True, sHosterUrl #+ '|User-Agent=' + UA + '&Referer=' + referer
+            return True, sHosterUrl + '|Referer=' + referer
 
     sPattern = "onload=\"ThePlayerJS\('.+?','([^\']+)"
     aResult = re.findall(sPattern, sHtmlContent)
@@ -569,5 +569,12 @@ def getHosterIframe(url, referer):
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
         return True, sHosterUrl + '|referer=' + referer
+
+    sPattern = 'new Player\("100%","100%","player","(.+?)".+?"([^"]+)":0.33}'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return True, sHosterUrl + '|referer=' + referer
+
 
     return False, False

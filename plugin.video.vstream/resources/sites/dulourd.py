@@ -214,6 +214,8 @@ def showSaisons():
             sUrl2 = aEntry[0]
             sSaison = aEntry[2]  # SAISON 2
             sThumb = aEntry[1]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -310,6 +312,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('cook', cook)
             oOutputParameterHandler.addParameter('postdata', postdata)
+            oOutputParameterHandler.addParameter('sHost', hosterName)
 
             oGui.addLink(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
