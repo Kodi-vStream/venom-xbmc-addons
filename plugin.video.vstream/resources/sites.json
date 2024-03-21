@@ -3,7 +3,7 @@
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "True",
-            "url": "https://1seriestreaming.net/"
+            "url": "https://app.1seriestreaming.io/"
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
@@ -110,7 +110,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telechargement.lol/"
+            "url": "https://www.free-telecharger.ink/"
         },
         "freebox": {
             "label": "Freebox",
