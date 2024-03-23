@@ -278,7 +278,7 @@ def showLinks():
             list_hostname.append(aEntry)
 
     # list_host = []
-    sPattern = 'iframe.+?src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
+    sPattern = 'data-src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0
     if aResult[0]:
