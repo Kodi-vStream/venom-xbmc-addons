@@ -296,7 +296,7 @@ def showSerieLinks():
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
             # filtre des hosters supportés
-            oHoster = cHosterGui().checkHoster(hosterName)
+            oHoster = cHosterGui().checkHoster(hosterName.split(" ")[0])
             if not oHoster:
                 continue
 
