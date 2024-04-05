@@ -409,7 +409,7 @@ def showSerieLinks():
     sHtmlContent = oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
 
-    sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+    sPattern = "d-flex. onclick=.getxfield\(this, '([^']+)', '([^']+)', '([^']+)"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -500,7 +500,7 @@ def showMovieLinks():
     sStart = 'class="player-list">'
     sEnd = 'id="trailer-place">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = "lien d-flex.+?onclick.+?getxfield\('([^']+)', '([^']+)', '([^']+)'\)"
+    sPattern = "d-flex. onclick=.getxfield\(this, '([^']+)', '([^']+)', '([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
