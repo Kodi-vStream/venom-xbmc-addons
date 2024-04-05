@@ -21,8 +21,8 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showSeries')
-SERIE_VIEWS = (URL_MAIN + 'meilleures-series-vf', 'showSeries')
+SERIE_NEWS = (URL_MAIN + 'nouveautes/', 'showSeries')
+SERIE_VIEWS = (URL_MAIN + 'series/populaires-s/', 'showSeries')
 SERIE_LIST = (URL_MAIN, 'showAlpha')
 SERIE_GENRES = (True, 'showGenres')
 # SERIE_ANNEES = (True, 'showSerieYears')
@@ -149,7 +149,7 @@ def showSeries(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'mb-4"><a href="([^"]+)" title="([^"]+).+?-src="([^"]+)'
+    sPattern = 'label-3">([^<]+).+?" href="([^"]+).+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
@@ -160,10 +160,10 @@ def showSeries(sSearch=''):
 
             if 'no-poster.svg' in aEntry[2]:
                 continue
-            sUrl2 = aEntry[0]
+            sTitle = aEntry[0]
+            sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
-            sTitle = aEntry[1]
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
 
             if sSearch:
@@ -187,12 +187,23 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([0-9]+)</a></li><li class="page-item"><a class="page-link" href="([^"]+)" rel="next'
+    # 1ère méthode
+    sPattern = 'span>\d+</span> <a href="([^"]+)">.+?...</span> <a href="[^"]+">([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sNextPage = aResult[1][0][1]
-        sNumberMax = aResult[1][0][0]
-        sNumberNext = re.search('page=([0-9]+)', sNextPage).group(1)
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    # 2ème méthode
+    sPattern = 'ext">...</span> <a href="([^"]+).+?>([0-9]+)</a></div>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
@@ -213,14 +224,14 @@ def showSaisons():
     # récupération du Synopsis
     sDesc = ''
     try:
-        sPattern = 'block border-bottom">([^<]+)<br>'
+        sPattern = 'h2><div class="head-desc body-2"><p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
     except:
         pass
 
-    sPattern = 'seasonbar" href="([^"]+)">Saison <span>([^<]+)'
+    sPattern = 'div><a href="([^"]+).+?season_name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -228,7 +239,7 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + ' Saison ' + aEntry[1]
+            sTitle = sMovieTitle + ' ' + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -251,7 +262,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '([^"]+)"> Episode <span>([^<]+)'
+    sPattern = '([^"]+)" title="([^"]+)" class="epsiode_link'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -259,7 +270,7 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + ' Episode ' + aEntry[1]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
