@@ -160,7 +160,7 @@
         },
         "juststream": {
             "label": "JustStream",
-            "active": "True",
+            "active": "False",
             "url": "https://juststream.pics/"
         },
         "k_streaming": {
