@@ -106,7 +106,12 @@ def getCacheDuration():
     if not cacheDuration:
         cacheDuration = "72"  # en heure
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', cacheDuration)
-    return int(cacheDuration)
+    
+    nDuration = int(cacheDuration)
+    if nDuration < 12:
+        nDuration = 12  # minimum
+    
+    return nDuration
 
 
 CACHE_DURATION = getCacheDuration()
@@ -1491,7 +1496,7 @@ def showNetwork():
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl + '&sNetwork=' + networkId + ":" + networkName.replace('+', '|')
+        sUrl = siteUrl + '&sNetwork=' + networkId + ":" + networkName.replace('+', '|').replace('&', ' & ')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', networkId)    # Utilisé par TMDB
         oGui.addNetwork(SITE_IDENTIFIER, 'showMovies', networkName, 'host.png', oOutputParameterHandler)
@@ -1973,7 +1978,7 @@ def showMovies(sSearch=''):
     if 'sAlpha' in aParams:
         sAlpha = aParams['sAlpha']
     if 'sNetwork' in aParams:
-        sNetwork = aParams['sNetwork']
+        sNetwork = aParams['sNetwork'].replace(' | ', '&')
     if 'sDirector' in aParams:
         sDirector = aParams['sDirector']
     if 'sCast' in aParams:
@@ -3014,6 +3019,8 @@ def adminCacheDuration():
     oGui = cGui()
     nDuration = oGui.showNumBoard("Nombre d'heures", str(CACHE_DURATION))
     if nDuration:
+        if int(nDuration) < 12:
+            nDuration = '12'
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', nDuration)
 
 
