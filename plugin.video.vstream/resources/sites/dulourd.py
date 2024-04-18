@@ -131,17 +131,19 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # url year lang thumb title
-    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?<span class="icon-voicer" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+)'
+    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+).+?<\/a> <\/div><(div|\/div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            if aEntry[4] != 'div': # filtre les medias non accessibles
+                continue
             sUrl2 = aEntry[0]
-            sThumb = aEntry[3]
+            sThumb = aEntry[2]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[4].strip()
+            sTitle = aEntry[3].strip()
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
