@@ -822,6 +822,10 @@ msgctxt "#30334"
 msgid "Premium Token"
 msgstr "Token Premium"
 
+msgctxt "#30339"
+msgid "Test"
+msgstr "Tester le token"
+
 msgctxt "#30340"
 msgid "Trakt integration"
 msgstr "Intégration Trakt"

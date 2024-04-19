@@ -16,9 +16,7 @@ try:  # Python 2
 except ImportError:  # Python 3
     import urllib.request as urllib2
 
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath, siteManager
-# from resources.lib.util import urlEncode
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -390,6 +388,12 @@ class cClear:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30100))
 
                 return
+
+        elif (env == 'testpremium'):    # tester un compte premium
+            from resources.lib.gui.hoster import cHosterGui
+            oHoster = cHosterGui().getHoster("alldebrid")
+            oHoster.testPremium()
+            return
 
         else:
             return
