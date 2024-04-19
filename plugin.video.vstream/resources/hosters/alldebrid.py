@@ -75,7 +75,6 @@ class cHoster(iHoster):
                 msg += "\r\nSouscription = %s" % userData['isSubscribed']
                 if 'remainingTrialQuota' in userData:
                     msg += "\r\nQuota disponible (MB) = %d" % userData['remainingTrialQuota']
-                msg += "\r\nQuota disponible (MB) = %d" % userData['premiumUntil']
                 dialog().VSok(msg)
                 return
 
