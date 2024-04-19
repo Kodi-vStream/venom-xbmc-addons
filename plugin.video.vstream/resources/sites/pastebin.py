@@ -590,10 +590,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'search/person')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', 'Recherche (Acteurs)', 'actor.png', oOutputParameterHandler)
-
-
 #    sUrl =
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '&numPage=1&sMedia=film')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
@@ -731,14 +727,6 @@ def showDetailMenu(pasteID, contenu):
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
-
-        if 'containFilmReal' in contenu:
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'actor.png', oOutputParameterHandler)
-
-        if 'containFilmCast' in contenu:
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
@@ -954,12 +942,6 @@ def showMenuFilms():
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     if not sRes:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'actor.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
 
@@ -1944,6 +1926,7 @@ def showMovies(sSearch=''):
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
+    searchIdTMDB = oInputParameterHandler.getValue('sTmdbId')   # si on est passé par les recherches TMDB
     sMedia = 'film'  # Par défaut
     pasteID = sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = sNetwork = sDirector = sCast = None
     bSilent = bRandom = bNews = False
@@ -2171,18 +2154,25 @@ def showMovies(sSearch=''):
         if pbContent.TMDB >= 0:
             sTmdbId = movie[pbContent.TMDB].strip()
             if sTmdbId:
+                
+                # recherche par id TMDB
+                if searchIdTMDB and searchIdTMDB != sTmdbId:
+                    continue
+                
+                # Filtre des doublons
                 if sTmdbId in movieIds:
-                    continue  # Filtre des doublons
+                    continue
                 movieIds.add(sTmdbId)
         if not sTmdbId:
             if sTitle in movieIds:
                 continue  # Filtre des doublons
             movieIds.add(sTitle)
 
-        # Titre recherché
+        # Titre recherché si pas trouvé par id
         if sSearchTitle:
-            if not oUtil.CheckOccurence(sSearchTitle, sTitle):
-                continue
+            if not searchIdTMDB or not sTmdbId:
+                if not oUtil.CheckOccurence(sSearchTitle, sTitle):
+                    continue
 
         # Recherche alphabétique
         if sAlpha:
