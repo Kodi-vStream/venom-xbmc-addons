@@ -70,8 +70,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'person/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showActors', addons.VSlang(30433), 'actor.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    # oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB', 'listes.png', oOutputParameterHandler)
@@ -688,8 +688,10 @@ def showSeries(sSearch=''):
                 cGui.CONTENT = "tvshows"
                 oGuiElement = cGuiElement()
                 oGuiElement.setTmdbId(sId)
-                oGuiElement.setSiteName(SITE_IDENTIFIER)  # à activer pour saisons
-                oGuiElement.setFunction('showSeriesSaison')
+                oGuiElement.setSiteName('globalSearch')
+                oGuiElement.setFunction('searchMovie')
+                # oGuiElement.setSiteName(SITE_IDENTIFIER)  # à remplacer pour saisons
+                # oGuiElement.setFunction('showSeriesSaison')
                 oGuiElement.setTitle(sTitle)
                 oGuiElement.setFileName(sTitle)
                 oGuiElement.setIcon('series.png')
@@ -760,6 +762,7 @@ def showSeriesSaison():
     oGuiElement.setFunction('searchMovie')
     oGuiElement.setTitle(addons.VSlang(30414))
     oGuiElement.setCat(2)
+    oGuiElement.setTmdbId(sTmdbId)
     oGuiElement.setIcon("searchtmdb.png")
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
