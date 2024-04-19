@@ -294,7 +294,7 @@ msgstr "Liste mise à jour"
 
 msgctxt "#30072"
 msgid "File deleted"
-msgstr "Fichier supprimé"
+msgstr "Élément supprimé"
 
 msgctxt "#30073"
 msgid "Error, file cannot be deleted"
