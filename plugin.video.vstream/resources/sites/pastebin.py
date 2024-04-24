@@ -2164,9 +2164,14 @@ def showMovies(sSearch=''):
                 #     continue
 #                movieIds.add(sTmdbId)
 #        if not sTmdbId:
-        if sTitle in movieIds:
-            continue  # Filtre des doublons par le nom pour retrouver des films sous un nom différent
-        movieIds.add(sTitle)
+
+        # Filtre des doublons par le nom+id pour retrouver des films sous un nom différent et les homonymes
+        key = sTitle
+        if sTmdbId:
+            key += '-' + sTmdbId
+        if key in movieIds:
+            continue
+        movieIds.add(key)
 
         # Titre recherché si pas trouvé par id
         if sSearchTitle:
