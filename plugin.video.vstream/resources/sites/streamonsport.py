@@ -122,7 +122,8 @@ def showMovies(sSearch=''):
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
+                        sDate = sDate.replace('+01:00', '').replace('+02:00', '')
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception:
                         pass
