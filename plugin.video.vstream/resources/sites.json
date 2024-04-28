@@ -110,7 +110,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.ink/"
+            "url": "https://www.free-telecharger.homes/"
         },
         "freebox": {
             "label": "Freebox",
@@ -213,7 +213,7 @@
         "neuf_docu": {
             "label": "9Docu",
             "active": "False",
-            "url": "https://9docu.org/"
+            "url": "https://9docu.re/"
         },
         "neymartv": {
             "label": "NeymarTV",
@@ -291,11 +291,6 @@
             "active": "False",
             "cloudflare": "True",
             "url": "https://streaming-series.la/"
-        },
-        "streamingdivx": {
-            "label": "StreamingDivx",
-            "active": "False",
-            "url": "https://www.streamingdivx.tel/"
         },
         "streaminz": {
             "label": "Streaminz",
