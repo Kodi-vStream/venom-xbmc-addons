@@ -3,7 +3,7 @@
 
 import re
 
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -17,7 +17,6 @@ SITE_NAME = '01 Streaming'
 SITE_DESC = 'Films & Séries'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-# URL_MAIN = dans sites.json
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -132,14 +131,8 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
@@ -168,8 +161,6 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
