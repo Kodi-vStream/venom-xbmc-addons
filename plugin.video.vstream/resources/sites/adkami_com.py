@@ -86,7 +86,7 @@ def showSearchSerie():
 
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        sUrl = URL_SEARCH_SERIES[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
