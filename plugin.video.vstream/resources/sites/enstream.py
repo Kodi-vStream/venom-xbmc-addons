@@ -79,9 +79,10 @@ def showGenres():
 
 
 def showYears():
+    import datetime
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1997, 2024)):
+    for i in reversed(range(1997, int(datetime.datetime.now().year) + 1)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', Year, 'annees.png', oOutputParameterHandler)
