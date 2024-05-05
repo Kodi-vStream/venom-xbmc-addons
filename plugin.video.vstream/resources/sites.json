@@ -214,7 +214,7 @@
         },
         "neuf_docu": {
             "label": "9Docu",
-            "active": "False",
+            "active": "True",
             "url": "https://9docu.re/"
         },
         "neymartv": {
