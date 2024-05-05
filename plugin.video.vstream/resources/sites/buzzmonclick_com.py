@@ -218,7 +218,6 @@ def showHosters():
             oRequestHandler.setRequestType(1)
             oRequestHandler.addHeaderEntry('Referer', sUrl)
             oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
-#            oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
             oRequestHandler.addHeaderEntry('Cookie', cookie)
