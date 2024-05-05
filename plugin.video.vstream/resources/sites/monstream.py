@@ -101,7 +101,7 @@ def showMenuTvShows():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Série (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Années)', 'annees.png', oOutputParameterHandler)
@@ -110,7 +110,7 @@ def showMenuTvShows():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Série (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -409,7 +409,7 @@ def showSerieLinks():
     sHtmlContent = oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
 
-    sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+    sPattern = "d-flex. onclick=.getxfield\(this, '([^']+)', '([^']+)', '([^']+)"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -500,7 +500,7 @@ def showMovieLinks():
     sStart = 'class="player-list">'
     sEnd = 'id="trailer-place">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = "lien d-flex.+?onclick.+?getxfield\('([^']+)', '([^']+)', '([^']+)'\)"
+    sPattern = "d-flex. onclick=.getxfield\(this, '([^']+)', '([^']+)', '([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:

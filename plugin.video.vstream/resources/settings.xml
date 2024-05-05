@@ -71,6 +71,70 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
     </category>
 
+    <!-- Premium/Login -->
+    <category label="30400">
+        <!--<setting label="BetaSeries" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="bs_login" type="text" label="30401" default=""/>
+        <setting id="bs_pass" type="text" label="30402" default="" option="hidden"/> -->
+
+        <setting label="Alldebrid" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_alldebrid_premium" type="bool" label="30333" default="false"/>
+        <setting id="hoster_alldebrid_token" type="text" label="30334" default=""/>
+        <setting label="30339" type="action" enable="eq(-2,true)" action="RunScript(plugin.video.vstream, testpremium, ?site=globalRun&amp;function=testpremium)"/>
+        <setting id="urlmain_alldebrid" type="text" label="31000" default=""/>
+
+        <setting label="DarkiBox" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_darkibox_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_darkibox_token" type="text" label="30328" default=""/>
+
+        <setting label="Debrid Link" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_debridlink_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_debridlink_ID" type="text" label="Client ID" default=""/>
+        <setting id="hoster_debridlink_token" type="text" label="30328" option="hidden" visible="true" default=""/>
+        <setting id="hoster_debridlink_tokenrefresh" type="text" label="Refresh Token" option="hidden" visible="true" default=""/>
+
+<!--         <setting label="Uptobox" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_uptobox_username" type="text" label="30401" default=""/>
+        <setting id="hoster_uptobox_password" type="text" label="30402" default="" option="hidden"/>
+        <setting id="hoster_uptobox_token" type="text" label="30329" default=""/>
+        <setting id="hoster_uptobox_mode_default" type="enum" label="30451" lvalues="30452|30453|30454" default="0"/>
+ -->
+        <setting label="1Fichier" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_onefichier_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_onefichier_username" type="text" label="30401" default=""/>
+        <setting id="hoster_onefichier_password" type="text" label="30402" default="" option="hidden"/>
+
+        <setting label="Real-Debrid" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_realdebrid_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_realdebrid_token" type="text" label="30328" default=""/>
+
+        <setting label="Uploaded" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_uploaded_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_uploaded_username" type="text" label="30401" default=""/>
+        <setting id="hoster_uploaded_password" type="text" label="30402" default="" option="hidden"/>
+
+<!-- 
+        <setting label="UrlResolver" type="lsep"/>
+        <setting type="sep"/>
+        <setting type="text" label="30068" default=""/>
+        <setting type="text" label="30065" default=""/>
+        <setting type="text" label="30069" default=""/>
+
+        <setting type="sep"/>
+        <setting id="UserUrlResolver" type="bool" label="30066" default="false"/>
+        <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
+-->
+    </category>
+    
     <!-- Médiathèque -->
     <category label="30300">
         <setting label="30145" type="lsep"/>
@@ -125,68 +189,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="trakt_tvshows_show_most_monthly" type="bool" label="30359" default="true"/>
     </category>
 
-    <!-- Premium/Login -->
-    <category label="30400">
-        <!--<setting label="BetaSeries" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="bs_login" type="text" label="30401" default=""/>
-        <setting id="bs_pass" type="text" label="30402" default="" option="hidden"/> -->
-
-        <setting label="Alldebrid" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_alldebrid_premium" type="bool" label="30333" default="false"/>
-        <setting id="hoster_alldebrid_token" type="text" label="30334" default=""/>
-        <setting id="urlmain_alldebrid" type="text" label="31000" default=""/>
-
-        <setting label="DarkiBox" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_darkibox_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_darkibox_token" type="text" label="30328" default=""/>
-
-        <setting label="Debrid Link" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_debridlink_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_debridlink_ID" type="text" label="Client ID" default=""/>
-        <setting id="hoster_debridlink_token" type="text" label="30328" option="hidden" visible="true" default=""/>
-        <setting id="hoster_debridlink_tokenrefresh" type="text" label="Refresh Token" option="hidden" visible="true" default=""/>
-
-        <setting label="Uptobox" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_uptobox_username" type="text" label="30401" default=""/>
-        <setting id="hoster_uptobox_password" type="text" label="30402" default="" option="hidden"/>
-        <setting id="hoster_uptobox_token" type="text" label="30329" default=""/>
-        <setting id="hoster_uptobox_mode_default" type="enum" label="30451" lvalues="30452|30453|30454" default="0"/>
-
-        <setting label="1Fichier" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_onefichier_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_onefichier_username" type="text" label="30401" default=""/>
-        <setting id="hoster_onefichier_password" type="text" label="30402" default="" option="hidden"/>
-
-        <setting label="Real-Debrid" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_realdebrid_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_realdebrid_token" type="text" label="30328" default=""/>
-
-        <setting label="Uploaded" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_uploaded_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_uploaded_username" type="text" label="30401" default=""/>
-        <setting id="hoster_uploaded_password" type="text" label="30402" default="" option="hidden"/>
-
-<!-- 
-        <setting label="UrlResolver" type="lsep"/>
-        <setting type="sep"/>
-        <setting type="text" label="30068" default=""/>
-        <setting type="text" label="30065" default=""/>
-        <setting type="text" label="30069" default=""/>
-
-        <setting type="sep"/>
-        <setting id="UserUrlResolver" type="bool" label="30066" default="false"/>
-        <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
--->
-    </category>
 
     <!-- Outils -->
     <category label="30127">

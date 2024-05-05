@@ -131,17 +131,19 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # url year lang thumb title
-    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?<span class="icon-voicer" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+)'
+    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+).+?<\/a> <\/div><(div|\/div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            if aEntry[4] != 'div': # filtre les medias non accessibles
+                continue
             sUrl2 = aEntry[0]
-            sThumb = aEntry[3]
+            sThumb = aEntry[2]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[4].strip()
+            sTitle = aEntry[3].strip()
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -293,17 +295,22 @@ def showSerieLinks():
 
             videoId = aEntry[0]
             xfield = aEntry[1]
-            hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
+
+            hosterName = sLang = ''
+            if ('_') in xfield:
+                hosterName, sLang = xfield.strip().split('_')
+                hosterName = hosterName.capitalize()
+                sLang = sLang.upper()
 
             # filtre des hosters supportés
-            oHoster = cHosterGui().checkHoster(hosterName)
+            oHoster = cHosterGui().checkHoster(hosterName.split(" ")[0])
             if not oHoster:
                 continue
 
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
 
-            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hosterName)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -313,6 +320,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('cook', cook)
             oOutputParameterHandler.addParameter('postdata', postdata)
             oOutputParameterHandler.addParameter('sHost', hosterName)
+            oOutputParameterHandler.addParameter('sLang', sLang)
 
             oGui.addLink(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 

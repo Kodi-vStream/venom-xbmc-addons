@@ -329,7 +329,7 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
                     listitem_.setArt({'icon': sThumbnail})
-                    # listitem_.setProperty('TmdbId', str(i['id']))
+                    listitem_.setProperty('TmdbId', str(i['id']))
                     listitems.append(listitem_)
                 self.getControl(control).addItems(listitems)
 
@@ -445,6 +445,7 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
                 from resources.lib.util import cUtil
                 item = self.getControl(controlId).getSelectedItem()
                 sTitle = cUtil().CleanName(item.getLabel())
+                idTmdb = item.getProperty('TmdbId')
 
                 self.close()
 
@@ -453,6 +454,8 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
                     xbmc.executebuiltin('ActivateWindow(%d)' % 10028)
 
                 sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
+                if idTmdb:
+                    sTest += '&sTmdbId=%s' % idTmdb
                 xbmc.executebuiltin('Container.Update(%s)' % sTest)
                 return
             # elif controlId == 2:

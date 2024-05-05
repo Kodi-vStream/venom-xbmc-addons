@@ -232,7 +232,7 @@ class cHosterGui:
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
 
-        if ('embedwish' in sHostName) or ('streamwish' in sHostName):
+        if ('embedwish' in sHostName) or ('streamwish' in sHostName) or ('warda' in sHostName):
             return self.getHoster('streamwish')
 
         if ('guccihide' in sHostName) or ('streamhide' in sHostName):
@@ -247,7 +247,7 @@ class cHosterGui:
         if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
 
-        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName):
+        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName):
             return self.getHoster('filelions')
 
         if ('playvidto' in sHostName):
@@ -305,6 +305,9 @@ class cHosterGui:
         if ('movshare' in sHostName) or ('wholecloud' in sHostName):
             return self.getHoster('wholecloud')
 
+        if ('moacloud' in sHostName) or ('duxcloud' in sHostName):
+            return self.getHoster('vidzstore')
+        
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 

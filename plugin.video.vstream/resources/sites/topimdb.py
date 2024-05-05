@@ -25,8 +25,8 @@ URL_MAIN = 'https://www.imdb.com/'
 POSTER_URL = 'https://ia.media-imdb.com/images/m/'
 FANART_URL = 'https://ia.media-.imdb.com/images/m/'
 
-MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
-MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
+MOVIE_WORLD = (URL_MAIN + 'search/title/?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
+MOVIE_TOP250 = (URL_MAIN + 'search/title/?count=100&groups=top_250', 'showMovies')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 

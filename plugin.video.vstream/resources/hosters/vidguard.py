@@ -12,6 +12,7 @@ from resources.lib.util import cUtil
 import binascii
 import base64
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 class cHoster(iHoster):
 
@@ -25,6 +26,7 @@ class cHoster(iHoster):
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
 
         api_call = ''
@@ -39,6 +41,7 @@ class cHoster(iHoster):
             url = self.__getHost() + aResult[1][0]
             
             oRequest = cRequestHandler(url)
+            oRequest.addHeaderEntry('User-Agent', UA)
             oRequest.addHeaderEntry('Referer', self._url)
             sHtmlContent = oRequest.request()
 
@@ -61,6 +64,8 @@ class cHoster(iHoster):
             
             sPattern = 'Label":"([^"]+)","URL":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            #Plusieurs liens
             if aResult[0]:
                 # initialisation des tableaux
                 url = []
@@ -72,6 +77,15 @@ class cHoster(iHoster):
                     qua.append(str(i[0]))
 
                 api_call = dialog().VSselectqual(qua, url) + '|Referer=' + self._url
+ 
+            #1 seul lien
+            sPattern = '"stream":"([^"]+)".+?"hash":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                url2 = str(aResult[1][0][0])
+                url2 = url2.encode().decode('unicode-escape')
+
+                api_call = sig_decode(url2) + '|Referer=' + self._url
 
         if api_call:
             return True, api_call

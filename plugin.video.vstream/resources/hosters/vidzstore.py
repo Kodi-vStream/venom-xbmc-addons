@@ -14,8 +14,9 @@ class cHoster(iHoster):
     # Extraction du lien et decodage si besoin
     def _getMediaLinkForGuest(self):
         api_call = False
-
-        oRequest = cRequestHandler(self._url)
+        
+        url = self._url.replace('moacloud', 'duxcloud')
+        oRequest = cRequestHandler(url)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()

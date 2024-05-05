@@ -31,6 +31,7 @@ SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffus
 SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
 SPORT_SPORTS = (True, 'load')
 
+heureHiver = False
 
 def load():
     oGui = cGui()
@@ -61,14 +62,15 @@ def showLive():
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl3 = URL_MAIN + aEntry[0]
             heure, canal = aEntry[2].split(':')
-            heure = int(heure) - 1  # heure d'hiver
-            if heure == -1:
-                heure = 23
+            heure = int(heure)
+            if heureHiver:
+                heure -= 1  # heure d'hiver
+                if heure == -1:
+                    heure = 23
             sTitle2 = '%s %d:%s' % (aEntry[1], heure, canal)
             sDisplayTitle = sTitle2
 
@@ -182,10 +184,11 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
                     if sDateTime:
                         sMonth = mois.index(sDateTime[0][1])
                         heure = int(sDateTime[0][2])
-                        
-                        heure -=1   # heure d'hiver
-                        if heure == -1:
-                            heure = 23
+                        heure = int(heure)
+                        if heureHiver:
+                            heure -=1   # heure d'hiver
+                            if heure == -1:
+                                heure = 23
                         
                         sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, heure, sDateTime[0][3])
                 except Exception as e:
@@ -701,17 +704,15 @@ def showHosters():  # affiche les videos disponible du live
                 url2 = 'https:' + aResult[0]
                 Referer = url
                 oRequestHandler = cRequestHandler(url2)
-                # oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent2 = oRequestHandler.request()
 
                 sPattern2 = 'var r = embedded\+"([^"]+)'
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
-                    url2 = 'https://voodc.com/player.php?player=d&e=' + aResult[0]
+                    url2 = 'https://voodc.com/play/d' + aResult[0]
                     Referer = url
                     oRequestHandler = cRequestHandler(url2)
-                    # oRequestHandler.addHeaderEntry('User-Agent', UA)
                     oRequestHandler.addHeaderEntry('Referer', Referer)
                     sHtmlContent2 = oRequestHandler.request()
                     sPattern2 = '"file": \'([^\']+)'
@@ -1348,7 +1349,6 @@ def getHosterIframe(url, referer):
     # f.write(sHtmlContent)
     # f.close()
 
-
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -1371,6 +1371,14 @@ def getHosterIframe(url, referer):
                     return code + '|Referer=' + referer
             except Exception as e:
                 pass
+    
+    sPattern = "mimeType: *\"application\/x-mpegURL\",\r\nsource:'([^']+)"
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+        return sHosterUrl + '|referer=' + referer
     
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)

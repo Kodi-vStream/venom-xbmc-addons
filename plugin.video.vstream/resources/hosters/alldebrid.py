@@ -51,3 +51,33 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
+
+    def testPremium(self):
+        token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
+        if not token_Alldebrid:
+            return
+
+        from resources.lib.comaddon import dialog
+        from datetime import datetime
+        sUrl = "https://api.alldebrid.com/v4/user?agent=myAppName&apikey=%s" % token_Alldebrid
+        oRequest = cRequestHandler(sUrl)
+        reponse = json.loads(oRequest.request())
+        if 'error' in reponse:
+            dialog().VSok(reponse['error']['message'])
+        elif reponse['status'] == 'success':
+            userData = reponse['data']['user']
+            timestamp = userData['premiumUntil']
+            premiumUntil = datetime.fromtimestamp(timestamp)
+
+            if userData['isTrial']:
+                msg = "Version d'essai"
+                msg += "\r\nDate fin= %s" % premiumUntil
+                msg += "\r\nSouscription = %s" % userData['isSubscribed']
+                if 'remainingTrialQuota' in userData:
+                    msg += "\r\nQuota disponible (MB) = %d" % userData['remainingTrialQuota']
+                dialog().VSok(msg)
+                return
+
+            msg = 'Compte premium = %s\r\nDate fin = %s' % (userData['isPremium'], premiumUntil)
+            dialog().VSok(msg)
+        return

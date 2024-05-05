@@ -34,7 +34,7 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
-#MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2023', 'showMovies')
+#MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2024', 'showMovies')
 MOVIE_NEWS = ('movie/now_playing', 'showTMDB')
 # MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
 MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
@@ -52,7 +52,7 @@ SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
 ANIM_ANIMS = (URL_MAIN + '&sMedia=anime', 'showMenuMangas')
-ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2023', 'showMovies')
+ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2024', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
 ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
@@ -106,7 +106,12 @@ def getCacheDuration():
     if not cacheDuration:
         cacheDuration = "72"  # en heure
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', cacheDuration)
-    return int(cacheDuration)
+    
+    nDuration = int(cacheDuration)
+    if nDuration < 12:
+        nDuration = 12  # minimum
+    
+    return nDuration
 
 
 CACHE_DURATION = getCacheDuration()
@@ -585,10 +590,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'search/person')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', 'Recherche (Acteurs)', 'actor.png', oOutputParameterHandler)
-
-
 #    sUrl =
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '&numPage=1&sMedia=film')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
@@ -694,7 +695,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2023&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
@@ -727,14 +728,6 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
-        if 'containFilmReal' in contenu:
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'actor.png', oOutputParameterHandler)
-
-        if 'containFilmCast' in contenu:
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
 
@@ -743,7 +736,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2023&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2024&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
@@ -911,7 +904,7 @@ def showMenuFilms():
     if not sRes:
         oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
         oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30426), 'news.png', oOutputParameterHandler)
-        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2023')
+        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024')
         # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
@@ -949,12 +942,6 @@ def showMenuFilms():
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     if not sRes:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'actor.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
 
@@ -974,7 +961,7 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2023')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
     # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'trending/tv/day')#tv/on_the_air')
@@ -1022,7 +1009,7 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2023')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1491,7 +1478,7 @@ def showNetwork():
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl + '&sNetwork=' + networkId + ":" + networkName.replace('+', '|')
+        sUrl = siteUrl + '&sNetwork=' + networkId + ":" + networkName.replace('+', '|').replace('&', ' & ')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', networkId)    # Utilisé par TMDB
         oGui.addNetwork(SITE_IDENTIFIER, 'showMovies', networkName, 'host.png', oOutputParameterHandler)
@@ -1939,6 +1926,7 @@ def showMovies(sSearch=''):
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
+    searchIdTMDB = oInputParameterHandler.getValue('sTmdbId')   # si on est passé par les recherches TMDB
     sMedia = 'film'  # Par défaut
     pasteID = sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = sNetwork = sDirector = sCast = None
     bSilent = bRandom = bNews = False
@@ -1973,7 +1961,7 @@ def showMovies(sSearch=''):
     if 'sAlpha' in aParams:
         sAlpha = aParams['sAlpha']
     if 'sNetwork' in aParams:
-        sNetwork = aParams['sNetwork']
+        sNetwork = aParams['sNetwork'].replace(' | ', '&')
     if 'sDirector' in aParams:
         sDirector = aParams['sDirector']
     if 'sCast' in aParams:
@@ -2166,18 +2154,30 @@ def showMovies(sSearch=''):
         if pbContent.TMDB >= 0:
             sTmdbId = movie[pbContent.TMDB].strip()
             if sTmdbId:
-                if sTmdbId in movieIds:
-                    continue  # Filtre des doublons
-                movieIds.add(sTmdbId)
-        if not sTmdbId:
-            if sTitle in movieIds:
-                continue  # Filtre des doublons
-            movieIds.add(sTitle)
+                
+                # recherche par id TMDB
+                if searchIdTMDB and searchIdTMDB != sTmdbId:
+                    continue
+                
+                # Filtre des doublons
+                # if sTmdbId in movieIds:
+                #     continue
+#                movieIds.add(sTmdbId)
+#        if not sTmdbId:
 
-        # Titre recherché
+        # Filtre des doublons par le nom+id pour retrouver des films sous un nom différent et les homonymes
+        key = sTitle
+        if sTmdbId:
+            key += '-' + sTmdbId
+        if key in movieIds:
+            continue
+        movieIds.add(key)
+
+        # Titre recherché si pas trouvé par id
         if sSearchTitle:
-            if not oUtil.CheckOccurence(sSearchTitle, sTitle):
-                continue
+            if not searchIdTMDB or not sTmdbId:
+                if not oUtil.CheckOccurence(sSearchTitle, sTitle):
+                    continue
 
         # Recherche alphabétique
         if sAlpha:
@@ -3014,6 +3014,8 @@ def adminCacheDuration():
     oGui = cGui()
     nDuration = oGui.showNumBoard("Nombre d'heures", str(CACHE_DURATION))
     if nDuration:
+        if int(nDuration) < 12:
+            nDuration = '12'
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', nDuration)
 
 

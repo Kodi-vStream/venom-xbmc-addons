@@ -294,7 +294,7 @@ msgstr "Liste mise à jour"
 
 msgctxt "#30072"
 msgid "File deleted"
-msgstr "Fichier supprimé"
+msgstr "Élément supprimé"
 
 msgctxt "#30073"
 msgid "Error, file cannot be deleted"
@@ -821,6 +821,10 @@ msgstr "Activer Premium"
 msgctxt "#30334"
 msgid "Premium Token"
 msgstr "Token Premium"
+
+msgctxt "#30339"
+msgid "Test"
+msgstr "Tester le token"
 
 msgctxt "#30340"
 msgid "Trakt integration"

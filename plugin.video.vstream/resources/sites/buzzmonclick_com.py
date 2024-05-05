@@ -3,7 +3,6 @@
 
 import re
 import unicodedata
-import requests
 import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
@@ -15,7 +14,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog, siteManager
 from resources.lib.util import Quote
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
@@ -169,7 +168,7 @@ def showLinks():
             if sHost == "":
                 sHost = aEntry[0].split('/')[2].split('.')[0]
 
-            sUrl = aEntry[0]
+            sUrl = aEntry[0].replace('http:', 'https:')
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -204,18 +203,30 @@ def showHosters():
 
     elif 'forum-tv' in sUrl:
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
-        s = requests.Session()
-        response = s.get(sUrl, headers={'User-Agent': UA})
-        sHtmlContent = str(response.content)
-        cookie_string = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.items()])
+
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        cookie = oRequestHandler.GetCookies()
 
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0]:
+            data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&action=" + Quote(aResult[1][2]) + "&page=" + Quote(aResult[1][3])
+            data += "&_Token%5Bfields%5D=" + Quote(aResult[1][4]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][5])
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.setRequestType(1)
+            oRequestHandler.addHeaderEntry('Referer', sUrl)
+            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            oRequestHandler.addHeaderEntry('Cookie', cookie)
+            oRequestHandler.addParametersLine(data)
+            sHtmlContent = oRequestHandler.request()
+
+            aResult = oParser.parse(sHtmlContent, sPattern)
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2])
             data += "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
-            # Obligatoire pour validé les cookies.
             xbmc.sleep(6000)
             oRequestHandler = cRequestHandler('https://forum-tv.org/adslinkme/links/go')
             oRequestHandler.setRequestType(1)
@@ -225,7 +236,7 @@ def showHosters():
             oRequestHandler.addHeaderEntry('Content-Length', len(data))
             oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded; charset=UTF-8")
             oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-            oRequestHandler.addHeaderEntry('Cookie', cookie_string)
+            oRequestHandler.addHeaderEntry('Cookie', cookie)
             oRequestHandler.addParametersLine(data)
             sHtmlContent = oRequestHandler.request()
 
