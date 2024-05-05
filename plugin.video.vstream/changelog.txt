@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.0***
+- Alldebrid : Possibilité de vérifier la validité de sa key
+
 *** 2.8.0***
 - Pastebin : Possibilité de renseigner un hebergeur secondaire
 
