@@ -305,6 +305,9 @@ class cHosterGui:
         if ('movshare' in sHostName) or ('wholecloud' in sHostName):
             return self.getHoster('wholecloud')
 
+        if ('moacloud' in sHostName) or ('duxcloud' in sHostName):
+            return self.getHoster('vidzstore')
+        
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
