@@ -21,8 +21,9 @@ FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
 URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
-MOVIE_MOVIE = (URL_MAIN + 'films-streaming', 'showMovies')
-MOVIE_BOX = (URL_MAIN + 'films-box-office', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-streaming', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films-populaires', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films-box-office', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
@@ -37,8 +38,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Derniers ajouts)', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BOX[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_BOX[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Nouveautés)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -78,9 +82,10 @@ def showGenres():
 
 
 def showYears():
+    import datetime
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(2010, 2023)):
+    for i in reversed(range(2010, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
@@ -223,7 +228,7 @@ def showHostersLinks():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'src="([^"]+)'
+    sPattern = 'src=([^ ]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
