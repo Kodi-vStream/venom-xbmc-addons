@@ -1975,6 +1975,9 @@ def showMovies(sSearch=''):
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
+    if sNetwork or sCast or sDirector or sSaga:
+        searchIdTMDB = '' # le parametre est renseigné pour une integration avec TMDB mais pastebin ne doit pas en tenir compte
+
     if sSearchTitle:
         oUtil = cUtil()
         sSearchTitle = oUtil.CleanName(sSearchTitle)
@@ -2166,7 +2169,7 @@ def showMovies(sSearch=''):
 #        if not sTmdbId:
 
         # Filtre des doublons par le nom+id pour retrouver des films sous un nom différent et les homonymes
-        key = sTitle
+        key = sTitle.lower()
         if sTmdbId:
             key += '-' + sTmdbId
         if key in movieIds:
