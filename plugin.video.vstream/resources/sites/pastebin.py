@@ -301,14 +301,18 @@ class PasteContent:
     # 3 = uptostream
     # 4 = uptobox + uptostream
     def getUptoStream(self):
-        addons = addon()
-        if not self.upToStream:
-            if addons.getSetting("hoster_uptobox_premium"): # pas uptobox premium -> mode direct
-                mode = 2
-            else:   
-                mode = int(addons.getSetting("hoster_uptobox_mode_default"))
-            self.upToStream = 4-mode
-        return self.upToStream
+        return 2
+        
+        # en attente retour Uptobox
+    
+        # addons = addon()
+        # if not self.upToStream:
+        #     if addons.getSetting("hoster_uptobox_premium"): # pas uptobox premium -> mode direct
+        #         mode = 2
+        #     else:   
+        #         mode = int(addons.getSetting("hoster_uptobox_mode_default"))
+        #     self.upToStream = 4-mode
+        # return self.upToStream
 
     def getLines(self, pasteBin, sMedia=''):
 
@@ -2222,6 +2226,7 @@ def showMovies(sSearch=''):
 
                 bValid = False
                 for res in listRes:
+                    res = res.upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P')
                     if sRes in res:
                         bValid = True
                         break
@@ -2611,7 +2616,7 @@ def getHosterList(siteUrl):
 
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
-                        resMovie = listResMovie[idxResMovie].upper()
+                        resMovie = listResMovie[idxResMovie].upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P')
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
                     else:
