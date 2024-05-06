@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.2***
+- Pastebin : Ne s'ouvre pas sur une nouvelle installation
+- Pastebin : Classement par resolutions
+
 *** 2.9.1***
 - Pastebin : Correction pour voir les séries par diffuseur
 
