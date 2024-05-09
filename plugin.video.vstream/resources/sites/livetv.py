@@ -31,7 +31,7 @@ SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffus
 SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
 SPORT_SPORTS = (True, 'load')
 
-heureHiver = False
+HEURE_HIVER = False
 
 def load():
     oGui = cGui()
@@ -67,7 +67,7 @@ def showLive():
             sUrl3 = URL_MAIN + aEntry[0]
             heure, canal = aEntry[2].split(':')
             heure = int(heure)
-            if heureHiver:
+            if HEURE_HIVER:
                 heure -= 1  # heure d'hiver
                 if heure == -1:
                     heure = 23
@@ -185,7 +185,7 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
                         sMonth = mois.index(sDateTime[0][1])
                         heure = int(sDateTime[0][2])
                         heure = int(heure)
-                        if heureHiver:
+                        if HEURE_HIVER:
                             heure -=1   # heure d'hiver
                             if heure == -1:
                                 heure = 23
