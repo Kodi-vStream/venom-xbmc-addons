@@ -393,8 +393,14 @@ def showSerieLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
-
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+
+
+    sStart = '<ul class="player-list">'
+    sEnd = '<div class="full-ser-keywords">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    sPattern = "lien fx-row.+?\"getxfield.+?(\d+).+?\'([^\']*).+?'([^\']*).+?images.([^\.]+).+?pl-5\">([^<]+)"
+
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -416,7 +422,8 @@ def showSerieLinks():
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName.capitalize())
 
-            postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
+#            postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
+            postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=play'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
