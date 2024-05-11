@@ -99,8 +99,17 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
+
+    # import xbmcvfs
+    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    # f.write(sHtmlContent)
+    # f.close()
     oParser = cParser()
-    sPattern = '<h3> (.+?) <\/h3> <div>'
+    start = 'SCHEDULE TIME'
+    end = 'NO EVENTS TODAY'
+    sHtmlContent = oParser.abParse(sHtmlContent, start, end)
+
+    sPattern = '<h3> (.+?) <\/h3> *<div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -185,8 +194,8 @@ def showMoviesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = sTitle
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br/')
+    sPattern = sTitle.replace("'", "&#8217;").replace("-", "&#8211;")
+    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
 
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -230,9 +239,10 @@ def showHoster():
         blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', '.ustreamix.su',
                      'sportzonline.to', 'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz')
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
+        numLien = 1
+        for aEntry in aResult[1][::-1]:
             sUrl = aEntry[0]
-            hoster = aEntry[1]
+            # hoster = aEntry[1]
             for out in blackList:
                 if out in sUrl:
                     sUrl = None
@@ -241,7 +251,8 @@ def showHoster():
             if not sUrl:
                 continue
 
-            sDisplayTitle = sTitle + ' (' + hoster.strip() + ')'
+            sDisplayTitle = "%s (Lien %d)" % (sTitle, numLien)
+            numLien += 1
 
             if 'http' not in sUrl:
                 sUrl = URL_MAIN[:-1] + sUrl
@@ -287,20 +298,26 @@ def showLink():
 # Traitement générique
 def getHosterIframe(url, referer):
 
+    if 'youtube.com' in url:
+        return False, False
+
     if not url.startswith('http'):
         url = URL_MAIN + url
 
     oRequestHandler = cRequestHandler(url)
+    
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
 #    oRequestHandler.disableSSL()
-    sHtmlContent = str(oRequestHandler.request())
+    ret = oRequestHandler.request()
+    sHtmlContent = str(ret)
 #    cook = oRequestHandler.GetCookies()
 
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    referer = url
+    referer = oRequestHandler.getRealUrl()
+#    referer = url
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -326,7 +343,7 @@ def getHosterIframe(url, referer):
             except Exception as e:
                 pass
 
-    sPattern = '<iframe src=["\']([^"\']+)["\']'
+    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
@@ -347,7 +364,6 @@ def getHosterIframe(url, referer):
         sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
         aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
-            referer = url
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return True, sHosterUrl + '|referer=' + referer
 
@@ -361,12 +377,18 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
-        oRequestHandler.request()
-        sHosterUrl = oRequestHandler.getRealUrl()
-        # oRequestHandler = cRequestHandler(sHosterUrl)
-        # h = oRequestHandler.request()
-        return True, sHosterUrl + '|referer=' + referer
+        for sHosterUrl in aResult:
+#        sHosterUrl = aResult[0]
+            if '.m3u8' in sHosterUrl:
+                if 'fls/cdn/' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
+                else:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                # oRequestHandler = cRequestHandler(sHosterUrl)
+                # h = oRequestHandler.request()
+                return True, sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -376,5 +398,11 @@ def getHosterIframe(url, referer):
         sHosterUrl = oRequestHandler.getRealUrl()
         return True, sHosterUrl + '|referer=' + referer
     
+    sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return True, sHosterUrl + '|referer=' + referer
+
     return False, False
 
