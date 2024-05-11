@@ -182,7 +182,7 @@
         },
         "neymartv": {
             "label": "NeymarTV",
-            "active": "False",
+            "active": "True",
             "url": "https://us.neymartv.net/"
         },
         "o1streaming": {
