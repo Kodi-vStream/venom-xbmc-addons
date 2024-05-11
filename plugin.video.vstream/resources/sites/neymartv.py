@@ -309,8 +309,7 @@ def getHosterIframe(url, referer):
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
 #    oRequestHandler.disableSSL()
-    ret = oRequestHandler.request()
-    sHtmlContent = str(ret)
+    sHtmlContent = str(oRequestHandler.request())
 #    cook = oRequestHandler.GetCookies()
 
     if not sHtmlContent or sHtmlContent == 'False':
@@ -378,7 +377,6 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sHosterUrl in aResult:
-#        sHosterUrl = aResult[0]
             if '.m3u8' in sHosterUrl:
                 if 'fls/cdn/' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')

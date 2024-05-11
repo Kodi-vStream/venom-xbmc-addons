@@ -412,7 +412,7 @@ def getHosterIframe(url, referer):
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
-    if not sHtmlContent:
+    if not sHtmlContent or sHtmlContent == 'False':
         return False
 
     # import xbmcvfs
@@ -420,8 +420,7 @@ def getHosterIframe(url, referer):
     # f.write(sHtmlContent)
     # f.close()
     
-
-    referer = url
+    referer = oRequestHandler.getRealUrl()
     
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -480,16 +479,16 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        sHosterUrl = aResult[0]
-        if '.m3u8' in sHosterUrl:
-            if 'fls/cdn/' in sHosterUrl:
-                sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
-            else:
-                oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
-#            sHosterUrl = sHosterUrl.replace('index', 'mono')
-            return sHosterUrl + '|referer=' + referer
+        for sHosterUrl in aResult:
+            if '.m3u8' in sHosterUrl:
+                if 'fls/cdn/' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
+                else:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+    #            sHosterUrl = sHosterUrl.replace('index', 'mono')
+                return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -501,7 +500,6 @@ def getHosterIframe(url, referer):
 
     sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
-
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return sHosterUrl + '|referer=' + referer
