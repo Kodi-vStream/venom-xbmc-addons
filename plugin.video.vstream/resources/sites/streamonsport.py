@@ -479,6 +479,9 @@ def getTimer():
 # Traitement générique
 def getHosterIframe(url, referer):
 
+    if 'youtube.com' in url:
+        return False, False
+
     if not url.startswith('http'):
         url = GetUrlMain() + url
 
@@ -486,10 +489,10 @@ def getHosterIframe(url, referer):
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
-    if not sHtmlContent:
+    if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    referer = url
+    referer = oRequestHandler.getRealUrl()
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -557,11 +560,16 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
-        oRequestHandler.request()
-        sHosterUrl = oRequestHandler.getRealUrl()
-        sHosterUrl = sHosterUrl.replace('index', 'mono')
-        return True, sHosterUrl + '|referer=' + referer
+        for sHosterUrl in aResult:
+            if '.m3u8' in sHosterUrl:
+                if 'fls/cdn/' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
+                else:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                    # sHosterUrl = sHosterUrl.replace('index', 'mono')
+                return True, sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
