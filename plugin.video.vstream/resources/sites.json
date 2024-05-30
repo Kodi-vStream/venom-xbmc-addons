@@ -100,7 +100,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.homes/"
+            "url": "https://www.free-telecharger.shop/"
         },
         "freebox": {
             "label": "Freebox",
@@ -136,7 +136,7 @@
         "ianime": {
             "label": "Ianime",
             "active": "True",
-            "url": "https://www.ianimes.org/"
+            "url": "https://www.ianimes.one/"
         },
         "illimitestreaming": {
             "label": "Illimitestreaming",
@@ -162,7 +162,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv782.me/"
+            "url": "https://livetv787.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -300,7 +300,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.wiflix.travel/"
+            "url": "https://wiflix.bot/"
         },
         "wilifilm": {
             "label": "Wilifilm",
