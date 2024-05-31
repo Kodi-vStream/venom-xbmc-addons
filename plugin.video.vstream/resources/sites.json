@@ -22,7 +22,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://w2.animesultra.net/"
+            "url": "https://w3.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -58,7 +58,7 @@
         "daddyhd": {
             "label": "DaddyHD",
             "active": "True",
-            "url": "https://1.dlhd.sx/"
+            "url": "https://dlhd.so/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -83,7 +83,7 @@
         },
         "filmoflix": {
             "label": "Filmoflix",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://www.wishflix.icu/"
         },
@@ -100,6 +100,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.free-telecharger.shop/"
         },
         "freebox": {
@@ -162,7 +163,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv787.me/"
+            "url": "https://livetv788.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -182,12 +183,12 @@
         },
         "neymartv": {
             "label": "NeymarTV",
-            "active": "False",
-            "url": "https://us.neymartv.net/"
+            "active": "True",
+            "url": "https://en.neymartv.net/"
         },
         "o1streaming": {
             "label": "O1 streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://01streaming.stream/"
         },
         "otaku_attitude": {
@@ -243,7 +244,7 @@
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://primefoot.ru/"
+            "url": "https://www.tv1337.buzz/"
         },
         "themoviedb_org": {
             "label": "The Movie Database",
