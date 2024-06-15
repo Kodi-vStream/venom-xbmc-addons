@@ -17,7 +17,7 @@ from resources.lib.config import GestionCookie
 from resources.lib.util import Unquote, cUtil
 
 SITE_IDENTIFIER = 'doc4u'
-SITE_NAME = 'doc4u'
+SITE_NAME = 'Doc4U'
 SITE_DESC = 'Documentaires, Sports, Émissions TV et Téléréalités en Français'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
