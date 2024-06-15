@@ -70,7 +70,12 @@
             "active": "False",
             "url": "https://documentaire.io/"
         },
-        "dulourd": {
+        "doc4u": {
+            "label": "doc4u",
+            "active": "True",
+            "url": "https://doc4u.top/"
+        },
+		"dulourd": {
             "label": "DuLourd",
             "active": "True",
             "url": "https://www.dulourd.uno/"
