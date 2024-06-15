@@ -9,7 +9,7 @@ from resources.hosters.hoster import iHoster
 class cHoster(iHoster):
 
     def __init__(self):
-        iHoster.__init__(self, 'oneupload', 'oneupload')
+        iHoster.__init__(self, 'oneupload', 'OneUpload')
 
     def _getMediaLinkForGuest(self):
         api_call = ''
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
-        sPattern = '<source src="([^"]+)"'
+        sPattern = '<source src="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
             api_call = aResult[1][0]
@@ -28,7 +28,7 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
                 api_call = aResult[1][0]
-    
+
         if api_call:
             return True, api_call #+ '|User-Agent=' + UA + '&Referer=' + self._url + '&Origin=https://vidfast.co'
 
