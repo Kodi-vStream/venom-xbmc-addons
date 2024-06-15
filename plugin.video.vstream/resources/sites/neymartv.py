@@ -223,7 +223,12 @@ def showMoviesLink():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = URL_MAIN + 'p/all-sports-tv-channels-full-hd.html'
-    sTitle = "[^']+"+sMovieTitle.lower().replace(' ', "[^']+")+"[^']+"
+
+    # ajouter un espace devant les chiffres
+    sMovieTitle = re.sub('(\S)(\d+)', r'\1 \2', sMovieTitle)
+    
+    sTitle = sMovieTitle.lower().replace('+', "").replace('canal sport france', 'canal sport')
+    sTitle = "[^']+"+sTitle.replace(' ', "[^']+")+"[^']+"
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
