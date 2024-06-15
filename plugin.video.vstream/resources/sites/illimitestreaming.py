@@ -115,7 +115,7 @@ def showSeriesGenres():
                   ['Guerre', 'guerre-s'], ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
                   ['Judiciaire', 'judiciare-s'], ['Musique', 'musical-s'], ['Policier', 'policier-s'],
                   ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-s'], ['Thriller', 'thriller-s'],
-                  ['western', 'western-s']]
+                  ['Western', 'western-s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
