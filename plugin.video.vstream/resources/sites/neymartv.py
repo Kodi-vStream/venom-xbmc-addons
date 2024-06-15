@@ -99,11 +99,6 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
-
-    # import xbmcvfs
-    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-    # f.write(sHtmlContent)
-    # f.close()
     oParser = cParser()
     start = 'SCHEDULE TIME'
     end = 'NO EVENTS TODAY'
@@ -188,20 +183,20 @@ def showMoviesLinks():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = sTitle.replace("'", "&#8217;").replace("-", "&#8211;")
+    sPattern = sMovieTitle.replace("'", "&#8217;").replace("-", "&#8211;")
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
 
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # on enleve l'heure qui peut être fausse, heure d'été/hiver
-    sTitle = sTitle[5:]
+    sMovieTitle = sMovieTitle[5:]
     
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
@@ -209,14 +204,52 @@ def showMoviesLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sDisplayTitle = sTitle + ' - ' + aEntry[1].strip()
+            sDisplayTitle = sMovieTitle + ' - ' + aEntry[1].strip()
+            
+            sTitle = aEntry[1].strip()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMoviesLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+def showMoviesLink():
+    oGui = cGui()
+    oParser = cParser()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = URL_MAIN + 'p/all-sports-tv-channels-full-hd.html'
+    sTitle = "[^']+"+sMovieTitle.lower().replace(' ', "[^']+")+"[^']+"
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = "<button class=\"button-24\" onclick=\"document\.location='(%s)'" % sTitle
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    # on enleve l'heure qui peut être fausse, heure d'été/hiver
+    sTitle = sTitle[5:]
+    
+    if not aResult[0]:
+        showLink()
+    else:
+        oOutputParameterHandler = cOutputParameterHandler()
+        aEntry = aResult[1][0]
+            
+        sUrl = aEntry.strip()
+        sDisplayTitle = sMovieTitle
+
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+        oGui.addDir(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 
 def showHoster():
@@ -226,7 +259,9 @@ def showHoster():
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if not sUrl.startswith('http'):
+        sUrl = URL_MAIN + sUrl
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
