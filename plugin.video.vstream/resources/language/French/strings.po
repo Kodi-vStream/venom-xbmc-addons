@@ -756,11 +756,11 @@ msgstr "Populaire"
 
 msgctxt "#30316"
 msgid "Most viewed this week"
-msgstr "Les plus vues de la semaine"
+msgstr "Les plus vus de la semaine"
 
 msgctxt "#30317"
 msgid "Most viewed of the month"
-msgstr "Les plus vues du mois"
+msgstr "Les plus vus du mois"
 
 msgctxt "#30318"
 msgid "Watchlist (seasons)"
