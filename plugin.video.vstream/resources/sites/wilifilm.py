@@ -125,7 +125,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class="lazyload" data-src="([^"]+)".+?class="name"><a href="([^"]+)" title="[^"]+">([^<]+)'
+    sPattern = '<img class="lazyload" data-src="([^"]+).+?class="name"><a href="([^"]+)" title="[^"]+">([^<]+)'
     oParser = cParser()
     sHtmlContent = oParser.abParse(sHtmlContent, 'title yellow', '')
     aResult = oParser.parse(sHtmlContent.replace('<br>', ''), sPattern)
@@ -188,7 +188,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<li class="part" data-url="([^"]+)">.+?<div class="part-name">([^<]+)'
+    sPattern = '<li class="part" data-url="([^"]+).+?<div class="part-name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
