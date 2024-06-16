@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.3***
+- Mises à jour de plusieurs sources
+
 *** 2.9.2***
 - Pastebin : Ne s'ouvre pas sur une nouvelle installation
 - Pastebin : Classement par resolutions

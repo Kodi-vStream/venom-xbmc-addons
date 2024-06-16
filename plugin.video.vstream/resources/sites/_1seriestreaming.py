@@ -242,7 +242,7 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '><a href="([^"]+)" title="[^"]+" class="season_link".+?season_name">([^<]+)'
+    sPattern = '><a href="([^"]+)" title="[^"]+" class="season_link *".+?season_name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -339,7 +339,7 @@ def showLinks():
             sHostName = hoster.getPluginIdentifier()
 
             sLang = aEntry[2].replace('default', '').upper()
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHostName)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, hoster.getRealHost())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)

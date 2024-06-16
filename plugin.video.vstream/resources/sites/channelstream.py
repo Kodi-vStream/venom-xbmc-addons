@@ -18,6 +18,9 @@ from resources.lib.util import Quote, urlHostName
 
 from datetime import datetime, timedelta
 
+HEURE_HIVER = False
+
+
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
 SITE_DESC = 'Chaines TV en directs'
@@ -171,7 +174,10 @@ def showMovies():
                 try:
                     sDate += ' ' + sTime
                     d = datetime(*(time.strptime(sDate, '%Y-%m-%d %H:%M')[0:6]))
-                    d += timedelta(hours=6)
+                    if HEURE_HIVER:
+                        d += timedelta(hours=6)
+                    else:
+                        d += timedelta(hours=7)
                     sDate = d.strftime("%d/%m/%y %H:%M")
                 except Exception as e:
                     pass
@@ -395,6 +401,9 @@ def getHosterPrimetubsub(url, referer):
 
 # Traitement générique
 def getHosterIframe(url, referer):
+    
+    if 'youtube.com' in url:
+        return None
 
     if not url.startswith('http'):
         url = URL_MAIN + url
@@ -403,10 +412,15 @@ def getHosterIframe(url, referer):
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
-    if not sHtmlContent:
+    if not sHtmlContent or sHtmlContent == 'False':
         return False
 
-    referer = url
+    # import xbmcvfs
+    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    # f.write(sHtmlContent)
+    # f.close()
+    
+    referer = oRequestHandler.getRealUrl()
     
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -465,11 +479,16 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
-        oRequestHandler.request()
-        sHosterUrl = oRequestHandler.getRealUrl()
-#        sHosterUrl = sHosterUrl.replace('index', 'mono')
-        return sHosterUrl + '|referer=' + referer
+        for sHosterUrl in aResult:
+            if '.m3u8' in sHosterUrl:
+                if 'fls/cdn/' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
+                else:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+    #            sHosterUrl = sHosterUrl.replace('index', 'mono')
+                return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -479,7 +498,7 @@ def getHosterIframe(url, referer):
         sHosterUrl = oRequestHandler.getRealUrl()
         return sHosterUrl + '|referer=' + referer
 
-    sPattern = 'new Player\("100%","100%","player","(.+?)".+?"([^"]+)":0.33}'
+    sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])

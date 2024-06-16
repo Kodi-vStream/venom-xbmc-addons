@@ -52,6 +52,13 @@ class cHoster(iHoster):
             pass
 
         oParser = cParser()
+
+        # redirection
+        sPattern = '<iframe class="embed-responsive-item" src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            self._url = aResult[1][0]
+            return self._getMediaLinkForGuest()
         
         sPattern = 'return a\s*\+\s*"(\?token=[^"&]+)["&]'
         aResult = oParser.parse(sHtmlContent, sPattern)

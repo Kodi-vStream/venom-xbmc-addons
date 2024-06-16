@@ -229,7 +229,7 @@ def showSeries(sSearch=''):
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
         sUrl = sSearch.replace(' ', '+')
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31&catlist[]=35'
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_search=1&catlist[]=31&catlist[]=35'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
@@ -237,10 +237,9 @@ def showSeries(sSearch=''):
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addHeaderEntry('Content-Type', 'application/json')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -264,7 +263,6 @@ def showSeries(sSearch=''):
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
                 continue
             
-            # sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
             sDisplayTitle = sTitle
             sUrl = aEntry[2]
             sDesc = aEntry[4]
@@ -293,16 +291,16 @@ def showEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="(ep.+?)"|<a href="([^"]+)"[^><]+target="x_player"'
+    sPattern = '"clicbtn" rel="(ep\dvf)" >(Episode \d)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # Afficher le numero de l episode et la saison dans le titre
     # permet de marquer vu avec trakt automatiquement.
-    ep = 0
     sLang = ''
 
     if aResult[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
 
@@ -314,24 +312,47 @@ def showEpisodes():
                 if 'epblocks' in aEntry[0]:
                     continue
 
-                ep = aEntry[0].replace('ep', 'Episode ').replace('vs', '').replace('vf', '')
-
-            if aEntry[1]:
-                sTitle = sMovieTitle + ' ' + ep + sLang
-                sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
-                if 'players.wiflix.' in sHosterUrl:
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.request()
-                    sHosterUrl = oRequestHandler.getRealUrl()
-
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if oHoster:
-                    oHoster.setDisplayName(sTitle)
-                    oHoster.setFileName(sTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
+                sTitle = aEntry[0]
+                sDisplayTitle = '%s %s %s' % (sMovieTitle, aEntry[1], sLang)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+    
+                oGui.addLink(SITE_IDENTIFIER, 'showHostersEpisode', sDisplayTitle,  sThumb, '', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
+
+def showHostersEpisode():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sStart = '<div class="%s"' % sMovieTitle
+    sEnd = '</div>'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+
+    sPattern = "onclick=\"loadVideo\('([^']+)"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+
+    if aResult[0]:
+        for aEntry in aResult[1]:
+            sDisplayTitle = sMovieTitle
+            sHosterUrl = aEntry
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if oHoster:
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
@@ -343,24 +364,13 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="\/vd.php\?u=([^"]+)"[^<>]+target="x_player_wfx"><span>([^<]+)'
+    sPattern = "onclick=\"loadVideo\('([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry[0]  # .replace('/wiflix.cc/', '')
-            if 'wiflix.' in sHosterUrl:
-                oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
-            else:
-                sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
-            sLang = aEntry[1].replace('2', '').replace('3', '')
-            if 'Vost' in aEntry[1]:
-                sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
-            else:
-                sDisplayTitle = sMovieTitle
+            sDisplayTitle = sMovieTitle
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
                 oHoster.setDisplayName(sDisplayTitle)
