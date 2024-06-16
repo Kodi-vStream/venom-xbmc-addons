@@ -56,7 +56,7 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', '/series/series')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
@@ -136,12 +136,12 @@ def showGenres():
             ['Animation', 'animation-s'], ['Action & Adventure', 'action-adventure-s'],
             ['Comédie', 'comédie-s'], ['Documentaire', 'documentaire-s'],
             ['Drame', 'drame-s'], ['Enfants', 'kids-s'], ['Famille', 'familial-s'],
-            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'], 
+            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'],
             ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
             ['Musique', 'musique-s'], ['Mystère', 'mystère-s'], ['Policier', 'policier-s'],
             ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-fantastique-s'], ['Thriller', 'thriller-s'],
             ['Talk-show', 'talk-s'], ['Télé-réalité', 'reality-s'], ['Western', 'western-s']]
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', 'series/' + sUrl)
@@ -242,7 +242,7 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '><a href="([^"]+)" title="[^"]+" class="season_link *".+?season_name">([^<]+)'
+    sPattern = '><a href="([^"]+)" title="[^"]+" class="season_link.+?season_name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -312,7 +312,7 @@ def showLinks():
     cook = oRequestHandler.GetCookies()
 
     pdata = 'newsId=%s&action=showPlayers' % videoId
-    sUrl = "https://app.1seriestreaming.io/engine/ajax/controller.php?mod=players&newsid=" + videoId
+    sUrl = URL_MAIN + "engine/ajax/controller.php?mod=players&newsid=" + videoId
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
@@ -322,8 +322,8 @@ def showLinks():
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequestHandler.addParametersLine(pdata)
     sHtmlContent = oRequestHandler.request()
-    
-    sPattern = 'id="([^"]+)" *data-hash="([^"]+)".+?alt="([^"]+)"'
+
+    sPattern = 'id="([^"]+)" *data-hash="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -332,14 +332,14 @@ def showLinks():
             sUrl = '?action=player&url=' + aEntry[1]
             sHostName = aEntry[0]
             # sHost = re.sub('\..+', '', sHost).capitalize()
-            hoster = cHosterGui().checkHoster(sHostName) 
+            hoster = cHosterGui().checkHoster(sHostName)
             if not hoster:
                 continue
-            
+
             sHostName = hoster.getPluginIdentifier()
 
             sLang = aEntry[2].replace('default', '').upper()
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, hoster.getRealHost())
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, hoster.getRealHost().capitalize())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
