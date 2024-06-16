@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#import xbmc
+# import xbmc
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.home import cHome
@@ -48,7 +48,7 @@ class main:
         self.parseUrl()
 
     def parseUrl(self):
-        # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
+        # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple : plugin://plugin.video.vstream/extrafanart
         oPluginHandler = cPluginHandler()
         pluginPath = oPluginHandler.getPluginPath()
         if pluginPath == 'plugin://plugin.video.vstream/extrafanart/':
@@ -102,10 +102,10 @@ class main:
 
             if isFav(sSiteName, sFunction):
                 return
-            
+
             if isWatched(sSiteName, sFunction):
                 return
-            
+
             if isViewing(sSiteName, sFunction):
                 return
 
@@ -132,8 +132,8 @@ class main:
 
             if sSiteName == 'globalSources':
                 oGui = cGui()
-                aPlugins = oPluginHandler.getAvailablePlugins(force = (sFunction == 'globalSources'))
-                
+                aPlugins = oPluginHandler.getAvailablePlugins(force=(sFunction == 'globalSources'))
+
                 sitesManager = siteManager()
 
                 if len(aPlugins) == 0:
@@ -142,11 +142,11 @@ class main:
                     oGui.updateDirectory()
                 else:
                     for aPlugin in aPlugins:
-                        
+
                         sitename = aPlugin[0]
                         if not sitesManager.isActive(aPlugin[1]):
                             sitename = '[COLOR red][OFF] ' + sitename + '[/COLOR]'
-                        
+
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         icon = 'sites/%s.png' % (aPlugin[1])
@@ -235,6 +235,7 @@ def isFav(sSiteName, sFunction):
         return True
     return False
 
+
 def isWatched(sSiteName, sFunction):
     if sSiteName == 'cWatched':
         plugins = __import__('resources.lib.watched', fromlist=['cWatched']).cWatched()
@@ -242,6 +243,7 @@ def isWatched(sSiteName, sFunction):
         function()
         return True
     return False
+
 
 def isViewing(sSiteName, sFunction):
     if sSiteName == 'cViewing':
