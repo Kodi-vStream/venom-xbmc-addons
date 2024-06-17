@@ -257,7 +257,7 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace('- Saison', 'saison').replace(' wiflix', '')
+            sTitle = aEntry[1].replace('- Saison ', 'S').replace(' wiflix', '')
             
             # Filtre de recherche
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -288,10 +288,9 @@ def showEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '"clicbtn" rel="(ep\dvf)" >(Episode \d)<'
+    sPattern = '"clicbtn" rel="(ep\d(vf|vs))" *>Episode (\d)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -299,33 +298,36 @@ def showEpisodes():
     # permet de marquer vu avec trakt automatiquement.
     sLang = ''
 
+    sMovieTitle = sMovieTitle.replace('saison ', 'S')
+
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
 
-                if 'vs' in aEntry[0]:
+                if 'vs' in aEntry[1]:
                     sLang = ' (VOSTFR)'
-                elif 'vf' in aEntry[0]:
+                elif 'vf' in aEntry[1]:
                     sLang = ' (VF)'
 
-                if 'epblocks' in aEntry[0]:
+                if 'epblocks' in aEntry[1]:
                     continue
 
-                sTitle = aEntry[0]
-                sDisplayTitle = '%s %s %s' % (sMovieTitle, aEntry[1], sLang)
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                sTitle = '%s E%s' % (sMovieTitle, aEntry[2])
+                sDisplayTitle = '%s %s' % (sTitle, sLang)
+                oOutputParameterHandler.addParameter('siteUrl', '%s|%s' % (sUrl, aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
     
-                oGui.addLink(SITE_IDENTIFIER, 'showHostersEpisode', sDisplayTitle,  sThumb, '', oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHostersEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
 def showHostersEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl, sID = oInputParameterHandler.getValue('siteUrl').split('|')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
@@ -333,7 +335,7 @@ def showHostersEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sStart = '<div class="%s"' % sMovieTitle
+    sStart = '<div class="%s"' % sID
     sEnd = '</div>'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
