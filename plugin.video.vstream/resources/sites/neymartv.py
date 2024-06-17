@@ -227,7 +227,11 @@ def showMoviesLink():
     # ajouter un espace devant les chiffres
     sMovieTitle = re.sub('(\S)(\d+)', r'\1 \2', sMovieTitle)
     
+    
     sTitle = sMovieTitle.lower().replace('+', "").replace('canal sport france', 'canal sport')
+    sTitle = sTitle.replace('poland', 'polska')
+    sTitle = re.sub(' es$', ' spain', sTitle)
+    sTitle = re.sub(' fr$', ' france', sTitle)
     sTitle = "[^']+"+sTitle.replace(' ', "[^']+")+"[^']+"
 
     oRequestHandler = cRequestHandler(sUrl)
