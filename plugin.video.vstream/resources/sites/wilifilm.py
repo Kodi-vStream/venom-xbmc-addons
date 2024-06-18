@@ -163,7 +163,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/collection/' in sUrl:
-                oGui.addMovie(SITE_IDENTIFIER, 'showSaga', sTitle, '', sThumb, "", oOutputParameterHandler)
+                oGui.addMoviePack(SITE_IDENTIFIER, 'showSaga', sTitle, '', sThumb, "", oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, "", oOutputParameterHandler)
 
@@ -214,7 +214,9 @@ def showSaga():
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
+        
+        # films des sagas dans l'ordre chronologique
+        for aEntry in aResult[1][::-1]:
 
             sThumb = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', sThumb)
@@ -225,7 +227,7 @@ def showSaga():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, "", oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
