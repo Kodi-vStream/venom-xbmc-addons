@@ -1413,15 +1413,17 @@ def getHosterIframe(url, referer):
     if aResult:
         url = aResult[0]
         if '.m3u8' in url:
-            return url
+            return url + '|referer=' + referer
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         oRequestHandler = cRequestHandler(aResult[0])
+        if referer:
+            oRequestHandler.addHeaderEntry('Referer', referer)
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
-#        sHosterUrl = sHosterUrl.replace('index', 'mono')
+#        sHosterUrl = sHosterUrl.replace('playlist.m3u8', 'tracks-v1a1/mono.m3u8')
         return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
