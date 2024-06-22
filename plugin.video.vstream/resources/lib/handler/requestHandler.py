@@ -24,7 +24,7 @@ class cRequestHandler:
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
-        self.__timeout = 30
+        self.__timeout = 20
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
