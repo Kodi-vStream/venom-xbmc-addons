@@ -1332,6 +1332,9 @@ def getHosterVar16(url, referer):
 # Traitement générique
 def getHosterIframe(url, referer):
 
+    if 'getbanner.php' in url:
+        return False
+    
     if not url.startswith('http'):
         url = URL_MAIN + url
 
