@@ -485,6 +485,7 @@ def getHosterIframe(url, referer):
                     sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
                 else:
                     oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.addHeaderEntry('Referer', referer)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
     #            sHosterUrl = sHosterUrl.replace('index', 'mono')
