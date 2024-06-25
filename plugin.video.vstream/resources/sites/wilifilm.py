@@ -24,6 +24,7 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 MOVIE_MOVIE = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films-populaires', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-box-office', 'showMovies')
+MOVIE_SAGA = (URL_MAIN + 'collection-saga', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
@@ -43,6 +44,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SAGA[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SAGA[1], 'Films (Collection/Saga)', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -64,18 +68,20 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-
-    liste = []
-    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire', 'epouvante-horreur',
-                  'espionnage', 'famille', 'fantastique', 'guerre', 'historique', 'policier', 'romance',
-                  'science-fiction', 'thriller', 'western']
-
-    for igenre in listegenre:
-        liste.append([igenre.capitalize(), URL_MAIN + "categories/" + igenre])
+    listeGenre = [['Action', 'action'], ['Action & Adventure', 'action-adventure'], ['Animation', 'animation'],
+                  ['Aventure', 'aventure'], ['Comédie', 'comedie'], ['Comedy', 'comedy'], ['Crime', 'crime'],
+                  ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Drama', 'drama'],
+                  ['Familial', 'familial'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
+                  ['Guerre', 'guerre'], ['Histoire', 'histoire'], ['Horreur', 'horreur'], ['Horror', 'horror'],
+                  ['Kids', 'kids'], ['Musique', 'musique'], ['Mystère', 'mystere'], ['Mystery', 'mystery'],
+                  ['Reality', 'reality'], ['Romance', 'romance'], ['Science-Fiction', 'science-fiction'],
+                  ['Science-Fiction & Fantastique', 'science-fiction-fantastique'], ['Thriller', 'thriller'],
+                  ['Soap', 'soap'], ['Talk', 'talk'], ['western', 'western'], ['War', 'war'],
+                  ['War & Politics', 'war-politics']]
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    for sTitle, sUrl in listeGenre:
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'categories/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -121,11 +127,13 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class="lazyload" data-src="([^"]+)".+?class="name"><a href="([^"]+)" title="[^"]+">([^<]+)'
+    if '/collection-saga' in sUrl:
+        sPattern = 'img-fluid" data-src="([^"]+).+?result" href="([^"]+)"><h2>([^<]+)'
+    else:
+        sPattern = '<img class="lazyload" data-src="([^"]+).+?class="name"><a href="([^"]+)" title="[^"]+">([^<]+)'
     oParser = cParser()
     sHtmlContent = oParser.abParse(sHtmlContent, 'title yellow', '')
     aResult = oParser.parse(sHtmlContent.replace('<br>', ''), sPattern)
@@ -143,6 +151,8 @@ def showMovies(sSearch=''):
                 continue
             sUrl = aEntry[1]
             sTitle = aEntry[2]
+            if '/collection/' in sUrl:
+                sTitle = re.sub(' Collection', '', sTitle)
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -151,7 +161,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, "", oOutputParameterHandler)
+
+            if '/collection/' in sUrl:
+                oGui.addMoviePack(SITE_IDENTIFIER, 'showSaga', sTitle, '', sThumb, "", oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, "", oOutputParameterHandler)
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -177,6 +191,47 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 
+def showSaga():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    # sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sStart = '> Accueil <'
+    sEnd = '<div class="col-lg-4 col-md-12">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = 'lazyload" data-src="([^"]+).+?href="([^"]+).+?title="[^"]+">([^<]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if not aResult[0]:
+        oGui.addText(SITE_IDENTIFIER)
+
+    if aResult[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        
+        # films des sagas dans l'ordre chronologique
+        for aEntry in aResult[1][::-1]:
+
+            sThumb = aEntry[0]
+            sThumb = re.sub('/w\d+/', '/w342/', sThumb)
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
+
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -188,7 +243,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<li class="part" data-url="([^"]+)">.+?<div class="part-name">([^<]+)'
+    sPattern = '<li class="part" data-url="([^"]+).+?<div class="part-name">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:

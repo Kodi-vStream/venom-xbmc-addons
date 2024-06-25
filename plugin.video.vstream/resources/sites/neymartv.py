@@ -147,33 +147,31 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h3> %s <' % sTitle
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<h3>')
-
-    sPattern = '(\d+:\d+) (.+?)<'
+    sPattern = '<h3> %s <.+?<h3>' % sTitle
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
-        oOutputParameterHandler = cOutputParameterHandler()
+    if aResult[0]:
+        sPattern = '(\d+:\d+) (.+?)<'
         for aEntry in aResult[1]:
-            sTitle = aEntry[1].strip()
-
-            # heure d'été/hiver
-            sDate = aEntry[0]
-            heure = int(sDate[0:2])
-            heure += 1
-            if heure == 24:
-                heure = 0
-            sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.strip())
-
-            sTitle = sDate + ' ' + sTitle
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+            aResult = oParser.parse(aEntry, sPattern)
+            if aResult[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                for aEntry in aResult[1]:
+                    sTitle = aEntry[1].strip()
+        
+                    # heure d'été/hiver
+                    sDate = aEntry[0]
+                    heure = int(sDate[0:2])
+                    heure += 1
+                    if heure == 24:
+                        heure = 0
+                    sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.strip())
+        
+                    sTitle = sDate + ' ' + sTitle
+        
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+                    oGui.addDir(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -227,7 +225,11 @@ def showMoviesLink():
     # ajouter un espace devant les chiffres
     sMovieTitle = re.sub('(\S)(\d+)', r'\1 \2', sMovieTitle)
     
+    
     sTitle = sMovieTitle.lower().replace('+', "").replace('canal sport france', 'canal sport')
+    sTitle = sTitle.replace('poland', 'polska')
+    sTitle = re.sub(' es$', ' spain', sTitle)
+    sTitle = re.sub(' fr$', ' france', sTitle)
     sTitle = "[^']+"+sTitle.replace(' ', "[^']+")+"[^']+"
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -422,6 +424,7 @@ def getHosterIframe(url, referer):
                     sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
                 else:
                     oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.addHeaderEntry('Referer', referer)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
                 # oRequestHandler = cRequestHandler(sHosterUrl)

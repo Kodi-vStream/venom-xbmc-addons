@@ -75,7 +75,7 @@
             "active": "True",
             "url": "https://doc4u.top/"
         },
-		"dulourd": {
+        "dulourd": {
             "label": "DuLourd",
             "active": "True",
             "url": "https://www.dulourd.uno/"
@@ -106,7 +106,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.shop/"
+            "url": "https://www1.free-telecharger.shop/"
         },
         "freebox": {
             "label": "Freebox",
@@ -115,8 +115,8 @@
         },
         "french_stream_com": {
             "label": "French Stream",
-            "active": "True",
-            "url": "https://www.french-streaming.in/"
+            "active": "False",
+            "url": "https://frenchstream2.click/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -168,7 +168,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv788.me/"
+            "url": "https://livetv.sx/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -294,7 +294,7 @@
         },
         "vostfree": {
             "label": "Vostfree",
-            "active": "True",
+            "active": "False",
             "url": "https://vostfree.ws/"
         },
         "wawacity": {
@@ -306,7 +306,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://wiflix.date/"
+            "url": "https://wiflix.bio/"
         },
         "wilifilm": {
             "label": "Wilifilm",
