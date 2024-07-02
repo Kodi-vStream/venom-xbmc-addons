@@ -396,7 +396,7 @@ def geturl(aEntry):
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0')
+    oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
     oRequest.addParametersLine(pdata)
 
