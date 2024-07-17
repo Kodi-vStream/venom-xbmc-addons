@@ -444,8 +444,8 @@ class cGui:
             videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
             videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
             videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season') or -1))
-            videoInfoTag.setEpisode(int(data.get('episode') or -1))
+            videoInfoTag.setSeason(int(data.get('season', 0)))
+            videoInfoTag.setEpisode(int(data.get('episode', 0)))
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
 
             videoInfoTag.setCast(data.get('cast', []))
@@ -834,20 +834,6 @@ class cGui:
             # Use kodi buildin feature
             xbmc.executebuiltin('Action(ToggleWatched)')
 
-import json
-
-from resources.lib.comaddon import addon, dialog, isKrypton, VSlog, addonManager
-from resources.lib.db import cDb
-from resources.lib.gui.gui import cGui
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.upnext import UpNext
-from resources.lib.util import cUtil, Unquote, urlHostName
-
-from os.path import splitext
-
-# pour les sous titres
-# https://github.com/amet/service.su
         self.updateDirectory()
 
     def showKeyBoard(self, sDefaultText='', heading=''):

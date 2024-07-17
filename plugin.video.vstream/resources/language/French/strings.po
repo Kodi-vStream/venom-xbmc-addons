@@ -1284,3 +1284,7 @@ msgstr "Ajouter à une liste existante"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Choisissez une liste"
+
+msgctxt "#31213"
+msgid "Use Trakt addon for sync and notation"
+msgstr "Utiliser l'application Trakt pour la synchronisation et la notation"
