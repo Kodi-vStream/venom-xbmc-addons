@@ -3,6 +3,8 @@
 
 import xbmcplugin
 import xbmc
+import xbmcgui
+import json
 
 from resources.lib.comaddon import addon, dialog, isKrypton, VSlog, addonManager
 from resources.lib.db import cDb
@@ -80,6 +82,9 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sUrl):
+
+        ids = json.dumps({u'tmdb': self.sTmdbId})
+        xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
 
         # Lancement d'une vidéo sans avoir arrêté la précédente
         if self.isPlaying():
