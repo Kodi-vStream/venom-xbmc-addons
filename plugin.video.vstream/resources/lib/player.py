@@ -211,7 +211,7 @@ class cPlayer(xbmc.Player):
     # qui n'est pas celle qui a été lancée si plusieurs vidéos se sont enchainées
     # sEpisode = l'épisode précédent en cas d'enchainement d'épisode
     def _setWatched(self, sEpisode=''):
-
+        self.__setWatchlist(sEpisode)
         try:
             with cDb() as db:
                 if self.isPlaying():
@@ -357,6 +357,9 @@ class cPlayer(xbmc.Player):
                             db.del_resume(meta)
 
     def __setWatchlist(self, sEpisode=''):
+        # Vérification de l'utilisation de l'addon Trakt ou non, si oui, on quitte la fonction.
+        if self.ADDON.getSetting('use_trakt_addon') == 'true':
+            return
         # Suivi de lecture dans Trakt si compte
         if self.ADDON.getSetting('bstoken') == '':
             return
