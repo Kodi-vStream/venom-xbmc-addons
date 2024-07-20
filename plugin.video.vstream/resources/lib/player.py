@@ -225,7 +225,6 @@ class cPlayer(xbmc.Player):
     # qui n'est pas celle qui a été lancée si plusieurs vidéos se sont enchainées
     # sEpisode = l'épisode précédent en cas d'enchainement d'épisode
     def _setWatched(self, sEpisode=''):
-        self.__setWatchlist(sEpisode)
         try:
             with cDb() as db:
                 if self.isPlaying():
