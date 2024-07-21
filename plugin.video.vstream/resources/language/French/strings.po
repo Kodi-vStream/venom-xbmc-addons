@@ -1287,4 +1287,16 @@ msgstr "Choisissez une liste"
 
 msgctxt "#31213"
 msgid "Use Trakt addon for sync and notation"
-msgstr "Utiliser l'application Trakt pour la synchronisation et la notation"
+msgstr "Utiliser l'extension Trakt pour la synchronisation et la notation"
+
+msgctxt "#31214"
+msgid "Trakt addon support"
+msgstr "Intégration de l'extension Trakt"
+
+msgctxt "#31215"
+msgid "Install Trakt addon"
+msgstr "Installer l'extension Trakt"
+
+msgctxt "#31216"
+msgid "Trakt source"
+msgstr "Source Trakt"
