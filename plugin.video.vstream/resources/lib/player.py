@@ -5,6 +5,7 @@ import xbmcplugin
 import xbmc
 import xbmcgui
 import json
+import xbmcaddon
 
 from resources.lib.comaddon import addon, dialog, isKrypton, VSlog, addonManager
 from resources.lib.db import cDb
@@ -240,7 +241,15 @@ class cPlayer(xbmc.Player):
                     # calcul le temp de lecture
                     # Dans le cas où on a vu intégralement le contenu, percent = 0.0
                     # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
-                    if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
+
+                    VALUE_WATCHTIME = 0.90
+                    TRAKT_ID = "script.trakt"
+
+                    if self.ADDON.getSetting('use_trakt_addon') == 'true':
+                        traktAddon = xbmcaddon.Addon(TRAKT_ID)
+                        VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
+
+                    if (pourcent > VALUE_WATCHTIME) or (pourcent == 0.0 and self.currentTime == self.totalTime):
 
                         # Marquer VU dans la BDD Vstream
                         sTitleWatched = self.infotag.getOriginalTitle()
