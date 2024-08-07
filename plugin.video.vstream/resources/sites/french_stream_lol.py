@@ -237,6 +237,8 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN + sUrl2
             sThumb = aEntry[1].replace('/red.php?src=', '').replace('&.webp', '')
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
