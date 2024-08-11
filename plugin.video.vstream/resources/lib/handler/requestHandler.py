@@ -24,7 +24,7 @@ class cRequestHandler:
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
-        self.__timeout = 30
+        self.__timeout = 20
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
@@ -218,7 +218,7 @@ class cRequestHandler:
 
         except ConnectionError as e:
             # Retry with DNS only if addon is present
-            if 'getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e) and self.__enableDNS == False:
+            if self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
@@ -236,7 +236,7 @@ class cRequestHandler:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
-            elif 'getaddrinfo failed' in str(e) and self.__enableDNS == False:
+            elif self.__enableDNS == False and 'getaddrinfo failed' in str(e):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):

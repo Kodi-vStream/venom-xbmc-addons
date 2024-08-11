@@ -16,12 +16,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
-from resources.lib.util import Quote
+from resources.lib.util import Quote, urlHostName
 
-try:  # Python 2
-    from urlparse import urlparse
-except ImportError:  # Python 3
-    from urllib.parse import urlparse
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -126,7 +122,8 @@ def showMovies(sSearch=''):
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
+                        sDate = sDate.replace('+01:00', '').replace('+02:00', '')
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception:
                         pass
@@ -288,7 +285,7 @@ def showLink():
 def Hoster_Pkcast(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Referer', '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(referer)))
+    oRequestHandler.addHeaderEntry('Referer', '{uri.scheme}://{uri.netloc}/'.format(uri=urlHostName(referer)))
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -482,14 +479,20 @@ def getTimer():
 # Traitement générique
 def getHosterIframe(url, referer):
 
+    if 'youtube.com' in url:
+        return False, False
+
     if not url.startswith('http'):
         url = GetUrlMain() + url
 
     oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('Referer', referer)
+    if referer:
+        oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
-    if not sHtmlContent:
+    if not sHtmlContent or sHtmlContent == 'False':
         return False, False
+
+    referer = oRequestHandler.getRealUrl()
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -503,20 +506,20 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         import base64
-        code = aResult[0]
-        try:
-            if isMatrix():
-                code = base64.b64decode(code).decode('ascii')
-            else:
-                code = base64.b64decode(code)
-            return True, code + '|Referer=' + url
-        except Exception as e:
-            pass
+        for code in aResult:
+            try:
+                if isMatrix():
+                    code = base64.b64decode(code).decode('ascii')
+                else:
+                    code = base64.b64decode(code)
+                if '.m3u' in code:
+                    return True, code + '|Referer=' + referer
+            except Exception as e:
+                pass
 
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        referer = url
         for url in aResult:
             if url.startswith("./"):
                 url = url[1:]
@@ -535,7 +538,6 @@ def getHosterIframe(url, referer):
         sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
         aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
-            referer = url
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return True, sHosterUrl + '|referer=' + referer
 
@@ -544,7 +546,8 @@ def getHosterIframe(url, referer):
     if aResult:
         sHosterUrl = aResult[0]
         if '.m3u8' in sHosterUrl:
-            return True, sHosterUrl  # + '|User-Agent=' + UA + '&Referer=' + referer
+#            return True, sHosterUrl #+ '|User-Agent=' + UA + '&Referer=' + referer
+            return True, sHosterUrl + '|Referer=' + referer
 
     sPattern = "onload=\"ThePlayerJS\('.+?','([^\']+)"
     aResult = re.findall(sPattern, sHtmlContent)
@@ -557,6 +560,30 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        return True, aResult[0] + '|referer=' + url
+        for sHosterUrl in aResult:
+            if '.m3u8' in sHosterUrl:
+                if 'fls/cdn/' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('/playlist.', '/tracks-v1a1/mono.')
+                else:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                    # sHosterUrl = sHosterUrl.replace('index', 'mono')
+                return True, sHosterUrl + '|referer=' + referer
+
+    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+        return True, sHosterUrl + '|referer=' + referer
+
+    sPattern = 'new Player\("100%","100%","player","(.+?)".+?"([^"]+)":0.33}'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return True, sHosterUrl + '|referer=' + referer
+
 
     return False, False

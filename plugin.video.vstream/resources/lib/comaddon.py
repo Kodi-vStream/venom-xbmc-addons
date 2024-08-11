@@ -478,11 +478,13 @@ class siteManager:
 
         # Chargement des properties
         try:
-            self.data = json.load(open(self.propertiesPath))
+            with open(self.propertiesPath, 'r') as f:
+                self.data = json.load(f)
         except IOError:
             # le fichier n'existe pas, on le crée à partir des settings par défaut
             xbmcvfs.copy(self.defaultPath, path)
-            self.data = json.load(open(self.propertiesPath))
+            with open(self.propertiesPath, 'r') as f:
+                self.data = json.load(f)
             
 
     # site désactivé par la team
@@ -570,7 +572,8 @@ class siteManager:
 
         # Chargement des properties par défaut
         if not self.defaultData:
-            self.defaultData = json.load(open(self.defaultPath))
+            with open(self.defaultPath, 'r') as f:
+                self.defaultData = json.load(f)
 
         # Retrouver la prop par défaut
         sourceData = self.defaultData[self.SITES].get(sourceName) if self.defaultData and self.SITES in self.defaultData else None

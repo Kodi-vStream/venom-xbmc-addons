@@ -53,14 +53,21 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        fin_url = ''.join(random.choice(possible) for _ in range(10))
-
-        sPattern = 'return a\+"(\?token=[^"]+)"'
+        # redirection
+        sPattern = '<iframe class="embed-responsive-item" src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
+        if aResult[0]:
+            self._url = aResult[1][0]
+            return self._getMediaLinkForGuest()
+        
+        sPattern = 'return a\s*\+\s*"(\?token=[^"&]+)["&]'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if not aResult[0]:
             return False, False
+
+        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        fin_url = ''.join(random.choice(possible) for _ in range(10))
 
         d = aResult[1][0]
 

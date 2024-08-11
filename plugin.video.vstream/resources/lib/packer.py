@@ -26,7 +26,12 @@ from resources.lib.util import Unquote
 class cPacker():
     def detect(self, source):
         """Detects whether `source` is P.A.C.K.E.R. coded."""
-        return source.replace(' ', '').startswith('eval(function(p,a,c,k,e,')
+        mystr = re.search(
+            r"eval[ ]*\([ ]*function[ ]*\([ ]*p[ ]*,[ ]*a[ ]*,[ ]*c["
+            r" ]*,[ ]*k[ ]*,[ ]*e[ ]*,[ ]*",
+            source,
+        )
+        return mystr is not None
 
     def unpack(self, source):
         """Unpacks P.A.C.K.E.R. packed js code."""
@@ -49,35 +54,29 @@ class cPacker():
         def lookup(match):
             """Look up symbols in the synthetic symtab."""
             word = match.group(0)
-            return symtab[unbase(word)] or word
+            return symtab[int(word)] if radix == 1 else symtab[unbase(word)] or word
 
-        source = re.sub(r'\b\w+\b', lookup, payload)
-        return self._replacestrings(source)
+        def getstring(c, a=radix):
+            foo = chr(c % a + 161)
+            if c < a:
+                return foo
+            else:
+                return getstring(int(c / a), a) + foo
 
-    def _cleanstr(self, str):
-        str = str.strip()
-        if str.find("function") == 0:
-            pattern = (r"=\"([^\"]+).*}\s*\((\d+)\)")
-            args = re.search(pattern, str, re.DOTALL)
-            if args:
-                a = args.groups()
-                def openload_re(match):
-                    c = match.group(0)
-                    b = ord(c) + int(a[1])
-                    return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
+        payload = payload.replace("\\\\", "\\").replace("\\'", "'")
+        p = re.search(r'eval\(function\(p,a,c,k,e.+?String\.fromCharCode\(([^)]+)', source)
+        if p:
+            pnew = re.findall(r'String\.fromCharCode\(([^)]+)', source)[0].split('+')[1] == '161'
+        else:
+            pnew = False
 
-                str = re.sub(r"[a-zA-Z]", openload_re, a[0])
-                str = Unquote(str)
-
-        elif str.find("decodeURIComponent") == 0:
-            str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str)
-            str = Unquote(str)
-        elif str.find("\"") == 0:
-            str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str)
-        elif str.find("'") == 0:
-            str = re.sub(r"(^')|('$)|('.*?')", "", str)
-
-        return str
+        if pnew:
+            for i in range(count - 1, -1, -1):
+                payload = payload.replace(getstring(i), symtab[i])
+            return _replacejsstrings((self._replacestrings(payload)))
+        else:
+            source = re.sub(r"\b\w+\b", lookup, payload, flags=re.ASCII)
+            return self._replacestrings(source)
 
     def _filterargs(self, source):
         """Juice from a source file the four args needed by decoder."""
@@ -108,7 +107,7 @@ class cPacker():
 
     def _replacestrings(self, source):
         """Strip string lookup table (list) and replace values in source."""
-        match = re.search(r'var *(_\w+)\=\["(.*?)"\];', source, re.DOTALL)
+        match = re.search(r'var *(_\w+)=\["(.*?)"];', source, re.DOTALL)
 
         if match:
             varname, strings = match.groups()
@@ -116,8 +115,22 @@ class cPacker():
             lookup = strings.split('","')
             variable = '%s[%%d]' % varname
             for index, value in enumerate(lookup):
+                if '\\x' in value:
+                    value = value.replace('\\x', '')
+                    value = binascii.unhexlify(value).decode('ascii')
                 source = source.replace(variable % index, '"%s"' % value)
             return source[startpoint:]
+        return source
+        
+    def _replacejsstrings(self, source):
+        """Strip JS string encodings and replace values in source."""
+        match = re.findall(r'\\x([0-7][0-9A-F])', source)
+
+        if match:
+            match = set(match)
+            for value in match:
+                source = source.replace('\\x{0}'.format(value), binascii.unhexlify(value).decode('ascii'))
+
         return source
 
 

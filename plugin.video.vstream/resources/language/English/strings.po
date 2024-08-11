@@ -564,6 +564,10 @@ msgctxt "#30145"
 msgid "Download folder"
 msgstr ""
 
+msgctxt "#30146"
+msgid "Pastebin URL"
+msgstr ""
+
 msgctxt "#30160"
 msgid "Quality HD"
 msgstr ""
@@ -816,6 +820,10 @@ msgctxt "#30334"
 msgid "Premium Token"
 msgstr ""
 
+msgctxt "#30339"
+msgid "Test"
+msgstr ""
+
 msgctxt "#30340"
 msgid "Trakt integration"
 msgstr ""
@@ -957,7 +965,7 @@ msgid "Enable sound notifications"
 msgstr ""
 
 msgctxt "#30412"
-msgid "[COLOR red]Delete entry[/COLOR]"
+msgid "[COLOR red]Remove item[/COLOR]"
 msgstr ""
 
 msgctxt "#30413"

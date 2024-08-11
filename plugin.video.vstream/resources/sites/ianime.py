@@ -31,13 +31,14 @@ MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showAlpha')
 MOVIE_GENRES = (URL_MAIN, 'showGenresMovies')
 
 SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'showAlpha')
+DRAMA_DRAMAS = (True, 'showDramas')
 
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'showAlpha')
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'showAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'showAlpha2')
 ANIM_GENRES = (URL_MAIN + 'categorie.php?watch=' + RandomKey, 'showGenres')
-ANIM_DRAMA = (URL_MAIN + 'drama.php', 'showMovies')
+DRAMA_VIEWS = (URL_MAIN + 'drama.php', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_MOVIES = ('movies=', 'showMovies')
@@ -185,8 +186,18 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_DRAMA[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_DRAMA[1], 'Animés (Drama)', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaires)', 'dramas.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showDramas():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaires)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -363,7 +374,11 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = cutSearch(sHtmlContent, typeSearch)
+
+        sHtmlContent2 = cutSearch(sHtmlContent, typeSearch)
+        # Si ca rate on prend tout, car les section ne sont pas fiables
+        if "watch" in sHtmlContent2:
+            sHtmlContent = sHtmlContent2
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -612,6 +627,8 @@ def extractLink(html):
     if aResult:
         for a in aResult:
             if ('adnetworkperformance' in a) or ('jquery' in a):
+                continue
+            if a.endswith(".js"):
                 continue
             if fake1 not in a and fake2 not in a:
                 final = a

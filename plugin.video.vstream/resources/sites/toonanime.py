@@ -169,7 +169,10 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if "/films/" in sUrl:
+                oGui.addMovie(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -225,7 +228,7 @@ def ShowSxE():
                 break
 
             sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
+            sUrl2 = URL_MAIN +   aEntry[0]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -268,15 +271,15 @@ def seriesHosters():
             if progress_.iscanceled():
                 break
 
-            sPattern = '<div id="content_player_' + aEntry[1] + '".+?>(.+?)<'
+            sPattern = '<div id=\\"content_player_' + aEntry[1] + '\\".+?>(.+?)<'
             aResult1 = oParser.parse(sHtmlContent, sPattern)
             hostClass = aEntry[0]
 
             for aEntry1 in aResult1[1]:
                 # sTitle = sMovieTitle  + " [COLOR coral]" + hostClass.capitalize() + "[/COLOR]"
 
-                if "https" in aEntry1[0]:
-                    sHosterUrl = aEntry1[0]
+                if "https" in aEntry1:
+                    sHosterUrl = aEntry1
                 elif hostClass == "cdnt":
                     sHosterUrl = "https://lb.toonanime.xyz/playlist/" + aEntry1 + "/" + str(round(time.time() * 1000))
                 else:

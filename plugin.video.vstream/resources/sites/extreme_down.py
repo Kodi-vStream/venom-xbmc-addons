@@ -34,7 +34,7 @@ URL_SEARCH_MISC = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speed
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + '?p=films', 'showMovies')
 MOVIE_HD1080 = (URL_MAIN + 'films-new-hd/new-bluray-1080p/', 'showMovies')
 MOVIE_NEWS2021 = (URL_MAIN + 'films-new-hd/', 'showMovies')
 # MOVIE_GENRES = (True, 'showGenres')
@@ -117,7 +117,7 @@ def showMenuMovies():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS2021[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS2021[1], 'Nouveauté 2021 HD', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS2021[1], 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD1080[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD1080[1], 'Bluray 1080P', 'films.png', oOutputParameterHandler)

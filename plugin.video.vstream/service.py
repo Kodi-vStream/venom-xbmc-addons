@@ -19,10 +19,9 @@ if isMatrix():
 
 
 def service():
-    
     # mise à jour des setting si nécessaire
     cUpdate().getUpdateSetting()
-    
+
     # gestion des enregistrements en cours
     ADDON = addon()
     recordIsActivate = ADDON.getSetting('enregistrement_activer')
@@ -38,10 +37,9 @@ def service():
     if not xbmcvfs.exists(path):
         xbmcvfs.mkdir(path)
 
-
     # enregistrement TV
     recordList = xbmcvfs.listdir(path)
-    interval = 55 # Vérifier toutes les minutes si un enregistrement est programmé
+    interval = 55  # Vérifier toutes les minutes si un enregistrement est programmé
     ADDON.setSetting('path_enregistrement_programmation', path)
     recordInProgress = False
     monitor = xbmc.Monitor()

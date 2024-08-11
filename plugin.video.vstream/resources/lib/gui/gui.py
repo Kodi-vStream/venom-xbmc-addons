@@ -38,9 +38,10 @@ class cGui:
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
             cGui.CONTENT = Type
+        if sCat is not None:
+            oGuiElement.setCat(sCat)
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
 
         if sThumbnail == '':
@@ -51,28 +52,36 @@ class cGui:
 
         oGuiElement.setDescription(sDesc)
 
-        if sCat is not None:
-            oGuiElement.setCat(sCat)
-
         # Pour addLink on recupere le sCat et sMeta precedent.
+        oInputParameterHandler = None
         if Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
             sCat = oInputParameterHandler.getValue('sCat')
             if sCat:
+                sCat = int(sCat)
                 oGuiElement.setCat(sCat)
 
             sMeta = oInputParameterHandler.getValue('sMeta')
             if sMeta:
+                sMeta = int(sMeta)
                 oGuiElement.setMeta(sMeta)
         else:
             oOutputParameterHandler.addParameter('sMeta', sMeta)
             oGuiElement.setMeta(sMeta)
 
+        # a faire après avoir déterminé la cat et le meta
+        oGuiElement.setTitle(sLabel)
+
+
         # Si pas d'id TMDB pour un episode, on recupère le précédent qui vient de la série
         if sCat and not oOutputParameterHandler.getValue('sTmdbId'):
-            oInputParameterHandler = cInputParameterHandler()
-            sPreviousMeta = int(oInputParameterHandler.getValue('sMeta'))
-            if 0 < sPreviousMeta < 7:
+            if not sMeta:
+                if not oInputParameterHandler:
+                    oInputParameterHandler = cInputParameterHandler()
+                sMeta = int(oInputParameterHandler.getValue('sMeta'))
+            if 0 < sMeta < 7:
+                if not oInputParameterHandler:
+                    oInputParameterHandler = cInputParameterHandler()
                 sTmdbID = oInputParameterHandler.getValue('sTmdbId')
                 if sTmdbID:
                     oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
@@ -368,7 +377,9 @@ class cGui:
                     episodeTitle = 'Episode ' + str(data['episode'])
                 host = ''
                 if 'tvshowtitle' in data:
-                    host = itemTitle.split(data['tvshowtitle'])[1]
+                    idxTitle = itemTitle.split(data['tvshowtitle'])
+                    if len(idxTitle) >= 2:
+                        host = idxTitle[1]
                 if self.displaySeason == "true":
                     itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle
                 else:
@@ -397,9 +408,9 @@ class cGui:
             oListItem = listitem(itemTitle)
 
         if data.get('cast'):
-            credits = json.loads(data['cast'])
+            casts = json.loads(data['cast'])
             data['cast'] = []
-            for i in credits:
+            for i in casts:
                 if isNexus():
                     data['cast'].append(xbmc.Actor(i['name'], i['character'], i['order'], i.get('thumbnail', "")))
                 else:
@@ -425,7 +436,8 @@ class cGui:
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
             videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
-            videoInfoTag.setCountries(data.get('country', [""]))
+            # inutilisé ? et fragile 
+            # videoInfoTag.setCountries(data.get('country', ['']))
             videoInfoTag.setTrailer(data.get('trailer', ""))
             videoInfoTag.setTagLine(data.get('tagline', ""))
             videoInfoTag.setStudios(list(data.get('studio', '').split("/")))
@@ -573,11 +585,11 @@ class cGui:
         # Menus classiques reglés a la base
         nbContextMenu = len(oGuiElement.getContextItems())
         if nbContextMenu > 0:
+            sDecoColor = self.ADDON.getSetting('deco_color')
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                sDecoColor = self.ADDON.getSetting('deco_color')
                 titleMenu = '[COLOR %s]%s[/COLOR]' % (sDecoColor, oContextItem.getTitle())
                 aContextMenus += [(titleMenu, 'RunPlugin(%s)' % sTest)]
 

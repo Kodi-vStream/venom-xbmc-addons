@@ -10,13 +10,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
 
-try:
-    # python2
-    from urlparse import urlparse
-except:
-    # python3
-    from urllib.parse import urlparse
-
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
 
 headers = {"User-Agent": UA,

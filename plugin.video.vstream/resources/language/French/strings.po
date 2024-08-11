@@ -294,7 +294,7 @@ msgstr "Liste mise à jour"
 
 msgctxt "#30072"
 msgid "File deleted"
-msgstr "Fichier supprimé"
+msgstr "Élément supprimé"
 
 msgctxt "#30073"
 msgid "Error, file cannot be deleted"
@@ -564,6 +564,12 @@ msgctxt "#30145"
 msgid "Download folder"
 msgstr "Dossier de téléchargement"
 
+msgctxt "#30146"
+msgid "Pastebin URL"
+msgstr "Autre hébergeur Pastebin"
+
+
+
 msgctxt "#30160"
 msgid "Quality HD"
 msgstr "Qualité HD"
@@ -750,11 +756,11 @@ msgstr "Populaire"
 
 msgctxt "#30316"
 msgid "Most viewed this week"
-msgstr "Les plus vues de la semaine"
+msgstr "Les plus vus de la semaine"
 
 msgctxt "#30317"
 msgid "Most viewed of the month"
-msgstr "Les plus vues du mois"
+msgstr "Les plus vus du mois"
 
 msgctxt "#30318"
 msgid "Watchlist (seasons)"
@@ -815,6 +821,10 @@ msgstr "Activer Premium"
 msgctxt "#30334"
 msgid "Premium Token"
 msgstr "Token Premium"
+
+msgctxt "#30339"
+msgid "Test"
+msgstr "Tester le token"
 
 msgctxt "#30340"
 msgid "Trakt integration"
@@ -957,8 +967,8 @@ msgid "Enable sound notifications"
 msgstr "Activer le son des notifications"
 
 msgctxt "#30412"
-msgid "[COLOR red]Delete entry[/COLOR]"
-msgstr "[COLOR red]Supprimer l'entrée[/COLOR]"
+msgid "[COLOR red]Remove item[/COLOR]"
+msgstr "[COLOR red]Retirer l'élément[/COLOR]"
 
 msgctxt "#30413"
 msgid "[COLOR red]Delete history[/COLOR]"

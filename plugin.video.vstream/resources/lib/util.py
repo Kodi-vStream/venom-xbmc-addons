@@ -2,12 +2,14 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import isMatrix
 
-try:
+try:        # python 2
     import htmlentitydefs
     import urllib
-except ImportError:
+    import urlparse
+except ImportError:     # python 3
     import html.entities as htmlentitydefs
     import urllib.parse as urllib
+    urlparse = urllib
 
 import unicodedata
 import re
@@ -16,7 +18,7 @@ import string
 
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 class cUtil:
-    # reste a transformer la class en fonction distante.
+
     def CheckOrd(self, label):
         count = 0
         try:
@@ -66,8 +68,31 @@ class cUtil:
 
         return str(iMinutes) + ':' + str(iSeconds)
 
-    def unescape(self, text):
+    def formatUTF8(self, text):
+        # test si nécessaire de convertir
+        n2 = re.sub('[^a-zA-Z0-9 ]', '', text)
+        if n2 != text:
+            bMatrix = isMatrix()
+            if not bMatrix:
+                try:
+                    # converti en unicode pour aider aux convertions
+                    text = text.decode('utf8', 'ignore')    
+                except Exception as e:
+                    pass
+                
+            try:
+                text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore')
+            except Exception as e:
+                pass
+            
+            if bMatrix:
+                try:
+                    text = text.decode('utf8', 'ignore')
+                except Exception as e:
+                    pass
+        return text
 
+    def unescape(self, text):
         # determine si conversion en unicode nécessaire        
         isStr = isinstance(text, str)
 
@@ -97,17 +122,8 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def titleWatched(self, title):
-        # enlève les accents, si nécessaire
-        n2 = re.sub('[^a-zA-Z0-9 ]', '', title)
-        if n2 != title:
-            try:
-                if not isMatrix():
-                    title = title.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
-                title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore')
-                if isMatrix():
-                    title = title.decode('utf8', 'ignore')
-            except Exception as e:
-                pass
+
+        title = self.formatUTF8(title)
 
         # cherche la saison et episode puis les balises [color]titre[/color]
         # title, saison = self.getSaisonTitre(title)
@@ -145,16 +161,7 @@ class cUtil:
         name = name.replace('[', '').replace(']', '') # crochet orphelin
 
         # enlève les accents, si nécessaire
-        n2 = re.sub('[^a-zA-Z0-9 ]', '', name)
-        if n2 != name:
-            try:
-                if not isMatrix():
-                    name = name.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
-                name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore')
-                if isMatrix():
-                    name = name.decode('utf8', 'ignore')
-            except Exception as e:
-                pass
+        name = self.formatUTF8(name)
 
         # tout en minuscule
         name = name.lower()
@@ -182,9 +189,6 @@ class cUtil:
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(1), '')
-            self.__Episode = ('%02d' % int(string.group(2)))
-            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
-            self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
         return sTitle, False
@@ -238,4 +242,4 @@ def urlEncode(sUrl):
 
 
 def urlHostName(sUrl):  # retourne le hostname d'une Url
-    return urllib.urlparse(sUrl).hostname
+    return urlparse.urlparse(sUrl).hostname

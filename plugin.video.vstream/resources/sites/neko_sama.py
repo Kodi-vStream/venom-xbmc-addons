@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
+import base64
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -94,10 +95,8 @@ def showSearchResult(sSearch):
 
     searchURL = URL_MAIN[:-1] + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
 
-    bGlobal_Search = False
     if sSearch:
         if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
             sSearch = sSearch.replace(URL_SEARCH[0], '')
     sSearch = sSearch.lower()
 
@@ -280,6 +279,61 @@ def showSeriesHosters():
             # if 'openload' in aEntry or '.mp4' not in aEntry:
             if 'openload' in aEntry or 'mystream.to' in aEntry or "streamtape" in aEntry:
                 continue
+
+            '''
+            '''
+            # NE FONCTIONNE PAS, le lien direct est pourtant bon dans vlc
+            if 'fusevideo' in aEntry:   
+                UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+                
+                oRequestHandler = cRequestHandler(aEntry)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+                oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
+                oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+                sHtmlContent = oRequestHandler.request()
+
+                sPattern = '<\/script> *<script src="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if aResult[0]:
+                    oRequestHandler = cRequestHandler(aResult[1][0])
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+                    oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
+                    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+                    sHtmlContent = oRequestHandler.request()
+                    sPattern = 'atob\("([^"]+)"'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if aResult[0]:
+                        url2 = base64.b64decode(aResult[1][0])
+                        sPattern = '(https[^"]+)"'
+                        aResult = oParser.parse(url2, sPattern)
+                        if aResult[0]:
+                            sHosterUrl = aResult[1][0].replace('\\', '')
+                #EXTM3U
+# #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1920x1080,NAME="1080"
+# https://fusevideo.io/h/720/eyJpdiI6IjZUUmZtZTBQTHl5UlpRNkZwWFBzWkE9PSIsInZhbHVlIjoiTkhXZTM3ZnJMekN5akFpNTNnQTNHQT09IiwibWFjIjoiZjg2NzlkOGZhMzc1ZTFiMzY3NzU0YWVhOTc5MmRlZDczZmQxZWQ5MDYzMDRjOTZjNTk1N2M3ZGZhODkwN2FmOCIsInRhZyI6IiJ9.m3u8?expires=1713665472&signature=df5ab2adae17c09bb5f2ad1587bd389839fb3599b6babc853017339b2ce8a8b5
+# #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720,NAME="720"
+# https://fusevideo.io/h/720/eyJpdiI6ImJuMTVNeFI4TTNSS3l4RGZzMnRJMGc9PSIsInZhbHVlIjoiUmV6LytrWTFOS3NNN0F1VWZmUTd6Zz09IiwibWFjIjoiZDkzMDcxYWNmNjUwNTFlMzBhMTc2Nzk4OGI1ODY0M2VkZDQxYmFlZmQzZjY1NmUwYmEzNzM5MDcyZTU2Y2RlMCIsInRhZyI6IiJ9.m3u8?expires=1713665472&signature=fed6e68da3a8f753c0cb0d82ac55af461f9c7b93e7816d3ee131298dced7458c
+# #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=854x480,NAME="480"
+# https://fusevideo.io/h/720/eyJpdiI6InRJTTRkV2RIUFJISndTcWtmM3JUS1E9PSIsInZhbHVlIjoiTVppelR4YlBkdDlDc0RmTUhudUU4dz09IiwibWFjIjoiMGRjMjU3MDBkOTdiMTQzNWE2ZGRjZmIwYmQyY2IwMzY3ODQ5NzdhMzIxNDJmNWU0OWYzODMwMTFkNGEzOWY5YyIsInRhZyI6IiJ9.m3u8?expires=1713665472&signature=eef26164b1df50dc0bdf97b75ec27c9fd13745f68f29a6ff4392118a24fd8012
+
+
+                            oRequestHandler = cRequestHandler(sHosterUrl)
+                            oRequestHandler.addHeaderEntry('User-Agent', UA)
+                            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+                            oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
+                            oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                            oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+                            sHtmlContent = oRequestHandler.request()
+                            sPattern = '(https[^#]+)'
+                            aResult = oParser.parse(sHtmlContent, sPattern)
+                            if aResult[0]:
+                                sHosterUrl = aResult[1][0].replace('https:', 'http:')
+            '''
+            '''
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:

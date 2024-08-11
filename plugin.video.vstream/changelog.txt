@@ -12,6 +12,52 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.4***
+- DNSPython : Correction sur un timeout 
+
+*** 2.9.3***
+- Mises à jour de plusieurs sources
+
+*** 2.9.2***
+- Pastebin : Ne s'ouvre pas sur une nouvelle installation
+- Pastebin : Classement par resolutions
+
+*** 2.9.1***
+- Pastebin : Correction pour voir les séries par diffuseur
+
+*** 2.9.0***
+- Alldebrid : Possibilité de vérifier la validité de sa key
+
+*** 2.8.0***
+- Pastebin : Possibilité de renseigner un hebergeur secondaire
+
+*** 2.7.6***
+- Ajout de plusieurs sources
+
+*** 2.7.5***
+- Mises à jour de plusieurs sources
+
+*** 2.7.4***
+- Suivi des épisodes : Correction enchainement, en cours de lecture, trakt
+
+*** 2.7.2***
+- Python 2 : Compatibilité Kodi 18
+
+
+*** 2.7.0***
+- Darkibox : Prise en charge du compte premium
+- Darkibox : Pouvoir parcourir son compte
+- Pastebin : Mixer des hebergeurs différents parmi les codes d'un même index
+- Netu : Interface pour résoudre l'accès à l'hébergeur
+
+
+*** 2.6.7***
+- Alldebrid : Accès aux hosters qui ne sont pas pris en compte par alldebrid
+- Episodes : Enchainement des épisodes lorsque Alldebrid est actif
+
+*** 2.6.5***
+- alldebrid : Meilleur accès à son compte : liens, magnets, historique
+
 *** 2.6.3***
 - Trakt : Correction pour le suivi sur le compte
 - Marqué vu : Correction pour la marque lors des enchainements d'épisodes

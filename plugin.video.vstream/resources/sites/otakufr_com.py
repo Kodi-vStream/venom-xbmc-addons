@@ -12,6 +12,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
 
+
 SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
 SITE_DESC = 'OtakuFR animés en streaming et téléchargement'
@@ -278,7 +279,7 @@ def showLinks():
             list_hostname.append(aEntry)
 
     # list_host = []
-    sPattern = 'iframe.+?src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
+    sPattern = 'frameborder=".+?src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0
     if aResult[0]:

@@ -511,7 +511,7 @@ def showEpisode():
     except:
         pass
 
-    sPattern = '</i> *(VF|VOSTFR) *</div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
+    sPattern = '</i> *(VF|VOSTFR) *</div>|<a id="([^"]+).+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)'
     aResult = re.findall(sPattern, sHtmlContent)
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
@@ -526,7 +526,7 @@ def showEpisode():
             else:
                 # sId = aEntry[1]
                 sTitle = sMovieTitle + ' ' + aEntry[2]
-                sDisplayTitle = '%s [%s]' % (sTitle, sLang)
+                sDisplayTitle = '%s (%s)' % (sTitle, sLang)
                 sData = aEntry[3]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -563,7 +563,7 @@ def showSeriesHosters():
     else:
         return
 
-    sPattern = '<a (?:id="([^"]+)"|onclick=".+?") *surl="([^"]+)"'
+    sPattern = '<a (?:id="([^"]+)"|onclick=".+?") *surl="([^"]+)'
     aResult = oParser.parse(block, sPattern)
 
     if aResult[0]:
@@ -573,7 +573,7 @@ def showSeriesHosters():
                 url = aEntry[1]
                 tmp = ''
                 try:
-                    tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+                    tmp = re.search('input id="tmp".+?value="([^"]+)', sHtmlContent, re.DOTALL).group(1)
                 except:
                     pass
 
@@ -608,7 +608,7 @@ def mangaHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '</i> *(VF|VOSTFR) *</div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+)".+?</i>([^<]+)</a>'
+    sPattern = '</i> *(VF|VOSTFR) *</div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+).+?</i>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:

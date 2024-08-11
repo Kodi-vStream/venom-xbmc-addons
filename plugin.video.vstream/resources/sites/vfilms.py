@@ -126,9 +126,10 @@ def showGenres():
 
 
 def showYears():
+    import datetime
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1994, 2024)):
+    for i in reversed(range(1994, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + sYear + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
@@ -223,7 +224,7 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '<a href="([^"]+)"><div class="thumb"><div class="th-in"><div class="th-img img-resp-v"><img class=" ls-is-cached lazyloaded" src="([^"]+)" alt="\d+ Season"><figcaption>(Saison \d+)<\/figcaption>'
+    sPattern = '<a href="([^"]+)"> *<div class="thumb"> *<div class="th-in"> *<div class="th-img img-resp-v"> *<img class=" ls-is-cached lazyloaded" src="([^"]+)" alt="\d+ Season"> *<figcaption>(Saison \d+)<\/figcaption>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:

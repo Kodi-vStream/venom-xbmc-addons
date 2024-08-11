@@ -10,12 +10,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.upnext import UpNext
-from resources.lib.util import cUtil, Unquote
-
-try:  # Python 2
-    from urlparse import urlparse
-except ImportError:  # Python 3
-    from urllib.parse import urlparse
+from resources.lib.util import cUtil, Unquote, urlHostName
 
 from os.path import splitext
 
@@ -117,7 +112,9 @@ class cPlayer(xbmc.Player):
 
         player_conf = self.ADDON.getSetting('playerPlay')
         # Si lien dash, methode prioritaire
-        if splitext(urlparse(sUrl).path)[-1] in [".mpd", ".m3u8"]:
+        mpd = splitext(urlHostName(sUrl))[-1] in [".mpd", ".m3u8"]
+        mpd |= '&ct=6&' in sUrl     # mpd venant de ok.ru, n'a pas d'extension
+        if mpd:
             if isKrypton() == True:
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream', 'inputstream.adaptive')
@@ -164,7 +161,7 @@ class cPlayer(xbmc.Player):
                 self.currentTime = self.getTime()
 
                 waitingNext += 1
-                if waitingNext == 8:  # attendre un peu avant de chercher le prochain épisode d'une série
+                if waitingNext == 10:  # attendre un peu avant de chercher le prochain épisode d'une série
                     self.totalTime = self.getTotalTime()
                     self.infotag = self.getVideoInfoTag()
                     UpNext().nextEpisode(oGuiElement)
@@ -230,8 +227,8 @@ class cPlayer(xbmc.Player):
                         # Marquer VU dans la BDD Vstream
                         sTitleWatched = self.infotag.getOriginalTitle()
                         if sTitleWatched:
-                            if sEpisode :   # changement d'épisode suite à un enchainement automatique
-                                sTitle = sTitleWatched  # l'épisode vu et non pas le nouveau qui vient de démarrer
+                            if sEpisode :   # changement d'épisode suite à un enchainement automatique, fin de l'épisode précédent
+                                sTitle = '%s S%sE%s' % (self.tvShowTitle, self.sSaison, sEpisode)
                             else:
                                 sTitle = self.sTitle
                             meta = {}
