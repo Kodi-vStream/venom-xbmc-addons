@@ -28,7 +28,12 @@ class cHoster(iHoster):
             return False, False
 
         oRequest = cRequestHandler(sUrl_Bypass)
-        sHtmlContent = json.loads(oRequest.request())
+        try:
+            sHtmlContent = oRequest.request()
+            sHtmlContent = json.loads(sHtmlContent)
+        except:
+            VSlog('Hoster Alldebrid - json.loads : ' + sHtmlContent)
+#        sHtmlContent = json.loads(oRequest.request())
 
         if 'error' in sHtmlContent:
             if sHtmlContent['error']['code'] in ('LINK_HOST_NOT_SUPPORTED', 'LINK_DOWN'):
