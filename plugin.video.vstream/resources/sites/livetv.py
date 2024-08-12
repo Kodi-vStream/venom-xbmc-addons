@@ -27,8 +27,8 @@ SITE_DESC = 'Evénements sportifs en direct'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = dans sites.json
 
-SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
-SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
+SPORT_GENRES = ('/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
+SPORT_LIVE = ('/frx/', 'showLive')  # streaming Actif
 SPORT_SPORTS = (True, 'load')
 
 HEURE_HIVER = False
@@ -49,7 +49,7 @@ def load():
 def showLive():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -96,7 +96,7 @@ def showMovies():  # affiche les catégories qui ont des lives'
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
