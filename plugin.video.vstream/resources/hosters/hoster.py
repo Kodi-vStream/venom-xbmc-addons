@@ -13,6 +13,7 @@ class iHoster:
         self._pluginIdentifier = pluginIdentifier
         self.__sRealHost = pluginIdentifier
         self.color = color
+        self._res = None    # La résolution du lien
         self._url = None
         self._mediaFile = None
 
@@ -43,6 +44,12 @@ class iHoster:
 
     def isDownloadable(self):
         return True
+
+    def setRes(self, res):
+        self._res = res
+
+    def getRes(self):
+        return self._res
 
     def setUrl(self, url):
         self._url = str(url)

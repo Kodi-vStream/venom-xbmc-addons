@@ -2450,21 +2450,23 @@ def showHosters():
     for res in sorted(listRes.keys(), key=trie_res):
         for sHosterUrl, lang in listRes[res]:
             sUrl = sHosterUrl
+            link, paste, movies = sUrl.split('|')
     
             sDisplayName = sTitle
+            sDisplayRes = res
             if res:
-                oOutputParameterHandler.addParameter('sRes', res)
-                displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
-                sDisplayName += ' [%s]' % displayRes
+                sDisplayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
+                sDisplayName += ' [%s]' % sDisplayRes
+                oOutputParameterHandler.addParameter('sRes', sDisplayRes)
             if lang:
                 sDisplayName += ' (%s)' % lang
     
-            link, paste, movies = sUrl.split('|')
             if movies == 'FALSE':
                 oHoster = oHosterGui.checkHoster(link)
                 if oHoster:
                     oHoster.setDisplayName(sDisplayName)
                     oHoster.setFileName(sTitle)
+                    oHoster.setRes(sDisplayRes)
                     oHosterGui.showHoster(oGui, oHoster, link, '')
             else:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2593,7 +2595,7 @@ def getHosterList(siteUrl):
                             numEpisode = int(numEpisode)    # enlever les 0 devant
                         
                         if str(numEpisode) == searchEpisode:
-                            listLinks.append(link)
+                            listLinks.append(link)  # TODO utiliser expend si liste de liens ?
                             break
                 else:
                     listEpisodes.append(links)

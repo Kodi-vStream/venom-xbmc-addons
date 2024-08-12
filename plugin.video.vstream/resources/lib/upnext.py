@@ -186,7 +186,7 @@ class UpNext:
 
         sMediaUrl = ''
         
-        # cloner la liste qui est effacé ensuite
+        # cloner la liste qui est effacée ensuite
         episodesLinks = []
         for sUrl, listItem, isFolder in cGui().getEpisodeListing():
             episodesLinks.append([sUrl, listItem])
@@ -231,11 +231,13 @@ class UpNext:
                 if hostName != sHosterIdentifier:
                     continue
 
-            hostName = sHosterIdentifier
+            realHost = hostName = sHosterIdentifier
+            if 'realHoster' in aParams:
+                realHost = hostName = aParams['realHoster']
             if 'sHosterIdentifier' in aParams:
                 hostName = aParams['sHosterIdentifier']
-                if hostName != sHosterIdentifier:
-                    continue
+            if realHost != sHosterIdentifier:
+                continue
 
             sThumb = listItem.getArt('thumb')
             if 'sThumb' in aParams and aParams['sThumb']:
