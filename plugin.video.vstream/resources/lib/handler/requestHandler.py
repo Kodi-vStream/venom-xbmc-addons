@@ -230,7 +230,7 @@ class cRequestHandler:
                     sContent = ''
             else:
                 sContent = ''
-                return False
+                return sContent
 
         except RequestException as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
