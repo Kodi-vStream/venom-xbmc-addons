@@ -221,7 +221,7 @@ def showHosters():
         oRequestHandler = cRequestHandler(sLink)
         data = oRequestHandler.request()
 
-        sPattern = 'file: "(.+?)"'
+        sPattern = 'file: *"(.+?)"'
         aResult = oParser.parse(data, sPattern)
 
         if aResult[0]:
