@@ -41,7 +41,7 @@
         },
         "channelstream": {
             "label": "ChannelStream",
-            "active": "True",
+            "active": "False",
             "url": "https://channelstream.es"
         },
         "cinemay_cc": {
