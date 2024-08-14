@@ -112,7 +112,6 @@ def showMovies(sSearch=''):
 
         query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search', '1'))
         data = urlEncode(query_args)
-        data = 'do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=titans&titleonly=0&searchuser=&replyless=0&replylimit=0&searchdate=0&beforeafter=after&sortby=date&resorder=desc&showposts=0&catlist%5B%5D=0'
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
