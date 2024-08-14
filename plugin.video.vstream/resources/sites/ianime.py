@@ -27,10 +27,13 @@ SITE_DESC = 'Animés en streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = dans sites.json
 
-MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showAlpha')
+MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showMenuMovies')
+MOVIE_LIST = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showAlpha')
 MOVIE_GENRES = (URL_MAIN, 'showGenresMovies')
 
-SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'showAlpha')
+SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'showMenuSeries')
+SERIE_LIST = (URL_MAIN + 'series.php?liste=' + RandomKey, 'showAlpha')
+
 DRAMA_DRAMAS = (True, 'showDramas')
 
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
@@ -162,14 +165,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche animés', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -188,6 +191,35 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaires)', 'dramas.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuSeries():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
