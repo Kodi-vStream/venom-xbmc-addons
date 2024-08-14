@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.5***
+- Séries : enchainement des liens Pastebin / Alldebrid, et dans la même résolution
+
 *** 2.9.4***
 - DNSPython : Correction sur un timeout 
 
