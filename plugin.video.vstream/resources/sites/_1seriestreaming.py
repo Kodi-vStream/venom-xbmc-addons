@@ -21,8 +21,8 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = ('series/tendances-s/', 'showSeries')
-SERIE_VIEWS = ('series/populaires-s/', 'showSeries')
+SERIE_NEWS = ('series/tendance-s/', 'showSeries')
+SERIE_VIEWS = ('series/populaire-s/', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
 #SERIE_ANNEES = (True, 'showSerieYears')
 
@@ -54,7 +54,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Dramas)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', '/series/series')
+    oOutputParameterHandler.addParameter('siteUrl', 'series-s')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])

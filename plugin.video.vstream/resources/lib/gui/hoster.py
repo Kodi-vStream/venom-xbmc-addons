@@ -33,6 +33,8 @@ class cHosterGui:
         sFav = oInputParameterHandler.getValue('sFav')
         if not sFav:
             sFav = oInputParameterHandler.getValue('function')
+        if not sRes:
+            sRes = oHoster.getRes()
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)

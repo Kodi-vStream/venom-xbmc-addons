@@ -22,7 +22,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://w3.animesultra.net/"
+            "url": "https://v4.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -41,7 +41,7 @@
         },
         "channelstream": {
             "label": "ChannelStream",
-            "active": "True",
+            "active": "False",
             "url": "https://channelstream.es"
         },
         "cinemay_cc": {
@@ -106,7 +106,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www1.free-telecharger.shop/"
+            "url": "https://www.free-telecharger.world/"
         },
         "freebox": {
             "label": "Freebox",
@@ -174,7 +174,7 @@
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.app/"
+            "url": "https://monstream.ceo/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -259,7 +259,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v7.toonanime.co/"
+            "url": "https://tanime.site/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -306,7 +306,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://wiflix.bio/"
+            "url": "https://wiflix-catalogue.pro/"
         },
         "wilifilm": {
             "label": "Wilifilm",

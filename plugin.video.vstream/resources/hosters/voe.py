@@ -17,8 +17,16 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
         
+        if 'const currentUrl' in sHtmlContent:
+            sPattern = "window\.location\.href\s*=\s*'([^']+)"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                oRequest = cRequestHandler(aResult[1][0])
+                sHtmlContent = oRequest.request()
+
         sPattern = '["\']hls["\']:\s*["\']([^"\']+)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if aResult[0]:
             aResult1 = base64.b64decode(aResult[1][0])
             if aResult1:
@@ -34,7 +42,7 @@ class cHoster(iHoster):
                     aResult = oParser.parse(aResult1, sPattern)
                     if aResult[0]:
                         api_call = aResult[1][0].replace('\\','')
-        
+
         if api_call:
             return True, api_call
 

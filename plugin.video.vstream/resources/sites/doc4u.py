@@ -36,8 +36,6 @@ REPLAYTV_NEWS = (URL_MAIN + 'genre/reality', 'showMovies')
 REPLAYTV_POPULAIRE = (URL_MAIN + 'tvshows/', 'showMovies')
 URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showMovies')
 
-
-
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 
@@ -154,7 +152,7 @@ def showMovies(sSearch=''):
         sUrl = sSearch.replace('%20', '+')
         sPattern = '<img src="([^"]+)" alt="([^"]+)".+?href="([^"]+)".+?<p>([^<]+)'
     else:
-        sPattern = '"poster"><img src="([^"]+)" alt="([^"]+)".+?(subtitle_mn">|mepo">)([^<]+)<.+?href="([^"]+)".+?class="texto">([^<]+)'
+        sPattern = 'poster"><img src="([^"]+)" alt="([^"]+).+?(subtitle_mn">|mepo">)([^<]+).+?href="([^"]+).+?class="texto">([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -170,7 +168,7 @@ def showMovies(sSearch=''):
             sTitle = aEntry[1]
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
+                    continue  # Filtre de recherche
 
                 sUrl = aEntry[2]
                 sDesc = aEntry[3]
@@ -178,16 +176,15 @@ def showMovies(sSearch=''):
                 sPack = aEntry[3]
                 sUrl = aEntry[4]
                 sDesc = aEntry[5]
-                if 'PACK' in sPack: # toute un saison dans un seul fichier
+                if 'PACK' in sPack:  # toute une saison dans un seul fichier
                     continue
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
-
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -224,7 +221,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # oremier type de liens
+    # premier type de liens
     sPattern = 'a href="(https:[^"]+)" class="su-button su-button-style-flat".+?</i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -244,7 +241,7 @@ def showHosters():
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if oHoster:
-                        sDisplayTitle = sMovieTitle + ' - ' + sTitle.replace("TELECHARGER", "")
+                        sDisplayTitle = sMovieTitle + ' ' + sTitle.replace("TELECHARGER", "")
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -270,7 +267,7 @@ def showHosters():
         return
 
     # deuxieme type de liens
-    sPattern = "<li id='player-option-[0-9]+' class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'>"
+    sPattern = "<li id='player-option-[0-9]+' class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         for aEntry in aResult[1]:
@@ -290,7 +287,7 @@ def showHosters():
                         sLink = str(sLink).replace("b'", "").replace("'", "")
                         sLink = Unquote(sLink)
                         oHoster = cHosterGui().checkHoster(sHostName)
-                        if (oHoster):
+                        if oHoster:
                             oHoster.setDisplayName(sMovieTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sLink, sThumb)
@@ -298,13 +295,12 @@ def showHosters():
         oGui.setEndOfDirectory()
         return
 
-
     # troisieme type de liens
     sPattern = '<a href="([^"]+)" title=".+?".+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         for aEntry in aResult[1]:
-            
+
             # if "send.cm" in sHosterUrl:
             #     oRequestHandler = cRequestHandler(aEntry)
             #     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -314,7 +310,6 @@ def showHosters():
             #     oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
             #     oRequestHandler.request()
             #     oRequestHandler.getRealUrl()
-
 
             if "clictune" in aEntry:
                 oRequestHandler = cRequestHandler(aEntry)
@@ -390,23 +385,22 @@ def showHosters():
 
 def geturl(aEntry):
     oParser = cParser()
-    
+
     sPost = aEntry[1]
-    sNume = aEntry[2]
+    sNum = aEntry[2]
     sType = aEntry[0]
-    
-    pdata = 'action=doo_player_ajax&post='+ sPost + '&nume=' + sNume + '&type=' + sType
-    
+
+    pdata = 'action=doo_player_ajax&post=' + sPost + '&nume=' + sNum + '&type=' + sType
+
     sUrl = URL_MAIN + 'wp-admin/admin-ajax.php'
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0')
+    oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
     oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
-
 
     sPattern = 'url":"([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
