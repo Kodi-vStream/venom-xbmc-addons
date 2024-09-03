@@ -121,8 +121,8 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "cloudflare": "True",
-            "url": "https://french-stream.moe/"
+            "cloudflare": "False",
+            "url": "https://vvw.french-stream.bio/"
         },
         "frenchanimes": {
             "label": "French Animes",
