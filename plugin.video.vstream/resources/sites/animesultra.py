@@ -102,10 +102,9 @@ def showYears():
 def showMovies(sSearch=''):
     oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
+        sUrl = URL_SEARCH[0]
         oUtil = cUtil()
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
@@ -114,16 +113,17 @@ def showMovies(sSearch=''):
         query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search', '1'))
         data = urlEncode(query_args)
 
-        oRequestHandler = cRequestHandler(URL_SEARCH[0])
+        oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addParametersLine(data)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Referer', URL_SEARCH[0])
+        oRequestHandler.addHeaderEntry('Referer', sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.addHeaderEntry('Content-Length', str(len(data)))
         sHtmlContent = oRequestHandler.request()
     else:
-
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 

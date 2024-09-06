@@ -317,6 +317,16 @@ class PasteContent:
     def getLines(self, pasteBin, sMedia=''):
 
         sContent, self.movies, renew = self._getCache().read(pasteBin)
+        
+        # demander à renouveler le contenu d'un paste
+        # avant la suite qui peut planter
+        if renew:
+            # lastMediaTitle = lines[1].split(";")[self.TITLE]
+            # décaler le lancement du scan
+            decal = random.randint(3, 6)
+            t = threading.Timer(decal, renewPaste, args=(pasteBin, ''))
+            t.start()
+
 
         # Lecture en cache
         if sContent:
@@ -391,14 +401,6 @@ class PasteContent:
                     line[self.URLS] = link.replace(": '", ": '" + hebergeur)  # format du cache
 
             links.append(line)
-
-        # renouveler le contenu d'un paste
-        if renew:
-            lastMediaTitle = lines[1].split(";")[self.TITLE]
-            # décaler le lancement du scan
-            decal = random.randint(3, 6)
-            t = threading.Timer(decal, renewPaste, args=(pasteBin, lastMediaTitle))
-            t.start()
 
         return links
 
@@ -2450,21 +2452,23 @@ def showHosters():
     for res in sorted(listRes.keys(), key=trie_res):
         for sHosterUrl, lang in listRes[res]:
             sUrl = sHosterUrl
+            link, paste, movies = sUrl.split('|')
     
             sDisplayName = sTitle
+            sDisplayRes = res
             if res:
-                oOutputParameterHandler.addParameter('sRes', res)
-                displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
-                sDisplayName += ' [%s]' % displayRes
+                sDisplayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
+                sDisplayName += ' [%s]' % sDisplayRes
+                oOutputParameterHandler.addParameter('sRes', sDisplayRes)
             if lang:
                 sDisplayName += ' (%s)' % lang
     
-            link, paste, movies = sUrl.split('|')
             if movies == 'FALSE':
                 oHoster = oHosterGui.checkHoster(link)
                 if oHoster:
                     oHoster.setDisplayName(sDisplayName)
                     oHoster.setFileName(sTitle)
+                    oHoster.setRes(sDisplayRes)
                     oHosterGui.showHoster(oGui, oHoster, link, '')
             else:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2593,7 +2597,7 @@ def getHosterList(siteUrl):
                             numEpisode = int(numEpisode)    # enlever les 0 devant
                         
                         if str(numEpisode) == searchEpisode:
-                            listLinks.append(link)
+                            listLinks.append(link)  # TODO utiliser expend si liste de liens ?
                             break
                 else:
                     listEpisodes.append(links)

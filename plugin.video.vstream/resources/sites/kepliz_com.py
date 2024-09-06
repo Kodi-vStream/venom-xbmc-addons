@@ -221,7 +221,16 @@ def showHosters():
         oRequestHandler = cRequestHandler(sLink)
         data = oRequestHandler.request()
 
-        sPattern = 'file: "(.+?)"'
+        sPattern = 'document\.location\.href="([^"]+)'
+        aResult = oParser.parse(data, sPattern)
+        if aResult[0]:
+            sLink = aResult[1][0]
+            if sLink.startswith('/'):
+                sLink = URL_HOST[:-1] + sLink
+            oRequestHandler = cRequestHandler(sLink)
+            data = oRequestHandler.request()
+    
+        sPattern = 'file: *"(.+?)"'
         aResult = oParser.parse(data, sPattern)
 
         if aResult[0]:

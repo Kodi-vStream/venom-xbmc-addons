@@ -182,6 +182,9 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
+        if not oOutputParameterHandler.getValue('sRes'):
+            oOutputParameterHandler.addParameter('sRes', oInputParameterHandler.getValue('sRes'))
+
         sIcon = sThumbnail
         return self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
 
@@ -206,6 +209,9 @@ class cGui:
 
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
+
+        if not oOutputParameterHandler.getValue('sRes'):
+            oOutputParameterHandler.addParameter('sRes', oInputParameterHandler.getValue('sRes'))
 
         return self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 8)
 
