@@ -317,6 +317,16 @@ class PasteContent:
     def getLines(self, pasteBin, sMedia=''):
 
         sContent, self.movies, renew = self._getCache().read(pasteBin)
+        
+        # demander à renouveler le contenu d'un paste
+        # avant la suite qui peut planter
+        if renew:
+            # lastMediaTitle = lines[1].split(";")[self.TITLE]
+            # décaler le lancement du scan
+            decal = random.randint(3, 6)
+            t = threading.Timer(decal, renewPaste, args=(pasteBin, ''))
+            t.start()
+
 
         # Lecture en cache
         if sContent:
@@ -391,14 +401,6 @@ class PasteContent:
                     line[self.URLS] = link.replace(": '", ": '" + hebergeur)  # format du cache
 
             links.append(line)
-
-        # renouveler le contenu d'un paste
-        if renew:
-            lastMediaTitle = lines[1].split(";")[self.TITLE]
-            # décaler le lancement du scan
-            decal = random.randint(3, 6)
-            t = threading.Timer(decal, renewPaste, args=(pasteBin, lastMediaTitle))
-            t.start()
 
         return links
 

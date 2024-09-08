@@ -541,6 +541,8 @@ def showHosters():
                     sHostName = 'UpToBox'
                 if 'uploaded' in aEntry[1]:
                     sHostName = 'Uploaded'
+                if 'Uplooad' in aEntry[1]:
+                    sHostName = 'Uploaded'
                 if '1fichier' in aEntry[1]:
                     sHostName = '1Fichier'
 
