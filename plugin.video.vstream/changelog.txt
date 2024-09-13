@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.6 - 08/09/24 ***
+- Kepliz : accès à la source
+
 *** 2.9.5***
 - Séries : enchainement des liens Pastebin / Alldebrid, et dans la même résolution
 
