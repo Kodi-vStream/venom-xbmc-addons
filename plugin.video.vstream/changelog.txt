@@ -3,96 +3,95 @@
 - Participer: https://github.com/Kodi-vStream/venom-xbmc-addons/issues
 - Support: https://kodi-vstream.github.io/
 ==================================================================================
-==================================================================================
 - Auteurs : LordVenom, TmpName, Arias800, Razorex, Sizanic, Yodidon, et Cie
 https://github.com/Kodi-vStream/venom-xbmc-addons/graphs/contributors
-==================================================================================
 ==================================================================================
 Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
-*** 2.9.5***
+*** 2.9.6 - 08/09/24 ***
+- Kepliz : accès à la source
+
+*** 2.9.5 - 14/08/24 ***
 - Séries : enchainement des liens Pastebin / Alldebrid, et dans la même résolution
 
-*** 2.9.4***
+*** 2.9.4 - 25/06/24 ***
 - DNSPython : Correction sur un timeout 
 
-*** 2.9.3***
+*** 2.9.3 - 16/06/24 ***
 - Mises à jour de plusieurs sources
 
-*** 2.9.2***
+*** 2.9.2 - 16/05/24 ***
 - Pastebin : Ne s'ouvre pas sur une nouvelle installation
 - Pastebin : Classement par resolutions
 
-*** 2.9.1***
+*** 2.9.1 - 05/05/24 ***
 - Pastebin : Correction pour voir les séries par diffuseur
 
-*** 2.9.0***
+*** 2.9.0 - 05/05/24 ***
 - Alldebrid : Possibilité de vérifier la validité de sa key
 
-*** 2.8.0***
+*** 2.8.0 - 30/01/24 ***
 - Pastebin : Possibilité de renseigner un hebergeur secondaire
 
-*** 2.7.6***
+*** 2.7.6 - 20/01/24 ***
 - Ajout de plusieurs sources
 
-*** 2.7.5***
+*** 2.7.5 - 29/12/23 ***
 - Mises à jour de plusieurs sources
 
-*** 2.7.4***
+*** 2.7.4 - 01/12/23 ***
 - Suivi des épisodes : Correction enchainement, en cours de lecture, trakt
 
-*** 2.7.2***
+*** 2.7.2 - 07/11/23 ***
 - Python 2 : Compatibilité Kodi 18
 
-
-*** 2.7.0***
+*** 2.7.0 - 04/11/23 ***
 - Darkibox : Prise en charge du compte premium
 - Darkibox : Pouvoir parcourir son compte
 - Pastebin : Mixer des hebergeurs différents parmi les codes d'un même index
 - Netu : Interface pour résoudre l'accès à l'hébergeur
 
-
-*** 2.6.7***
+*** 2.6.7 - 08/10/23 ***
 - Alldebrid : Accès aux hosters qui ne sont pas pris en compte par alldebrid
 - Episodes : Enchainement des épisodes lorsque Alldebrid est actif
 
-*** 2.6.5***
+*** 2.6.5 - 29/09/23 ***
 - alldebrid : Meilleur accès à son compte : liens, magnets, historique
 
-*** 2.6.3***
+*** 2.6.3 - 14/08/23 ***
 - Trakt : Correction pour le suivi sur le compte
 - Marqué vu : Correction pour la marque lors des enchainements d'épisodes
 
-*** 2.6.0***
+*** 2.6.0 - 16/07/23 ***
 - Cloudflare : Pas de recherche parmi les sources Cloudflare si FlareSolverr n'est pas activé
 - MétaDonnées : Option pour afficher le nom complet du fichier (si disponible)
 - Recherche : Meilleurs résultats par la recherche contextuelle
 
-*** 2.5.0***
+*** 2.5.0 - 18/05/23 ***
 - Mes contenus : Historique de visionnage
 - Uptobox : Gestion de la nouvelle adresse
 - TMDB : Choix de la langue des informations
 
-*** 2.4.3***
+*** 2.4.3 - 06/02/23 ***
 - CloudFlare : Compatibilité avec FlareSolverr 3
 
-*** 2.4.0***
+*** 2.4.0 - 19/01/23 ***
 - Kodi 20 : Compatibilité avec différents OS
 - uptobox : Compatibilité nouvelle version du site
 
-*** 2.3.0***
+*** 2.3.0 - 28/12/22 ***
 - Uptobox : Retrouver le token sur la nouveau site 
 
-*** 2.2.0***
+*** 2.2.0 - 20/12/22 ***
 - Kodi 20 : Compatibilité avec Kodi 20 "Nexus"
 
-*** 2.1.0***
+*** 2.1.0 - 07/11/22 ***
 - RealDebrid : Utilisation par token, sans besoin de UrlResolver
 - Bande annonce : Compatibilité avec l'extension Invidious 
 
-*** 2.0.0***
+*** 2.0.0 - 17/09/22 ***
 - TMDB : Noter film/série, ajouter aux favoris, à la liste de suivi, à des listes personnelles
 - Uptobox : Affichage des métadonnées des vidéos de son compte
 - Trakt : suivi des episodes enchainés automatiquement
@@ -100,58 +99,58 @@ Historique des modifications
 - Marque-page : ajout possible depuis les informations
 - Menu contextuel en couleur
 
-*** 1.9.0***
+*** 1.9.0 - 02/04/22 ***
 - Bandes annonces depuis Youtube
 - Recherche plus rapide avec suivi des sources
 - Navigation plus rapide
 
-*** 1.8.0***
+*** 1.8.0 - 13/02/22 ***
 - Recherche plus rapide et des résultats plus pertinents
 - Amélioration de la fluidité dans la navigation des menus
 
-*** 1.7.0***
+*** 1.7.0 - 31/12/21 ***
 - Retour des sites de sports
 - Episodes toujours classés par ordre
 - Classement des paramètres + possibilité de désactiver toutes les sources
 
-*** 1.6.0***
+*** 1.6.0 - 28/10/21 ***
 - Meilleur support des sous-titres
 - Meilleur support de Uptostream
 - Métadonnées dans l'enchainement des épisodes
 - Amélioration sur l'affichage des métadonnées (numérotation des épisodes, ...)
 
-*** 1.5.0***
+*** 1.5.0 - 01/10/21 ***
 - Contrat de licence sur l'utilisation du code vStream
 - Meilleure intégration de DNSPython
 - Amélioration des performances
 - Amélioration sur l'affichage des métadonnées (sagas, titre des épisodes, ...)
 - Meilleur support de Uptostream
 
-*** 1.4.0***
+*** 1.4.0 - 12/08/21 ***
 - En cours de lecture : ajout d'une section avec les médias commencés
 
-*** 1.3.0***
+*** 1.3.0 - 04/07/21 ***
 - Métadonnées : informations média pour les épisodes
 
-*** 1.2.0***
+*** 1.2.0 - 30/05/21 ***
 - UpNext : Enchainement automatique des épisodes
 - Reprise d'un média commencé, même en changeant de source
 - Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
 - Métadonnées : informations média (pochette et description) pour les saisons
 
-*** 1.1.0***
+*** 1.1.0 - 09/04/21 ***
 - F4mProxy : Suppression de la dépendance
 - Sous-titre : Chargement automatique du premier
 - Uptobox : Meilleure gestion
 - IPTV : Suppression des listes d'IPTV
 
-*** 1.0.0***
+*** 1.0.0 - 11/03/21 ***
 - UrlResolver : compatibilité Matrix
 - TRAKT : Pagination dans les menus
 - TMDB : Affichage d'un QR Code pour activer la clef API
 - Recherche sous Matrix : Insensibilité à la casse des lettres
 
-*** 0.8.6***
+*** 0.8.6 - 02/02/21 ***
 - Sablier réduit pour améliorer les performances de navigation
 - Nouvelle clef TMDB pour les Métadonnées
 - Recherche "japAnimes" séparée de la recherche "Séries".
