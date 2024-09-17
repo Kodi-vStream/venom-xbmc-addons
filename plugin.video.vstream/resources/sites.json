@@ -300,6 +300,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.wawacity.tokyo/"
         },
         "wiflix": {
