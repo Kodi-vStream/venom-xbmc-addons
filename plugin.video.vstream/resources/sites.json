@@ -248,7 +248,7 @@
         },
         "streamonsport": {
             "label": "Streamonsport",
-            "active": "True",
+            "active": "False",
             "url": "https://www.tv1337.buzz/"
         },
         "themoviedb_org": {
