@@ -210,13 +210,15 @@ def showMoviesLinks():
             sUrl = aEntry[2]
             #link = aEntry[1].replace('CH-', 'Lien ').replace('LINK', '1').strip()
             if sChannel:
+                sTitle = sChannel
                 sDisplayTitle = sMovieTitle + ' - (%s)' % sChannel
             else:
                 iLien = iLien + 1
                 sDisplayTitle = sMovieTitle + ' - (Lien %d)' % iLien
+                sTitle = sDisplayTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
