@@ -12,6 +12,7 @@ Historique des modifications
 
 *** 2.9.7 - 21/09/24 ***
 - neymarTV : accès aux liens
+- toonanime : accès aux liens
 
 *** 2.9.6 - 08/09/24 ***
 - Kepliz : accès à la source
