@@ -189,7 +189,7 @@
         "neymartv": {
             "label": "NeymarTV",
             "active": "True",
-            "url": "https://en.neymartv.net/"
+            "url": "https://v1.neymartv.net/"
         },
         "o1streaming": {
             "label": "O1 streaming",
@@ -248,7 +248,7 @@
         },
         "streamonsport": {
             "label": "Streamonsport",
-            "active": "True",
+            "active": "False",
             "url": "https://www.tv1337.buzz/"
         },
         "themoviedb_org": {
@@ -259,7 +259,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://tanime.site/"
+            "url": "https://toonanime.site/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -300,6 +300,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.wawacity.tokyo/"
         },
         "wiflix": {

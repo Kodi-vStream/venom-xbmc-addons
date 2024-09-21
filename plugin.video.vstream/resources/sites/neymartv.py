@@ -26,6 +26,9 @@ SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
 # chaines
 channels = [
+    
+#    ['DAZN 1', ['https://poscitechs.lol/live/stream-106.php', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png']],
+    
     ['bein Sports 1', ['2023/01/bein-sports-1-full-hd-france.html', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png']],
     ['bein Sports 2', ['2023/01/bein-sports-2-full-hd-france.html', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png']],
     ['bein Sports 3', ['2023/01/bein-sports-3-full-hd-france.html', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png']],
@@ -150,7 +153,7 @@ def showMovies():
     sPattern = '<h3> %s <.+?<h3>' % sTitle
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sPattern = '(\d+:\d+) (.+?)<'
+        sPattern = '(\d+:\d+) (.+?)(<|")'
         for aEntry in aResult[1]:
             aResult = oParser.parse(aEntry, sPattern)
             if aResult[0]:
@@ -161,10 +164,10 @@ def showMovies():
                     # heure d'été/hiver
                     sDate = aEntry[0]
                     heure = int(sDate[0:2])
-                    heure += 1
+                    heure += 2
                     if heure == 24:
                         heure = 0
-                    sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.strip())
+                    sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.replace('.php', ')').strip())
         
                     sTitle = sDate + ' ' + sTitle
         
@@ -187,33 +190,42 @@ def showMoviesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = sMovieTitle.replace("'", "&#8217;").replace("-", "&#8211;")
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
-
-    sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
     # on enleve l'heure qui peut être fausse, heure d'été/hiver
     sMovieTitle = sMovieTitle[5:]
-    
+
+    sPattern = sMovieTitle#.replace("'", "&#8217;").replace("-", "&#8211;")
+    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
+
+    sPattern = '(<span style|\|\|([^<]+)).+?href="(.+?)" target="_blank" rel="noopener"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    sMovieTitle = sMovieTitle.replace('.php', ')')
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
+        iLien = 0
         for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sDisplayTitle = sMovieTitle + ' - ' + aEntry[1].strip()
-            
-            sTitle = aEntry[1].strip()
+            sChannel = aEntry[1]
+            sUrl = aEntry[2]
+            #link = aEntry[1].replace('CH-', 'Lien ').replace('LINK', '1').strip()
+            if sChannel:
+                sTitle = sChannel
+                sDisplayTitle = sMovieTitle + ' - (%s)' % sChannel
+            else:
+                iLien = iLien + 1
+                sDisplayTitle = sMovieTitle + ' - (Lien %d)' % iLien
+                sTitle = sDisplayTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showMoviesLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
+# tous les liens d'une chaine à partir de son nom
 def showMoviesLink():
     oGui = cGui()
     oParser = cParser()
@@ -224,7 +236,6 @@ def showMoviesLink():
 
     # ajouter un espace devant les chiffres
     sMovieTitle = re.sub('(\S)(\d+)', r'\1 \2', sMovieTitle)
-    
     
     sTitle = sMovieTitle.lower().replace('+', "").replace('canal sport france', 'canal sport')
     sTitle = sTitle.replace('poland', 'polska')
