@@ -80,6 +80,11 @@
             "active": "True",
             "url": "https://www.dulourd.uno/"
         },
+        "elitegol": {
+            "label": "Elitegol",
+            "active": "True",
+            "url": "https://elitegol.lat/"
+        },
         "extreme_down": {
             "label": "ExtremeDown",
             "active": "False",
@@ -307,7 +312,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://wiflix-catalogue.net/"
+            "url": "https://wiflix-catalogue.lol/"
         },
         "wilifilm": {
             "label": "Wilifilm",
