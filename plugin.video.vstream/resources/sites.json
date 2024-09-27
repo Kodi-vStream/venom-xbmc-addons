@@ -218,7 +218,7 @@
         },
         "planet_streaming": {
             "label": "Planet Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://v2.planet-streaming2.com/"
         },
         "pluto_tv": {
