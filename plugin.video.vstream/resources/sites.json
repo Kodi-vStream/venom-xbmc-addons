@@ -80,6 +80,11 @@
             "active": "True",
             "url": "https://www.dulourd.uno/"
         },
+        "elitegol": {
+            "label": "Elitegol",
+            "active": "True",
+            "url": "https://elitegol.lat/"
+        },
         "extreme_down": {
             "label": "ExtremeDown",
             "active": "False",

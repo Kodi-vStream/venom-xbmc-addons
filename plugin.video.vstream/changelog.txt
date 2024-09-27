@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.8 - 21/09/24 ***
+- EliteGol : Nouveau site FOOT
+
 *** 2.9.7 - 21/09/24 ***
 - neymarTV : accès aux liens
 - toonanime : accès aux liens
