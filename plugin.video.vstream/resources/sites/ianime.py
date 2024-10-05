@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import VSlog, isMatrix, siteManager
+from resources.lib.comaddon import addon, VSlog, isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -441,6 +441,7 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
+        adulteContent = addon().getSetting('contenu_adulte')
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -469,6 +470,12 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace(sLang, '')
 
             sTitle = sTitle.replace('()', '').strip()
+
+            if adulteContent == "false":
+                # Enleve le contenu pour adulte.
+                if 'hentai' in sTitle.lower():
+                    continue
+
 
             # affichage de la qualité -> NON, qualité fausse
             # sQual = ''

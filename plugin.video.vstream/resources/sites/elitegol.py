@@ -104,7 +104,7 @@ def showTV():
         sThumb = channel[1]
 
         sDisplayTitle = channel[0]
-        sHostUrl = 'lecteur/2/%d' % iChannel
+        sHostUrl = 'lec/2/%d' % iChannel
         oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -123,7 +123,7 @@ def showTVLink():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for numChannel in range(1, 6):
-        sHostUrl = "lecteur/%d/%s" % (numChannel, sUrl)
+        sHostUrl = "lec/%d/%s" % (numChannel, sUrl)
         sDisplayTitle = '%s - Lien %d' % (sTitle, numChannel)
         oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
@@ -152,7 +152,7 @@ def showMovies():
         for aEntry in aResult[1]:
             sTitle = aEntry[0]
             sTime = aEntry[1]
-            sUrl2 = 'lecteur/2/%s' % aEntry[2]
+            sUrl2 = 'lec/2/%s' % aEntry[2]
             sLang = aEntry[3]
             sThumb = ''
 
