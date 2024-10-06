@@ -99,7 +99,7 @@
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
-            "active": "True",
+            "active": "False",
             "url": "https://filmsetvideos.com/"
         },
         "filmspourenfants": {
@@ -185,11 +185,6 @@
             "label": "MySteriam",
             "active": "True",
             "url": "https://www.inmysteriam.fr/"
-        },
-        "neko_sama": {
-            "label": "Neko Sama",
-            "active": "True",
-            "url": "https://neko-sama.fr/"
         },
         "neymartv": {
             "label": "NeymarTV",
