@@ -147,6 +147,7 @@
         "ianime": {
             "label": "Ianime",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.ianimes.one/"
         },
         "illimitestreaming": {
