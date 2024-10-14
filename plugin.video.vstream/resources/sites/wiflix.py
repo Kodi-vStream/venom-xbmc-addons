@@ -131,7 +131,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addHeaderEntry('Content-Type', 'application/json')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
 
