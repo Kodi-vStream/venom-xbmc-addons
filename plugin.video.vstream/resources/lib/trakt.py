@@ -847,8 +847,17 @@ class cTrakt:
             self.__sType = disp[ret]
         return self.__sType
 
-    def getAction(self, Action='', sEpisode = ''):
 
+    def convertCatToType(self, sCat):
+        # Film, serie, anime, saison, episode
+        if sCat not in ('1', '2', '3', '4', '8'):
+            return -1
+        
+        sType = sCat.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('8', 'shows')
+        return sType
+
+
+    def getAction(self, Action='', sEpisode = ''):
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
             return
@@ -870,11 +879,9 @@ class cTrakt:
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
         sSeason = False
 
-        # Film, serie, anime, saison, episode
-        if sType not in ('1', '2', '3', '4', '8'):
+        sType = self.convertCatToType(sCat=sType)
+        if sType == -1:
             return
-        
-        sType = sType.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('8', 'shows')
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
@@ -1045,7 +1052,7 @@ class cTrakt:
 
         return
 
-    def getTmdbID(self, sTitle, sType):
+    def getTmdbID(self, sTitle, sType, sYear = ''):
         from resources.lib.tmdb import cTMDb
         grab = cTMDb()
 
@@ -1055,12 +1062,16 @@ class cTrakt:
             sType = 'movie'
 
         # on cherche l'annee
-        year = ''
-        r = re.search('(\([0-9]{4}\))', sTitle)
-        if r:
-            year = str(r.group(0))
-            sTitle = sTitle.replace(year, '')
+        year = sYear
+        if year == '':
+            r = re.search('(\([0-9]{4}\))', sTitle)
+            if r:
+                year = str(r.group(0))
+                sTitle = sTitle.replace(year, '')
 
         meta = grab.get_idbyname(sTitle, year, sType)
 
-        return int(meta)
+        try:
+            return int(meta)
+        except:
+            return 0

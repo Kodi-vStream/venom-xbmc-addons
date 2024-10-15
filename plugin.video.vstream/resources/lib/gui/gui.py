@@ -450,8 +450,8 @@ class cGui:
             videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
             videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
             videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season', 0)))
-            videoInfoTag.setEpisode(int(data.get('episode', 0)))
+            videoInfoTag.setSeason(int(data.get('season') or "-1"))
+            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
 
             videoInfoTag.setCast(data.get('cast', []))
