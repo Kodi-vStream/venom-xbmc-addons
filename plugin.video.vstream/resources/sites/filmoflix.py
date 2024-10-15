@@ -9,14 +9,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import siteManager
 
 
 #URL_MAIN='https://filmoflix.dad/'
-SITE_IDENTIFIER = 'filmoflixx'
-SITE_NAME = 'FilmFlix'
-SITE_DESC = 'Regarder Films et Séries en Streaming Complet en French HD'
+SITE_IDENTIFIER = 'filmoflix'
+SITE_NAME = 'FilmoFlix'
+SITE_DESC = 'FilmoFlix est un site pour regarder des films et séries en streaming en qualité HD'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
@@ -52,9 +51,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher Films & Séries', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
@@ -154,7 +150,7 @@ def showGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listegenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'film/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -181,7 +177,7 @@ def showSeriesGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listegenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -236,14 +232,8 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if aResult[0]:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if 'http' not in sThumb:
@@ -276,8 +266,6 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     else:
         oGui.addText(SITE_IDENTIFIER)
@@ -363,11 +351,8 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
-
     sPattern = '<a href="([^"]*)">\s*<div class="fsa-ep">(.+?)\s*<span'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -408,7 +393,6 @@ def showSerieLinks():
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -510,7 +494,6 @@ def showMovieLinks():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = "lien fx-row.+?\"getxfield.+?(\d+).+?\'([^\']*).+?'([^\']*).+?pl-5\">([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(str(aResult))
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
