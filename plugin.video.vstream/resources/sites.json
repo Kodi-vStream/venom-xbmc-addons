@@ -307,7 +307,7 @@
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://wiflix-hd.net/"
         },
         "wilifilm": {
