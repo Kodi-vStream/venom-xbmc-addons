@@ -83,7 +83,8 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://elitegol.lat/"
+            "url": "https://footdirect.ru/",
+            "url_link": "ply"
         },
         "extreme_down": {
             "label": "ExtremeDown",
