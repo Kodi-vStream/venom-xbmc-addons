@@ -442,7 +442,7 @@ class cGui:
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
             videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
-            # inutilisé ? et fragile 
+            # inutilisé ? et fragile
             # videoInfoTag.setCountries(data.get('country', ['']))
             videoInfoTag.setTrailer(data.get('trailer', ""))
             videoInfoTag.setTagLine(data.get('tagline', ""))

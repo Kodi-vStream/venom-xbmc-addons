@@ -85,21 +85,22 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sUrl):
-        # Vérification et/ou récupération des id tmdb ou imdb puis set dans la props ids de script.trakt pour scrobbling
-        if self.ADDON.getSetting('use_trakt_addon') == 'true':
-            if self.sImdbId:
-                ids = json.dumps({u'imdb': self.sImdbId})
-                xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
-            elif not self.sTmdbId:
-                if self.sTitle or self.tvShowTitle:
-                    if self.sCat:
-                        ctrakt = cTrakt()
-                        sType = ctrakt.convertCatToType(self.sCat)
-                        if sType != -1:
-                            self.sTmdbId = int(ctrakt.getTmdbID(self.sTitle, sType, oGuiElement.getItemValue('year')))
-            if self.sTmdbId:
-                ids = json.dumps({u'tmdb': self.sTmdbId})
-                xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
+
+        # # Vérification et/ou récupération des id tmdb ou imdb puis set dans la props ids de script.trakt pour scrobbling
+        # if self.ADDON.getSetting('use_trakt_addon') == 'true':
+        #     if self.sImdbId:
+        #         ids = json.dumps({u'imdb': self.sImdbId})
+        #         xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
+        #     elif not self.sTmdbId:
+        #         if self.sTitle or self.tvShowTitle:
+        #             if self.sCat:
+        #                 ctrakt = cTrakt()
+        #                 sType = ctrakt.convertCatToType(self.sCat)
+        #                 if sType != -1:
+        #                     self.sTmdbId = int(ctrakt.getTmdbID(self.sTitle, sType, oGuiElement.getItemValue('year')))
+        #     if self.sTmdbId:
+        #         ids = json.dumps({u'tmdb': self.sTmdbId})
+        #         xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
 
         # Lancement d'une vidéo sans avoir arrêté la précédente
         if self.isPlaying():
@@ -243,11 +244,11 @@ class cPlayer(xbmc.Player):
                     # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
 
                     VALUE_WATCHTIME = 0.90
-                    TRAKT_ID = "script.trakt"
 
-                    if self.ADDON.getSetting('use_trakt_addon') == 'true':
-                        traktAddon = xbmcaddon.Addon(TRAKT_ID)
-                        VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
+                    # if self.ADDON.getSetting('use_trakt_addon') == 'true':
+                    #     TRAKT_ID = "script.trakt"
+                    #     traktAddon = xbmcaddon.Addon(TRAKT_ID)
+                    #     VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
 
                     if (pourcent > VALUE_WATCHTIME) or (pourcent == 0.0 and self.currentTime == self.totalTime):
 
@@ -379,9 +380,9 @@ class cPlayer(xbmc.Player):
                             db.del_resume(meta)
 
     def __setWatchlist(self, sEpisode=''):
-        # Vérification de l'utilisation de l'addon Trakt ou non, si oui, on quitte la fonction.
-        if self.ADDON.getSetting('use_trakt_addon') == 'true':
-            return
+        # # Vérification de l'utilisation de l'addon Trakt ou non, si oui, on quitte la fonction.
+        # if self.ADDON.getSetting('use_trakt_addon') == 'true':
+        #     return
         # Suivi de lecture dans Trakt si compte
         if self.ADDON.getSetting('bstoken') == '':
             return

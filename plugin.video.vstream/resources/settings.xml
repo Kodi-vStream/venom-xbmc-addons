@@ -163,10 +163,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
 
     <!-- Integration trakt -->
     <category label="30340">
-        <setting type="lsep" label="31214"/>
-        <setting id="install_trakt_addon" type="action" label="31215" action="InstallAddon(script.trakt)" visible="!System.HasAddon(script.trakt)" option="close"/>
-        <setting id="use_trakt_addon" type="bool" label="31213" default="false" visible="System.HasAddon(script.trakt)"/>
-
         <setting type="lsep" label="31216"/>
         <setting id="bstoken" type="text" label="" default="" visible="false"/>
         <setting id="trakt_number_element" type="number" label="31200" default="10"/>
