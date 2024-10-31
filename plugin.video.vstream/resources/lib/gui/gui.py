@@ -442,7 +442,7 @@ class cGui:
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
             videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
-            # inutilisé ? et fragile 
+            # inutilisé ? et fragile
             # videoInfoTag.setCountries(data.get('country', ['']))
             videoInfoTag.setTrailer(data.get('trailer', ""))
             videoInfoTag.setTagLine(data.get('tagline', ""))
@@ -450,8 +450,8 @@ class cGui:
             videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
             videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
             videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season', 0)))
-            videoInfoTag.setEpisode(int(data.get('episode', 0)))
+            videoInfoTag.setSeason(int(data.get('season') or "-1"))
+            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
 
             videoInfoTag.setCast(data.get('cast', []))

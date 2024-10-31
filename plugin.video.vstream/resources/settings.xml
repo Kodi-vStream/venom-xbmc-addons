@@ -163,12 +163,13 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
 
     <!-- Integration trakt -->
     <category label="30340">
+        <setting type="lsep" label="31216"/>
         <setting id="bstoken" type="text" label="" default="" visible="false"/>
         <setting id="trakt_number_element" type="number" label="31200" default="10"/>
         <setting id="trakt_show_lists" type="bool" label="30341" default="true"/>
 
         <setting type="lsep" label="30342"/>
-        <setting id="trakt_movies_activate_scrobbling" type="bool" label="30361" default="true"/>
+        <setting id="trakt_movies_activate_scrobbling" type="bool" label="30361" default="true" enable="eq(-6,false)"/>
         <setting id="trakt_movies_show_watchlist" type="bool" label="30343" default="true"/>
         <setting id="trakt_movies_show_watched" type="bool" label="30344" default="true"/>
         <setting id="trakt_movies_show_recommended" type="bool" label="30345" default="true"/>
@@ -178,7 +179,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="trakt_movies_show_most_monthly" type="bool" label="30349" default="true"/>
 
         <setting type="lsep" label="30351"/>
-        <setting id="trakt_tvshows_activate_scrobbling" type="bool" label="30361" default="true"/>
+        <setting id="trakt_tvshows_activate_scrobbling" type="bool" label="30361" default="true" enable="eq(-15,false)"/>
         <setting id="trakt_tvshows_show_watchlist" type="bool" label="30352" default="true"/>
         <setting id="trakt_tvshows_show_watchlist_seasons" type="bool" label="30353" default="true"/>
         <setting id="trakt_tvshows_show_watchlist_episodes" type="bool" label="30354" default="true"/>

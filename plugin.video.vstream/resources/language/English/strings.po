@@ -1281,3 +1281,19 @@ msgstr "Add to existing list"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Select a list"
+
+msgctxt "#31213"
+msgid "Use Trakt addon for sync and notation"
+msgstr "Use Trakt addon for sync and notation"
+
+msgctxt "#31214"
+msgid "Trakt addon support"
+msgstr "Trakt addon support"
+
+msgctxt "#31215"
+msgid "Install Trakt addon"
+msgstr "Install Trakt addon"
+
+msgctxt "#31216"
+msgid "Trakt source"
+msgstr "Trakt source"

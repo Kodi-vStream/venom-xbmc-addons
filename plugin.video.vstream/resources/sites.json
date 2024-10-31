@@ -83,7 +83,8 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://elitegol.lat/"
+            "url": "https://footdirect.ru/",
+            "url_link": "ply"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -99,7 +100,7 @@
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
-            "active": "True",
+            "active": "False",
             "url": "https://filmsetvideos.com/"
         },
         "filmspourenfants": {
@@ -147,6 +148,7 @@
         "ianime": {
             "label": "Ianime",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://www.ianimes.one/"
         },
         "illimitestreaming": {
@@ -185,11 +187,6 @@
             "label": "MySteriam",
             "active": "True",
             "url": "https://www.inmysteriam.fr/"
-        },
-        "neko_sama": {
-            "label": "Neko Sama",
-            "active": "True",
-            "url": "https://neko-sama.fr/"
         },
         "neymartv": {
             "label": "NeymarTV",
@@ -311,8 +308,8 @@
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "cloudflare": "True",
-            "url": "https://wiflix-catalogue.lol/"
+            "cloudflare": "False",
+            "url": "https://wiflix-hd.net/"
         },
         "wilifilm": {
             "label": "Wilifilm",
