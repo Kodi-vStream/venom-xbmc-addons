@@ -323,7 +323,7 @@ def showLinks():
     oRequestHandler.addParametersLine(pdata)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'id="([^"]+)" *data-hash="([^"]+).+?alt="([^"]+)'
+    sPattern = 'id="([^"]+)" *data-hash="([^"]+).+?langflag" alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
