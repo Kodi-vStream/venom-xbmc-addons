@@ -32,23 +32,23 @@ channels = {
     1: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
     20: ['DAZN1', 'https://miguia.tv/channels/big_329@2x.png'],
     21: ['prime video ligue 1', 'https://i.imgur.com/PvpkxgG.png'],
-    #20: ['prime video ligue 2', 'https://i.imgur.com/PvpkxgG.png'],
+    # 20: ['prime video ligue 2', 'https://i.imgur.com/PvpkxgG.png'],
     5: ['Canal+', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
     17: ['Canal+ Foot', 'https://thumb.canalplus.pro/bran/unsafe/870x486/image/62dab6a90b84c/uploads/media/C+FOOT_213x160.png'],
     6: ['Canal+ sport', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG'],
     28: ['Canal+ sport 360', 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png'],
-    #17: ['Canal+ décalé', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_257.PNG'],
+    # 17: ['Canal+ décalé', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_257.PNG'],
     7: ['eurosport 1', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg'],
     8: ['eurosport 2', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg'],
     4: ['RMC Sport 1', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
     9: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
     18: ['L\'equipe TV', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png'],
     19: ['Automoto', 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg'],
-    #24: ['RMC Sport 3', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2020/06/rmcsport32.png'],
-    #25: ['RMC Sport 3', 'https://i.imgur.com/PvpkxgG.png'],
-    #26: ['prime video ligue 1/2 (LDC8)', 'https://i.imgur.com/PvpkxgG.png'],
-    #27: ['prime video ligue 1/2 (LDC9)', 'https://i.imgur.com/PvpkxgG.png'],
-    #28: ['prime video ligue 1/2 (LDC10)', 'https://i.imgur.com/PvpkxgG.png'],
+    # 24: ['RMC Sport 3', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2020/06/rmcsport32.png'],
+    # 25: ['RMC Sport 3', 'https://i.imgur.com/PvpkxgG.png'],
+    # 26: ['prime video ligue 1/2 (LDC8)', 'https://i.imgur.com/PvpkxgG.png'],
+    # 27: ['prime video ligue 1/2 (LDC9)', 'https://i.imgur.com/PvpkxgG.png'],
+    # 28: ['prime video ligue 1/2 (LDC10)', 'https://i.imgur.com/PvpkxgG.png'],
     2: ['bein Sports 2', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
     3: ['bein Sports 3', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
     10: ['bein Sports MAX 4', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png'],
@@ -69,8 +69,9 @@ channels = {
     23: ['France 3', 'https://i.imgur.com/PvpkxgG.png'],
     30: ['France 2', 'https://www.ffp.asso.fr/wp-content/uploads/2018/10/France-2.png'],
     38: ['France 3', 'https://static.wikia.nocookie.net/hdl-logopedia/images/0/0a/Logo-france-3.png/revision/latest/scale-to-width-down/220?cb=20180220171302&path-prefix=fr']
-#    40: ['FFFtv', 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Tmc_2016.png']
+    # 40: ['FFFtv', 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Tmc_2016.png']
     }
+
 
 def load():
     oGui = cGui()
@@ -84,6 +85,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showGenres():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
@@ -91,15 +93,16 @@ def showGenres():
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Football', 'genres.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
+
 def showTV():
     oGui = cGui()
 
     chaines = [20, 1, 5, 17, 6, 28, 7, 8, 4, 9, 18, 19, 2, 3, 10, 11, 12, 13, 14, 15, 16]
-    
+
     # if 'sport' in sUrl:
-    #     chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
-    # else: # Chaines ciné
-    #     chaines = [21, 22, 23, 29, 30, 38, 5, 17, 39]
+        # chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
+    # else:  # Chaines ciné
+        # chaines = [21, 22, 23, 29, 30, 38, 5, 17, 39]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for iChannel in chaines:
@@ -145,7 +148,7 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     # titre / heure / id / lang
     sPattern = 'href="#">([^<]+).+?>(\d+:\d+).+?STREAM (\d+) ([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -171,6 +174,7 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
+
 def showLink():
     oGui = cGui()
     oHosterGui = cHosterGui()
@@ -191,10 +195,9 @@ def showLink():
     oGui.setEndOfDirectory()
 
 
-
 # Traitement générique
 def getHosterIframe(url, referer):
-    
+
     if 'youtube.com' in url:
         return None
 
@@ -209,7 +212,7 @@ def getHosterIframe(url, referer):
         return False
 
     referer = oRequestHandler.getRealUrl()
-    
+
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -232,7 +235,7 @@ def getHosterIframe(url, referer):
                     return code + '|Referer=' + referer
             except Exception as e:
                 pass
-    
+
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -276,7 +279,7 @@ def getHosterIframe(url, referer):
                     oRequestHandler.addHeaderEntry('Referer', referer)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
-    #            sHosterUrl = sHosterUrl.replace('index', 'mono')
+               # sHosterUrl = sHosterUrl.replace('index', 'mono')
                 return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
@@ -294,5 +297,3 @@ def getHosterIframe(url, referer):
         return sHosterUrl + '|referer=' + referer
 
     return False
-
-
