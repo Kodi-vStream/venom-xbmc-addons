@@ -316,7 +316,7 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
-        if ('upvid' in sHostName) or ('opvid' in sHostName):
+        if ('upvid' in sHostName) or ('opvid' in sHostName) or ('illvid' in sHostName):
             return self.getHoster('upvid')
             
         if ('estream' in sHostName) and not ('widestream' in sHostName):
