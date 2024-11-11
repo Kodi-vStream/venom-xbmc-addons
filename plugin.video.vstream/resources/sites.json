@@ -22,7 +22,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v4.animesultra.net/"
+            "url": "https://v5.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -57,8 +57,8 @@
         },
         "daddyhd": {
             "label": "DaddyHD",
-            "active": "True",
-            "url": "https://dlhd.so/"
+            "active": "False",
+            "url": "https://thedaddy.to/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -83,7 +83,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://footdirect.ru/",
+            "url": "https://2024tv.ru/",
             "url_link": "ply"
         },
         "extreme_down": {
@@ -112,7 +112,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.world/"
+            "url": "https://www.free-telecharger.bond/"
         },
         "freebox": {
             "label": "Freebox",
@@ -122,7 +122,7 @@
         "french_stream_com": {
             "label": "French Stream",
             "active": "False",
-            "url": "https://frenchstream2.click/"
+            "url": "https://vf.frenchstream2.click/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -181,7 +181,7 @@
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.ceo/"
+            "url": "https://monstream.blog/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -261,7 +261,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://toonanime.site/"
+            "url": "https://ww1.toonanime.site/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -275,7 +275,7 @@
         },
         "vfilms": {
             "label": "VFilms",
-            "active": "True",
+            "active": "False",
             "url": "https://www.vfilms.xyz/"
         },
         "viki_com": {
@@ -301,9 +301,9 @@
         },
         "wawacity": {
             "label": "Wawacity",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.tokyo/"
+            "url": "https://www.wawacity.beauty/"
         },
         "wiflix": {
             "label": "WiFlix",

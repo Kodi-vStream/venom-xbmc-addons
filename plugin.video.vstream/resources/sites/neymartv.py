@@ -18,11 +18,12 @@ SITE_DESC = 'Toutes les chaines de Sport'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-SPORT_GENRES = ('p/full-schedule.html', 'showGenres')
+SPORT_GENRES = ('p/all-sports-tv-schedule.html', 'showGenres')
 
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
+HEURE_HIVER = True
 
 # chaines
 channels = [
@@ -103,38 +104,45 @@ def showGenres():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    start = 'SCHEDULE TIME'
-    end = 'NO EVENTS TODAY'
-    sHtmlContent = oParser.abParse(sHtmlContent, start, end)
-
-    sPattern = '<h3> (.+?) <\/h3> *<div'
+    sPattern = '<iframe src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        sUrl = aResult[1][0]
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
-        sportGenre = {}
-        oOutputParameterHandler = cOutputParameterHandler()
-        for sTitle in aResult[1]:
-            sDisplayTitle = sTitle
-            sDisplayTitle = sDisplayTitle.replace('ALPINE SKI', 'SKI')
-            sDisplayTitle = sDisplayTitle.replace('BOXING', 'BOXE')
-            sDisplayTitle = sDisplayTitle.replace('CLIMBING', 'ESCALADE')
-            sDisplayTitle = sDisplayTitle.replace('CYCLING', 'CYCLISME')
-            sDisplayTitle = sDisplayTitle.replace('DARTS', 'FLECHETTES')
-            sDisplayTitle = sDisplayTitle.replace('HORSE RACING', 'COURSES DE CHEVAUX')
-            sDisplayTitle = sDisplayTitle.replace('ICE HOCKEY', 'HOCKEY SUR GLACE')
-            sDisplayTitle = sDisplayTitle.replace('RUGBY UNION', 'RUGBY')
-            sDisplayTitle = sDisplayTitle.replace('SAILING/BOATING', 'VOILE')
-            sDisplayTitle = sDisplayTitle.replace('SOCCER', 'FOOTBALL')
-            sDisplayTitle = sDisplayTitle.replace('TABLE TENNIS', 'TENNIS DE TABLE')
-            sportGenre[sDisplayTitle] = sTitle
-
-        for sDisplayTitle, sTitle in sorted(sportGenre.items()):
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', oOutputParameterHandler)
+        start = 'SCHEDULE TIME'
+        end = 'NO EVENTS TODAY'
+        sHtmlContent = oParser.abParse(sHtmlContent, start, end)
+    
+        sPattern = '<h3> (.+?) <\/h3> *<div'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    
+        if not aResult[0]:
+            oGui.addText(SITE_IDENTIFIER)
+        else:
+            sportGenre = {}
+            oOutputParameterHandler = cOutputParameterHandler()
+            for sTitle in aResult[1]:
+                sDisplayTitle = sTitle
+                sDisplayTitle = sDisplayTitle.replace('ALPINE SKI', 'SKI')
+                sDisplayTitle = sDisplayTitle.replace('BOXING', 'BOXE')
+                sDisplayTitle = sDisplayTitle.replace('CLIMBING', 'ESCALADE')
+                sDisplayTitle = sDisplayTitle.replace('CYCLING', 'CYCLISME')
+                sDisplayTitle = sDisplayTitle.replace('DARTS', 'FLECHETTES')
+                sDisplayTitle = sDisplayTitle.replace('HORSE RACING', 'COURSES DE CHEVAUX')
+                sDisplayTitle = sDisplayTitle.replace('ICE HOCKEY', 'HOCKEY SUR GLACE')
+                sDisplayTitle = sDisplayTitle.replace('RUGBY UNION', 'RUGBY')
+                sDisplayTitle = sDisplayTitle.replace('SAILING/BOATING', 'VOILE')
+                sDisplayTitle = sDisplayTitle.replace('SOCCER', 'FOOTBALL')
+                sDisplayTitle = sDisplayTitle.replace('TABLE TENNIS', 'TENNIS DE TABLE')
+                sportGenre[sDisplayTitle] = sTitle
+    
+            for sDisplayTitle, sTitle in sorted(sportGenre.items()):
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -145,7 +153,9 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if 'http' not in sUrl:
+        sUrl = URL_MAIN + sUrl
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -164,7 +174,7 @@ def showMovies():
                     # heure d'été/hiver
                     sDate = aEntry[0]
                     heure = int(sDate[0:2])
-                    heure += 2
+                    heure += 1 if HEURE_HIVER else 2
                     if heure == 24:
                         heure = 0
                     sDisplayTitle = '%02d:%s - %s' % (heure, sDate[3:], sTitle.replace('.php', ')').strip())

@@ -222,7 +222,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'oneupload', 'darkibox']
+                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -242,6 +242,9 @@ class cHosterGui:
 
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
+
+        if ('oneupload' in sHostName) or ('tipfly' in sHostName):
+            return self.getHoster('oneupload')
 
         if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
             return self.getHoster('vk')
@@ -313,7 +316,7 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
-        if ('upvid' in sHostName) or ('opvid' in sHostName):
+        if ('upvid' in sHostName) or ('opvid' in sHostName) or ('illvid' in sHostName):
             return self.getHoster('upvid')
             
         if ('estream' in sHostName) and not ('widestream' in sHostName):
@@ -328,7 +331,7 @@ class cHosterGui:
         if sHostName.replace('o','').replace('0','').replace('stream','').split('.')[0] == 'dd':
             return self.getHoster('dood')
 
-        if ('voe' in sHostName):
+        if ('voe' in sHostName) or ('jamessoundcost' in sHostName):
             return self.getHoster('voe')
 
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):

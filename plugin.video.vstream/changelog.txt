@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 2.9.11 - 11/11/24 ***
+- Wiflix : blocage lors des recherches de séries
+- NeymarTV : Mise à jour
+
 *** 2.9.10 - 01/11/24 ***
 - EliteGol : meilleure adaptation aux changements
 

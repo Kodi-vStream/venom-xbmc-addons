@@ -152,7 +152,7 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
         pass
 
     # si rien ne marche
-    if not meta['imdb_id'] and not meta['tmdb_id'] and not meta['tvdb_id']:
+    if 'tmdb_id' not in meta and 'imdb_id'not in meta and 'tvdb_id' not in meta:
         # dialog par defaut
         # xbmc.executebuiltin('Action(Info)')
         # fenetre d'erreur

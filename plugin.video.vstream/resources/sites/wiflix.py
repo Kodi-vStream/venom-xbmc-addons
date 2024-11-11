@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -30,7 +30,7 @@ SERIE_SERIES = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
 SERIE_NEWS = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
 # SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
-URL_SEARCH = (URL_MAIN, 'showSearch')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showSearch')
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showSeries')
 FUNCTION_SEARCH = 'showSearch'
@@ -246,9 +246,9 @@ def showSeries(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?block-sai">([^<]+).+?ml-desc">(.+?)</div>'
-
+    sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
@@ -265,12 +265,11 @@ def showSeries(sSearch=''):
             
             sDisplayTitle = sTitle
             sUrl = aEntry[2]
-            sDesc = aEntry[4]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage:
@@ -348,6 +347,7 @@ def showHostersEpisode():
         for aEntry in aResult[1]:
             sDisplayTitle = sMovieTitle
             sHosterUrl = aEntry
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
                 oHoster.setDisplayName(sDisplayTitle)
