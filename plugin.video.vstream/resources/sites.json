@@ -122,7 +122,7 @@
         "french_stream_com": {
             "label": "French Stream",
             "active": "False",
-            "url": "https://frenchstream2.click/"
+            "url": "https://vf.frenchstream2.click/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -301,7 +301,7 @@
         },
         "wawacity": {
             "label": "Wawacity",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://www.wawacity.beauty/"
         },
