@@ -18,12 +18,12 @@ SITE_DESC = 'Séries en illimité'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-SERIE_NEWS = (URL_MAIN + 'voir-series/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'voir-series/', 'showSeries')
 SERIE_GENRES = (URL_MAIN, 'showSeriesGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showSeries')
+URL_SEARCH_SERIES = ('', 'showSeries')
 
 # recherche utilisée quand on n'utilise pas la globale
 MY_SEARCH_SERIES = (True, 'showSearchSerie')
@@ -59,7 +59,7 @@ def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        showMovies(sSearchText)
+        showSeries(sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -69,7 +69,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
         sUrl = sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -87,7 +87,7 @@ def showSeriesGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-gratos/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -100,12 +100,12 @@ def showSerieYears():
     for i in reversed(range(1959, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'voir-series/annee/' + sYear)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch=''):
+def showSeries(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -130,37 +130,31 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # url year lang thumb title
-    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+).+?<\/a> <\/div><(div|\/div)'
+    # thumb url title pas sLang, les liens seront proposés en plusieurs langues
+    sPattern = 'class="movie-box.+?data-src="([^"]+).+?href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[4] != 'div': # filtre les medias non accessibles
-                continue
-            sUrl2 = aEntry[0]
-            sThumb = aEntry[2]
+            # if aEntry[4] != 'div': # filtre les medias non accessibles
+                # continue
+
+            sThumb = aEntry[0]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[3].strip()
+            sUrl2 = aEntry[1]
+            sTitle = aEntry[2]
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue  # Filtre de recherche
 
-            # sLang = aEntry[2].strip()
-            sYear = aEntry[1]
-
-            sDisplayTitle = '%s (%s)' % (sTitle, sYear)
-
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            # oOutputParameterHandler.addParameter('sLang', sLang)  # non, les liens seront proposés en plusieurs langues
-            oOutputParameterHandler.addParameter('sYear', sYear)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
     else:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -169,7 +163,7 @@ def showMovies(sSearch=''):
         if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
