@@ -44,12 +44,6 @@
             "active": "False",
             "url": "https://channelstream.es"
         },
-        "cinemay_cc": {
-            "label": "Cinemay_cc",
-            "active": "False",
-            "cloudflare": "True",
-            "url": "https://streamizseries.net/"
-        },
         "cinemay_com": {
             "label": "Cinemay",
             "active": "True",
@@ -252,6 +246,12 @@
             "label": "Streamonsport",
             "active": "False",
             "url": "https://www.tv1337.buzz/"
+        },
+        "streamizseries": {
+            "label": "Streamiz Séries",
+            "active": "True",
+            "cloudflare": "False",
+            "url": "https://streamizseries.net/"
         },
         "themoviedb_org": {
             "label": "The Movie Database",
