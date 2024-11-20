@@ -336,11 +336,11 @@ def showEpisodes():
                     numEpisodes.append(sEpisode)
                     sTitle = sMovieTitle + ' Episode' + sEpisode
                     sDisplayTitle = sTitle
-        
+
                     oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + sEpisode)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        
+
                     oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -366,7 +366,7 @@ def showSerieLinks():
         for aEntryTab in aResultTab[1]:
             if 'clear' in aEntryTab[0]:
                 continue
-            
+
             sLang = aEntryTab[1].strip().split(' ')[-1]
             aResult = oParser.parse(aEntryTab[2], sPattern)
             if aResult[0]:
@@ -390,18 +390,18 @@ def showSerieLinks():
             sPattern = 'href="(.+?)".+?target="seriePlayer".+?<\/i>.+?(\d+)(.+?)<'
             for aEntryTab in aResultTab[1]:
                 sLang = aEntryTab[0].strip()
-                
+
                 aResult = oParser.parse(aEntryTab[1], sPattern)
                 if aResult[0]:
                     for aEntry in aResult[1]:
                         numEpisode = aEntry[1]
                         if sEpisode != numEpisode:
                             continue
-                        
+
                         sLangEp = aEntry[2].strip().split(' ')[-1]
                         if 'VO' in sLangEp:
                             sLang = sLangEp
-                            
+
                         sTitle = sMovieTitle + '(%s)' % (sLang)
                         sHosterUrl = aEntry[0]
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -409,7 +409,6 @@ def showSerieLinks():
                             oHoster.setDisplayName(sTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
 
     oGui.setEndOfDirectory()
 
@@ -424,19 +423,24 @@ def showMovieLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = '<li>\s*<a.*?href="([^"]+).+?<\/i>([^<]+)<'
+
+    sStart = 'const playerUrls'
+    sEnd = 'function loadPlayer'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = '"(V[^"]+)": "([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         for aEntry in aResult[1]:
 
             #  supprime le premier lien qui est ensuite reproposé avec la langue
-            if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1] and 'VOSTENG' not in aEntry[1]:
-                continue
-            sLang = aEntry[1].strip()
+            # if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1] and 'VOSTENG' not in aEntry[1]:
+                # continue
+            sLang = aEntry[0].strip()
             sDisplayTitle = '%s (%s)' %(sMovieTitle, sLang)
 
-            sHosterUrl = aEntry[0]
+            sHosterUrl = aEntry[1]
             if 'http' not in sHosterUrl:  # liens nazes du site url
                 continue
 
