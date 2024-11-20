@@ -74,7 +74,6 @@ class cHosterGui:
         else:
             oGuiElement.setTitle(oHoster.getDisplayName())
 
-
         title = oGuiElement.getCleanTitle()
         tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
 
@@ -92,7 +91,6 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
-
 
         # gestion NextUp
         oOutputParameterHandler.addParameter('sourceName', site)  # source d'origine
@@ -159,7 +157,6 @@ class cHosterGui:
         if not sHosterUrl:
             return False
 
-
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
         sHosterUrl = sHosterUrl.split('?')[0]
@@ -212,7 +209,7 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload',
+                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload', 'fsvid',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
@@ -222,7 +219,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'tomacloud', 'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
+                            'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -312,13 +309,13 @@ class cHosterGui:
 
         if ('moacloud' in sHostName) or ('duxcloud' in sHostName):
             return self.getHoster('vidzstore')
-        
+
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
         if ('upvid' in sHostName) or ('opvid' in sHostName) or ('illvid' in sHostName):
             return self.getHoster('upvid')
-            
+
         if ('estream' in sHostName) and not ('widestream' in sHostName):
             return self.getHoster('estream')
 
