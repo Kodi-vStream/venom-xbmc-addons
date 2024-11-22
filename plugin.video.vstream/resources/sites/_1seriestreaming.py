@@ -24,7 +24,7 @@ SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = ('series/tendance-s/', 'showSeries')
 SERIE_VIEWS = ('series/populaire-s/', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
-#SERIE_ANNEES = (True, 'showSerieYears')
+# SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH = ('index.php?do=search&subaction=search&search_start=0&full_search=1&titleonly=3&sortby=date&catlist%5B%5D&story=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
@@ -37,8 +37,6 @@ URL_SEARCH_ANIMS = ('index.php?do=search&subaction=search&search_start=0&full_se
 DRAMA_DRAMAS = (True, 'showDramas')
 DRAMA_VIEWS = ('enstream/country/south-korea/', 'showSeries')
 URL_SEARCH_DRAMAS = ('index.php?do=search&subaction=search&search_start=0&full_search=1&titleonly=3&sortby=date&catlist%5B%5D=3&story=', 'showSeries')
-
-
 
 
 def load():
@@ -69,12 +67,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-
     # Non, les séries sont mélangées
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showAnimes():
     oGui = cGui()
@@ -133,18 +131,16 @@ def showGenres():
     oGui = cGui()
 
     liste = [
-            ['Animation', 'animation-s'], ['Action & Adventure', 'action-adventure-s'],
-            ['Comédie', 'comédie-s'], ['Documentaire', 'documentaire-s'],
-            ['Drame', 'drame-s'], ['Enfants', 'kids-s'], ['Famille', 'familial-s'],
-            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'],
-            ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
-            ['Musique', 'musique-s'], ['Mystère', 'mystère-s'], ['Policier', 'policier-s'],
+            ['Animation', 'animation-s'], ['Action & Adventure', 'action-adventure-s'], ['Comédie', 'comédie-s'],
+            ['Documentaire', 'documentaire-s'], ['Drame', 'drame-s'], ['Enfants', 'kids-s'], ['Famille', 'familial-s'],
+            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'], ['Historique', 'historique-s'], 
+            ['Horreur', 'horreur-s'], ['Musique', 'musique-s'], ['Mystère', 'mystère-s'], ['Policier', 'policier-s'],
             ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-fantastique-s'], ['Thriller', 'thriller-s'],
             ['Talk-show', 'talk-s'], ['Télé-réalité', 'reality-s'], ['Western', 'western-s']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', 'series/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie-s/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -250,6 +246,8 @@ def showSaisons():
         for aEntry in aResult[1][::-1]:
 
             sUrl = aEntry[0]
+            if sUrl.startswith('/'):
+                sUrl = URL_MAIN[:-1] + sUrl
             sTitle = sMovieTitle + ' ' + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -283,6 +281,8 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
+            if sUrl.startswith('/'):
+                sUrl = URL_MAIN[:-1] + sUrl
             sTitle = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
