@@ -133,7 +133,7 @@ def showGenres():
     liste = [
             ['Animation', 'animation-s'], ['Action & Adventure', 'action-adventure-s'], ['Comédie', 'comédie-s'],
             ['Documentaire', 'documentaire-s'], ['Drame', 'drame-s'], ['Enfants', 'kids-s'], ['Famille', 'familial-s'],
-            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'], ['Historique', 'historique-s'], 
+            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'], ['Historique', 'historique-s'],
             ['Horreur', 'horreur-s'], ['Musique', 'musique-s'], ['Mystère', 'mystère-s'], ['Policier', 'policier-s'],
             ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-fantastique-s'], ['Thriller', 'thriller-s'],
             ['Talk-show', 'talk-s'], ['Télé-réalité', 'reality-s'], ['Western', 'western-s']]
@@ -281,6 +281,8 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
+            if '#' == sUrl:  # pour les épisodes locked
+                continue
             if sUrl.startswith('/'):
                 sUrl = URL_MAIN[:-1] + sUrl
             sTitle = aEntry[1]
