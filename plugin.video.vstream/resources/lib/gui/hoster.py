@@ -13,7 +13,7 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
 
-    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail='', bGetRedirectUrl=False):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
@@ -29,6 +29,8 @@ class cHosterGui:
         movieFunc = oInputParameterHandler.getValue('movieFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
+        sYear = oInputParameterHandler.getValue('sYear')
+        sDesc = oInputParameterHandler.getValue('sDesc')
         sTmdbId = oInputParameterHandler.getValue('sTmdbId')
         sFav = oInputParameterHandler.getValue('sFav')
         if not sFav:
@@ -39,6 +41,7 @@ class cHosterGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         oGuiElement.setFunction('play')
+        # oGuiElement.setMetaAddon(False)     # pas de gestion des metadata pour ce type de liens
 
         # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
@@ -47,9 +50,10 @@ class cHosterGui:
                 sCat = '8'   # ...  On est maintenant au niveau "Episode"
         else:
             sCat = '5'     # Divers
-
         oGuiElement.setCat(sCat)
         oOutputParameterHandler.addParameter('sCat', sCat)
+        oGuiElement.setYear(sYear)
+        oGuiElement.setDescription(sDesc)
 
         if (oInputParameterHandler.exist('sMeta')):
             sMeta = oInputParameterHandler.getValue('sMeta')
@@ -66,7 +70,7 @@ class cHosterGui:
         if sMediaFile:  # Afficher le nom du fichier plutot que le titre
             oGuiElement.setMediaUrl(sMediaFile)
             if self.ADDON.getSetting('display_info_file') == 'true':
-                oHoster.setDisplayName(sMediaFile)
+#                oHoster.setDisplayName(sMediaFile)
                 oGuiElement.setTitle(oHoster.getFileName())  # permet de calculer le cleanTitle
                 oGuiElement.setRawTitle(oHoster.getDisplayName())  # remplace le titre par le lien
             else:
@@ -88,6 +92,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sEpisode', sEpisode)
         oOutputParameterHandler.addParameter('sLang', sLang)
         oOutputParameterHandler.addParameter('sRes', sRes)
+        oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
@@ -152,6 +157,7 @@ class cHosterGui:
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
+
     def checkHoster(self, sHosterUrl, debrid=True):
         # securite
         if not sHosterUrl:
@@ -163,7 +169,7 @@ class cHosterGui:
         sHosterUrl = sHosterUrl.lower()
 
         # lien direct ?
-        if any(sHosterUrl.endswith(x) for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
+        if any(x in sHosterUrl for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
             return self.getHoster('lien_direct')
 
         # Recuperation du host
@@ -322,8 +328,11 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('flixeo' in sHostName) or ('ds2play' in sHostName) or ('ds2video' in sHostName):
+        if ('ds2play' in sHostName) or ('ds2video' in sHostName):
             return self.getHoster('dood')
+
+        if ('flixeo' in sHostName):
+            return self.getHoster('allow_redirects')
 
         if sHostName.replace('o','').replace('0','').replace('stream','').split('.')[0] == 'dd':
             return self.getHoster('dood')

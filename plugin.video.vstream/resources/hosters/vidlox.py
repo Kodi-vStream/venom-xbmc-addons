@@ -16,7 +16,7 @@ class cHoster(iHoster):
 
     def setUrl(self, url):
         url = url.replace('embed-dlox.me/', 'embed-')
-        self._url = str(url)
+        super(cHoster, self).setUrl(url)
 
     def _getMediaLinkForGuest(self):
         oParser = cParser()

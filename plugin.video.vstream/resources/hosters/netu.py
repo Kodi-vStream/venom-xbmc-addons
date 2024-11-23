@@ -52,7 +52,8 @@ class cHoster(iHoster):
         else:
             id  = url.split('/')[-1]
 
-        self._url = host + '/e/' + id
+        super(cHoster, self).setUrl(host + '/e/' + id)
+
 
     def __getIdFromUrl(self):
         sPattern = 'https*:\/\/hqq\.(?:tv|player|watch)\/player\/embed_player\.php\?vid=([0-9A-Za-z]+)'

@@ -14,7 +14,7 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'mystream', 'MyStream')
 
     def setUrl(self, url):
-        self._url = str(url).replace('https://mystream.to/watch/', 'https://embed.mystream.to/')
+        super(cHoster, self).setUrl(url.replace('https://mystream.to/watch/', 'https://embed.mystream.to/'))
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)

@@ -12,12 +12,12 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'dailymotion', 'DailyMotion')
 
     def setUrl(self, url):
-        self._url = str(url)
-        if "metadata" not in self._url:
-            if 'embed/video' in self._url:
-                self._url = "https://www.dailymotion.com/player/metadata/video/" + self._url.split('/')[5]
+        if "metadata" not in url:
+            if 'embed/video' in url:
+                url = "https://www.dailymotion.com/player/metadata/video/" + url.split('/')[5]
             else:
-                self._url = "https://www.dailymotion.com/player/metadata/video/" + self._url.split('/')[4]
+                url = "https://www.dailymotion.com/player/metadata/video/" + url.split('/')[4]
+        super(cHoster, self).setUrl(url)
 
     def _getMediaLinkForGuest(self):
         api_call = False

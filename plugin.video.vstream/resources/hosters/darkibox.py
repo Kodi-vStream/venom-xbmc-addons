@@ -19,10 +19,6 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return False
 
-    def setUrl(self, url):
-        self._url = str(url)
-
-
     # avec un compte
     def getMediaLink(self):
         oPremiumHandler = cPremiumHandler('darkibox')

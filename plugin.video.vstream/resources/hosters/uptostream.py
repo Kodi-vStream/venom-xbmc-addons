@@ -22,9 +22,6 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'uptostream', 'UpToStream')
         self.oPremiumHandler = None
 
-    def setUrl(self, url):
-        self._url = str(url)
-
     def checkSubtitle(self, sHtmlContent):
         if not sHtmlContent:
             return False

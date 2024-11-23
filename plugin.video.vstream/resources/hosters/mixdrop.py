@@ -14,8 +14,7 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        self._url = str(url)
-        self._url = self._url.replace("/f/", "/e/")
+        super(cHoster, self).setUrl(url.replace("/f/", "/e/"))
 
     def _getMediaLinkForGuest(self):
         api_call = ''

@@ -19,10 +19,11 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'upvid', 'UpVid')
 
     def setUrl(self, url):
-        self._url = str(url)
         # lien embed obligatoire
-        if 'embed-' not in self._url:
-            self._url = self._url.rsplit('/', 1)[0] + '/embed-' + self._url.rsplit('/', 1)[1]
+        if 'embed-' not in url:
+            url = url.rsplit('/', 1)[0] + '/embed-' + url.rsplit('/', 1)[1]
+        super(cHoster, self).setUrl(url)
+
 
     def _getMediaLinkForGuest(self):
         api_call = ''

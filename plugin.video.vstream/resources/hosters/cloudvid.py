@@ -19,9 +19,9 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        self._url = str(url)
-        if not self._url.endswith('.html'):
-            self._url = self._url + '.html'
+        if not url.endswith('.html'):
+            url = url + '.html'
+        super(cHoster, self).setUrl(url)
 
     def _getMediaLinkForGuest(self, api_call=None):
         oRequest = cRequestHandler(self._url)

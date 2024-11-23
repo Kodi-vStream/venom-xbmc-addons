@@ -13,10 +13,12 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'vidto', 'VidTo')
 
     def setUrl(self, url):
-        self._url = url.replace('http://vidto.me/', '')
-        self._url = self._url.replace('embed-', '')
-        self._url = re.sub(r'\-.*\.html', '', self._url)
-        self._url = 'http://vidto.me/' + str(self._url)
+        url = url.replace('http://vidto.me/', '')
+        url = url.replace('embed-', '')
+        url = re.sub(r'\-.*\.html', '', url)
+        url = 'http://vidto.me/' + str(url)
+        super(cHoster, self).setUrl(url)
+
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)

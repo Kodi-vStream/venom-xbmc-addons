@@ -272,7 +272,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, url):
-        self._url = 'http://' + self.getHost(url) + '/embed.php?c=' + self.__getIdFromUrl(url)
+        super(cHoster, self).setUrl('http://' + self.getHost(url) + '/embed.php?c=' + self.__getIdFromUrl(url))
 
     def _getMediaLinkForGuest(self):
         api_call = False
