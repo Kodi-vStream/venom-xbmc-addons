@@ -17,7 +17,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
     def __init__(self):
-        iHoster.__init__(self, '1fichier', '1FIchier', 'violet')
+        iHoster.__init__(self, '1fichier', '1fichier', 'violet')
 
     def __getIdFromUrl(self, url):
         # http://kzu0y3.1fichier.com/
