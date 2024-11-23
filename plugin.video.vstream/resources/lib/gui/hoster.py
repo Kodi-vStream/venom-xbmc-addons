@@ -217,7 +217,7 @@ class cHosterGui:
                             'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo', 'turbovid',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido',
+                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
 
