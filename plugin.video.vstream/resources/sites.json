@@ -77,8 +77,9 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://2024tv.ru/",
-            "url_link": "ply"
+            "url": "https://gglive.ru/",
+			"site_info": "https://elitegol.lat/",
+			"url_link": "ply"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -120,7 +121,7 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://vvw.french-stream.bio/"
         },
@@ -169,7 +170,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv.sx/"
+            "url": "https://livetv817.me/"
         },
         "monstream": {
             "label": "Mon Stream",
