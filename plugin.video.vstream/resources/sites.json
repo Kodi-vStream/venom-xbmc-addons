@@ -245,8 +245,8 @@
         },
         "streamonsport": {
             "label": "Streamonsport",
-            "active": "False",
-            "url": "https://www.tv1337.buzz/"
+            "active": "True",
+            "url": "https://gglive.ru/"
         },
         "streamizseries": {
             "label": "Streamiz Séries",
