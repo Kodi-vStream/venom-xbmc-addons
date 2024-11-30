@@ -289,7 +289,7 @@ def showEpisodes():
     sThumb = oInputParameterHandler.getValue('sThumb')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '"clicbtn" rel="(ep\d(vf|vs))" *>Episode (\d)<'
+    sPattern = '"clicbtn" rel="(ep\d+(vf|vs))" *>Episode (\d+)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
