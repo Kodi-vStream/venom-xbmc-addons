@@ -121,8 +121,8 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "False",
-            "cloudflare": "False",
+            "active": "True",
+            "cloudflare": "True",
             "url": "https://vvw.french-stream.bio/"
         },
         "frenchanimes": {
