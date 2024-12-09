@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
+import datetime
 
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import isMatrix, siteManager
@@ -21,8 +22,8 @@ URL_LINK = siteManager().getProperty(SITE_IDENTIFIER, 'url_link')
 
 
 SPORT_SPORTS = (True, 'load')
-SPORT_GENRES = ('/', 'showGenres')  # FOOT
-SPORT_LIVE = ('/', 'showMovies')
+SPORT_GENRES = ('data.php', 'showGenres')  # FOOT
+SPORT_LIVE = ('data.php', 'showMovies')
 SPORT_TV = ('lecteur/', 'showTV')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -72,25 +73,42 @@ channels = {
     # 40: ['FFFtv', 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Tmc_2016.png']
     }
 
-
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
+    links = oRequestHandler.request(jsonDecode=True)
+
+    types = set()
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Football', 'genres.png', oOutputParameterHandler)
+    for link in links:
+        types.add(link['type'].capitalize())
+
+    for sTitle in sorted(types):
+        sDiplayTitle = sTitle.replace('Footus', 'Foot US')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sDesc', sTitle)
+        
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDiplayTitle, "sport.png", oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -98,11 +116,11 @@ def showTV():
     oGui = cGui()
 
     chaines = [20, 1, 5, 17, 6, 28, 7, 8, 4, 9, 18, 19, 2, 3, 10, 11, 12, 13, 14, 15, 16]
-
+    
     # if 'sport' in sUrl:
-        # chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
-    # else:  # Chaines ciné
-        # chaines = [21, 22, 23, 29, 30, 38, 5, 17, 39]
+    # chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
+    # else: # Chaines ciné
+    # chaines = [21, 22, 23, 29, 30, 38, 5, 17, 39]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for iChannel in chaines:
@@ -141,37 +159,47 @@ def showTVLink():
 
 def showMovies():
     oGui = cGui()
-    oParser = cParser()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sSearchType = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    links = oRequestHandler.request(jsonDecode=True)
 
-    # titre / heure / id / lang
-    sPattern = 'href="#">([^<]+).+?>(\d+:\d+).+?STREAM (\d+) ([^<]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    oOutputParameterHandler = cOutputParameterHandler()
+    for link in links:
+        sType = link['type']
+        if sSearchType and sType.capitalize() != sSearchType:  # filtrage du genre recherché
+            continue
+        
+        time = link['time']
+        home = link['home']
+        away = link['away']
+        league = link['league']
+        
+        time = datetime.datetime.fromtimestamp(int(time)/1000)
+#        time = datetime.datetime.strftime(time, '%d/%m/%Y %H:%M:%S')
+        time = datetime.datetime.strftime(time, '%H:%M:%S')
+        
+        if away:
+            sTitle = '%s - %s / %s (%s)' % (time, home, away, league)
+        else:
+            sTitle = '%s - %s (%s)' % (time, home, league)
+        
+        for streams in link['streams']:
+            channel = streams['ch']
+            sHostUrl = '%s/2/%s' % (URL_LINK, channel)
 
-    if aResult[0]:
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            sTitle = aEntry[0]
-            sTime = aEntry[1]
-            sUrl2 = URL_LINK + '/2/%s' % aEntry[2]
-            sLang = aEntry[3]
-            sThumb = ''
-
-            sDisplayTitle = '%s - %s (%s)' %(sTime, sTitle, sLang)
-            sDesc = sDisplayTitle
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-
+            lang = streams['lang']
+            sDisplayTitle = '%s [%s]' % (sTitle, lang.upper())
+            
+            oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+#            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
+    
             oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, "sport.png", oOutputParameterHandler)
-
+        
     oGui.setEndOfDirectory()
 
 
@@ -195,9 +223,10 @@ def showLink():
     oGui.setEndOfDirectory()
 
 
+
 # Traitement générique
 def getHosterIframe(url, referer):
-
+    
     if 'youtube.com' in url:
         return None
 
@@ -212,7 +241,7 @@ def getHosterIframe(url, referer):
         return False
 
     referer = oRequestHandler.getRealUrl()
-
+    
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -235,7 +264,7 @@ def getHosterIframe(url, referer):
                     return code + '|Referer=' + referer
             except Exception as e:
                 pass
-
+    
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -279,7 +308,7 @@ def getHosterIframe(url, referer):
                     oRequestHandler.addHeaderEntry('Referer', referer)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
-               # sHosterUrl = sHosterUrl.replace('index', 'mono')
+    #            sHosterUrl = sHosterUrl.replace('index', 'mono')
                 return sHosterUrl + '|referer=' + referer
 
     sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
@@ -297,3 +326,5 @@ def getHosterIframe(url, referer):
         return sHosterUrl + '|referer=' + referer
 
     return False
+
+
