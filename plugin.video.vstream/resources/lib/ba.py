@@ -75,9 +75,9 @@ class cShowBA:
                                         headers=headers).text
 
             try:
-                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
+                result = re.search('{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
             except:
-                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', sHtmlContent.encode('utf-8')).group(1)
+                result = re.search('{"videoRenderer":{"videoId":"([^"]+)', sHtmlContent.encode('utf-8')).group(1)
 
             if result:
                 # Premiere video trouvée
