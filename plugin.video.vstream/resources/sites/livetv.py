@@ -27,8 +27,8 @@ SITE_DESC = 'Evénements sportifs en direct'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = dans sites.json
 
-SPORT_GENRES = ('/frx/allupcoming/', 'showGenres')  # Liste de diffusion des sports
-SPORT_LIVE = ('/frx/', 'showLive')  # streaming Actif
+SPORT_GENRES = ('frx/allupcoming/', 'showGenres')  # Liste de diffusion des sports
+SPORT_LIVE = ('frx/', 'showLive')  # streaming Actif
 SPORT_SPORTS = (True, 'load')
 
 HEURE_HIVER = True
@@ -38,10 +38,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En direct)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
