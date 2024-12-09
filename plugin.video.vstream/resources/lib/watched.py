@@ -23,7 +23,7 @@ class cWatched:
         addons = addon()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'getWatched', addons.VSlang(30126), 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getWatched', addons.VSlang(30126), 'vod.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')       # films
@@ -44,7 +44,7 @@ class cWatched:
         catFilter = oInputParameterHandler.getValue('sCat')
 
         with cDb() as DB:
-            row = DB.get_allwatched()
+            row = DB.get_catWatched(catFilter)
             if not row:
                 oGui.setEndOfDirectory()
                 return
@@ -94,7 +94,7 @@ class cWatched:
                     elif cat == '4':
                         oGui.addSeason(site, function, title, 'series.png', '', title, oOutputParameterHandler)
                     elif cat == '5':
-                        oGui.addMisc(site, function, title, 'buzz.png', '', title, oOutputParameterHandler)
+                        oGui.addMisc(site, function, title, 'doc.png', '', title, oOutputParameterHandler)
                     else:
                         continue # on ne presente pas l'historique des épisodes, il faut passer par l'historique des saisons
 
