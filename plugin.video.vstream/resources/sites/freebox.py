@@ -72,10 +72,10 @@ def showMenuMusic():
     oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showGenres', addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30111), 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
