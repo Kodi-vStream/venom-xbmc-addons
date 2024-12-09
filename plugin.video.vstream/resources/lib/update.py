@@ -20,7 +20,7 @@ class cUpdate:
         # delai mise a jour
         time_now = datetime.datetime.now()
         time_service = self.__strptime(setting_time)
-        time_sleep = datetime.timedelta(hours = 72)
+        time_sleep = datetime.timedelta(hours = 24)
         if time_now - time_service > time_sleep:
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/plugin.video.vstream/resources/sites.json'
             oRequestHandler = cRequestHandler(sUrl)
