@@ -9,6 +9,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
 try:    import json
@@ -21,7 +22,11 @@ SITE_DESC = 'Chaines de Sport et de Divertissement'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 #URL_LINK = 'https://zet.tvroncdn51.shop/'
-URL_LINK = 'https://xnl3.rappscdn91.ru.com/'
+#URL_LINK = 'https://xnl3.rappscdn91.ru.com/'
+URL_LINK = 'https://ddh1.mizhls.ru/'
+
+#https://zet.rappscdn55.ru.com
+
 
 
 SPORT_SPORTS = ('/', 'load')
@@ -30,8 +35,8 @@ SPORT_GENRES = ('schedule/schedule-generated.json', 'showGenres')
 # extra stream : schedule-extra-generated.json
 
 
-# TV_TV = ('/', 'load')
-# SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
+TV_TV = ('/', 'load')
+SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
 
 # chaines
@@ -68,8 +73,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -84,10 +89,11 @@ def showTV():
     for iChannel in chaines:
         channel = channels.get(iChannel)
         sDisplayTitle = channel[0]
-        sUrl = URL_LINK + channel[1] + '|referer=https://weblivehdplay.ru/'
+        sUrl = URL_LINK + channel[1] + '|referer=https://quest4play.xyz/'
         
 # TODO il faut récuprer le new location
 # sUrl
+        
 
         
         sThumb = channel[2]
@@ -189,6 +195,37 @@ def showMovies():
     oGui.setEndOfDirectory()
 
 
+
+# liens pour les chaines
+def showMovieLink():
+    oGui = cGui()
+    oParser = cParser()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = 'https://quest4play.xyz/premiumtv/daddylivehd.php?id=573'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    # import xbmcvfs
+    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    # f.write(sHtmlContent)
+    # f.close()
+
+    sPattern = "source: '([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if aResult[0]:
+        oHosterGui = cHosterGui()
+        hosterLienDirect = oHosterGui.getHoster('lien_direct')
+        for sUrl in aResult[1]:
+            sUrl += '|Referer=https://dlhd.so/stream/stream-573.php'
+            oHosterGui.showHoster(oGui, hosterLienDirect, sUrl, '')
+
+    oGui.setEndOfDirectory()
+
+
 def showHoster():
     oGui = cGui()
 
@@ -243,6 +280,14 @@ def showLink():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     channel = oInputParameterHandler.getValue('siteUrl')
+
+
+#    prefixUrl = 'https://12.webhd.ru/'
+#    prefixUrl = 'https://lewblivehdplay.ru/'
+#    prefixUrl = 'https://zet.tvroncdn51.shop/'
+    
+#    prefixUrl = 'https://ddh1.mizhls.ru/ddh1/premium322/tracks-v1a1/mono.m3u8'
+
 
     sDisplayTitle = sMovieTitle.replace('[', '[1 - ')
     sUrl = URL_LINK + 'ddh1/premium%s/tracks-v1a1/mono.m3u8' % channel
