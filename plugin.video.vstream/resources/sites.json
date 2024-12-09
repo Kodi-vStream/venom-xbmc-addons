@@ -100,7 +100,7 @@
         "filmoflix": {
             "label": "Filmoflix",
             "active": "False",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://www.wishflix.icu/"
         },
         "filmsetvideos": {
@@ -254,11 +254,6 @@
             "active": "True",
             "url": "https://1fichier.com/"
         },
-        "siteuptobox": {
-            "label": "Mon Compte Uptobox",
-            "active": "False",
-            "url": "https://uptobox.link/"
-        },
         "skyanimes": {
             "label": "Sky-Animes",
             "active": "True",
@@ -283,7 +278,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://ww1.toonanime.site/"
+            "url": "https://w3.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -295,11 +290,6 @@
 			"active": "True",
 			"url": "https://top-stream.tv/"
 		},
-        "uptobox_live": {
-            "label": "Uptobox Live",
-            "active": "False",
-            "url": "https://api.uptobox.mov/"
-        },
         "vfilms": {
             "label": "VFilms",
             "active": "False",
@@ -330,13 +320,13 @@
             "label": "Wawacity",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.beauty/"
+            "url": "https://www.wawacity.center/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.vip/"
+            "url": "https://wiflix-hd.bio/"
         },
         "wilifilm": {
             "label": "Wilifilm",
