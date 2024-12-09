@@ -2,8 +2,6 @@ import xbmcaddon
 import xbmcvfs
 import xbmcgui
 
-from resources.lib.comaddon import VSlog
-
 
 class cInputWindow(xbmcgui.WindowDialog):
 
@@ -145,6 +143,7 @@ class cInputWindow(xbmcgui.WindowDialog):
 class cInputWindowYesNo(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
+        okDialog = kwargs.get('okDialog')
 
         bg_image = 'special://home/addons/plugin.video.vstream/resources/art/background.png'
 
@@ -152,21 +151,27 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl(self.ctrlBackground)
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, kwargs.get('msg'), 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlTextBox(50, 20, 1180, 400, 'font40', '0xFFE0AAFF')
+        self.strActionInfo.setText(kwargs.get('msg'))
         self.addControl(self.strActionInfo)
 
         self.img = xbmcgui.ControlImage(500, 250, 280, 280, str(self.cptloc))
         self.addControl(self.img)
 
-        self.Yesbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'Yes', alignment=2)
-        self.Nobutton = xbmcgui.ControlButton(250 + 260 - 70, 620, 140, 50, 'No', alignment=2)
-        self.addControl(self.Yesbutton)
-        self.addControl(self.Nobutton)
+        if okDialog:
+            self.Yesbutton = xbmcgui.ControlButton(640 - 50, 620, 100, 50, 'OK', alignment=2)
+            self.addControl(self.Yesbutton)
+        else:
+            self.Yesbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'OK', alignment=2)
+            self.Nobutton = xbmcgui.ControlButton(250 + 260 - 70, 620, 140, 50, 'CANCEL', alignment=2)
+            self.addControl(self.Yesbutton)
+            self.addControl(self.Nobutton)
+            self.Yesbutton.controlLeft(self.Nobutton)
+            self.Nobutton.controlRight(self.Yesbutton)
         self.setFocus(self.Yesbutton)
-        self.Yesbutton.controlLeft(self.Nobutton)
-        self.Nobutton.controlRight(self.Yesbutton)
 
     def get(self):
+        self.chkstate = "N" # default
         self.doModal()
         self.close()
         retval = self.chkstate
@@ -181,7 +186,7 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
     def onControl(self, control):
         try:
             index = control.getLabel()
-            if "Yes" in index:
+            if "OK" in index:
                 self.chkstate = "Y"
                 self.chk = "Y"
             else:
@@ -190,7 +195,7 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
         except:
             pass
 
-        if str(control.getLabel()) == "Yes":
+        if str(control.getLabel()) == "OK":
             self.close()
-        elif str(control.getLabel()) == "No":
+        elif str(control.getLabel()) == "CANCEL":
             self.close()
