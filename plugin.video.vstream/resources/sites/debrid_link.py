@@ -13,7 +13,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'debrid_link'
-SITE_NAME = '[COLOR violet]Debrid Link[/COLOR]'
+SITE_NAME = '[COLOR orange]Debrid Link[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
 
 URL_HOST = "https://debrid-link.fr"
