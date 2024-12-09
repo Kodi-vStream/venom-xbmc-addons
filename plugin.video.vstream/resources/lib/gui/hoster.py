@@ -163,14 +163,14 @@ class cHosterGui:
         if not sHosterUrl:
             return False
 
+        # lien direct ?
+        if any(x in sHosterUrl for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
+            return self.getHoster('lien_direct')
+
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
         sHosterUrl = sHosterUrl.split('?')[0]
         sHosterUrl = sHosterUrl.lower()
-
-        # lien direct ?
-        if any(x in sHosterUrl for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
-            return self.getHoster('lien_direct')
 
         # Recuperation du host
         try:
@@ -222,7 +222,7 @@ class cHosterGui:
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
                             'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo', 'turbovid',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
-                            'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream',
+                            'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
@@ -233,6 +233,7 @@ class cHosterGui:
         if val:
             return self.getHoster(val.replace('.', ''))
 
+
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
             return self.getHoster('vidbm')
@@ -240,7 +241,7 @@ class cHosterGui:
         if ('embedwish' in sHostName) or ('streamwish' in sHostName) or ('warda' in sHostName):
             return self.getHoster('streamwish')
 
-        if ('guccihide' in sHostName) or ('streamhide' in sHostName):
+        if ('guccihide' in sHostName) or ('streamhide' in sHostName) or ('wishonly' in sHostName):
             return self.getHoster('streamhide')
 
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
@@ -404,7 +405,7 @@ class cHosterGui:
         oHoster.setFileName(sFileName)
 
         sHosterName = oHoster.getDisplayName()
-        oDialog.VSinfo(sHosterName, 'Resolve')
+        oDialog.VSinfo(sHosterName, self.ADDON.VSlang(30142))
 
         try:
             oHoster.setUrl(sMediaUrl)
@@ -416,7 +417,7 @@ class cHosterGui:
                     if oHoster:
                         oHoster.setFileName(sFileName)
                         sHosterName = oHoster.getDisplayName()
-                        oDialog.VSinfo(sHosterName, 'Resolve')
+                        oDialog.VSinfo(sHosterName, self.ADDON.VSlang(30142))
                         oHoster.setUrl(aLink[1])
                         aLink = oHoster.getMediaLink()
 
