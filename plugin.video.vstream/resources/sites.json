@@ -49,11 +49,21 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
+		"cpasmieux": {
+			"label": "cpasmieux",
+			"active": "True",
+			"url": "https://www.cpasmieux.is/"
+		},
         "daddyhd": {
             "label": "DaddyHD",
             "active": "False",
             "url": "https://thedaddy.to/"
         },
+		"darkiworld": {
+			"label": "darkiworld",
+			"active": "True",
+			"url": "https://darkiworld.xyz/"
+		},
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
@@ -78,8 +88,8 @@
             "label": "Elitegol",
             "active": "True",
             "url": "https://gglive.ru/",
-			"site_info": "https://elitegol.lat/",
-			"url_link": "ply"
+            "site_info": "https://elitegol.lat/",
+            "url_link": "ply"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -119,9 +129,15 @@
             "active": "False",
             "url": "https://vf.frenchstream2.click/"
         },
+		"french_stream": {
+			"label": "French-stream",
+			"active": "True",
+			"site_info": "https://fstream.one/",
+			"url": "https://fsmirror12.lol/"
+		},
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://vvw.french-stream.bio/"
         },
@@ -200,7 +216,7 @@
         },
         "otakufr_com": {
             "label": "OtakuFR",
-            "active": "True",
+            "active": "False",
             "url": "https://otakufr.cc/"
         },
         "pastebin": {
@@ -223,6 +239,11 @@
             "active": "True",
             "url": ""
         },
+		"seefrench": {
+			"label": "SeeFrench",
+			"active": "True",
+			"url": "https://www.seefrench.xyz/"
+		},
         "sitedarkibox": {
             "label": "darkiBox",
             "active": "True",
@@ -249,7 +270,7 @@
             "url": "https://www.tv1337.buzz/"
         },
         "streamizseries": {
-            "label": "Streamiz Séries",
+            "label": "Streamiz S\u00e9ries",
             "active": "True",
             "cloudflare": "False",
             "url": "https://streamizseries.net/"
@@ -269,6 +290,11 @@
             "active": "True",
             "url": "https://www.imdb.com/"
         },
+		"topstream": {
+			"label": "top-stream",
+			"active": "True",
+			"url": "https://top-stream.tv/"
+		},
         "uptobox_live": {
             "label": "Uptobox Live",
             "active": "False",
