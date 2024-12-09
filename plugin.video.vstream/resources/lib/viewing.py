@@ -34,9 +34,15 @@ class cViewing:
             meta['cat'] = sCat
 
         with cDb() as db:
-            if db.del_viewing(meta):
+            isdel = db.del_viewing(meta)
+
+            # suppression du point de reprise
+            db.del_resume(meta)
+
+            if isdel:
                 self.DIALOG.VSinfo(addon().VSlang(30072))
                 cGui().updateDirectory()
+            
             return True
 
     # Suppression d'un bookmark depuis un Widget
@@ -61,7 +67,7 @@ class cViewing:
         addons = addon()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30126), 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30126), 'vod.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')  # films
@@ -131,6 +137,10 @@ class cViewing:
                     resumetime, totaltime = DB.get_resume(meta)
                     oOutputParameterHandler.addParameter('ResumeTime', resumetime)
                     oOutputParameterHandler.addParameter('TotalTime', totaltime)
+
+                    # if sTmdbId and resumetime == 0:
+                    #     if self.ADDON.getSetting('use_trakt_addon') == 'true':
+                    #         cTrakt().getPlayback(sTmdbId)
 
                     if cat == '1':
                         oListItem = oGui.addMovie(site, function, title, 'films.png', '', title, oOutputParameterHandler)
