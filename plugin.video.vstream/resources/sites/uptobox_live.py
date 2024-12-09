@@ -12,7 +12,7 @@ from resources.lib.util import cUtil, Unquote
 
 
 SITE_IDENTIFIER = 'uptobox_live'
-SITE_NAME = '[COLOR violet]Uptobox Live[/COLOR]'
+SITE_NAME = '[COLOR orange]Uptobox Live[/COLOR]'
 SITE_DESC = 'Bibliothèque de liens Uptobox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
