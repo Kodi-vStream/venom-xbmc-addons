@@ -22,8 +22,8 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showLastEp')
-ANIM_VFS = (URL_MAIN + 'anime-vf', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'anime', 'showMovies')
+ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'anime/', 'showMovies')
 
 URL_SEARCH = (ANIM_VOSTFRS[0], 'showSearchResult')
 URL_SEARCH_ANIMS = (ANIM_VOSTFRS[0], 'showSearchResult')
@@ -87,17 +87,25 @@ def showGenres():
 def showSearchResult(sSearch):
     oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if URL_SEARCH_ANIMS[0] in sSearch:
+        sSearch = sSearch.replace(URL_SEARCH_ANIMS[0], '')
+        sUrl = URL_SEARCH_ANIMS[0]
+    elif URL_SEARCH_VF[0] in sSearch:
+        sSearch = sSearch.replace(URL_SEARCH_VF[0], '')
+        sUrl = URL_SEARCH_VF[0]
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    searchURL = URL_MAIN[:-1] + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
+    searchURL = re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
+#    searchURL = URL_MAIN[:-1] + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
 
-    if sSearch:
-        if URL_SEARCH[0] in sSearch:
-            sSearch = sSearch.replace(URL_SEARCH[0], '')
+    # if sSearch:
+    #     if URL_SEARCH[0] in sSearch:
+    #         sSearch = sSearch.replace(URL_SEARCH[0], '')
     sSearch = sSearch.lower()
 
     oRequestHandler = cRequestHandler(searchURL)
@@ -105,9 +113,13 @@ def showSearchResult(sSearch):
 
     oOutputParameterHandler = cOutputParameterHandler()
     for dicts in data:
-        if sSearch in dicts['title'].lower() or sSearch in dicts['title_english'].lower() or sSearch in dicts['others'].lower():
+        found = False
+        found |= sSearch in dicts.get('title', '').lower()
+        found |= sSearch in dicts.get('title_english', '').lower()
+        found |= sSearch in dicts.get('others', '').lower()
+        if found:
             sTitle = dicts['title']
-            sUrl2 = URL_MAIN[:-1] + dicts['url']
+            sUrl2 = dicts['url']
             sThumb = dicts['url_image']
             sDesc = ''
 
@@ -236,7 +248,7 @@ def showSaisonEpisodes():
     except:
         pass
 
-    sPattern = 'episode":"([^"]+).+?url":"([^"]+)","url_image":"([^"]+)'
+    sPattern = '<a href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -245,14 +257,11 @@ def showSaisonEpisodes():
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ', 'E')
-            sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('\\/', '/')
-            sThumb = aEntry[2]
-
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', '', sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -282,7 +291,7 @@ def showSeriesHosters():
 
             '''
             '''
-            # NE FONCTIONNE PAS, le lien direct est pourtant bon dans vlc
+            # TODO NE FONCTIONNE PAS, le lien direct est pourtant bon dans vlc
             if 'fusevideo' in aEntry:   
                 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
                 
@@ -320,25 +329,22 @@ def showSeriesHosters():
 # #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=854x480,NAME="480"
 # https://fusevideo.io/h/720/eyJpdiI6InRJTTRkV2RIUFJISndTcWtmM3JUS1E9PSIsInZhbHVlIjoiTVppelR4YlBkdDlDc0RmTUhudUU4dz09IiwibWFjIjoiMGRjMjU3MDBkOTdiMTQzNWE2ZGRjZmIwYmQyY2IwMzY3ODQ5NzdhMzIxNDJmNWU0OWYzODMwMTFkNGEzOWY5YyIsInRhZyI6IiJ9.m3u8?expires=1713665472&signature=eef26164b1df50dc0bdf97b75ec27c9fd13745f68f29a6ff4392118a24fd8012
 
-
-                            oRequestHandler = cRequestHandler(sHosterUrl)
-                            oRequestHandler.addHeaderEntry('User-Agent', UA)
-                            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
-                            oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
-                            oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-                            oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-                            sHtmlContent = oRequestHandler.request()
-                            sPattern = '(https[^#]+)'
-                            aResult = oParser.parse(sHtmlContent, sPattern)
-                            if aResult[0]:
-                                sHosterUrl = aResult[1][0].replace('https:', 'http:')
-            '''
-            '''
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                            oHoster = cHosterGui().checkHoster(sHosterUrl)
+                            if oHoster:
+                                oRequestHandler = cRequestHandler(sHosterUrl)
+                                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                                oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+                                oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
+                                oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                                oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+                                sHtmlContent = oRequestHandler.request()
+                                sPattern = 'NAME="([^"]+)"([^#]+)'
+                                aResult = oParser.parse(sHtmlContent, sPattern)
+                                if aResult[0]:
+                                    for aEntry in aResult[1]:
+                                        oHoster.setDisplayName('%s [%sP]' % (sMovieTitle, aEntry[0]))
+                                        oHoster.setFileName(sMovieTitle)
+                                        sHosterUrl = aEntry[1].replace('https:', 'http:') # pour contourner le certificat
+                                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
