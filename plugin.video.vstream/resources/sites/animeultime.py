@@ -3,7 +3,7 @@
 # Makoto et Arias800 02/06/2019
 import re
 
-from resources.lib.comaddon import addon, isMatrix, siteManager
+from resources.lib.comaddon import progress, addon, isMatrix, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -20,8 +20,9 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
-URL_SEARCH_DRAMAS = (URL_MAIN + 'search-0-1+', 'showSeries')
-URL_SEARCH_ANIMS = (URL_MAIN + 'search-0-1+', 'showSeries')
+URL_SEARCH = ('search-0-1+', 'showSeries')
+URL_SEARCH_DRAMAS = ('search-drama', 'showSeries')
+URL_SEARCH_ANIMS = ('search-anime', 'showSeries')
 
 ANIM_ANIMS = (True, 'showMenuAnimes')
 ANIM_ANNEES = (True, 'ShowYearsAnimes')
@@ -34,7 +35,7 @@ DRAMA_GENRES = (True, 'ShowGenreDramas')
 DRAMA_ALPHA = (True, 'ShowAlphaDramas')
 
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
-TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
+TOKUSATSU = ('series-0-1/tokusatsu/0---', 'showSeries')
 TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
 
 adulteContent = addon().getSetting('contenu_adulte')
@@ -44,14 +45,11 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_DRAMAS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_TOKUSATSUS[0])
     oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_TOKUSATSUS[1], 'Tokusatsu', 'films.png', oOutputParameterHandler)
@@ -63,6 +61,9 @@ def showMenuAnimes():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -79,6 +80,9 @@ def showMenuDramas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -153,7 +157,7 @@ def ShowGenre(typemovie):
     list_listgenre = loadTypelist(typemovie, 'genre')
     oOutputParameterHandler = cOutputParameterHandler()
     for ilist in list_listgenre:
-        url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[1] + '---'
+        url = 'series-0-1/' + typemovie + '/-' + ilist[1] + '---'
         sTitle = ilist[0].title()
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
@@ -175,7 +179,7 @@ def ShowYears(typemovie):
     # http://www.anime-ultime.net/series-0-1/anime/--626--    2019
     oOutputParameterHandler = cOutputParameterHandler()
     for liste in reversed(list_year):
-        url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[1] + '--'
+        url = 'series-0-1/' + typemovie + '/--' + liste[1] + '--'
         sTitle = liste[0]
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'annees.png', oOutputParameterHandler)
@@ -195,16 +199,16 @@ def ShowAlphaTokusatsu():
     ShowAlpha('tokusatsu')
 
 
+# http://www.anime-ultime.net/series-0-1/anime/c---
 def ShowAlpha(typemovie):
     oGui = cGui()
 
     import string
-    # http://www.anime-ultime.net/series-0-1/tokusatsu/c---
     sAlpha = string.ascii_lowercase
     listalpha = list(sAlpha)
-    liste = [['#', URL_MAIN + 'series-0-1/' + typemovie + '/' + '1---']]
+    liste = [['#', 'series-0-1/' + typemovie + '/1---']]
     for alpha in listalpha:
-        liste.append([str(alpha).upper(), URL_MAIN + 'series-0-1/' + typemovie + '/' + alpha + '---'])
+        liste.append([str(alpha).upper(), 'series-0-1/' + typemovie + '/' + alpha + '---'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -229,23 +233,31 @@ def showSearch():
 
 def showSeries(sSearch=''):
     oGui = cGui()
+    oParser = cParser()
+
+    bAnime = bDrama = False
     if sSearch:
         oUtil = cUtil()
+        bAnime = URL_SEARCH_ANIMS[0] in sSearch
+        bDrama = URL_SEARCH_DRAMAS[0] in sSearch
         sSearchText = sSearch.replace(URL_SEARCH_DRAMAS[0], '')
         sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
-        sUrl = sSearch.replace(' ', '+').replace('%20', '+')
+        sUrl = URL_MAIN + URL_SEARCH[0] + sSearchText.replace(' ', '+').replace('%20', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-    if sSearch:
+    if sSearch:     # la résultats qui correspondent au type recherché
+        sPattern = '<th width="80%">' + ('anime' if bAnime else 'drama')
+        sHtmlContent = oParser.abParse(sHtmlContent, sPattern, ' </table>')
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)\/>.+?onMouseOut.+?>(.+?)<\/a>.+?<td class="" align="center">([^<]+)<'
-    else:
+    else:           # certaines pages ont le contenu en double
+        sPattern = '<div id="principal">'
+        sHtmlContent = oParser.abParse(sHtmlContent, sPattern, sPattern)
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?align="center">([^<]+)<'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -285,7 +297,15 @@ def showSeries(sSearch=''):
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
+
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME, large=True)
+        
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+            
             sTitle = aEntry[2]
             if sSearch:
                 # Enleve les balise.
@@ -299,7 +319,7 @@ def showSeries(sSearch=''):
             except:
                 pass
 
-            sUrl2 = URL_MAIN + aEntry[0]
+            sUrl2 = aEntry[0]
             sThumb = aEntry[1]
 
             if adulteContent == "false":
@@ -319,12 +339,14 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if sType != 'Episode':
+            if sType == 'Film':
                 oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
-            elif '/anime/' in sUrl:
+            elif bAnime or '/anime/' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addDrama(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -333,7 +355,7 @@ def showSeries(sSearch=''):
 def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -364,7 +386,14 @@ def showEpisode():
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
+        links = set()
         for aEntry in aResult[1]:
+
+            sUrl2 = aEntry[1]
+            if sUrl2 in links:
+                continue
+            links.add(sUrl2)
+            
             sTitle = aEntry[0]
             try:
                 sTitle = sTitle.decode('iso-8859-1').encode('utf8')
@@ -383,7 +412,6 @@ def showEpisode():
             sTitle = sTitle.replace(sEpisode, ' Episode ' + sEpisode).strip()
             sDisplayTtitle = sTitle + ' [' + sLang + ']'
                 
-            sUrl2 = URL_MAIN + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -398,7 +426,7 @@ def showHosters():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
@@ -409,6 +437,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+        urls = set()
         for aEntry in aResult[1]:
             sTitle = aEntry[0].strip()
             if ' vostfr' in sTitle:
@@ -419,6 +448,11 @@ def showHosters():
             
             sThumb = aEntry[1]
             sHosterUrl = aEntry[2]
+            
+            if sHosterUrl in urls:
+                continue            # trier les liens en doublon
+            urls.add(sHosterUrl)
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
                 oHoster.setDisplayName(sTitle)
