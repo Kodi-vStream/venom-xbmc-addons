@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 
 #URL_MAIN='https://filmoflix.dad/'
@@ -23,18 +24,18 @@ key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
 
 # Pour les Films
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'film/', 'showGenres')
+MOVIE_NEWS = ('film/', 'showMovies')
+MOVIE_GENRES = ('film/', 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 # Pour les Series
-SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'serie/', 'showSeriesGenres')
-SERIE_VF = (URL_MAIN + 'serie/series-vf/', 'showMovies')
-SERIE_VOSTFR = (URL_MAIN + 'serie/series-vostfr/', 'showMovies')
+SERIE_NEWS = ('serie/', 'showMovies')
+SERIE_GENRES = ('serie/', 'showSeriesGenres')
+SERIE_VF = ('serie/series-vf/', 'showMovies')
+SERIE_VOSTFR = ('serie/series-vostfr/', 'showMovies')
 SERIE_ANNEES = (True, 'showSerieYears')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
+URL_SEARCH = ('index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
@@ -149,7 +150,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listegenre:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'film/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', 'film/' + sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -161,7 +162,7 @@ def showMovieYears():
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1955, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'film/annee/' + sYear)
+        oOutputParameterHandler.addParameter('siteUrl', 'film/annee/' + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -176,7 +177,7 @@ def showSeriesGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listegenre:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', 'serie/' + sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -188,7 +189,7 @@ def showSerieYears():
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1959, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie/annee/' + sYear)
+        oOutputParameterHandler.addParameter('siteUrl', 'serie/annee/' + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -202,16 +203,19 @@ def showMovies(sSearch=''):
     bSearchSerie = False
 
     if sSearch:
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
+        oUtil = cUtil()
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
+        sSearchText = oUtil.CleanName(sSearch)
+        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
-        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
-        oRequest = cRequestHandler(URL_SEARCH[0])
+        pdata = 'do=search&subaction=search&story=' + sSearch
+#        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
+        oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
@@ -220,22 +224,30 @@ def showMovies(sSearch=''):
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
 
+        # lien thumb titre year 
+        sPattern = '<div class="th-item">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?Date de sortie:<\/span> (\d+)'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
+        if not'http' in sUrl:
+            sUrl = URL_MAIN + sUrl  # dépend de la pagination
+        oRequest = cRequestHandler(sUrl)
+        oRequest.addHeaderEntry('Referer', URL_MAIN)
+        sHtmlContent = oRequest.request()
 
-    # lien thumb titre 
-    
-    sPattern = '<div class="th-item">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
+        # lien thumb titre 
+        sPattern = '<div class="th-item">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if aResult[0]:
+        sYear = ''
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
+            if sSearch:
+                sYear = aEntry[3]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
@@ -245,6 +257,10 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if '/serie' not in sUrl2:
                     continue
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
@@ -261,6 +277,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/serie' not in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -294,15 +311,14 @@ def __checkForNextPage(sHtmlContent):
 
     return False, 'none'
 
-#afficher les Saisons 
-
+# afficher les Saisons
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sDesc = 'FilmoFlix'
+    sDesc = ''
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -313,7 +329,6 @@ def showSaisons():
     sPattern = '<a class="th-in" href="([^"]*)".*?data-src="([^"]*)".*?class="th-title nowrap">(.+?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
-
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
@@ -390,7 +405,8 @@ def showSerieLinks():
     sHtmlContent = oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
 
-    sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+#    sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+    sPattern = "getxfield\(this, '(\d+)', '(.+?)'"
     
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -404,19 +420,19 @@ def showSerieLinks():
             oHoster = None  # Initialisation en dehors de la boucle
 
             if '_' in xfield:
-               hosterName, sLang = xfield.strip().split('_')
-               sLang = sLang.upper()
+                hosterName, sLang = xfield.strip().split('_')
+                sLang = sLang.upper()
             else:
-               hosterName = xfield.strip()
+                hosterName = xfield.strip()
 
             oHoster = cHosterGui().checkHoster(hosterName)
 
             if not oHoster:
-               continue
+                continue
 
             # Ajouter cette logique
             if not sLang:
-               sLang = 'VF'
+                sLang = 'VF'
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, hosterName)
             
@@ -471,8 +487,6 @@ def showSerieHosters():
 
 
 def showMovieLinks():
-
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -486,7 +500,7 @@ def showMovieLinks():
     oParser = cParser()
     sPattern = 'property="og:description".+?content="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'FilmoFlix'
+    sDesc = ''
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
     sStart = '<ul class="player-list">'
@@ -507,19 +521,19 @@ def showMovieLinks():
             oHoster = None  # Initialisation en dehors de la boucle
 
             if '_' in xfield:
-               hosterName, sLang = xfield.strip().split('_')
-               sLang = sLang.upper()
+                hosterName, sLang = xfield.strip().split('_')
+                sLang = sLang.upper()
             else:
-               hosterName = xfield.strip()
+                hosterName = xfield.strip()
 
             oHoster = cHosterGui().checkHoster(hosterName)
 
             if not oHoster:
-               continue
+                continue
 
             # Ajouter cette logique
             if not sLang and '_vostfr' not in xfield:
-               sLang = 'VF'
+                sLang = 'VF'
                
             sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + videoId + '&xfield=' + xfield + '&token=' + token
 
