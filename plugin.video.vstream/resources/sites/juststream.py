@@ -72,7 +72,7 @@ def showMenuMovies():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -147,7 +147,7 @@ def showGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-gratos/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -178,7 +178,7 @@ def showSeriesGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-gratos/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -207,15 +207,15 @@ def showMovies(sSearch=''):
     if sSearch:
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch)
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
-        if key_search_movies in sSearch:
-            sSearch = sSearch.replace(key_search_movies, '')
+        sSearchText = sSearchText.replace(' ', '+').replace('%20', '+')
+        if key_search_movies in sSearchText:
+            sSearchText = sSearchText.replace(key_search_movies, '')
             bSearchMovie = True
-        if key_search_series in sSearch:
-            sSearch = sSearch.replace(key_search_series, '')
+        if key_search_series in sSearchText:
+            sSearchText = sSearchText.replace(key_search_series, '')
             bSearchSerie = True
 
-        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
+        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearchText
         oRequest = cRequestHandler(URL_SEARCH[0])
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Referer', URL_MAIN)

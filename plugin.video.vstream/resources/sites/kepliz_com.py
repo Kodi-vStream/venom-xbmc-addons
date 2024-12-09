@@ -83,9 +83,9 @@ def showGenres():
     liste.append(['Aventure', 4])
     # liste.append(['Biographie', 5])  # aucun
     liste.append(['Comédie', 6])
-    liste.append(['Documentaires', 26])
+    liste.append(['Documentaire', 26])
     liste.append(['Drame', 7])
-    liste.append(['Epouvante Horreur', 9])
+    liste.append(['Epouvante et Horreur', 9])
     liste.append(['Fantastique', 8])
     liste.append(['Policier', 10])
     liste.append(['Science Fiction', 11])
@@ -96,7 +96,7 @@ def showGenres():
     for sTitle, iGenre in liste:
         sUrl = URL_MAIN + 'c/poblom/%d/0' % iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
