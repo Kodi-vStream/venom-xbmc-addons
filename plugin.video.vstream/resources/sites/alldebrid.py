@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import addon
 
 SITE_IDENTIFIER = 'alldebrid'
-SITE_NAME = '[COLOR violet]Alldebrid[/COLOR]'
+SITE_NAME = '[COLOR orange]Alldebrid[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
 
 ITEM_PAR_PAGE = 25
@@ -27,7 +27,7 @@ def load():
     ALL_ALL = (URL_HOST + 'links/', 'showLiens')
     ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnetsVideos')
     ALL_HISTO = (URL_HOST + 'history/', 'showLiens')
-    ALL_INFORMATION = (URL_MAIN, 'showInfo')
+    #ALL_INFORMATION = (URL_MAIN, 'showInfo')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ALL_ALL[0])
@@ -39,8 +39,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ALL_HISTO[0])
     oGui.addDir(SITE_IDENTIFIER, ALL_HISTO[1], 'Historique', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', ALL_INFORMATION[0])
-    oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Informations sur les hébergeurs ', 'host.png', oOutputParameterHandler)
+    # N'est plus disponible en page d'acceuil sans comtpe
+    # oOutputParameterHandler.addParameter('siteUrl', ALL_INFORMATION[0])
+    # oGui.addDir(SITE_IDENTIFIER, ALL_INFORMATION[1], 'Informations sur les hébergeurs ', 'host.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -299,6 +300,6 @@ def showInfo():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
 
-            oGui.addText(SITE_IDENTIFIER, sDisplayTitle)
+            oGui.addText(SITE_IDENTIFIER, sDisplayTitle, 'host.png')
 
     oGui.setEndOfDirectory()
