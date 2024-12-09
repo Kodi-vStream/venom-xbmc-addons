@@ -503,7 +503,7 @@ def showMovieLinks():
 
             videoId = aEntry[0]
             xfield = aEntry[1]
-            token = aEntry[2]
+            type = aEntry[2]
             sQual = aEntry[4]
             hosterName = sLang = ''
             if ('_') in xfield:
@@ -514,7 +514,15 @@ def showMovieLinks():
             if not oHoster:
                 continue
 
-            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + videoId + '&xfield=' + xfield + '&token=' + token
+#            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + videoId + '&xfield=' + xfield + '&token=' + token
+            sUrl2 = URL_MAIN + 'engine/ajax/controller.php?mod=getxfield'
+#            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php'
+            postData = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
+            # id: id,
+            # xfield: xfield,
+            # type: type,
+            # g_recaptcha_response: token,
+            # user_hash: dle_login_hash
 
             sDisplayTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang, hosterName)
 
@@ -525,9 +533,86 @@ def showMovieLinks():
             oOutputParameterHandler.addParameter('sQual', sQual)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('cook', cook)
-            oGui.addMovie(SITE_IDENTIFIER, 'showMovieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('postdata', postData)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    referer = oInputParameterHandler.getValue('referer')
+    cook = oInputParameterHandler.getValue('cook')
+    postData = oInputParameterHandler.getValue('postdata')
+
+    oRequest = cRequestHandler(sUrl)
+    oRequest.setRequestType(1)
+    if referer:
+        oRequest.addHeaderEntry('Referer', referer)
+    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequest.addParametersLine(postData)
+    if cook:
+        oRequest.addHeaderEntry('Cookie', cook)
+        
+    sHosterUrl = oRequest.request()
+
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if oHoster:
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+
+'''
+var xf_allow = ['voe_vf', 'voe_vostfr', 'doodstream_vf', 'doodstream_vostfr', 'filemoon_vf', 'filemoon_vostfr', 'netu_vf', 'netu_vostfr', 'uqload_vf', 'uqload_vostfr', 'vidoza_vf', 'vidoza_vostfr'];
+var turnstileInstance;
+var challengeCompleted = false;
+function getxfield(obj, id, xfield, type) {
+    if($(obj).parent().hasClass('current')) return false;
+    $('.insideIframe').remove();
+    $('.player-box').addClass('d-none');
+    $('.embed-col, .embed-captcha').removeClass('d-none');
+    $('html, body').animate({    scrollTop: $(".fplayer").offset().top - 40 }, 600);
+    if(turnstileInstance) turnstile.remove(turnstileInstance);    
+    turnstileInstance = turnstile.render('#xf_lock', 
+                        {
+                            sitekey: '0x4AAAAAAAW5Nb89XiWWbc9g',
+                            callback: function (token) 
+                            {    
+                                challengeCompleted=true;   
+                                $('.spinner').addClass('d-none');    
+                                $.ajax(
+                                    {
+                                        type: 'POST', 
+                                        url: dle_root + "engine/ajax/controller.php?mod=getxfield",
+                                        data: 
+                                            {
+                                                id: id,
+                                                xfield: xfield,
+                                                type: type,
+                                                g_recaptcha_response: token,
+                                                user_hash: dle_login_hash
+                                            },
+                                        beforeSend: function () 
+                                            {
+                                                $('.insideIframe').remove();
+                                                $('.player-box').addClass('d-none');    
+                                                $('.embed-col, .embed-captcha').removeClass('d-none');   
+                                            }, 
+                                        success: function (data) 
+                                            {
+                                                if(data == 'error' || data == 'captcha_error') 
+                                                {
+                                                    DLEalert('Vous devez résoudre le captcha pour obtenir ce lien.', 'error');    } else {    setTimeout(function(){    $('#videoIframe').html(data);    $("#loaderbt-" + id).remove();    $('.player-box, .media-servers').removeClass('d-none');    $('.embed-col').addClass('d-none');    if(xf_allow.includes(xfield)) {    if (typeof turnstileInstance != "undefined") {    turnstile.remove(turnstileInstance);    turnstileInstance=null;    $('.embed-captcha').addClass('d-none');    $('.spinner').removeClass('d-none'); } } $(obj).parent().addClass('current').siblings().removeClass('current');    }, 500); } } }); } });
+}
+'''
 
 
 def showMovieHosters():
