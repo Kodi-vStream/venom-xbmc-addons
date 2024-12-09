@@ -316,18 +316,6 @@ msgctxt "#30077"
 msgid "[COLOR gold]Select your search for: %s[/COLOR]"
 msgstr ""
 
-msgctxt "#30078"
-msgid "Search (Movie)"
-msgstr ""
-
-msgctxt "#30079"
-msgid "Search (Tvshow)"
-msgstr ""
-
-msgctxt "#30080"
-msgid "Search (Documentary)"
-msgstr ""
-
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
 msgstr ""
@@ -476,10 +464,6 @@ msgctxt "#30117"
 msgid "TV replay"
 msgstr ""
 
-msgctxt "#30118"
-msgid "Search (Anim)"
-msgstr ""
-
 msgctxt "#30119"
 msgid "Live"
 msgstr ""
@@ -497,8 +481,8 @@ msgid "Animes"
 msgstr ""
 
 msgctxt "#30123"
-msgid "Search (Dramas)"
-msgstr ""
+msgid "Lists"
+msgstr "Listes"
 
 msgctxt "#30124"
 msgid "Dramas"
@@ -541,7 +525,11 @@ msgid "Movies"
 msgstr ""
 
 msgctxt "#30134"
-msgid "Search (TV replay)"
+msgid "Recently added"
+msgstr ""
+
+msgctxt "#30135"
+msgid "Direct search"
 msgstr ""
 
 msgctxt "#30137"
@@ -552,6 +540,10 @@ msgctxt "#30138"
 msgid "Sources"
 msgstr ""
 
+msgctxt "#30139"
+msgid "Collections"
+msgstr ""
+
 msgctxt "#30140"
 msgid "Loading"
 msgstr ""
@@ -559,6 +551,15 @@ msgstr ""
 msgctxt "#30141"
 msgid "Loading infos"
 msgstr ""
+
+msgctxt "#30142"
+msgid "Resolve"
+msgstr ""
+
+msgctxt "#30143"
+msgid "Make a donation"
+msgstr ""
+
 
 msgctxt "#30145"
 msgid "Download folder"
@@ -571,6 +572,14 @@ msgstr ""
 msgctxt "#30160"
 msgid "Quality HD"
 msgstr ""
+
+msgctxt "#30161"
+msgid "Resolution"
+msgstr "Résolution"
+
+msgctxt "#30162"
+msgid "Random"
+msgstr "Aléatoire"
 
 msgctxt "#30200"
 msgid "Channels"
@@ -832,10 +841,6 @@ msgctxt "#30341"
 msgid "Show personnal lists"
 msgstr ""
 
-msgctxt "#30342"
-msgid "Movies"
-msgstr ""
-
 msgctxt "#30343"
 msgid "Show watchlist"
 msgstr ""
@@ -866,10 +871,6 @@ msgstr ""
 
 msgctxt "#30350"
 msgid "Replays"
-msgstr ""
-
-msgctxt "#30351"
-msgid "TV Shows"
 msgstr ""
 
 msgctxt "#30352"
@@ -909,11 +910,31 @@ msgid "My personnal Trakt lists"
 msgstr ""
 
 msgctxt "#30361"
-msgid "Activate scrobbling"
+msgid "Activate scrobbling - Movies"
 msgstr ""
 
 msgctxt "#30362"
 msgid "My sources"
+msgstr ""
+
+msgctxt "#30363"
+msgid "Activate scrobbling - TV Shows"
+msgstr ""
+
+msgctxt "#30365"
+msgid "Use Trakt addon for sync and notation"
+msgstr ""
+
+msgctxt "#30366"
+msgid "Trakt addon support"
+msgstr ""
+
+msgctxt "#30367"
+msgid "Install Trakt addon"
+msgstr ""
+
+msgctxt "#30368"
+msgid "Trakt source"
 msgstr ""
 
 msgctxt "#30400"
@@ -1012,44 +1033,12 @@ msgctxt "#30423"
 msgid "Search (Movies)"
 msgstr ""
 
-msgctxt "#30424"
-msgid "Search (TV Shows)"
-msgstr ""
-
-msgctxt "#30425"
-msgid "Movies (Popular)"
-msgstr ""
-
-msgctxt "#30426"
-msgid "Movies (News)"
-msgstr ""
-
-msgctxt "#30427"
-msgid "Movies (Top Rated)"
-msgstr ""
-
 msgctxt "#30428"
-msgid "Movies (Kinds)"
-msgstr ""
-
-msgctxt "#30429"
-msgid "TV Shows (Popular)"
+msgid "Kinds"
 msgstr ""
 
 msgctxt "#30430"
-msgid "TV Shows (On air)"
-msgstr ""
-
-msgctxt "#30431"
-msgid "TV Shows (Top Rated)"
-msgstr ""
-
-msgctxt "#30432"
-msgid "TV Shows (Kinds)"
-msgstr ""
-
-msgctxt "#30433"
-msgid "Actors (Popular)"
+msgid "My favorites"
 msgstr ""
 
 msgctxt "#30434"
@@ -1116,10 +1105,6 @@ msgctxt "#30449"
 msgid "All Sources"
 msgstr ""
 
-msgctxt "#30450"
-msgid "Search (Actor, Actress)"
-msgstr ""
-
 msgctxt "#30451"
 msgid "Default mode"
 msgstr ""
@@ -1180,6 +1165,14 @@ msgctxt "#30465"
 msgid "Minute"
 msgstr ""
 
+msgctxt "#30466"
+msgid "Actors"
+msgstr ""
+
+msgctxt "#30467"
+msgid "Networks"
+msgstr ""
+
 msgctxt "#30469"
 msgid "Direct link"
 msgstr ""
@@ -1231,7 +1224,7 @@ msgid "Disable all sources"
 msgstr ""
 
 msgctxt "#31200"
-msgid "Choose the number of items to display"
+msgid "Number of items to display"
 msgstr ""
 
 msgctxt "#31201"
@@ -1281,19 +1274,3 @@ msgstr "Add to existing list"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Select a list"
-
-msgctxt "#31213"
-msgid "Use Trakt addon for sync and notation"
-msgstr "Use Trakt addon for sync and notation"
-
-msgctxt "#31214"
-msgid "Trakt addon support"
-msgstr "Trakt addon support"
-
-msgctxt "#31215"
-msgid "Install Trakt addon"
-msgstr "Install Trakt addon"
-
-msgctxt "#31216"
-msgid "Trakt source"
-msgstr "Trakt source"

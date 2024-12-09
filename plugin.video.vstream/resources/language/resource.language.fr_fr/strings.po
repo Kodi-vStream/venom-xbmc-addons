@@ -316,18 +316,6 @@ msgctxt "#30077"
 msgid "[COLOR gold]Select your search for: %s[/COLOR]"
 msgstr "[COLOR gold]Sélectionnez votre recherche pour : %s[/COLOR]"
 
-msgctxt "#30078"
-msgid "Search (Movie)"
-msgstr "Rechercher (Films)"
-
-msgctxt "#30079"
-msgid "Search (Tvshow)"
-msgstr "Rechercher (Séries)"
-
-msgctxt "#30080"
-msgid "Search (Documentary)"
-msgstr "Rechercher (Documentaires)"
-
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
 msgstr "[COLOR gold]Résultats pour : %s[/COLOR]"
@@ -476,13 +464,9 @@ msgctxt "#30117"
 msgid "TV replay"
 msgstr "TV replay"
 
-msgctxt "#30118"
-msgid "Search (Anim)"
-msgstr "Rechercher (Japanimes)"
-
 msgctxt "#30119"
 msgid "Live"
-msgstr "En direct"
+msgstr "En cours"
 
 msgctxt "#30120"
 msgid "Movies"
@@ -497,8 +481,8 @@ msgid "Animes"
 msgstr "Japanimes"
 
 msgctxt "#30123"
-msgid "Search (Dramas)"
-msgstr "Rechercher (Dramas)"
+msgid "Lists"
+msgstr "Listes"
 
 msgctxt "#30124"
 msgid "Dramas"
@@ -541,8 +525,12 @@ msgid "Movies"
 msgstr "Cinéma"
 
 msgctxt "#30134"
-msgid "Search (TV replay)"
-msgstr "Rechercher (TV replay)"
+msgid "Recently added"
+msgstr "Derniers ajouts"
+
+msgctxt "#30135"
+msgid "Direct search"
+msgstr "Recherche directe"
 
 msgctxt "#30137"
 msgid "Music"
@@ -552,6 +540,10 @@ msgctxt "#30138"
 msgid "Sources"
 msgstr "Sources"
 
+msgctxt "#30139"
+msgid "Collections"
+msgstr "Sagas"
+
 msgctxt "#30140"
 msgid "Loading"
 msgstr "Chargement "
@@ -559,6 +551,16 @@ msgstr "Chargement "
 msgctxt "#30141"
 msgid "Loading infos"
 msgstr "Chargement des informations"
+
+msgctxt "#30142"
+msgid "Resolve"
+msgstr "Obtention du lien"
+
+msgctxt "#30143"
+msgid "Make a donation"
+msgstr "Nous soutenir"
+
+
 
 msgctxt "#30145"
 msgid "Download folder"
@@ -573,6 +575,14 @@ msgstr "Autre hébergeur Pastebin"
 msgctxt "#30160"
 msgid "Quality HD"
 msgstr "Qualité HD"
+
+msgctxt "#30161"
+msgid "Resolution"
+msgstr "Résolution"
+
+msgctxt "#30162"
+msgid "Random"
+msgstr "Aléatoire"
 
 msgctxt "#30200"
 msgid "Channels"
@@ -660,11 +670,11 @@ msgstr "Réinitialiser"
 
 msgctxt "#30221"
 msgid "Add:"
-msgstr "Ajouter:"
+msgstr "Ajouter :"
 
 msgctxt "#30222"
 msgid "Delete:"
-msgstr "Supprimer:"
+msgstr "Supprimer :"
 
 msgctxt "#30223"
 msgid "Rename"
@@ -732,11 +742,11 @@ msgstr "Déconnexion"
 
 msgctxt "#30310"
 msgid "Collection"
-msgstr "Collection"
+msgstr "Ma collection"
 
 msgctxt "#30311"
 msgid "Watchlist"
-msgstr "A surveiller"
+msgstr "Mes suivis"
 
 msgctxt "#30312"
 msgid "Watch"
@@ -744,7 +754,7 @@ msgstr "Regardé"
 
 msgctxt "#30313"
 msgid "Recommend"
-msgstr "Recommandé"
+msgstr "Mes recommandations"
 
 msgctxt "#30314"
 msgid "BoxOffice"
@@ -808,7 +818,7 @@ msgstr "Recherche"
 
 msgctxt "#30331"
 msgid "Calendar"
-msgstr "Calendrier des sorties VO"
+msgstr "Calendrier des sorties"
 
 msgctxt "#30332"
 msgid "TV (Official)"
@@ -833,10 +843,6 @@ msgstr "Intégration Trakt"
 msgctxt "#30341"
 msgid "Show personnal lists"
 msgstr "Afficher les listes personnelles"
-
-msgctxt "#30342"
-msgid "Movies"
-msgstr "Films"
 
 msgctxt "#30343"
 msgid "Show watchlist"
@@ -869,10 +875,6 @@ msgstr "Afficher les films les plus vus du mois"
 msgctxt "#30350"
 msgid "Replays"
 msgstr "Rediffusions TV"
-
-msgctxt "#30351"
-msgid "TV Shows"
-msgstr "Séries"
 
 msgctxt "#30352"
 msgid "Show watchlist"
@@ -908,15 +910,35 @@ msgstr "Afficher les séries les plus vues du mois"
 
 msgctxt "#30360"
 msgid "My personnal Trakt lists"
-msgstr "Listes personnelles Trakt"
+msgstr "Mes listes personnelles"
 
 msgctxt "#30361"
-msgid "Activate scrobbling"
-msgstr "Activer le suivi de lecture"
+msgid "Activate scrobbling - Movies"
+msgstr "Activer le suivi de lecture des films"
 
 msgctxt "#30362"
 msgid "My sources"
 msgstr "Mes sources actives"
+
+msgctxt "#30363"
+msgid "Activate scrobbling - TV Shows"
+msgstr "Activer le suivi de lecture des séries"
+
+msgctxt "#30365"
+msgid "Use Trakt addon for sync and notation"
+msgstr "Utiliser l'extension Trakt pour la synchronisation et la notation"
+
+msgctxt "#30366"
+msgid "Trakt addon support"
+msgstr "Intégration de l'extension Trakt"
+
+msgctxt "#30367"
+msgid "Install Trakt addon"
+msgstr "Installer l'extension Trakt"
+
+msgctxt "#30368"
+msgid "Trakt source"
+msgstr "Source Trakt"
 
 msgctxt "#30400"
 msgid "Premium/Login"
@@ -1014,45 +1036,13 @@ msgctxt "#30423"
 msgid "Search (Movies)"
 msgstr "Rechercher (Films)"
 
-msgctxt "#30424"
-msgid "Search (TV Shows)"
-msgstr "Rechercher (Séries)"
-
-msgctxt "#30425"
-msgid "Movies (Popular)"
-msgstr "Films (Populaires)"
-
-msgctxt "#30426"
-msgid "Movies (News)"
-msgstr "Films (Nouveautés)"
-
-msgctxt "#30427"
-msgid "Movies (Top Rated)"
-msgstr "Films (Les mieux notés)"
-
 msgctxt "#30428"
-msgid "Movies (Kinds)"
-msgstr "Films (Genres)"
-
-msgctxt "#30429"
-msgid "TV Shows (Popular)"
-msgstr "Séries (Populaires)"
+msgid "Kinds"
+msgstr "Genres"
 
 msgctxt "#30430"
-msgid "TV Shows (On air)"
-msgstr "Séries (Nouveautés)"
-
-msgctxt "#30431"
-msgid "TV Shows (Top Rated)"
-msgstr "Séries (Les mieux notées)"
-
-msgctxt "#30432"
-msgid "TV Shows (Kinds)"
-msgstr "Séries (Genres)"
-
-msgctxt "#30433"
-msgid "Actors (Popular)"
-msgstr "Acteurs (Populaires)"
+msgid "My favorites"
+msgstr "Mes favoris"
 
 msgctxt "#30434"
 msgid "Movies (Favorites)"
@@ -1118,10 +1108,6 @@ msgctxt "#30449"
 msgid "All Sources"
 msgstr "Toutes les sources"
 
-msgctxt "#30450"
-msgid "Search (Actor, Actress)"
-msgstr "Rechercher (Acteur, Actrice)"
-
 msgctxt "#30451"
 msgid "Default mode"
 msgstr "Mode par defaut"
@@ -1182,6 +1168,14 @@ msgctxt "#30465"
 msgid "Minute"
 msgstr "Minute"
 
+msgctxt "#30466"
+msgid "Actors"
+msgstr "Acteurs"
+
+msgctxt "#30467"
+msgid "Networks"
+msgstr "Diffuseurs"
+
 msgctxt "#30469"
 msgid "Direct link"
 msgstr "Ouvrir un lien"
@@ -1234,8 +1228,8 @@ msgstr "Désactiver toutes les sources"
 
 
 msgctxt "#31200"
-msgid "Choose the number of items to display"
-msgstr "Choisir le nombre d'elements a afficher"
+msgid "Number of items to display"
+msgstr "Nombre d'elements à afficher par page"
 
 msgctxt "#31201"
 msgid "View: Seasons (recommended 50-51-500-501-508)"
@@ -1285,18 +1279,3 @@ msgctxt "#31212"
 msgid "Select a list"
 msgstr "Choisissez une liste"
 
-msgctxt "#31213"
-msgid "Use Trakt addon for sync and notation"
-msgstr "Utiliser l'extension Trakt pour la synchronisation et la notation"
-
-msgctxt "#31214"
-msgid "Trakt addon support"
-msgstr "Intégration de l'extension Trakt"
-
-msgctxt "#31215"
-msgid "Install Trakt addon"
-msgstr "Installer l'extension Trakt"
-
-msgctxt "#31216"
-msgid "Trakt source"
-msgstr "Source Trakt"

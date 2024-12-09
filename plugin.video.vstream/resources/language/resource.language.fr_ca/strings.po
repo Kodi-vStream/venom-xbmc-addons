@@ -1,0 +1,1280 @@
+# Addon Name: vStream
+# Addon id: plugin.video.vStream
+# Addon Provider: vStream
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "Logging"
+msgstr "Logging"
+
+msgctxt "#30001"
+msgid "Videoplayer"
+msgstr "Videoplayer"
+
+msgctxt "#30002"
+msgid "Auto-activate subtitles"
+msgstr "Activation auto des sous-titres"
+
+msgctxt "#30003"
+msgid "Download completed"
+msgstr "Téléchargement terminé"
+
+msgctxt "#30004"
+msgid "Download stopped"
+msgstr "Téléchargement arrêté"
+
+msgctxt "#30005"
+msgid "Media informations"
+msgstr "Informations détaillées des médias"
+
+msgctxt "#30006"
+msgid "Search Metadata"
+msgstr "Rechercher les métadonnées"
+
+msgctxt "#30007"
+msgid "Posters Size"
+msgstr "Taille des Posters"
+
+msgctxt "#30008"
+msgid "Fanarts Size"
+msgstr "Taille des Fanarts"
+
+msgctxt "#30009"
+msgid "Use extendedinfo for the information windows"
+msgstr "Utiliser la fenetre d'information ExtendedInfo"
+
+msgctxt "#30010"
+msgid "Color Text note"
+msgstr "Couleur texte information"
+
+msgctxt "#30011"
+msgid "Initialization error"
+msgstr "Erreur initialisation"
+
+msgctxt "#30012"
+msgid "Downloads already started"
+msgstr "Téléchargements déjà démarrés"
+
+msgctxt "#30013"
+msgid "vStream update"
+msgstr "Mise à jour vStream"
+
+msgctxt "#30014"
+msgid "Update complete"
+msgstr "Mise à jour terminée"
+
+msgctxt "#30015"
+msgid "Update"
+msgstr "Mise à jour"
+
+msgctxt "#30016"
+msgid "Activate search history"
+msgstr "Activer l'historique des recherches"
+
+msgctxt "#30017"
+msgid "[COLOR azure]Select page[/COLOR]"
+msgstr "[COLOR azure]Sélectionner page[/COLOR]"
+
+msgctxt "#30018"
+msgid "[COLOR azure]Back to site[/COLOR]"
+msgstr "[COLOR azure]Retour Site[/COLOR]"
+
+msgctxt "#30019"
+msgid "Enter the page"
+msgstr "Entrer la page"
+
+msgctxt "#30020"
+msgid "File not found"
+msgstr "Fichier introuvable"
+
+msgctxt "#30021"
+msgid "General"
+msgstr "Général"
+
+msgctxt "#30022"
+msgid "Unsupported format"
+msgstr "Format non supporté"
+
+msgctxt "#30023"
+msgid "Plugins Preferences"
+msgstr "Plugins Préférences"
+
+msgctxt "#30024"
+msgid "Unable to download"
+msgstr "Téléchargement impossible"
+
+msgctxt "#30025"
+msgid "Stop Downloads"
+msgstr "Arrêter les téléchargements"
+
+msgctxt "#30026"
+msgid "IPTV and TV Guid"
+msgstr "IPTV et Guide TV"
+
+msgctxt "#30027"
+msgid "Waiting time for player (ms)"
+msgstr "Délai d'attente du lecteur (ms)"
+
+msgctxt "#30028"
+msgid "PVR addon setting"
+msgstr "Paramètre à modifier dans l'addon PVR"
+
+msgctxt "#30029"
+msgid "Play default"
+msgstr "Lecteur par défaut"
+
+msgctxt "#30030"
+msgid "Play"
+msgstr "Lecture"
+
+msgctxt "#30031"
+msgid "Metadata"
+msgstr "Métadonnées"
+
+msgctxt "#30032"
+msgid "View mode"
+msgstr "Modes d'affichage"
+
+msgctxt "#30033"
+msgid "Tools"
+msgstr "Outils"
+
+msgctxt "#30034"
+msgid "About"
+msgstr "A Propos"
+
+msgctxt "#30035"
+msgid "Support Us"
+msgstr "Soutenez-nous"
+
+msgctxt "#30036"
+msgid "Changelog"
+msgstr "Changelog"
+
+msgctxt "#30037"
+msgid "Not possible for this site"
+msgstr "Pas possible pour ce site"
+
+msgctxt "#30038"
+msgid "Bookmarking not possible for this link"
+msgstr "Mise en Marque-page impossible pour ce lien"
+
+msgctxt "#30039"
+msgid "Download List"
+msgstr "Liste des téléchargements"
+
+msgctxt "#30040"
+msgid "Clean the list (Finished files)"
+msgstr "Nettoyer la liste (Fichiers finis)"
+
+msgctxt "#30041"
+msgid "History deleted"
+msgstr "Historique supprimé"
+
+msgctxt "#30042"
+msgid "Successfully registered"
+msgstr "Enregistré avec succès"
+
+msgctxt "#30043"
+msgid "Bookmark already present"
+msgstr "Marque-page déjà présent"
+
+msgctxt "#30044"
+msgid "Bookmark deleted"
+msgstr "Marque-page supprimé"
+
+msgctxt "#30045"
+msgid "Type the link you want to read"
+msgstr "Saisir le lien que vous souhaitez ouvrir"
+
+msgctxt "#30046"
+msgid "Here is your link: "
+msgstr "Voici votre lien: "
+
+msgctxt "#30047"
+msgid "Last auto update on:"
+msgstr "Dernière mise à jour auto le:"
+
+msgctxt "#30048"
+msgid "Next update check on:"
+msgstr "Prochaine vérification de mise à jour le:"
+
+msgctxt "#30049"
+msgid "Path ffmpeg"
+msgstr "Chemin ffmpeg"
+
+msgctxt "#30050"
+msgid "Recording path"
+msgstr "Chemin d'enregistrement"
+
+msgctxt "#30051"
+msgid "Activate recording"
+msgstr "Activer l'enregistrement"
+
+msgctxt "#30052"
+msgid "Minute automatically added to the chosen duration (in minutes)"
+msgstr "Minute ajoutée automatiquement à la durée choisie (en minute)"
+
+msgctxt "#30053"
+msgid "Time interval between each time check (in seconds)"
+msgstr "Intervalle de temps entre chaque vérification de l'heure (en seconde)"
+
+msgctxt "#30054"
+msgid "Url of your log:"
+msgstr "Url de votre log:"
+
+msgctxt "#30055"
+msgid "Import/Export the BDD (Bookmark, History, etc.)"
+msgstr "Importer/Exporter la BDD (Marque-Page, Historique, etc..)"
+
+msgctxt "#30056"
+msgid "Remove BDD from vStream"
+msgstr "Supprime les BDD de vStream"
+
+msgctxt "#30057"
+msgid "Delete a database"
+msgstr "Supprimer une BDD"
+
+msgctxt "#30058"
+msgid "Removes the BDD from the cache for metadata"
+msgstr "Supprime la BDD du cache pour les métadonnées"
+
+msgctxt "#30059"
+msgid "Delete temporary Kodi files"
+msgstr "Supprime les fichiers temporaire de Kodi"
+
+msgctxt "#30060"
+msgid "Delete temporary browsing files from Kodi"
+msgstr "Supprime les fichiers de navigation temporaire de Kodi"
+
+msgctxt "#30061"
+msgid "Clear .fi Files"
+msgstr "Effacer les fichiers .fi"
+
+msgctxt "#30062"
+msgid "Deletes temporary Kodi physical and BDD image files"
+msgstr "Supprime les fichiers images temporaire de Kodi physique et BDD"
+
+msgctxt "#30063"
+msgid "Clear Thumbnails"
+msgstr "Effacer les vignettes"
+
+msgctxt "#30064"
+msgid "Refresh Skin"
+msgstr "Rafraîchir le Skin"
+
+msgctxt "#30065"
+msgid "Using UrlResolver will allow you to use premium link generators"
+msgstr "Utiliser UrlResolver vous permettra d'utiliser les débrideurs"
+
+msgctxt "#30066"
+msgid "Go through UrlResolver"
+msgstr "Passer par UrlResolver"
+
+msgctxt "#30067"
+msgid "Configure UrlResolver"
+msgstr "Configurer UrlResolver"
+
+msgctxt "#30068"
+msgid "WARNING: vStream does not manage this part,[CR] remember to deactivate it if the videos no longer work."
+msgstr "ATTENTION: vStream ne gère pas cette partie,[CR] pensez à le désactiver si les vidéos ne marchent plus."
+
+msgctxt "#30069"
+msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
+msgstr "A moins d'avoir un débrideur,[CR] cocher cette case vous apportera plus de problèmes que d'avantages."
+
+msgctxt "#30070"
+msgid "Language"
+msgstr "Langues des informations"
+
+msgctxt "#30071"
+msgid "Updated list"
+msgstr "Liste mise à jour"
+
+msgctxt "#30072"
+msgid "File deleted"
+msgstr "Élément supprimé"
+
+msgctxt "#30073"
+msgid "Error, file cannot be deleted"
+msgstr "Erreur, fichier non supprimable"
+
+msgctxt "#30074"
+msgid "Are you sure you want to delete this file? \nNon-reversible operation."
+msgstr "Voulez vous vraiment supprimer ce fichier ? \nOpération non réversible."
+
+msgctxt "#30075"
+msgid "Starting the full list"
+msgstr "Démarrage de la liste complète"
+
+msgctxt "#30076"
+msgid "Search"
+msgstr "Rechercher"
+
+msgctxt "#30077"
+msgid "[COLOR gold]Select your search for: %s[/COLOR]"
+msgstr "[COLOR gold]Sélectionnez votre recherche pour : %s[/COLOR]"
+
+msgctxt "#30081"
+msgid "[COLOR gold]Results for: %s[/COLOR]"
+msgstr "[COLOR gold]Résultats pour : %s[/COLOR]"
+
+msgctxt "#30082"
+msgid "Name already used"
+msgstr "Nom déjà utilisé"
+
+msgctxt "#30083"
+msgid "Add to download list"
+msgstr "Ajout en liste de téléchargement"
+
+msgctxt "#30084"
+msgid "Unable to download"
+msgstr "Téléchargement impossible"
+
+msgctxt "#30085"
+msgid "Download failed"
+msgstr "Echec du téléchargement"
+
+msgctxt "#30086"
+msgid "Download Started"
+msgstr "Téléchargement démarré"
+
+msgctxt "#30087"
+msgid "Clear Cache vStream, Error"
+msgstr "Nettoyage du cache vStream, Erreur"
+
+msgctxt "#30088"
+msgid "Visual search"
+msgstr "Recherche thématique"
+
+msgctxt "#30089"
+msgid "Clear vStream Cache, Successful"
+msgstr "Nettoyage du cache vStream, Réussi"
+
+msgctxt "#30090"
+msgid "Suppression Database, Successful"
+msgstr "Réinitialisation des données : Réussi"
+
+msgctxt "#30091"
+msgid "Suppression Database, Error"
+msgstr "Suppression BDD, Erreur"
+
+msgctxt "#30092"
+msgid "Clear Kodi Cache, Successful[CR](Important relaunch Kodi)"
+msgstr "Nettoyage du cache Kodi, Réussi[CR](Important relancer Kodi)"
+
+msgctxt "#30093"
+msgid "Clear Kodi Cache, Error"
+msgstr "Nettoyage du cache Kodi, Erreur"
+
+msgctxt "#30094"
+msgid "Select your Sources"
+msgstr "Sélectionner vos Sources"
+
+msgctxt "#30095"
+msgid "Clear Archive_cache Cache, Successful[CR](Important relaunch Kodi)"
+msgstr "Nettoyage du Cache Archive_cache, Réussi[CR](Important relancer Kodi)"
+
+msgctxt "#30096"
+msgid "Clear Archive_cache Cache, Error"
+msgstr "Nettoyage du Cache Archive_cache, Erreur"
+
+msgctxt "#30097"
+msgid "This code must be transmitted when you open an Issue, please note it:"
+msgstr "Ce code doit être transmis lorsque vous ouvrez une Issue, veuillez le noter:"
+
+msgctxt "#30098"
+msgid "Are you sure? This will erase all thumbnails"
+msgstr "Êtes-vous sûr ? Ceci effacera toutes les vignettes"
+
+msgctxt "#30099"
+msgid "Import/Export Database, Successful"
+msgstr "Import/Export de la Base de Données, Réussi"
+
+msgctxt "#30100"
+msgid "Import/Export Database, Error"
+msgstr "Import/Export de la Base de Données, Erreur"
+
+msgctxt "#30101"
+msgid "News"
+msgstr "Nouveautés"
+
+msgctxt "#30102"
+msgid "Most seeing"
+msgstr "Populaires"
+
+msgctxt "#30103"
+msgid "Most commented"
+msgstr "Les plus commentés"
+
+msgctxt "#30104"
+msgid "Top rated"
+msgstr "Les mieux notés"
+
+msgctxt "#30105"
+msgid "Genres"
+msgstr "Genres"
+
+msgctxt "#30106"
+msgid "Years"
+msgstr "Années"
+
+msgctxt "#30107"
+msgid "VF"
+msgstr "VF"
+
+msgctxt "#30108"
+msgid "VOSTFR"
+msgstr "VOSTFR"
+
+msgctxt "#30109"
+msgid "Children"
+msgstr "Enfants"
+
+msgctxt "#30110"
+msgid "Database to delete"
+msgstr "Base de données à supprimer"
+
+msgctxt "#30111"
+msgid "Alpha"
+msgstr "Alphabétique"
+
+msgctxt "#30112"
+msgid "Documentary"
+msgstr "Documentaires"
+
+msgctxt "#30113"
+msgid "Sports"
+msgstr "Sports"
+
+msgctxt "#30114"
+msgid "Web video"
+msgstr "Vidéos du net"
+
+msgctxt "#30115"
+msgid "Television"
+msgstr "Télévision"
+
+msgctxt "#30116"
+msgid "All the sources"
+msgstr "Sources dans les menus et les recherches"
+
+msgctxt "#30117"
+msgid "TV replay"
+msgstr "TV replay"
+
+msgctxt "#30119"
+msgid "Live"
+msgstr "En cours"
+
+msgctxt "#30120"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#30121"
+msgid "Tvshow"
+msgstr "Séries"
+
+msgctxt "#30122"
+msgid "Animes"
+msgstr "Japanimes"
+
+msgctxt "#30123"
+msgid "Lists"
+msgstr "Listes"
+
+msgctxt "#30124"
+msgid "Dramas"
+msgstr "Dramas"
+
+msgctxt "#30125"
+msgid "Continue watching"
+msgstr "Mes visionnages en cours"
+
+msgctxt "#30126"
+msgid "All categories"
+msgstr "Toutes les catégories"
+
+msgctxt "#30127"
+msgid "Tools"
+msgstr "Outils"
+
+msgctxt "#30128"
+msgid "Clear Cache vStream"
+msgstr "Vider le Cache de vStream"
+
+msgctxt "#30129"
+msgid "Clear Cache Kodi"
+msgstr "Vider le Cache de Kodi"
+
+msgctxt "#30130"
+msgid "My videos"
+msgstr "Mes contenus"
+
+msgctxt "#30131"
+msgid "Streaming"
+msgstr "Vidéos à la demande"
+
+msgctxt "#30132"
+msgid "Live"
+msgstr "En direct"
+
+msgctxt "#30133"
+msgid "Movies"
+msgstr "Cinéma"
+
+msgctxt "#30134"
+msgid "Recently added"
+msgstr "Derniers ajouts"
+
+msgctxt "#30135"
+msgid "Direct search"
+msgstr "Recherche directe"
+
+msgctxt "#30137"
+msgid "Music"
+msgstr "Musique"
+
+msgctxt "#30138"
+msgid "Sources"
+msgstr "Sources"
+
+msgctxt "#30139"
+msgid "Collections"
+msgstr "Sagas"
+
+msgctxt "#30140"
+msgid "Loading"
+msgstr "Chargement "
+
+msgctxt "#30141"
+msgid "Loading infos"
+msgstr "Chargement des informations"
+
+msgctxt "#30142"
+msgid "Resolve"
+msgstr "Obtention du lien"
+
+msgctxt "#30143"
+msgid "Make a donation"
+msgstr "Nous soutenir"
+
+
+msgctxt "#30145"
+msgid "Download folder"
+msgstr "Dossier de téléchargement"
+
+msgctxt "#30146"
+msgid "Pastebin URL"
+msgstr "Autre hébergeur Pastebin"
+
+
+
+msgctxt "#30160"
+msgid "Quality HD"
+msgstr "Qualité HD"
+
+msgctxt "#30161"
+msgid "Resolution"
+msgstr "Résolution"
+
+msgctxt "#30162"
+msgid "Random"
+msgstr "Aléatoire"
+
+msgctxt "#30200"
+msgid "Channels"
+msgstr "Chaines"
+
+msgctxt "#30201"
+msgid "Playlist"
+msgstr "Ajouter à la liste de lecture"
+
+msgctxt "#30202"
+msgid "Download"
+msgstr "Télécharger"
+
+msgctxt "#30203"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#30204"
+msgid "[COLOR red]No item[/COLOR]"
+msgstr "[COLOR red]Aucun élément[/COLOR]"
+
+msgctxt "#30205"
+msgid "Connection Failed"
+msgstr "Connexion Impossible"
+
+msgctxt "#30206"
+msgid "Mark view/Not view"
+msgstr "Marquer vu/Non vu"
+
+msgctxt "#30207"
+msgid "My bookmarks"
+msgstr "Mes marque-pages"
+
+msgctxt "#30208"
+msgid "Information"
+msgstr "Information"
+
+msgctxt "#30209"
+msgid "[COLOR red]Delete Bookmark[/COLOR]"
+msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
+
+msgctxt "#30210"
+msgid "Bookmark"
+msgstr "Marque-page"
+
+msgctxt "#30211"
+msgid "[COLOR red]Clear this category[/COLOR]"
+msgstr "[COLOR red]Vider cette catégorie[/COLOR]"
+
+msgctxt "#30212"
+msgid "Trailer"
+msgstr "Bande annonce"
+
+msgctxt "#30213"
+msgid "Search"
+msgstr "Rechercher"
+
+msgctxt "#30214"
+msgid "Trakt"
+msgstr "Trakt"
+
+msgctxt "#30215"
+msgid "Start download"
+msgstr "Démarrer le téléchargement"
+
+msgctxt "#30216"
+msgid "Remove from list"
+msgstr "Supprimer de la liste"
+
+msgctxt "#30217"
+msgid "[COLOR red]Delete definitely[/COLOR]"
+msgstr "[COLOR red]Supprimer définitivement[/COLOR]"
+
+msgctxt "#30218"
+msgid "Stop download"
+msgstr "Arrêter le téléchargement"
+
+msgctxt "#30219"
+msgid "Read"
+msgstr "Lire"
+
+msgctxt "#30220"
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgctxt "#30221"
+msgid "Add:"
+msgstr "Ajouter :"
+
+msgctxt "#30222"
+msgid "Delete:"
+msgstr "Supprimer :"
+
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
+msgctxt "#30224"
+msgid "Downloads"
+msgstr "Téléchargements"
+
+msgctxt "#30225"
+msgid "Records"
+msgstr "Enregistrements TV"
+
+msgctxt "#30226"
+msgid "Records"
+msgstr "Enregistrement du direct"
+
+msgctxt "#30227"
+msgid "Open settings"
+msgstr "Ouvrir les paramètres"
+
+msgctxt "#30228"
+msgid "Request registered"
+msgstr "Demande enregistrée"
+
+msgctxt "#30229"
+msgid "My downloads"
+msgstr "Mes téléchargements"
+
+msgctxt "#30300"
+msgid "Library"
+msgstr "Médiathèque"
+
+msgctxt "#30301"
+msgid "To configure in kodi if you want them to be imported"
+msgstr "A configurer dans kodi si vous voulez qu'ils soient importés"
+
+msgctxt "#30302"
+msgid "Auto update"
+msgstr "Mise à jour à chaque ajout"
+
+msgctxt "#30303"
+msgid "Media folders"
+msgstr "Dossiers médias"
+
+msgctxt "#30304"
+msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
+msgstr "Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/COLOR]"
+
+msgctxt "#30305"
+msgid "[COLOR khaki]Click here to login[/COLOR]"
+msgstr "[COLOR khaki]Cliquez ici, pour vous connecter[/COLOR]"
+
+msgctxt "#30306"
+msgid "[COLOR khaki]Hello, %s[/COLOR]"
+msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
+
+msgctxt "#30308"
+msgid "Search history"
+msgstr "Historique de recherche"
+
+msgctxt "#30309"
+msgid "Disconnection"
+msgstr "Déconnexion"
+
+msgctxt "#30310"
+msgid "Collection"
+msgstr "Ma collection"
+
+msgctxt "#30311"
+msgid "Watchlist"
+msgstr "Mes suivis"
+
+msgctxt "#30312"
+msgid "Watch"
+msgstr "Regardé"
+
+msgctxt "#30313"
+msgid "Recommend"
+msgstr "Mes recommandations"
+
+msgctxt "#30314"
+msgid "BoxOffice"
+msgstr "Box-Office"
+
+msgctxt "#30315"
+msgid "Popular"
+msgstr "Populaire"
+
+msgctxt "#30316"
+msgid "Most viewed this week"
+msgstr "Les plus vus de la semaine"
+
+msgctxt "#30317"
+msgid "Most viewed of the month"
+msgstr "Les plus vus du mois"
+
+msgctxt "#30318"
+msgid "Watchlist (seasons)"
+msgstr "A surveiller (saisons)"
+
+msgctxt "#30319"
+msgid "Watchlist (episodes)"
+msgstr "A surveiller (épisodes)"
+
+msgctxt "#30320"
+msgid "You have successfully logged out"
+msgstr "Vous avez été déconnecté avec succès"
+
+msgctxt "#30321"
+msgid "my viewing history"
+msgstr "Mon historique de visionnage"
+
+msgctxt "#30324"
+msgid "Add to media"
+msgstr "Ajouter aux médias"
+
+msgctxt "#30325"
+msgid "Add to UpToBox"
+msgstr "Ajouter sur Uptobox"
+
+msgctxt "#30326"
+msgid "Download and Play"
+msgstr "Télécharger et Lire"
+
+msgctxt "#30327"
+msgid "1Fichier"
+msgstr "1Fichier"
+
+msgctxt "#30328"
+msgid "Token"
+msgstr "Token"
+
+msgctxt "#30329"
+msgid "Token (Optional)"
+msgstr "Token (Optionnel)"
+
+msgctxt "#30330"
+msgid "Search"
+msgstr "Recherche"
+
+msgctxt "#30331"
+msgid "Calendar"
+msgstr "Calendrier des sorties"
+
+msgctxt "#30332"
+msgid "TV (Official)"
+msgstr "Chaines (TNT)"
+
+msgctxt "#30333"
+msgid "Activate Premium"
+msgstr "Activer Premium"
+
+msgctxt "#30334"
+msgid "Premium Token"
+msgstr "Token Premium"
+
+msgctxt "#30339"
+msgid "Test"
+msgstr "Tester le token"
+
+msgctxt "#30340"
+msgid "Trakt integration"
+msgstr "Intégration Trakt"
+
+msgctxt "#30341"
+msgid "Show personnal lists"
+msgstr "Afficher les listes personnelles"
+
+msgctxt "#30343"
+msgid "Show watchlist"
+msgstr "Afficher la liste 'A Surveiller'"
+
+msgctxt "#30344"
+msgid "Show watched list"
+msgstr "Afficher les films vus"
+
+msgctxt "#30345"
+msgid "Show recommended movies"
+msgstr "Afficher les films recommandés"
+
+msgctxt "#30346"
+msgid "Show BoxOffice"
+msgstr "Afficher les Box-Office"
+
+msgctxt "#30347"
+msgid "Show popular"
+msgstr "Afficher les films populaires"
+
+msgctxt "#30348"
+msgid "Show most weekly viewed"
+msgstr "Afficher les films les plus vus de la semaine"
+
+msgctxt "#30349"
+msgid "Show most monthly viewed"
+msgstr "Afficher les films les plus vus du mois"
+
+msgctxt "#30350"
+msgid "Replays"
+msgstr "Rediffusions TV"
+
+msgctxt "#30352"
+msgid "Show watchlist"
+msgstr "Afficher la liste 'A Surveiller'"
+
+msgctxt "#30353"
+msgid "Show seasons watchlist"
+msgstr "Afficher la liste des saisons à surveiller"
+
+msgctxt "#30354"
+msgid "Show episodes watchlist"
+msgstr "Afficher la liste des épisodes à surveiller"
+
+msgctxt "#30355"
+msgid "Show watched list"
+msgstr "Afficher les séries vues"
+
+msgctxt "#30356"
+msgid "Show recommended TV Shows"
+msgstr "Afficher les séries recommandées"
+
+msgctxt "#30357"
+msgid "Show popular"
+msgstr "Afficher les séries populaires"
+
+msgctxt "#30358"
+msgid "Show most weekly viewed"
+msgstr "Afficher les séries les plus vues de la semaine"
+
+msgctxt "#30359"
+msgid "Show most monthly viewed"
+msgstr "Afficher les séries les plus vues du mois"
+
+msgctxt "#30360"
+msgid "My personnal Trakt lists"
+msgstr "Mes listes personnelles"
+
+msgctxt "#30361"
+msgid "Activate scrobbling - Movies"
+msgstr "Activer le suivi de lecture des films"
+
+msgctxt "#30362"
+msgid "My sources"
+msgstr "Mes sources actives"
+
+msgctxt "#30363"
+msgid "Activate scrobbling - TV Shows"
+msgstr "Activer le suivi de lecture des séries"
+
+msgctxt "#30365"
+msgid "Use Trakt addon for sync and notation"
+msgstr "Utiliser l'extension Trakt pour la synchronisation et la notation"
+
+msgctxt "#30366"
+msgid "Trakt addon support"
+msgstr "Intégration de l'extension Trakt"
+
+msgctxt "#30367"
+msgid "Install Trakt addon"
+msgstr "Installer l'extension Trakt"
+
+msgctxt "#30368"
+msgid "Trakt source"
+msgstr "Source Trakt"
+
+msgctxt "#30400"
+msgid "Premium/Login"
+msgstr "Premium/Login"
+
+msgctxt "#30401"
+msgid "Username"
+msgstr "Utilisateur"
+
+msgctxt "#30402"
+msgid "Password"
+msgstr "Mot de passe"
+
+msgctxt "#30403"
+msgid "Activate"
+msgstr "Activer"
+
+msgctxt "#30404"
+msgid "View : Movies (recommended 50-51-500-501-508)"
+msgstr "Vue : Films (recommandé 50-51-500-501-508)"
+
+msgctxt "#30405"
+msgid "View: Tvshow (recommended 50-51-500-501-508)"
+msgstr "Vue: Séries (recommandé 50-51-500-501-508)"
+
+msgctxt "#30406"
+msgid "View: Default (recommended 50-51-500)"
+msgstr "Vue: Défaut (recommandé 50-51-500)"
+
+msgctxt "#30407"
+msgid "Vue: Home (recommended 50-51-500)"
+msgstr "Vue: Accueil (recommandé 50-51-500)"
+
+msgctxt "#30408"
+msgid "Enable customized view"
+msgstr "Activer vue personnalisée"
+
+msgctxt "#30409"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "#30410"
+msgid "Misc"
+msgstr "Divers"
+
+msgctxt "#30411"
+msgid "Enable sound notifications"
+msgstr "Activer le son des notifications"
+
+msgctxt "#30412"
+msgid "[COLOR red]Remove item[/COLOR]"
+msgstr "[COLOR red]Retirer l'élément[/COLOR]"
+
+msgctxt "#30413"
+msgid "[COLOR red]Delete history[/COLOR]"
+msgstr "[COLOR red]Supprimer l'historique[/COLOR]"
+
+msgctxt "#30414"
+msgid "[COLOR gold]Full TV Show search[/COLOR]"
+msgstr "[COLOR gold]Recherche série complète[/COLOR]"
+
+msgctxt "#30415"
+msgid "[COLOR gold]Full season search[/COLOR]"
+msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
+
+msgctxt "#30416"
+msgid "[COLOR gold]Search history[/COLOR]"
+msgstr "[COLOR gold]Sélectionner pour lancer une recherche[/COLOR]"
+
+msgctxt "#30417"
+msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
+msgstr "[COLOR orange]Recherche sur Alluc_ee[/COLOR]"
+
+msgctxt "#30418"
+msgid "[COLOR green]Update available[/COLOR]"
+msgstr "[COLOR green]Mise à jour disponible[/COLOR]"
+
+msgctxt "#30419"
+msgid "View: Visual search (recommended 500)"
+msgstr "Vue: Recherche Visuelle (recommandé 500)"
+
+msgctxt "#30420"
+msgid "Enable/Disable sources"
+msgstr "Activer/Désactiver des sources"
+
+msgctxt "#30421"
+msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
+msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR] Approuver vStream, puis seulement ensuite cliquez OUI"
+
+msgctxt "#30422"
+msgid "Enable log records"
+msgstr "Activer les enregistrements de log"
+
+msgctxt "#30423"
+msgid "Search (Movies)"
+msgstr "Rechercher (Films)"
+
+msgctxt "#30428"
+msgid "Kinds"
+msgstr "Genres"
+
+msgctxt "#30430"
+msgid "My favorites"
+msgstr "Mes favoris"
+
+msgctxt "#30434"
+msgid "Movies (Favorites)"
+msgstr "Films (Favoris)"
+
+msgctxt "#30435"
+msgid "Movies (Rated)"
+msgstr "Films (Notés)"
+
+msgctxt "#30436"
+msgid "Movies (Watched)"
+msgstr "Films (Liste de suivi)"
+
+msgctxt "#30437"
+msgid "TV Shows (Favorites)"
+msgstr "Séries (Favoris)"
+
+msgctxt "#30438"
+msgid "TV Shows (Rated)"
+msgstr "Séries (Notées)"
+
+msgctxt "#30439"
+msgid "Episodes (Rated)"
+msgstr "Episodes (Notés)"
+
+msgctxt "#30440"
+msgid "TV Shows (Watched)"
+msgstr "Séries (Liste de suivi)"
+
+msgctxt "#30441"
+msgid "My Lists"
+msgstr "Mes Listes"
+
+msgctxt "#30442"
+msgid "You must be logged in"
+msgstr "Vous devez être connecté"
+
+msgctxt "#30443"
+msgid "Add: rated"
+msgstr "Ajouter: Vote"
+
+msgctxt "#30444"
+msgid "Add: Watched"
+msgstr "Ajouter à la liste de suivi"
+
+msgctxt "#30445"
+msgid "Add: Favorites"
+msgstr "Ajouter aux favoris"
+
+msgctxt "#30446"
+msgid "[COLOR red]Delete: Watched[/COLOR]"
+msgstr "[COLOR red]Supprimer de la liste de suivi[/COLOR]"
+
+msgctxt "#30447"
+msgid "[COLOR red]Delete: Favorites[/COLOR]"
+msgstr "[COLOR red]Supprimer des favoris[/COLOR]"
+
+msgctxt "#30448"
+msgid "Select a quality"
+msgstr "Sélectionner une qualité"
+
+msgctxt "#30449"
+msgid "All Sources"
+msgstr "Toutes les sources"
+
+msgctxt "#30451"
+msgid "Default mode"
+msgstr "Mode par defaut"
+
+msgctxt "#30452"
+msgid "Always ask me"
+msgstr "Proposer les deux modes"
+
+msgctxt "#30453"
+msgid "Continue streaming via UpToStream"
+msgstr "Passer en Streaming via UpToStream"
+
+msgctxt "#30454"
+msgid "Continue direct via UpToBox"
+msgstr "Rester en direct via UpToBox"
+
+msgctxt "#30455"
+msgid "My accounts"
+msgstr "Mes comptes"
+
+msgctxt "#30456"
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr ?"
+
+msgctxt "#30457"
+msgid "Trailer"
+msgstr "Bande-Annonce"
+
+msgctxt "#30458"
+msgid "Recommended"
+msgstr "Recommandé"
+
+msgctxt "#30459"
+msgid "Similar"
+msgstr "Similaire"
+
+msgctxt "#30460"
+msgid "Casting"
+msgstr "Distribution"
+
+msgctxt "#30461"
+msgid "Synopsis"
+msgstr "Résumé"
+
+msgctxt "#30462"
+msgid "Director"
+msgstr "Réalisateur"
+
+msgctxt "#30463"
+msgid "Release date"
+msgstr "Date de sortie"
+
+msgctxt "#30464"
+msgid "Duration"
+msgstr "Durée"
+
+msgctxt "#30465"
+msgid "Minute"
+msgstr "Minute"
+
+msgctxt "#30466"
+msgid "Actors"
+msgstr "Acteurs"
+
+msgctxt "#30467"
+msgid "Networks"
+msgstr "Diffuseurs"
+
+msgctxt "#30469"
+msgid "Direct link"
+msgstr "Ouvrir un lien"
+
+msgctxt "#30470"
+msgid "Addon dnspython missing"
+msgstr "Addon dnspython manquant"
+
+msgctxt "#30480"
+msgid "Small loading spinner"
+msgstr "Sablier de chargement réduit"
+
+msgctxt "#30481"
+msgid "Interface"
+msgstr "Interface"
+
+# upnext
+msgctxt "#30505"
+msgid "Would you like to automatically play the next episode?"
+msgstr "Voulez-vous activer l'enchainement des épisodes ?"
+
+msgctxt "#30506"
+msgid "Automatically play the next episode"
+msgstr "Activer l'enchainement des épisodes"
+
+# Alldebrid
+msgctxt "#31000"
+msgid "Multimedia folder URL (Optional)"
+msgstr "URL du dossier multimedia (Optionnel)"
+
+msgctxt "#31101"
+msgid "Url"
+msgstr "Url"
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
+msgstr "Utiliser la fenetre d'information du skin"
+
+msgctxt "#31103"
+msgid "Allow adult content"
+msgstr "Autoriser le contenu pour adultes"
+
+msgctxt "#31104"
+msgid "Enable all sources"
+msgstr "Activer toutes les sources"
+
+msgctxt "#31105"
+msgid "Disable all sources"
+msgstr "Désactiver toutes les sources"
+
+
+msgctxt "#31200"
+msgid "Number of items to display"
+msgstr "Nombre d'elements à afficher par page"
+
+msgctxt "#31201"
+msgid "View: Seasons (recommended 50-51-500-501-508)"
+msgstr "Vue: Saisons (recommandé 50-51-500-501-508)"
+
+msgctxt "#31202"
+msgid "View: Episodes (recommended 50-51-500-501-508)"
+msgstr "Vue: Episodes (recommandé 50-51-500-501-508)"
+
+msgctxt "#31203"
+msgid "IP address for Flaresolverr"
+msgstr "Adresse IP pour Flaresolverr"
+
+msgctxt "#31204"
+msgid "Display season and episode in title"
+msgstr "Afficher la saison et l'épisode dans le titre"
+
+msgctxt "#31205"
+msgid "Display"
+msgstr "Affichage"
+
+msgctxt "#31206"
+msgid "Use FlareSolverr"
+msgstr "Utiliser FlareSolverr"
+
+msgctxt "#31207"
+msgid "Display file infos"
+msgstr "Afficher les infos média du lien (si disponible)"
+
+msgctxt "#31208"
+msgid "Remaining sites: %s"
+msgstr "Sites restants : %s"
+
+msgctxt "#31209"
+msgid "Results: %s"
+msgstr "Résultats : [COLOR deepskyblue]%s[/COLOR]"
+
+msgctxt "#31210"
+msgid "Add to new list"
+msgstr "Ajouter à une nouvelle liste"
+
+msgctxt "#31211"
+msgid "Add to existing list"
+msgstr "Ajouter à une liste existante"
+
+msgctxt "#31212"
+msgid "Select a list"
+msgstr "Choisissez une liste"
+
