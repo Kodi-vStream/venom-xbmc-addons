@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.vstream" name="vStream" version="2.9.11" provider-name="venom-xbmc-addons">
+<addon id="plugin.video.vstream" name="vStream" version="3.0.0" provider-name="venom-xbmc-addons">
     <requires>
 
         <trycatch>
             <try>
                 <import addon="xbmc.python" version="3.0.0"/>
             </try>
-
             <catch>
                 <import addon="xbmc.python" version="2.24.0"/>
             </catch>
@@ -51,7 +50,7 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="fr_FR">vStream par Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
         <description lang="fr_FR">vStream est un module de streaming Francais, retrouvez tous vos films, series, japanimes, documentaires, reportages, concerts, sports,...</description>
-        <disclaimer lang="fr_FR">vStream est un addon de streaming videos</disclaimer>
+        <disclaimer lang="fr_FR">vStream est un addon de streaming videos. Obtenez du support auprès de notre partenaire [COLOR red]"les alKODIques"[/COLOR].</disclaimer>
         <summary lang="fr_CA">vStream par Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
         <description lang="fr_CA">vStream est un module de streaming Francais, trouvez tous vos films, series et mangas.</description>
         <disclaimer lang="fr_CA">vStream est un addon de streaming videos</disclaimer>
