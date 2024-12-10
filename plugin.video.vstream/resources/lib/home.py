@@ -573,7 +573,7 @@ class cHome:
     def showDonation(self):
         from resources.lib.librecaptcha.gui import cInputWindowYesNo
         inputText = 'Merci pour votre soutien, il permet de maintenir ce projet.\r\nScanner ce code ou rendez vous sur :\r\nhttps://www.paypal.com/paypalme/kodivstream'
-        oSolver = cInputWindowYesNo(captcha='special://home/addons/plugin.video.vstream/paypal.png', msg=inputText, roundnum=1, okDialog=True)
+        oSolver = cInputWindowYesNo(captcha='special://home/addons/plugin.video.vstream/paypal.jpg', msg=inputText, roundnum=1, okDialog=True)
         oSolver.get()
 
 
