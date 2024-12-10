@@ -297,7 +297,7 @@
         },
         "viki_com": {
             "label": "Viki",
-            "active": "True",
+            "active": "False",
             "url": "https://www.viki.com/"
         },
         "voiranime": {
