@@ -57,12 +57,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'turbovid', 'Turbovid')
 
-    def setUrl(self, url):
-        self._url = url
-
     def _getMediaLinkForGuest(self):
-        api_call = False
-
         sPattern = 'iframe id="iframe" src="([^"]+)"'
         oParser = cParser()
         

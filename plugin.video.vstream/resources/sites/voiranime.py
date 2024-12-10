@@ -43,11 +43,11 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VF)', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -84,16 +84,9 @@ def showAlpha():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    progress_ = progress().VScreate(SITE_NAME)
-
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in range(-1, 27):
-        progress_.VSupdate(progress_, 36)
-
-        if i == -1:
-            sTitle = 'ALL'
-            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('?start=', ''))
-        elif i == 0:
+    for i in range(0, 27):
+        if i == 0:
             sTitle = '#'
             oOutputParameterHandler.addParameter('siteUrl', sUrl + 'non-char')
         else:
@@ -102,8 +95,6 @@ def showAlpha():
 
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'showAnimes', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
-
-    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -246,8 +237,8 @@ def showEpisodes():
     oParser = cParser()
     sPattern = '<div class="summary__content ">.+?<p>([^<]+)'  # recup description
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[0])
+    if aResult[0]:
+        sDesc = aResult[1][0]
 
     sPattern = '<li class="wp-manga-chapter.+?="([^"]+)".+?([^<]+)'  # Recup lien + titre
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -257,27 +248,6 @@ def showEpisodes():
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
-
-        # Dernier épisode
-        sUrlEpisode = aResult[1][0][0]
-        sTitle = aResult[1][0][1]
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrlEpisode)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Dernier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
-
-        # Premier épisode
-        sUrlEpisode = aResult[1][-1][0]
-        sTitle = aResult[1][-1][1]
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrlEpisode)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Premier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
-
         # Liste des épisodes
         for aEntry in aResult[1]:
             sUrlEpisode = aEntry[0]
@@ -310,7 +280,7 @@ def showLinks():
     sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
 
     oParser = cParser()
-    sPattern = '<option data-redirect=.+?value="([^"]+)">LECTEUR.+?</option>'
+    sPattern = '<option data-redirect=.+?value="([^"]+)" *>LECTEUR.+?</option>'
 
     aResult = oParser.parse(sData, sPattern)
 

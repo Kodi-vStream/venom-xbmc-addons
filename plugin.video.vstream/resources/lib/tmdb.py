@@ -48,7 +48,7 @@ class cTMDb:
         10759: 'Action & Aventure',
         10762: 'Kids',
         10763: 'News',
-        10764: 'Realité',
+        10764: 'Réalité',
         10765: 'Science-Fiction & Fantastique',
         10766: 'Feuilleton',
         10767: 'Talk',
@@ -75,7 +75,7 @@ class cTMDb:
         self.debug = debug
         self.lang = self.ADDON.getSetting('tmdb_lang')
         if not self.lang:
-            self.lang = 'fr'
+            self.lang = 'fr-FR'
         self.poster = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('backdrop_tmdb')
 
@@ -301,6 +301,18 @@ class cTMDb:
                 tmdb_id = meta['results'][0]['id']
                 return tmdb_id
 
+        return False
+
+    # Retourne le nom du média en français, depuis l'id
+    def get_namebyid(self, mediaType, tmdbid):
+    
+        meta = self._call('%s/%s' % (mediaType, tmdbid))
+    
+        # si pas de résultat avec l'année, on teste sans l'année
+        if 'title' in meta:
+            return meta['title'] # titre de film
+        if 'name' in meta:
+            return meta['name'] # titre de série
         return False
 
     # Search for movies by title.
@@ -797,17 +809,17 @@ class cTMDb:
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
-            sql_select = 'SELECT *, episode.title, episode.poster_path, episode.premiered, '\
-                'episode.guest_stars, episode.year, episode.plot, '\
+            sql_select = 'SELECT tvshow.backdrop_path, season.poster_path, episode.title, episode.tmdb_id, episode.poster_path as poster_thumb, episode.premiered, '\
+                'episode.guest_stars, episode.year, episode.plot, episode.tagline, '\
                 'episode.director, episode.writer, episode.rating, episode.votes '\
-                'FROM episode LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id'
+                'FROM episode LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id LEFT JOIN season ON episode.tmdb_id = season.tmdb_id'
             if tmdb_id:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select += ' WHERE tvshow.title = \'%s\'' % name
                 if year:
                     sql_select = sql_select + ' AND tvshow.year = %s' % year
-            sql_select += ' AND episode.season = \'%s\' AND episode.episode = \'%s\'' % (season, episode)
+            sql_select += ' AND episode.season = \'%s\' AND episode.episode = \'%s\' AND season.season = \'%s\'' % (season, episode, season)
         else:
             return None
 
@@ -1030,7 +1042,8 @@ class cTMDb:
         """
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
-        name = name.replace('VF','').replace('VOSTFR','')
+        name = name.replace('VOSTFR','')
+        name = re.sub('(\W|_|^)FR(\W|_|$)', '', name) # FR s'il n'est pas entouré de caractere
         cleanTitle = None
         
         # VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))

@@ -16,7 +16,7 @@ from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
 
 SITE_IDENTIFIER = 'radio'
-SITE_NAME = '[COLOR orange]Radio[/COLOR]'
+SITE_NAME = 'Radio'
 SITE_DESC = 'Radio'
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
@@ -43,13 +43,13 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'radio.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) + ' (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30105), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30111), 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -66,7 +66,7 @@ def showGenres():
     for sTitle, sIdent in liste:
         oOutputParameterHandler.addParameter('siteUrl', '')
         oOutputParameterHandler.addParameter('ident', sIdent)
-        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'music.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

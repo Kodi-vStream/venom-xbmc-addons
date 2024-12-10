@@ -24,14 +24,14 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        self._url = str(url)
         sPattern = 'https*:\/\/speedvideo.[a-z]{3}\/(?:embed-)?([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(url, sPattern)
         if aResult[0] is True:
-            self._url = 'https://speedvideo.net/embed-' + aResult[1][0] + '.html'
+            url = 'https://speedvideo.net/embed-' + aResult[1][0] + '.html'
         else:
             VSlog('ID error')
+        super(cHoster, self).setUrl(url)
 
     def _getMediaLinkForGuest(self):
         api_call = False

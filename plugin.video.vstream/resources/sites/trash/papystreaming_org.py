@@ -75,7 +75,7 @@ def showMenuFilms():
 #    Résultat des comments et des views identiques
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-#    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
+#    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
@@ -101,7 +101,7 @@ def showMenuSeries():
 #    Résultat des comments et des views identiques
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-#    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
+#    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])

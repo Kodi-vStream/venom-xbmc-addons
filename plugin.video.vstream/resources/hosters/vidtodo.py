@@ -20,15 +20,16 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'vidtodo', 'VidToDo')
 
     def setUrl(self, url):
-        self._url = str(url)
-        if 'embed-' in self._url:
-            self._url = self._url.replace('embed-', '')
-        if not self._url.startswith('https'):
-            self._url = self._url.replace('http', 'https')
+        if 'embed-' in url:
+            url = url.replace('embed-', '')
+        if not url.startswith('https'):
+            url = url.replace('http', 'https')
+        if not url.endswith('.html'):
+            url = url + '.html'
 
-        if not self._url.endswith('.html'):
-            self._url = self._url + '.html'
+        super(cHoster, self).setUrl(url)
 
+    
     def extractSmil(self, smil):
         oRequest = cRequestHandler(smil)
         oRequest.addParameters('referer', self._url)

@@ -97,7 +97,7 @@ def showGenres():
     liste.append(['Aventure', 'category/films/longs-metrages/aventure-longs-metrages/'])
     liste.append(['Cinématiques', 'category/films/longs-metrages/cinematiques-jeux-video-longs-metrages/'])
     liste.append(['Comédie', 'category/films/longs-metrages/comedies-longs-metrages/'])
-    liste.append(['Documentaires', 'category/films/longs-metrages/documentaires/'])
+    liste.append(['Documentaire', 'category/films/longs-metrages/documentaires/'])
     liste.append(['Drame', 'category/films/longs-metrages/drame-longs-metrages/'])
     liste.append(['Historique', 'category/films/longs-metrages/historique-longs-metrages/'])
     liste.append(['Horreur', 'category/films/longs-metrages/horreur-longs-metrages/'])
@@ -109,7 +109,7 @@ def showGenres():
     liste.append(['[COLOR yellow]Moyens métrages[/COLOR]', 'category/films/moyens-metrages/'])
     liste.append(['Aventure', 'category/films/moyens-metrages/aventure-moyens-metrages/'])
     liste.append(['Comédie', 'category/films/moyens-metrages/comedie-moyens-metrages/'])
-    liste.append(['Documentaires', 'category/films/moyens-metrages/documentaire-moyens-metrages/'])
+    liste.append(['Documentaire', 'category/films/moyens-metrages/documentaire-moyens-metrages/'])
     liste.append(['Horreur', 'category/films/moyens-metrages/horreur-moyens-metrages/'])
     liste.append(['Thriller', 'category/films/moyens-metrages/thriller-moyens-metrages/'])
 
@@ -118,7 +118,7 @@ def showGenres():
     liste.append(['Action', 'category/films/courts-metrages/action-courts-metrages/'])
     liste.append(['Aventure', 'category/films/courts-metrages/aventure-courts-metrages/'])
     liste.append(['Comédie', 'category/films/courts-metrages/comedie-courts-metrages/'])
-    liste.append(['Documentaires', 'category/films/courts-metrages/documentaires-courts-metrages/'])
+    liste.append(['Documentaire', 'category/films/courts-metrages/documentaires-courts-metrages/'])
     liste.append(['Drame', 'category/films/courts-metrages/drame-courts-metrages/'])
     liste.append(['Fantastique', 'category/films/courts-metrages/fantastique-courts-metrages/'])
     liste.append(['Guerre', 'category/films/courts-metrages/guerre-courts-metrages/'])
@@ -130,7 +130,7 @@ def showGenres():
     for sTitle, sUrl in liste:
 
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -148,7 +148,7 @@ def showSeriesGenres():
     liste.append(['Animation', 'category/seriesweb/animation-series/'])
     liste.append(['Aventure', 'category/seriesweb/aventure-series/'])
     liste.append(['Comédie', 'category/seriesweb/comedie-series/'])
-    liste.append(['Documentaires', 'category/seriesweb/documentaires-series/'])
+    liste.append(['Documentaire', 'category/seriesweb/documentaires-series/'])
     liste.append(['Drame', 'category/seriesweb/drame-series/'])
     liste.append(['Fantastique', 'category/seriesweb/fantastique-series/'])
     liste.append(['Manga', 'category/seriesweb/manga-series/'])
@@ -160,7 +160,7 @@ def showSeriesGenres():
     liste.append(['[COLOR yellow]WebSéries[/COLOR]', 'category/webseries/'])
     liste.append(['Action', 'category/webseries/action-webseries/'])
     liste.append(['Comédie', 'category/webseries/comedie-webseries/'])
-    liste.append(['Documentaires', 'category/webseries/documentaires-webseries/'])
+    liste.append(['Documentaire', 'category/webseries/documentaires-webseries/'])
     liste.append(['Drame', 'category/webseries/drame-webseries/'])
     liste.append(['Fantastique', 'category/webseries/fantastique-webseries/'])
     liste.append(['Histoire', 'category/webseries/histoire-webseries/'])
@@ -175,7 +175,7 @@ def showSeriesGenres():
     for sTitle, sUrl in liste:
 
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

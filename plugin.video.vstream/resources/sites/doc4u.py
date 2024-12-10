@@ -223,6 +223,7 @@ def showHosters():
 
     # premier type de liens
     sPattern = 'a href="(https:[^"]+)" class="su-button su-button-style-flat".+?</i>([^<]+)'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         for aEntry in aResult[1]:
@@ -246,10 +247,17 @@ def showHosters():
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
             # elif "cuty" in sUrl:
-            #     oRequestHandler = cRequestHandler(sUrl)
-            #     sHtmlContent = oRequestHandler.request()
+            #     sUrl = sUrl.replace('cuty.io', 'cety.app')
+            #
+            #     oRequest = cRequestHandler(sUrl)
+            #     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            #     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
+            #     oRequest.addHeaderEntry('Accept-Encoding', 'gzip, deflate, br, zstd')
+            #     oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7')
+            #
+            #     sHtmlContent = oRequest.request()
             #     referer = sUrl
-            #     sUrl = oRequestHandler.getRealUrl()
+            #     sUrl = oRequest.getRealUrl()
             #     sPattern = '<form id="submit-form" action=".+?value="([^"]+)'
             #
             #     aResultUrl = oParser.parse(sHtmlContent, sPattern)

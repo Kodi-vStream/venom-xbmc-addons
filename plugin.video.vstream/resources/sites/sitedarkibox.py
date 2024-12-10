@@ -42,10 +42,10 @@ def load():
 
     # Compte obligatoire
     if not cPremiumHandler('darkibox').getToken():
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un compte DarkiBox' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un compte DarkiBox' + '[/COLOR]', '')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', '//')
-        oGui.addDir(SITE_IDENTIFIER, 'opensetting', addon().VSlang(30023), 'none.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'opensetting', addon().VSlang(30023), 'parametres.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
         return
 
@@ -432,7 +432,7 @@ def addFolders(oGui, content, sSearchCat, searchFolder=None):
                 sThumb = 'doc.png'
             elif 'SPECTACLE' in sTitle.upper():
                 sCat = 'film'
-                sThumb = 'star.png'
+                sThumb = 'genres.png'
             elif 'CONCERT' in sTitle.upper():
                 sCat = 'film'
                 sThumb = 'music.png'
@@ -709,7 +709,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'tv.png', file['thumbnail'], '', oOutputParameterHandler)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', file['thumbnail'], '', oOutputParameterHandler)
 
     return nbFile
 

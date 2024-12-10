@@ -50,7 +50,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, CHAINE_DIRECT[1], 'Chaines en direct', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', VOD[0])
-    oGui.addDir(SITE_IDENTIFIER, VOD[1], 'Programmes disponibles en VOD', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VOD[1], 'Vidéos à la demande', 'vod.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

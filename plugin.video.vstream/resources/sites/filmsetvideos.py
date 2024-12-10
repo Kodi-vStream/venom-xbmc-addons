@@ -65,7 +65,7 @@ def showMovieGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', 'films/genre/' + genre)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

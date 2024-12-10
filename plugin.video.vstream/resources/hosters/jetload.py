@@ -16,8 +16,8 @@ class cHoster(iHoster):
             ' ' + '(Il faut pairer son ip au site https://jlpair.net/ tous les 3h)'
 
     def setUrl(self, url):
-        self._url = str(url)
-        self._url = self._url.replace('/e/', '/api/fetch/')
+        super(cHoster, self).setUrl(url.replace('/e/', '/api/fetch/'))
+        
 
     def _getMediaLinkForGuest(self):
         api_call = False

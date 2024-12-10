@@ -6,14 +6,16 @@ import time
 import unicodedata
 import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog
+from resources.lib.comaddon import addon, dialog, addonManager, VSlog
+from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import Quote
+from resources.lib.util import cUtil
+from resources.lib.viewing import cViewing
+
 
 SITE_IDENTIFIER = 'cTrakt'
 SITE_NAME = 'Trakt'
@@ -26,6 +28,14 @@ API_VERS = '2'
 
 MAXRESULT = addon().getSetting('trakt_number_element')
 
+
+'''
+API
+
+Matrice des actions
+https://github.com/vankasteelj/trakt.tv/blob/master/docs/available_methods.md
+
+'''
 
 class cTrakt:
     CONTENT = '0'
@@ -54,6 +64,7 @@ class cTrakt:
                 return False
 
             if (oDialog == 1):
+
                 try:
                     oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
                     oRequestHandler.setRequestType(1)
@@ -66,25 +77,22 @@ class cTrakt:
                     if sHtmlContent['access_token']:
                         self.ADDON.setSetting('bstoken', str(sHtmlContent['access_token']))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
+
+                        # si l'addon est installé, le lier et désactiver le suivi vStream  
+                        if addonManager().isAddonExists('script.trakt'):
+                            self.ADDON.setSetting('install_trakt_addon', 'true')
+                            self.ADDON.setSetting('trakt_movies_activate_scrobbling', 'false')
+                            self.ADDON.setSetting('trakt_tvshows_activate_scrobbling', 'false')
+                        else:
+                            self.ADDON.setSetting('install_trakt_addon', 'false')
+                            self.ADDON.setSetting('trakt_movies_activate_scrobbling', 'true')
+                            self.ADDON.setSetting('trakt_tvshows_activate_scrobbling', 'true')
                         return
                 except:
                     pass
 
             return
         return
-
-    def search(self):
-        oGui = cGui()
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
-        oOutputParameterHandler.addParameter('type', 'movie')
-        oGui.addDir('themoviedb_org', 'showSearchMovie', self.ADDON.VSlang(30423), 'films.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('type', 'show')
-        oGui.addDir('themoviedb_org', 'showSearchSerie', self.ADDON.VSlang(30424), 'series.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
 
     def getLoad(self):
         # pour regen le token()
@@ -93,7 +101,7 @@ class cTrakt:
 
         oOutputParameterHandler = cOutputParameterHandler()
         if self.ADDON.getSetting('bstoken') == '':
-            VSlog('bstoken invalid')
+            VSlog('TRAKT - bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getToken', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
@@ -114,178 +122,334 @@ class cTrakt:
             if (total > 0):
                 sUsername = sHtmlContent['username']
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
-                oGui.addText(SITE_IDENTIFIER, (self.ADDON.VSlang(30306)) % sUsername)
+                oGui.addText(SITE_IDENTIFIER, (self.ADDON.VSlang(30306)) % sUsername, 'profile.png')
 
-            oOutputParameterHandler.addParameter('siteUrl', 'https://')
-            oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'search', self.ADDON.VSlang(30330), 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
 
-            oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
 
-            oOutputParameterHandler.addParameter('type', 'show')
-            oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
+            # oOutputParameterHandler.addParameter('type', 'custom-lists')
+            # oGui.addDir(SITE_IDENTIFIER, 'showMenuList', "Listes", 'listes.png', oOutputParameterHandler)
 
-            if self.ADDON.getSetting('trakt_show_lists') == 'true':
-                oOutputParameterHandler.addParameter('type', 'custom-lists')
-                oGui.addDir(SITE_IDENTIFIER, 'menuList', "Listes", 'trakt.png', oOutputParameterHandler)
+            # Menu inutile - oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
+            # Menu inutile - oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'search.png', oOutputParameterHandler)
 
-            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
-            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
-
-            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'trakt.png', oOutputParameterHandler)
-
+            # oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
+            # oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'annees.png', oOutputParameterHandler)
+            
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
-    def menuList(self):
+    def showMenuList(self):
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
-        oOutputParameterHandler.addParameter('type', 'lists-tendances')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes tendances", 'trakt.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'users/me/lists')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'listes.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('type', 'lists-pop')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes populaires", 'trakt.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'users/likes/lists')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'listes.png', oOutputParameterHandler)  
 
-        oOutputParameterHandler.addParameter('type', 'custom-lists')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'lists/popular')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes populaires", 'listes.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('type', 'liked-lists')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'trakt.png', oOutputParameterHandler)  
+        oOutputParameterHandler.addParameter('siteUrl', 'lists/trending')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes tendances", 'listes.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory() 
 
-    def getCalendrier(self):
+#    def getCalendrier(self):
+#        oGui = cGui()
+#
+#        today_date = str(datetime.datetime.now().date())
+#
+#        # DANGER ca rame, freeze
+#        liste = []
+#        liste.append(['En diffusion cette semaine', URL_API + 'calendars/my/shows/' + today_date + '/7'])
+#        # Menu inutile - liste.append(['Mes sorties sur les 30 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/30'])
+#        # Menu inutile - liste.append(['Nouveautées sur 7 jours', URL_API + 'calendars/all/shows/new/' + today_date + '/7'])
+#
+#        for sTitle, sUrl in liste:
+#
+#            oOutputParameterHandler = cOutputParameterHandler()
+#            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+#            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'listes.png', oOutputParameterHandler)
+#
+#        oGui.setEndOfDirectory()
+
+
+    def showMenuMovies(self):
         oGui = cGui()
+        oOutputParameterHandler = cOutputParameterHandler()
 
-        today_date = str(datetime.datetime.now().date())
+        # visionnage en cours
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/playback/movies?type=movies')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30125), 'vod.png', oOutputParameterHandler)
 
-        # DANGER ca rame, freeze
-        liste = []
-        liste.append(['Mes sorties sur les 7 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/7'])
-        liste.append(['Mes sorties sur les 30 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/30'])
-        liste.append(['Nouveautées sur 7 jours', URL_API + 'calendars/all/shows/new/' + today_date + '/7'])
+        # historique
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/history/movies?type=movies')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30321), 'history.png', oOutputParameterHandler)
 
-        for sTitle, sUrl in liste:
+        # favoris
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/favorites/movies/added')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30430), 'mark.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'genres.png', oOutputParameterHandler)
+        # watchlist
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/watchlist/movies/added')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30311), 'pin.png', oOutputParameterHandler)
+
+        # Collection
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/collection/movies')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30310), 'listes.png', oOutputParameterHandler)
+
+        # Listes personnelles
+        oOutputParameterHandler.addParameter('siteUrl', 'users/me/lists')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'listes.png', oOutputParameterHandler)
+
+        # Listes aimées
+        oOutputParameterHandler.addParameter('siteUrl', 'users/likes/lists')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'listes.png', oOutputParameterHandler)  
+
+        # recommandés
+        oOutputParameterHandler.addParameter('siteUrl', 'recommendations/movies?ignore_collected=true&ignore_watchlisted=true&limit=100')
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30313), 'announce.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
-    def getLists(self):
+
+    def showMenuTvShows(self):
+        oGui = cGui()
+        oOutputParameterHandler = cOutputParameterHandler()
+
+        # Visionnage en cours, NON, pas interessant d'avoir la liste des épisodes non terminés
+        # liste.append([self.ADDON.VSlang(30125), URL_API + 'sync/playback/episodes?type=episodes'])
+        
+        # visionnage en cours
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/watched/shows?type=show')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30125), 'vod.png', oOutputParameterHandler)
+#            liste.append([self.ADDON.VSlang(30125), URL_API + 'sync/watched/shows?type=show'])
+
+        # # historique de visionnage
+        #     liste.append([self.ADDON.VSlang(30321), URL_API + 'sync/watched/shows?extended=noseasons'])
+#            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows'])
+
+        # favoris
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/favorites/shows/added')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30430), 'mark.png', oOutputParameterHandler)
+#            liste.append([self.ADDON.VSlang(30430), URL_API + 'sync/favorites/shows/added'])
+
+        # watchlist
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/watchlist/shows/added')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30311), 'pin.png', oOutputParameterHandler)
+#            liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows'])
+
+        # Collection
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/collection/shows')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30310), 'listes.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'users/me/lists')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'listes.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'users/likes/lists')
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'listes.png', oOutputParameterHandler)  
+
+        # liste.append([self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons'])
+        # liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes'])
+
+        # calendrier des sorties
+        today_date = str(datetime.datetime.now().date())
+        oOutputParameterHandler.addParameter('siteUrl', 'calendars/my/shows/' + today_date + '/7')
+        oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30331), 'annees.png', oOutputParameterHandler)
+
+
+        # # recommandés
+        # oOutputParameterHandler.addParameter('siteUrl', 'recommendations/shows?ignore_collected=true&ignore_watchlisted=true&limit=100')
+        # oOutputParameterHandler.addParameter('sCat', '2')
+        # oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30313), 'announce.png', oOutputParameterHandler)
+        #
+        # # populaire
+        # oOutputParameterHandler.addParameter('siteUrl', 'shows/trending')
+        # oOutputParameterHandler.addParameter('sCat', '2')
+        # oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30315), 'popular.png', oOutputParameterHandler)
+        #
+        # # les mieux notés
+        # oOutputParameterHandler.addParameter('siteUrl', 'shows/popular')
+        # oOutputParameterHandler.addParameter('sCat', '2')
+        # oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30104), 'notes.png', oOutputParameterHandler)
+        # # Chercher une liste
+        # oOutputParameterHandler.addParameter('sCat', '2')
+        # oGui.addDir(SITE_IDENTIFIER, 'showSearchList', 'Chercher une liste', 'notes.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+
+    def showSearchList(self):
+        oGui = cGui()
+    
+        sSearchText = oGui.showKeyBoard()
+        if sSearchText:
+            oInputParameterHandler = cInputParameterHandler()
+            sCat = oInputParameterHandler.getValue('sCat')
+            self.searchList(sSearchText, sCat)
+            return
+
+
+    def searchList(self, sSearchText, sCat):
+        
         oGui = cGui()
 
-        oInputParameterHandler = cInputParameterHandler()
-        sType = oInputParameterHandler.getValue('type')
+        sUrl = URL_API + 'search/list?query=' + sSearchText
 
-        # stats user
-        oRequestHandler = cRequestHandler(URL_API + 'users/me/stats')
+        oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        
+        listes = oRequestHandler.request(jsonDecode=True)
+        oOutputParameterHandler = cOutputParameterHandler()
+        
+        listes = sorted(listes, key=lambda liste: liste['list']['likes'])
 
-        liste = []
-        if sType == 'movie':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['movies']['collected']), URL_API + 'users/me/collection/movies'])
-
-            if self.ADDON.getSetting('trakt_movies_show_watchlist') == 'true':
-                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT)])
-
-            if self.ADDON.getSetting('trakt_movies_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['movies']['watched']), URL_API + 'users/me/watched/movies'])
-
-            if self.ADDON.getSetting('trakt_movies_show_recommended') == 'true':
-                liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'])
-
-            if self.ADDON.getSetting('trakt_movies_show_boxoffice') == 'true':
-                liste.append([self.ADDON.VSlang(30314), URL_API + 'movies/boxoffice'])
-
-            if self.ADDON.getSetting('trakt_movies_show_popular') == 'true':
-                liste.append([self.ADDON.VSlang(30315), URL_API + 'movies/popular'])
-
-            if self.ADDON.getSetting('trakt_movies_show_most_weekly') == 'true':
-                liste.append([self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly'])
-
-            if self.ADDON.getSetting('trakt_movies_show_most_monthly') == 'true':
-                liste.append([self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly'])
-
-        elif sType == 'show':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_watchlist') == 'true':
-                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_watchlist_seasons') == 'true':
-                liste.append([self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_watchlist_episodes') == 'true':
-                liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['shows']['watched']), URL_API + 'users/me/watched/shows'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
-                liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_popular') == 'true':
-                liste.append([self.ADDON.VSlang(30315), URL_API + 'shows/popular'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_most_weekly') == 'true':
-                liste.append([self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly'])
-
-            if self.ADDON.getSetting('trakt_tvshows_show_most_monthly') == 'true':
-                liste.append([self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly'])
-
-        elif sType == 'custom-lists':
-            oRequestHandler = cRequestHandler(URL_API + 'users/me/lists')
-            oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
-            oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
-            oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-            sHtmlContent = oRequestHandler.request(jsonDecode=True)
-
-            for List in sHtmlContent:
-                url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
-                liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
-
-        elif sType == 'liked-lists' or sType == 'lists-tendances' or sType == 'lists-pop':
-            if sType == 'liked-lists':
-                URL = URL_API + '/users/likes/lists'
-            elif sType == "lists-tendances":
-                URL = URL_API + '/lists/trending'
-            elif sType == 'lists-pop':
-                URL = URL_API + 'lists/popular'
-
-            oRequestHandler = cRequestHandler(URL)
-            oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
-            oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
-            oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-            sHtmlContent = oRequestHandler.request(jsonDecode=True)
-
-            for List in sHtmlContent:
-                if sType == 'liked-lists':
-                    url = URL_API + 'users/' + List['list']['user']['ids']['slug'] + '/lists/' + List['list']['ids']['slug'] + '/items'
-                else:
-                    url = URL_API + '/lists/' + List['list']['ids']['slug'] + '/items'
-
-                liste.append([self.decode((List['list']['name'] + ' (' + str(List['list']['item_count']) + ')')), url])
-
-        for sTitle, sUrl in liste:
-            oOutputParameterHandler = cOutputParameterHandler()
+        
+        for item in listes[::-1]:
+            liste = item['list']
+            itemCount = liste['item_count']
+            if itemCount < 3:
+                continue
+            sTitle = '%s (%s)' % (liste['name'], itemCount)
+            desc = liste['description']
+            sUrl = '/lists/%d/items' % liste['ids']['trakt']
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'genres.png', oOutputParameterHandler)
-
+            oOutputParameterHandler.addParameter('sCat', sCat)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'library.png', oOutputParameterHandler, desc)
+            
         oGui.setEndOfDirectory()
+
+
+    def getLists(self, count = 0, sPage=None):
+        oGui = cGui()
+        bNext = count==0
+        oInputParameterHandler = cInputParameterHandler()
+        sCat = oInputParameterHandler.getValue('sCat')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        if not sPage:
+            sPage = oInputParameterHandler.getValue('sPage') 
+        if not sPage:
+            sPage = '1'
+
+        # Pagination
+        sUrl = '%s?page=%s&limit=%s' % (siteUrl, sPage, MAXRESULT)
+
+        oRequestHandler = cRequestHandler(URL_API + sUrl)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        if 'users/' in sUrl or '/sync/' in sUrl:
+            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        listes = oRequestHandler.request(jsonDecode=True)
+        
+        if len(listes):
+
+            # trie de la liste par alpha
+            if '/me/' in sUrl:
+                listes = sorted(listes, key=lambda liste: liste['name'])
+            # elif 'likes/' in sUrl:
+            #     listes = sorted(listes, key=lambda liste: liste['list']['name'])
+            
+            for liste in listes:
+                if '/me/' in sUrl:
+                    sUrl = 'users/me/lists/' + liste['ids']['slug'] + '/items'
+                elif '/likes/' in sUrl:
+                    liste = liste['list']
+                    sUrl = 'users/' + liste['user']['ids']['slug'] + '/lists/' + liste['ids']['slug'] + '/items'
+                else:
+                    liste = liste['list']
+                    sUrl = '/lists/%d/items' % liste['ids']['trakt']
+
+                listName = liste['name']
+                listNameUpper = listName.upper()
+
+                # détecter si liste de films ou séries selon le nom
+                found = False
+                if sCat == '1':
+                    searchTypeMovie = ('FILM', 'MOVIE', 'OSCAR', 'CESAR', 'CÉSAR', 'BLOCKBUSTER', 'CINEMA', 'CINÉMA', 'TUEURS EN SERIES', 'CRITERION')
+                    for movieType in searchTypeMovie:
+                        if movieType in listNameUpper:
+                            found = True
+                            break
+                
+                # détecter si liste de films ou séries selon le nom
+                if sCat == '2':
+                    searchTypeMovie = ('SERIE', 'SÉRIE')
+                    for movieType in searchTypeMovie:
+                        if movieType in listNameUpper:
+                            found = True
+                            break
+                
+                
+                # détecter si liste de films ou séries selon le contenu
+                if not found:
+                    oRequestHandler = cRequestHandler(URL_API + sUrl)
+                    oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+                    oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+                    oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                    sHtmlContent = oRequestHandler.request(jsonDecode=True)
+                    if len(sHtmlContent):
+                        searchMedia = 'movie' if sCat == '1' else 'show'
+#                        media = sHtmlContent[0]
+                        for media in sHtmlContent:
+                            if searchMedia in media:
+                                found = True
+                                break
+
+                if found:
+                    count += 1
+                    sTitle = '%s (%d)' % (self.decode(listName), liste['item_count'])
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('sCat', sCat)
+                    oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'library.png', oOutputParameterHandler, liste['description'])
+    
+    
+            if 'me/' not in siteUrl:
+                iPage = int(sPage)
+#                ratio = 5+count/ iPage  # pour arreter si trop de pages sans résultats  
+                sNextPage =str(iPage + 1)
+                
+                if count < int(MAXRESULT):# and ratio > 3.0:
+                    self.getLists(count, sNextPage)
+                else:  
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                    oOutputParameterHandler.addParameter('sCat', sCat)
+                    oOutputParameterHandler.addParameter('sPage', sNextPage)
+                    oGui.addNext(SITE_IDENTIFIER, 'getLists', 'Page suivante', oOutputParameterHandler)
+    
+
+        if bNext:
+            oGui.setEndOfDirectory()
+
 
     def getBsout(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -310,12 +474,12 @@ class cTrakt:
 
         return
 
+
     def decode(self, elem, Unicode=False):
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             return elem
         else:
             if Unicode == True:
-
                 try:
                     elem = unicodedata.normalize('NFD', unicode(elem)).encode('ascii', 'ignore').decode('unicode_escape')
                 except UnicodeDecodeError:
@@ -325,67 +489,79 @@ class cTrakt:
 
             return elem.encode('utf-8')
 
-    def getTrakt(self, url2=None):
+
+    def getTrakt(self, count = 0, sPage=None):
         oGui = cGui()
-
+        maxResult = int(MAXRESULT)
+        bNext = count==0
         oInputParameterHandler = cInputParameterHandler()
-        if url2:
-            sUrl = url2
-        else:
-            sCurrentLimit = oInputParameterHandler.getValue('limite') 
-            sUrl = oInputParameterHandler.getValue('siteUrl')
+        sCurrentLimit = oInputParameterHandler.getValue('limite')
+        sCat = oInputParameterHandler.getValue('sCat')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        traktUrl = sUrl = URL_API + siteUrl
+        if not sPage:
+            sPage = oInputParameterHandler.getValue('sPage') 
+        if not sPage:
+            sPage = 1
 
-        sUrl = sUrl + "?page=1&limit=" + MAXRESULT
+        if 'limit' not in siteUrl:
+            traktUrl += ("%spage=%s&limit=%d") % ('&' if '?' in sUrl else '?', sPage, maxResult)
 
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(traktUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
+            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
         sHeaders = oRequestHandler.getResponseHeader()
 
-        # Fonctionnement specifique au calendrier.
-        if 'X-Pagination-Page-Count' not in sHeaders:
-            if sCurrentLimit == False:
-                sCurrentLimit = 0
-            else:
-                # Supprimer les elements deja afficher.
-                sHtmlContent = sHtmlContent[int(sCurrentLimit):]
+        # tri inverse pour certaines listes
+        if 'sync/collection/movies' in sUrl:
+            sHtmlContent = sHtmlContent[::-1] 
 
-            if len(sHtmlContent) > 20:
-                total = int(MAXRESULT)
-            else:
-                total = len(sHtmlContent)
-        else:
-            total = len(sHtmlContent)
 
         if 'X-Pagination-Page' in sHeaders:
             sPage = sHeaders['X-Pagination-Page']
-        if 'X-Pagination-Page-Count' in sHeaders:
-            sMaxPage = sHeaders['X-Pagination-Page-Count']
+        iPage = int(sPage)
+
+        # Pour les API sans pagination, on pagine le resultat complet
+        total = len(sHtmlContent)
+        iMaxPage = 1
+        if 'X-Pagination-Page-Count' not in sHeaders:
+            if not sCurrentLimit:
+                sCurrentLimit = 0
+            else:
+                # Se déplacer derriere les elements deja affichés
+                sHtmlContent = sHtmlContent[int(sCurrentLimit):]
+            if total > maxResult:
+                total = maxResult
+        else:
+            iMaxPage = int(sHeaders['X-Pagination-Page-Count'])
+
 
         sKey = 0
         sFunction = 'getLoad'
         sId = SITE_IDENTIFIER
         searchtext = ''
         sTitle = ''
+        sTmdb = None
         sOldDate = None
+        tmdbIds = set()
+        saisonsWatched = list()
         
         if (total > 0):
-            progress_ = progress().VScreate(SITE_NAME)
+            
+            # synchroniser avec trakt les medias entamés seulement lorsqu'on arrive sur la premiere page
+            if '/watched/' in sUrl:
+                if sCurrentLimit == 0 and iPage == 1 :
+                    self.setEpisodeProgress()
 
             for i in sHtmlContent:
-                # Limite les elements du calendrier
-                if not 'X-Pagination-Page-Count' in sHeaders:
-                    if progress_.getProgress() >= int(MAXRESULT):
-                        break
 
-                progress_.VSupdate(progress_, total)
-                if progress_.iscanceled():
-                    break
+                progress = 0
 
-                if 'collection' in sUrl:
+                if '/collection/' in sUrl:
 
                     try:
                         sDate = i['last_collected_at']
@@ -398,7 +574,7 @@ class cTrakt:
                         sTrakt, sYear, sImdb, sTmdb = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb']
 
                         cTrakt.CONTENT = '2'
-                        sFunction = 'getBseasons'
+                        sFunction = 'showSearch'
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
@@ -409,40 +585,48 @@ class cTrakt:
                         sId = 'globalSearch'
 
                     sTitle = self.decode(sTitle)
-                    searchtext = ('%s') % (sTitle)
+                    searchtext = sTitle
+                    sFile = sTitle
+# NON, pour les skins
+#                   if sYear:
+#                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
 
-                    if sYear:
-                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
-                    else:
-                        sFile = ('%s') % (sTitle)
-                        sTitle = ('%s') % (sTitle)
-
-                elif 'history' in sUrl:
-                    # commun
+                elif '/history/' in sUrl:
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
                     if 'episode' in i:
-                        sType = 'Episode'
                         eps = i['episode']
-                        sTitle = self.getLocalizedTitle(i, 'episodes')
-                        sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'], eps['number']
-                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
+                        # Utiliser le titre de la série et récupérer les images associées
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows')
+                        sPoster = show['images']['poster']['full'] if 'images' in show and 'poster' in show['images'] else None
+                        sFanart = show['images']['fanart']['full'] if 'images' in show and 'fanart' in show['images'] else None
+                        sTrakt, sImdb, sTmdb, sSeason, sNumber = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], eps['season'], eps['number']
                         cTrakt.CONTENT = '2'
                     else:
-                        sType = 'Film'
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
-                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
-                        sExtra = ('(%s)') % (sYear)
+                        sPoster = movie['images']['poster']['full'] if 'images' in movie and 'poster' in movie['images'] else None
+                        sFanart = movie['images']['fanart']['full'] if 'images' in movie and 'fanart' in movie['images'] else None
+                        sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
                         cTrakt.CONTENT = '1'
 
+                    # masquer les doublons
+                    if sTmdb in tmdbIds:
+                        count = count +1    # compte quand même pour ne pas passer à la page suivante
+                        continue
+                    tmdbIds.add(sTmdb)
+                    
                     sTitle = self.decode(sTitle, Unicode=True)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s - (%s)') % (sTitle, sExtra)
-                    sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, 'vu', sTitle, sExtra)
+                    searchtext = sTitle
+                    sFile = sTitle
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    if sPoster:
+                        oOutputParameterHandler.addParameter('poster', sPoster)
+                    if sFanart:
+                        oOutputParameterHandler.addParameter('backdrop', sFanart)
 
-                elif 'watchlist' in sUrl:
+                elif '/watchlist/' in sUrl or '/favorites/' in sUrl:
                     # commun
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -467,19 +651,60 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
 
                     sTitle = self.decode(sTitle, Unicode=True)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s %s') % (sTitle, sExtra)
-                    sTitle = ('%s %s') % (sTitle, sExtra)
+                    searchtext = sTitle
+                    sFile = sTitle
 
-                elif 'watched' in sUrl:
-                    # commun
-                    sPlays = i['plays']
+                # Lecture en progression
+                elif '/playback/' in sUrl :
+                    sSeason = sEpisode = None
+
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         cTrakt.CONTENT = '2'
-                        sFunction = 'getBseasons'
+                        sSeason = i['episode']['season']
+                        sEpisode = i['episode']['number']
+                        sFunction = 'showSearch'
+                        sId = 'globalSearch'
+                    else:
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
+                        cTrakt.CONTENT = '1'
+                        sFunction = 'showSearch'
+                        sId = 'globalSearch'
+
+                    # récuperer les points de lecture
+                    progress = i['progress']
+                    
+                    # au moins 5% de lecture pour proposer le film
+                    if progress < 5:
+                        continue
+                    
+                    self.setMediaProgress(sTmdb, sTitle, sSeason, sEpisode, progress)
+
+                    if sTitle:
+                        sTitle = self.decode(sTitle, Unicode=True)
+                        searchtext = sTitle
+                        sFile = sTitle
+
+                # historique de lecture
+                elif '/watched/' in sUrl:
+                    # commun
+                    if 'show' in i:
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows')
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
+                        cTrakt.CONTENT = '2'
+#                        sFunction = 'getBseasons'
+                        #media['episode']['season'], media['episode']['number']
+                        sFunction = 'showSearch'
+                        sId = 'globalSearch'
+                        
+                        # Indicateur VU
+                        saisonsWatched.append(i)
+
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
@@ -490,13 +715,12 @@ class cTrakt:
 
                     if sTitle:
                         sTitle = self.decode(sTitle, Unicode=True)
-                        searchtext = ('%s') % (sTitle)
-                        sFile = ('%s - %s') % (sTitle, sYear)
-                        sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
+                        searchtext = sTitle
+                        sFile = sTitle
 
-                elif 'played' in sUrl:
+                elif '/played/' in sUrl:
                     # commun
-                    sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
+                    #sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
                     if 'show' in i:
@@ -511,20 +735,24 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
 
                     sTitle = self.decode(sTitle)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s - (%s)') % (sTitle, int(sYear))
-                    sTitle = ('%s - (%s)') % (sTitle, int(sYear))
+                    searchtext = sTitle
+                    sFile = sTitle
 
-                elif 'calendars' in sUrl:
+                elif '/calendars/' in sUrl:
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year'], i['first_aired']
                         sSaison, sEpisode = i['episode']['season'], i['episode']['number']
+                        searchtext = sTitle
+                        sFile = sTitle
+                        sTitle = 'S%sE%s - %s' % (sSaison, sEpisode, sTitle)
                         cTrakt.CONTENT = '2'
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
+                        searchtext = sTitle
+                        sFile = sTitle
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year'], i['first_aired']
                         cTrakt.CONTENT = '1'
 
@@ -532,19 +760,14 @@ class cTrakt:
                         sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
                         if sOldDate != sDate:
                             sOldDate = sDate
-                            oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episode prévu pour le :' + sOldDate + '[/COLOR]')
+                            oGui.addText(SITE_IDENTIFIER, '[COLOR orange]En diffusion le : %s[/COLOR]' % sOldDate, 'annees.png')
 
                         sTitle = self.decode(sTitle)
-                        searchtext = ('%s') % (sTitle)
-                        sFile = sTitle
-                        if sYear:
-                            sFile += ' - (%s)' % sYear
-                        sTitle = ('%s S%02dE%02d') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
-                elif 'search' in sUrl:
+                elif '/search/' in sUrl:
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
@@ -560,11 +783,10 @@ class cTrakt:
                         sId = 'globalSearch'
 
                     sTitle = self.decode(sTitle, Unicode=True)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s - (%s)') % (sTitle, sYear)
-                    sTitle = ('%s (%s)') % (sTitle, sYear)
+                    searchtext = sTitle
+                    sFile = sTitle
 
-                elif 'recommendations' in sUrl or 'popular' in sUrl:
+                elif '/recommendations/' in sUrl or '/popular' in sUrl:
                     if 'shows' in sUrl:
                         sTitle = self.getLocalizedTitle(i, 'shows')
                         cTrakt.CONTENT = '2'
@@ -573,89 +795,267 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
                     sTrakt, sYear, sImdb, sTmdb = i['ids']['trakt'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     sTitle = self.decode(sTitle)
-                    searchtext = ('%s') % (sTitle)
-                    if sYear:
-                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
-                    else:
-                        sFile = ('%s') % (sTitle)
-                        sTitle = ('%s') % (sTitle)
+                    searchtext = sTitle
+                    sFile = sTitle
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
-                elif 'boxoffice' in sUrl:
-                    movie = i['movie']
-                    sTitle = self.getLocalizedTitle(movie, 'movies')
-                    sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
-                    cTrakt.CONTENT = '1'
-
-                    sTitle = self.decode(sTitle)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s - (%s)') % (sTitle, int(sYear))
-                    sTitle = ('%s - (%s)') % (sTitle, int(sYear))
-                    sFunction = 'showSearch'
-                    sId = 'globalSearch'
-
-                elif 'lists' in sUrl:
-
-                    sFunction = 'showSearch'
-                    sId = 'globalSearch'
-
-                    if 'show' in i:
-                        show = i['show']
-                        sTitle = self.getLocalizedTitle(show, 'shows')
-                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
-                        sExtra = ('(%s)') % (sYear)
-                        cTrakt.CONTENT = '2'
-                    elif 'episode' in i:
-                        eps = i['episode']
-                        sTitle = self.getLocalizedTitle(i, 'episodes')
-                        sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'], eps['number']
-                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
-                        cTrakt.CONTENT = '2'
-                    else:
+                elif '/boxoffice' in sUrl or '/trending' in sUrl:
+                    if 'movie' in sUrl:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
-                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
-                        sExtra = ('(%s)') % (sYear)
+                        sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
                         cTrakt.CONTENT = '1'
+                    else:
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows')
+                        sTrakt, sYear, sImdb, sTmdb = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb']
+                        cTrakt.CONTENT = '2'
+                        
+                    sTitle = self.decode(sTitle)
+                    searchtext = sTitle
+                    sFile = sTitle
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
 
-                    sTitle = self.decode(sTitle, Unicode=True)
-                    searchtext = ('%s') % (sTitle)
-                    sFile = ('%s %s') % (sTitle, sExtra)
-                    sTitle = ('%s %s') % (sTitle, sExtra)
+                elif '/lists' in sUrl:
+
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
+                    sTitle = None
+
+                    if sCat == '2':
+                        if 'show' in i:
+                            show = i['show']
+                            sTitle = self.getLocalizedTitle(show, 'shows')
+                            sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
+                            sExtra = ('(%s)') % (sYear)
+                            cTrakt.CONTENT = '2'
+                        elif 'episode' in i:
+                            eps = i['episode']
+                            sTitle = self.getLocalizedTitle(i, 'episodes')
+                            sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'], eps['number']
+                            sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
+                            cTrakt.CONTENT = '2'
+                    else:
+                        if 'movie' in i:
+                            movie = i['movie']
+                            sTitle = self.getLocalizedTitle(movie, 'movies')
+                            sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
+                            sExtra = ('(%s)') % (sYear)
+                            cTrakt.CONTENT = '1'
+
+                    if sTitle:
+                        sTitle = self.decode(sTitle, Unicode=True)
+                        searchtext = sTitle
+                        sFile = sTitle
 
                 else:
                     return
 
+                # Appeler la méthode getFolder avec les paramètres configurés
                 if sTitle:
                     oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sTrakt))
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl +'/' + str(sTrakt))
+                    oOutputParameterHandler.addParameter('sID', str(i['id']) if 'id' in i else None)
+                    oOutputParameterHandler.addParameter('sTmdbId', sTmdb)
+                    oOutputParameterHandler.addParameter('sCat', sCat)
                     oOutputParameterHandler.addParameter('file', sFile)
                     oOutputParameterHandler.addParameter('key', sKey)
                     oOutputParameterHandler.addParameter('searchtext', searchtext)
+
+                    if progress > 0:
+                        oOutputParameterHandler.addParameter('ResumeTime', progress)
+                        oOutputParameterHandler.addParameter('TotalTime', '100')
+
+                    
                     self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                     sKey += 1
+                    count = count +1
+                    if count >= maxResult:
+                        break
+    
 
-            progress_.VSclose(progress_)
 
-            try:
-                if (sPage != sMaxPage):
-                    sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1) + '/' + sMaxPage, oOutputParameterHandler)
-            except:
-                pass
+            # indicateur VU sur les saisons
+            for saisonWtached in saisonsWatched[::-1]:
+                self.setSaisonWatched(saisonWtached)
 
-            if not 'X-Pagination-Page-Count' in sHeaders and len(sHtmlContent) > int(MAXRESULT):
+
+            if iPage < iMaxPage:
+                sNextPage =str((iPage) + 1)
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + int(MAXRESULT))
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                oOutputParameterHandler.addParameter('sCat', sCat)
+                oOutputParameterHandler.addParameter('sPage', sNextPage)
+                
+                if count < maxResult:
+                    self.getTrakt(count, sNextPage)
+                else:
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page suivante', oOutputParameterHandler)  
+                
+            elif not 'X-Pagination-Page-Count' in sHeaders and len(sHtmlContent) > maxResult:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                oOutputParameterHandler.addParameter('sCat', sCat)
+                oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + maxResult)
                 oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page suivante', oOutputParameterHandler)  
 
-        oGui.setEndOfDirectory()
+        if bNext:
+            oGui.setEndOfDirectory()
+
+
+    # Récupérer les épisodes qui n'ont pas été lus jusqu'au bout
+    def setEpisodeProgress(self):
+        #https://api.trakt.tv/sync/playback/type
+        # oRequestHandler = cRequestHandler(URL_API + 'sync/playback/' + ('movies' if sCat == '1' else 'episodes'))
+        oRequestHandler = cRequestHandler(URL_API + 'sync/playback/episodes')
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        playbackHistory = oRequestHandler.request(jsonDecode=True)
+        
+        if len(playbackHistory) == 0:
+            return
+
+
+        util = cUtil()
+        with cDb() as db:
+
+            titleList = set()
+
+            for media in playbackHistory:
+                # if media['show']['ids']['tmdb'] != int(sTmdb):
+                #     continue
+                
+                sTitle = media['show']['title']
+                sSaison = media['episode']['season']
+                tvShowTitleWatched = util.titleWatched(sTitle)
+                sTitleWatched = '%s_S%02dE%02d' % (tvShowTitleWatched, sSaison, media['episode']['number'])
+                progress = media['progress']
+
+
+                # Point de reprise vidéo d'un épisode
+                       
+                # il faut au moins 5% de lecture pour proposer la reprise
+                if progress < 5:
+                    continue
+
+                # en pourcentage                
+                totalTime = 1
+                progress = progress/100
+
+                meta = {}
+                meta['title'] = sTitle
+                meta['titleWatched'] = sTitleWatched
+                meta['site'] = 'globalSearch'
+                meta['point'] = progress
+                meta['total'] = totalTime
+                db.insert_resume(meta)
+                
+                # On met la saison "En cours de lecture"
+                if tvShowTitleWatched not in titleList:
+                    titleList.add(tvShowTitleWatched)
+                
+                    sTmdbId = media['show']['ids']['tmdb']
+                    meta['cat'] = '4'  # saison
+                    meta['tmdbId'] = sTmdbId
+                    if sSaison:
+                        meta['season'] = sSaison
+                        meta['title'] = '%s S%d' % (sTitle ,sSaison)
+                        meta['titleWatched'] = '%s_S%d' % (tvShowTitleWatched ,sSaison)
+                    else:
+                        meta['title'] = sTitle
+                        meta['titleWatched'] = tvShowTitleWatched
+                    meta['siteurl'] = 'showSearch'
+                    meta['fav'] = 'showSearch'
+
+                    # saison "EN COURS"
+                    # NON, on n'a pas d'url de reprise db.insert_viewing(meta)
+
+                    # On met la saison "VU"
+                    db.insert_watched(meta)
+            
+        return
+
+
+    # Marquer les saisons EN COURS dont des épisodes sont VU
+    def setSaisonWatched(self, watchedShow):
+        util = cUtil()
+        show = watchedShow['show']
+        saisons = watchedShow['seasons']
+        sTitle = show['title']
+        tvShowTitleWatched = util.titleWatched(sTitle)
+        sTmdbId = show['ids']['tmdb']
+
+        meta = {}
+        meta['tmdbId'] = sTmdbId
+        meta['site'] = 'globalSearch'
+        meta['siteurl'] = 'showSearch'
+        meta['fav'] = 'showSearch'
+        meta['seasonUrl'] = 'showSearch'
+        meta['seasonFunc'] = 'showSearch'
+
+
+        with cDb() as db:
+            for saison in saisons:
+                numSaison = saison['number']
+                saisonTitle = '%s S%02d' % (sTitle, numSaison)
+                saisonTitleWatched = '%s_S%02d' % (tvShowTitleWatched, numSaison)
+                meta['cat'] = '4'  # saison
+                meta['season'] = numSaison
+                meta['title'] = saisonTitle
+                meta['titleWatched'] = saisonTitleWatched
+
+                # On met la saison "EN COURS" et "VU" (pour l'indicateur)
+                # NON, on n'a pas d'url de reprise db.insert_viewing(meta)
+                
+                # On met la saison "VU" (pour l'indicateur)
+                db.insert_watched(meta)
+            
+                episodes = saison['episodes']
+                for episode in episodes:
+                    numEp = episode['number']
+                    meta['cat'] = '8'  # episode
+                    meta['title'] = '%sE%02d' % (saisonTitle, numEp)
+                    meta['titleWatched'] = '%sE%02d' % (saisonTitleWatched, numEp)
+                    # On met l'épisode "VU"
+                    db.insert_watched(meta)
+            
+        return
+
+
+    # progression dans le cache vStream selon l'état dans trakt
+    def setMediaProgress(self, sTmdb, sTitle, sSeason, sEpisode, progress):
+        # il faut au moins 5% de lecture pour proposer la reprise
+        if progress < 5:
+            return
+
+        util = cUtil()
+        # en pourcentage                
+        totalTime = 1
+        progress = progress/100
+
+        sTitleWatched = util.titleWatched(sTitle)
+        if sSeason or sEpisode:
+            sTitleWatched = '%s_S%02dE%02d' % (sTitleWatched, sSeason, sEpisode)
+
+        meta = {}
+        meta['title'] = sTitle
+        meta['titleWatched'] = sTitleWatched
+        meta['site'] = 'globalSearch'
+        meta['point'] = progress
+        meta['total'] = totalTime
+        with cDb() as db:
+            db.insert_resume(meta)
+
+        # On met le media "EN COURS"
+        
+        
+        return
+
 
     def getBseasons(self):
         oGui = cGui()
@@ -680,14 +1080,14 @@ class cTrakt:
 
                 if 'collection' in sUrl or 'watched' in sUrl:
                     sNumber = i['number']
-                    cTrakt.CONTENT = '2'
+                    cTrakt.CONTENT = '5'
                 else:
                     return
 
-                sTitle2 = ('%s - (S%02d)') % (self.decode(sFile), int(sNumber))
+                sTitle2 = ('%s - S%02d') % (self.decode(sFile), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
-                oOutputParameterHandler.addParameter('Key', sKey)
+                oOutputParameterHandler.addParameter('key', sKey)
                 oOutputParameterHandler.addParameter('sNum', sNum)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('title', sTitle2)
@@ -697,43 +1097,29 @@ class cTrakt:
 
         oGui.setEndOfDirectory()
 
+
     def getLocalizedTitle(self, item, what):
-        try:
-            if 'episode' not in what:
-                oRequestHandler = cRequestHandler(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']))
-                oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
-                oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
-                oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-                sHtmlContent = oRequestHandler.request(jsonDecode=True)
-            else:
-                show_title = self.getLocalizedTitle(item['show'], 'shows')
-                t_values = (item['show']['ids']['slug'], item['episode']['season'], item['episode']['number'])
+        from resources.lib.tmdb import cTMDb
+        grab = cTMDb()
+        if what == 'shows':
+            sType = 'tv'
+# cache tmdb           sType = 'tvshow'
+        elif what == 'movies':
+            sType = 'movie'
 
-                oRequestHandler = cRequestHandler(URL_API + 'shows/%s/seasons/%s/episodes/%s/translations/fr' % t_values)
-                oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
-                oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
-                oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-                sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        # avec gestion du cache tmdb
+        # meta = grab.get_meta(sType, item['title'], tmdb_id = item['ids']['tmdb'])
+        # if 'title' in meta and meta['title']:
+        #     return meta['title']
+        # if 'name' in meta and meta['name']:
+        #     return meta['name'] # titre de série
+#        return item['title']
 
-            for titleSearch in sHtmlContent:
-                if titleSearch['language'].lower() == 'fr':
-                    title = titleSearch['title']
-                if titleSearch['country'].lower() == 'fr':
-                    break
+        # demander à TMDB
+        title = grab.get_namebyid(sType, item['ids']['tmdb'])
+        return title if title else item['title']
 
-            if title is None:
-                return item['title']
-            else:
-                return title if 'episode' not in what else show_title + ' - ' + title
-
-        except:
-            try:
-                return item['title']
-            except:
-                return item['show']['title']
-
+    
     def getBepisodes(self):
         oGui = cGui()
 
@@ -762,13 +1148,13 @@ class cTrakt:
 
                 if 'collection' in sUrl:
                     sNumber = i['number']
-
-                    sTitle2 = ('%s (E%02d)') % (self.decode(sTitle), int(sNumber))
+                    # Utiliser uniquement le titre de la s�rie pour sTitle2
+                    sTitle2 = self.decode(sTitle)
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays = i['number'], i['plays']
-
-                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, self.decode(sTitle), int(sNumber))
+                    # Utiliser uniquement le titre de la s�rie pour sTitle2
+                    sTitle2 = ('%s Lectures - %s') % (sPlays, self.decode(sTitle))
 
                 else:
                     return
@@ -783,53 +1169,81 @@ class cTrakt:
         return
 
     def getFolder(self, oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler):
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdb)
+        sPoster = oOutputParameterHandler.getValue('poster')
 
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sTitle)
-        oGuiElement.setFileName(sFile)
-        oGuiElement.setIcon('trakt.png')
-        oGuiElement.setImdbId(sImdb)
-        oGuiElement.setTmdbId(sTmdb)
-
-        if self.ADDON.getSetting('meta-view') == 'false':
-            oGuiElement.setMetaAddon('true')
-
-        if cTrakt.CONTENT == '2':
-            oGuiElement.setMeta(2)
-            oGuiElement.setCat(2)
-            cGui.CONTENT = 'tvshows'
+        if cTrakt.CONTENT == '1':
+            oGui.addMovie(sId, sFunction, sTitle, 'no-image.png', sPoster, '', oOutputParameterHandler)
+        elif cTrakt.CONTENT == '2':
+            oGui.addTV(sId, sFunction, sTitle, 'no-image.png', sPoster, '', oOutputParameterHandler)
+        elif cTrakt.CONTENT == '5':
+            oGui.addSeason(sId, sFunction, sTitle, 'no-image.png', sPoster, '', oOutputParameterHandler)
         else:
-            oGuiElement.setMeta(1)
-            oGuiElement.setCat(1)
-            cGui.CONTENT = 'movies'
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(sId)
+            oGuiElement.setFunction(sFunction)
+            oGuiElement.setTitle(sTitle)
+            oGuiElement.setFileName(sFile)
+            oGuiElement.setIcon('trakt.png')
+            oGuiElement.setImdbId(sImdb)
+            oGuiElement.setTmdbId(sTmdb)
+            
+            # Récupérer les valeurs des images si elles sont définies
+            sPoster = oOutputParameterHandler.getValue('poster')
+            sFanart = oOutputParameterHandler.getValue('backdrop')  # Utiliser 'backdrop' pour l'arrière-plan
+            
+            if sPoster:
+                oGuiElement.setThumbnail(sPoster)
+            if sFanart:
+                oGuiElement.setFanart(sFanart)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def getContext(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
         disp = []
         lang = []
-        disp.append(URL_API + 'sync/collection')
-        lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310))
 
-        disp.append(URL_API + 'sync/collection/remove')
-        lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]')
+        # Favoris
+        if 'sync/favorites' not in sUrl:
+            # Ajout favoris
+            disp.append(URL_API + 'sync/favorites')
+            lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30430))
+        # Ajout dans suivis
+        if 'sync/watchlist' not in sUrl:
+            disp.append(URL_API + 'sync/watchlist')
+            lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311))
+        # Ajout Collection
+        if 'sync/collection' not in sUrl:
+            disp.append(URL_API + 'sync/collection')
+            lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310))
 
-        disp.append(URL_API + 'sync/watchlist')
-        lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311))
-
-        disp.append(URL_API + 'sync/watchlist/remove')
-        lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]')
-
+        # Marqué VU
         disp.append(URL_API + 'sync/history')
         lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312))
 
+        if 'sync/favorites' in sUrl:
+            # Retrait favoris
+            disp.append(URL_API + 'sync/favorites/remove')
+            lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30430) + '[/COLOR]')
+        if 'sync/watchlist' in sUrl:
+            # Retrait des suivis
+            disp.append(URL_API + 'sync/watchlist/remove')
+            lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]')
+        if 'sync/collection' in sUrl:
+            # Retrait favoris
+            disp.append(URL_API + 'sync/collection/remove')
+            lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]')
+
+        # Marqué NON-VU
         disp.append(URL_API + 'sync/history/remove')
         lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]')
 
-        ret = self.DIALOG.VSselect(lang, 'Trakt')
+        ret = self.DIALOG.VSselect(lang, 'Trakt - %s' % sTitle)
 
         if ret > -1:
             self.__sAction = disp[ret]
@@ -847,24 +1261,25 @@ class cTrakt:
             self.__sType = disp[ret]
         return self.__sType
 
-
     def convertCatToType(self, sCat):
         # Film, serie, anime, saison, episode
         if sCat not in ('1', '2', '3', '4', '8'):
             return -1
-        
+
         sType = sCat.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('8', 'shows')
         return sType
 
 
-    def getAction(self, Action='', sEpisode = ''):
+    def getAction(self, Action='', sEpisode = '', progress=0, requestType = cRequestHandler.REQUEST_TYPE_POST):
+
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
             return
 
         oInputParameterHandler = cInputParameterHandler()
-
-        if not Action == "SetWatched":
+        if Action:
+            sAction = Action
+        else:
             sAction = oInputParameterHandler.getValue('sAction')
             if not sAction:
                 sAction = self.getContext()
@@ -874,19 +1289,17 @@ class cTrakt:
         sType = oInputParameterHandler.getValue('sCat')
         if not sType:
             sType = self.getType()
-        # entrer imdb ? venant d'ou?
-        sImdb = oInputParameterHandler.getValue('sImdbId')
-        sTMDB = oInputParameterHandler.getValue('sTmdbId')
+
         sSeason = False
 
-        sType = self.convertCatToType(sCat=sType)
-        if sType == -1:
+        sTraktType = self.convertCatToType(sCat=sType)
+        if sTraktType == -1:
             return
 
         # Mettre en vu automatiquement.
-        if Action == "SetWatched":
+        if Action == "SetWatched" or Action == "SetProgress":
 
-            if sType == "shows":
+            if sTraktType == "shows":
                 if self.ADDON.getSetting('trakt_tvshows_activate_scrobbling') == 'false':
                     return
                 
@@ -904,51 +1317,83 @@ class cTrakt:
                     return
                 sTitle = oInputParameterHandler.getValue('sFileName')
 
-            sAction = URL_API + 'sync/history'
+            if Action == "SetProgress":
+                sAction = URL_API + 'scrobble/stop'
+            else:
+                sAction = URL_API + 'sync/history'
 
             if not sTitle:
                 sTitle = oInputParameterHandler.getValue('sMovieTitle')
         else:
             sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
+        # entrer imdb ? venant d'ou?
+        sImdb = oInputParameterHandler.getValue('sImdbId')
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
         if not sImdb:
             if not sTMDB:
-                sTMDB = int(self.getTmdbID(sTitle, sType))
+                sTMDB = int(self.getTmdbID(sTitle, sTraktType))
 
             if not sTMDB:
                 return
-            sPost = {sType: [{'ids': {'tmdb': sTMDB}}]}
-            if sSeason:
-                sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
-            if sEpisode:
-                sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
-        else:
-            sPost = {sType: [{'ids': {'imdb': sImdb}}]}
             
+            sPost = {sTraktType: [{'ids': {'tmdb': sTMDB}}]}
+            if sSeason:
+                sPost = {sTraktType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
+            if sEpisode:
+                sPost = {sTraktType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
+        else:
+            sPost = {sTraktType: [{'ids': {'imdb': sImdb}}]}
+
+
+        if Action == "SetProgress":
+            if progress == 0:
+                return
+            progress *= 100
+            if sSeason:
+                sPost = {'progress':progress, sTraktType[:-1]: {'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}}
+            else:
+                sPost = {'progress':progress, sTraktType[:-1]: {'ids': {'tmdb': sTMDB}}}
+
+
         oRequestHandler = cRequestHandler(sAction)
-        oRequestHandler.setRequestType(1)
+        oRequestHandler.setRequestType(requestType)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
         for a in sPost:
             oRequestHandler.addJSONEntry(a, sPost[a])
-        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        
+        jsonDecode = requestType in [cRequestHandler.REQUEST_TYPE_POST, cRequestHandler.REQUEST_TYPE_GET]
+        sHtmlContent = oRequestHandler.request(jsonDecode = jsonDecode)
+
+        sText = "Aucune action réalisée"
+        
+        if sHtmlContent == '':
+            sText = ''
+            
+        try:
+            # point de reprise
+            if sHtmlContent['action'] == 'pause':
+                sText = 'Progression enregistrée'
+        except:
+            pass
 
         try:
-            if sHtmlContent['added']['movies'] == 1 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
+            if sHtmlContent['added']['movies'] > 0 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
                 sText = 'Ajouté avec succès'
         except:
             pass
 
         try:
-            if sHtmlContent['updated']['movies'] == 1 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
+            if sHtmlContent['updated']['movies'] > 0 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
                 sText = 'Mise à jour avec succès'
         except:
             pass
 
         try:
-            if sHtmlContent['deleted']['movies'] == 1 or sHtmlContent['deleted']['episodes'] > 0:
+            if sHtmlContent['deleted']['movies'] > 0 or sHtmlContent['deleted']['episodes'] > 0:
                 sText = 'Supprimé avec succès'
         except:
             pass
@@ -959,72 +1404,59 @@ class cTrakt:
         except:
             pass
 
-        try:
-            self.DIALOG.VSinfo(sText, 'trakt')
-        except UnboundLocalError:
-            self.DIALOG.VSinfo("Erreur")
 
-        if (oInputParameterHandler.exist('sReload')):
+        bReload = oInputParameterHandler.exist('sReload')
+
+        # Supprimé des VUS
+        if 'sync/history/remove' in sAction:
+            sID = oInputParameterHandler.getValue('sID')
+            if sID:
+                # suppression du point de reprise dans trakt
+                self.getAction(URL_API + 'sync/playback/' + sID, requestType = cRequestHandler.REQUEST_TYPE_DELETE)
+                sText = 'Supprimé avec succès'
+           
+            # suppression du point de reprise dans vStream
+            cViewing().delViewing()
+                
+            # suppression de l'indicateur VU dans vStream
+            meta = {}
+            meta['titleWatched'] = oInputParameterHandler.getValue('sTitleWatched')
+            meta['tmdbId'] = sTMDB
+            with cDb() as db:
+                db.del_watched(meta)
+            
+        elif 'sync/history' in sAction:    # ajout du marqueur VU
+            # Ajout de l'indicateur VU dans vStream
+            if sType == '1':    # seulement pour les films
+                bReload = True
+
+                meta = {}
+                meta['title'] = sTitle
+                meta['titleWatched'] = oInputParameterHandler.getValue('sTitleWatched')
+                meta['tmdbId'] = sTMDB
+                meta['site'] = 'globalSearch'
+                meta['siteurl'] = 'showSearch'
+                meta['fav'] = 'showSearch'
+                meta['seasonUrl'] = 'showSearch'
+                meta['seasonFunc'] = 'showSearch'
+                meta['cat'] = sType
+                with cDb() as db:
+                    db.insert_watched(meta)
+            
+        if sText:
+            self.DIALOG.VSinfo(sText, 'trakt')
+
+        if bReload:
             xbmc.executebuiltin('Container.Refresh')
         return
-
-    def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler=''):
-
-        liste = []
-        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection'])
-        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection/remove'])
-        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist'])
-        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist/remove'])
-        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'])
-        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'])
-
-        for sTitle, sUrl in liste:
-            oOutputParameterHandler = cOutputParameterHandler()
-            if cTrakt.CONTENT == '2':
-                oOutputParameterHandler.addParameter('sType', 'shows')
-            else:
-                oOutputParameterHandler.addParameter('sType', 'movies')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sAction', sUrl)
-            oOutputParameterHandler.addParameter('sReload', True)
-            # oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdbId())
-            oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
-            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', sTitle)
-        return
-
-    def showHosters(self):
-
-        oInputParameterHandler = cInputParameterHandler()
-        sMovieTitle = oInputParameterHandler.getValue('file')
-        sMovieTitle = self.decode(sMovieTitle, Unicode=True).lower()  # on repasse en utf-8
-        sMovieTitle = Quote(sMovieTitle)
-        sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
-
-        # modif venom si le titre comporte un - il doit le chercher
-        sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)  # vire les caracteres a la con qui peuvent trainer
-
-        sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle)  # vire les articles
-
-        # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-        sMovieTitle = re.sub(' +', ' ', sMovieTitle)
-
-        self.vStreamSearch(sMovieTitle)
-
-    def vStreamSearch(self, sMovieTitle):
-        oGui = cGui()
-
-        oHandler = cRechercheHandler()
-        oHandler.setText(sMovieTitle)
-        aPlugins = oHandler.getAvailablePlugins()
-
-        oGui.setEndOfDirectory()
+    
 
     def getTmdbInfo(self, sTmdb, oGuiElement):
 
         return
 
         if not sTmdb:
-            VSlog('Problème sTmdb')
+            VSlog('TRAKT - Pas de TmdbID')
             return
 
         oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/' + str(sTmdb))

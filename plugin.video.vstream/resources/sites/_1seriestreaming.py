@@ -24,7 +24,7 @@ SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = ('series/tendance-s/', 'showSeries')
 SERIE_VIEWS = ('series/populaire-s/', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
-#SERIE_ANNEES = (True, 'showSerieYears')
+# SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH = ('index.php?do=search&subaction=search&search_start=0&full_search=1&titleonly=3&sortby=date&catlist%5B%5D&story=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
@@ -39,29 +39,27 @@ DRAMA_VIEWS = ('enstream/country/south-korea/', 'showSeries')
 URL_SEARCH_DRAMAS = ('index.php?do=search&subaction=search&search_start=0&full_search=1&titleonly=3&sortby=date&catlist%5B%5D=3&story=', 'showSeries')
 
 
-
-
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Séries)', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Séries)', 'search-series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Japanimes)', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Japanimes)', 'search-animes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Dramas)', 'search.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
+    # oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher (Dramas)', 'search-dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'series-s')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Derniers ajouts)', 'added.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Populaires)', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Séries (Dramas)', 'dramas.png', oOutputParameterHandler)
@@ -69,12 +67,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-
     # Non, les séries sont mélangées
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showAnimes():
     oGui = cGui()
@@ -136,7 +134,7 @@ def showGenres():
             ['Animation', 'animation-s'], ['Action & Adventure', 'action-adventure-s'],
             ['Comédie', 'comédie-s'], ['Documentaire', 'documentaire-s'],
             ['Drame', 'drame-s'], ['Enfants', 'kids-s'], ['Famille', 'familial-s'],
-            ['Feuilleton', 'soap-s'], ['Guerre et Politique', 'war-politics-s'],
+            ['Feuilleton', 'soap-s'], ['Guerre & Politique', 'war-politics-s'],
             ['Historique', 'historique-s'], ['Horreur', 'horreur-s'],
             ['Musique', 'musique-s'], ['Mystère', 'mystère-s'], ['Policier', 'policier-s'],
             ['Romance', 'romance-s'], ['Science-Fiction', 'science-fiction-fantastique-s'], ['Thriller', 'thriller-s'],
@@ -145,7 +143,7 @@ def showGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', 'series/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showSeries', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -182,8 +180,6 @@ def showSeries(sSearch=''):
             sTitle = aEntry[0]
             sYear = aEntry[1]
             sUrl2 = aEntry[2]
-            if sUrl2.startswith('/'):
-                sUrl2 = URL_MAIN[:-1] + sUrl2
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[3])
 
             if sSearch:
@@ -229,6 +225,8 @@ def showSaisons():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sYear = oInputParameterHandler.getValue('sYear')
 
+    if 'http' not in sUrl:
+        sUrl = URL_MAIN + sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -272,6 +270,8 @@ def showEpisodes():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
+    if 'http' not in sUrl:
+        sUrl = URL_MAIN[:-1] + sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -284,7 +284,11 @@ def showEpisodes():
 
             sUrl = aEntry[0]
             sTitle = aEntry[1]
-
+            
+            # lien premium non disponible
+            if '#' in sUrl:
+                continue
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -305,8 +309,9 @@ def showLinks():
     sYear = oInputParameterHandler.getValue('sYear')
     sDesc = oInputParameterHandler.getValue('sDesc')
     videoId = re.search('\/(\d+)', sUrl).group(1)
-    referer = sUrl
 
+    if 'http' not in sUrl:
+        sUrl = URL_MAIN[:-1] + sUrl
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
@@ -316,14 +321,14 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Referer', referer)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
     oRequestHandler.addHeaderEntry('Cookie', cook)
     oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36')
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequestHandler.addParametersLine(pdata)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'id="([^"]+)" *data-hash="([^"]+).+?langflag" alt="([^"]+)'
+    sPattern = 'id="([^"]+)" *data-hash="([^"]+).+?title="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -339,7 +344,7 @@ def showLinks():
             sHostName = hoster.getPluginIdentifier()
 
             sLang = aEntry[2].replace('default', '').upper()
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, hoster.getRealHost().capitalize())
+            sTitle = ('%s (%s) - [COLOR red]%s[/COLOR]') % (sMovieTitle, sLang, sHostName)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)

@@ -2,6 +2,11 @@
 <settings>
 
     <!-- Menu general -->
+    <!-- Palette des couleurs
+    https://forum.kodi.tv/showthread.php?tid=210837
+    https://s3.amazonaws.com/f.cl.ly/items/1A3S2n0l103n460Y1I0e/chart.jpg
+     -->
+     
     <category label="30021">
 <!--
 c'est le changelog de la beta !        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
@@ -17,7 +22,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting type="sep"/>
         <setting id="deco_color" type="select" label="30010" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="lightcoral"/>
         <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
-        <setting id="spinner_small" type="bool" label="30480" default="true"/>
     </category>
 
     <!-- Affichage -->
@@ -134,7 +138,22 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
 -->
     </category>
+
     
+    <!-- Integration trakt -->
+    <category label="30340">
+        <setting type="lsep" label="30366"/>
+        <setting id="install_trakt_addon" type="action" label="30367" action="InstallAddon(script.trakt)" visible="!System.HasAddon(script.trakt)" option="close"/>
+        <setting id="use_trakt_addon" type="bool" label="30365" default="false" visible="System.HasAddon(script.trakt)"/>
+
+        <setting type="lsep" label="30368"/>
+        <setting id="bstoken" type="text" label="" default="" visible="false"/>
+        <setting id="trakt_number_element" type="number" label="31200" default="10"/>
+        <setting id="trakt_movies_activate_scrobbling" type="bool" label="30361" default="true" enable="eq(-4,false)"/>
+        <setting id="trakt_tvshows_activate_scrobbling" type="bool" label="30363" default="true" enable="eq(-5,false)"/>
+    </category>
+
+
     <!-- Médiathèque -->
     <category label="30300">
         <setting label="30145" type="lsep"/>
@@ -160,36 +179,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="heure_verification" type="number" label="30053" default="1"/>
     </category>
 -->
-
-    <!-- Integration trakt -->
-    <category label="30340">
-        <setting type="lsep" label="31216"/>
-        <setting id="bstoken" type="text" label="" default="" visible="false"/>
-        <setting id="trakt_number_element" type="number" label="31200" default="10"/>
-        <setting id="trakt_show_lists" type="bool" label="30341" default="true"/>
-
-        <setting type="lsep" label="30342"/>
-        <setting id="trakt_movies_activate_scrobbling" type="bool" label="30361" default="true" enable="eq(-6,false)"/>
-        <setting id="trakt_movies_show_watchlist" type="bool" label="30343" default="true"/>
-        <setting id="trakt_movies_show_watched" type="bool" label="30344" default="true"/>
-        <setting id="trakt_movies_show_recommended" type="bool" label="30345" default="true"/>
-        <setting id="trakt_movies_show_boxoffice" type="bool" label="30346" default="true"/>
-        <setting id="trakt_movies_show_popular" type="bool" label="30347" default="true"/>
-        <setting id="trakt_movies_show_most_weekly" type="bool" label="30348" default="true"/>
-        <setting id="trakt_movies_show_most_monthly" type="bool" label="30349" default="true"/>
-
-        <setting type="lsep" label="30351"/>
-        <setting id="trakt_tvshows_activate_scrobbling" type="bool" label="30361" default="true" enable="eq(-15,false)"/>
-        <setting id="trakt_tvshows_show_watchlist" type="bool" label="30352" default="true"/>
-        <setting id="trakt_tvshows_show_watchlist_seasons" type="bool" label="30353" default="true"/>
-        <setting id="trakt_tvshows_show_watchlist_episodes" type="bool" label="30354" default="true"/>
-        <setting id="trakt_tvshows_show_watched" type="bool" label="30355" default="true"/>
-        <setting id="trakt_tvshows_show_recommended" type="bool" label="30356" default="true"/>
-        <setting id="trakt_tvshows_show_popular" type="bool" label="30357" default="true"/>
-        <setting id="trakt_tvshows_show_most_weekly" type="bool" label="30358" default="true"/>
-        <setting id="trakt_tvshows_show_most_monthly" type="bool" label="30359" default="true"/>
-    </category>
-
 
     <!-- Outils -->
     <category label="30127">

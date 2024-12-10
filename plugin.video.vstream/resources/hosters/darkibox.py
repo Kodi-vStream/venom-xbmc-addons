@@ -19,10 +19,6 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return False
 
-    def setUrl(self, url):
-        self._url = str(url)
-
-
     # avec un compte
     def getMediaLink(self):
         oPremiumHandler = cPremiumHandler('darkibox')
@@ -76,6 +72,7 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self, api_call=None):
 
         file_code = self._url.split('/')[-1].split('.')[0]
+        file_code = file_code.replace('embed-', '')
 
         postdata = 'op=embed&auto=1&file_code=%s' % file_code
 

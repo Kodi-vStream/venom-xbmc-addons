@@ -13,7 +13,8 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.util import QuotePlus
+from resources.lib.util import QuotePlus, cUtil
+#from resources.lib.util import , Unquote
 
 
 class cGui:
@@ -24,7 +25,7 @@ class cGui:
     thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
-    displaySeason = addon().getSetting('display_season_title')
+    displaySeason = ADDON.getSetting('display_season_title')
 
     # Gérer les résultats de la recherche
     searchResults = {}
@@ -33,7 +34,7 @@ class cGui:
     def getEpisodeListing(self):
         return self.episodeListing
 
-    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
+    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler=cOutputParameterHandler(), sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
@@ -74,17 +75,20 @@ class cGui:
 
 
         # Si pas d'id TMDB pour un episode, on recupère le précédent qui vient de la série
-        if sCat and not oOutputParameterHandler.getValue('sTmdbId'):
-            if not sMeta:
-                if not oInputParameterHandler:
-                    oInputParameterHandler = cInputParameterHandler()
-                sMeta = int(oInputParameterHandler.getValue('sMeta'))
-            if 0 < sMeta < 7:
-                if not oInputParameterHandler:
-                    oInputParameterHandler = cInputParameterHandler()
-                sTmdbID = oInputParameterHandler.getValue('sTmdbId')
-                if sTmdbID:
-                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
+        sTmdbId = oOutputParameterHandler.getValue('sTmdbId')
+        if sCat and not sTmdbId:
+            # pas pendant la recherche globale
+            if window(10101).getProperty('search') != 'true':
+                if not sMeta:
+                    if not oInputParameterHandler:
+                        oInputParameterHandler = cInputParameterHandler()
+                    sMeta = int(oInputParameterHandler.getValue('sMeta'))
+                if 0 < sMeta < 7:
+                    if not oInputParameterHandler:
+                        oInputParameterHandler = cInputParameterHandler()
+                    sTmdbId = oInputParameterHandler.getValue('sTmdbId')
+                    if sTmdbId:
+                        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
@@ -103,6 +107,10 @@ class cGui:
             oGuiElement.setFileName(sTitle)
         else:
             oGuiElement.setFileName(sLabel)
+
+        # si pas d'info fourni en spécifique, récupéré celle de la navigation précédente
+        if sCat and not sThumbnail and not sTmdbId:
+            oGuiElement.getInfoLabel()
 
         try:
             return self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -165,10 +173,15 @@ class cGui:
         oOutputParameterHandler.addParameter('movieFunc', sFunction)
         return self.addNewDir(cat, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
-    def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        return self.addNewDir('sets', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
+    def addMoviePack(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
+        return self.addNewDir('sets', sId, sFunction, sLabel, 'no-image.png', sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
 
-    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler='', sDesc=""):
+    def addGenre(self, sId, sFunction, sLabel, oOutputParameterHandler='', sDesc=""):
+        sIcon = 'genres/%s.png' % str(cUtil().formatUTF8(sLabel))
+        sIcon = sIcon.replace(' & ', '_').replace(' ', '_').replace("'", '_').replace("-", '_')
+        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
+
+    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=cOutputParameterHandler(), sDesc=""):
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
@@ -217,7 +230,6 @@ class cGui:
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
-        sThumbnail = ''
         sDesc = ''
         return self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 7, None)
 
@@ -231,14 +243,17 @@ class cGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle('[COLOR teal]' + sLabel + ' >>>[/COLOR]')
+        
+        sDecoColor = self.ADDON.getSetting('deco_color')
+
+        oGuiElement.setTitle('[COLOR %s]%s >[/COLOR]' % (sDecoColor, sLabel))
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
-        oGuiElement.setCat(5)
+        # oGuiElement.setCat(5)
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
+#        self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
         return self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # utiliser oGui.addText(SITE_IDENTIFIER)
@@ -292,19 +307,6 @@ class cGui:
                     callback(value)
 
         oListItem = self.createListItem(oGuiElement)
-
-    # affiche tag HD
-        # https://alwinesch.github.io/group__python__xbmcgui__listitem.html#ga99c7bf16729b18b6378ea7069ee5b138
-        sRes = oGuiElement.getRes()
-        if sRes:
-            if '2160' in sRes:
-                oListItem.addStreamInfo('video', {'width': 3840, 'height': 2160})
-            elif '1080' in sRes:
-                oListItem.addStreamInfo('video', {'width': 1920, 'height': 1080})
-            elif '720' in sRes:
-                oListItem.addStreamInfo('video', {'width': 1280, 'height': 720})
-            elif '480' in sRes:
-                oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
 
         sCat = oGuiElement.getCat()
         if sCat:
@@ -399,13 +401,18 @@ class cGui:
             
             # release du lien
             if sMediaUrl:
-                data['plot'] = sMediaUrl
+                if self.ADDON.getSetting('display_info_file') == 'true':
+                    data['plot'] = sMediaUrl
         else:
             # Permet d'afficher toutes les informations pour les films.
             data['title'] = itemTitle
             if sMediaUrl:   # release du lien
-                data['tagline'] = sMediaUrl
+                if self.ADDON.getSetting('display_info_file') == 'true':
+                    data['tagline'] = sMediaUrl
             
+    # affiche tag HD
+        # https://alwinesch.github.io/group__python__xbmcgui__listitem.html#ga99c7bf16729b18b6378ea7069ee5b138
+        sRes = oGuiElement.getRes()
         if ":" in str(data.get('duration')):
             # Convertion en seconde, utile pour le lien final.
             data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
@@ -425,11 +432,20 @@ class cGui:
         if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
-
+            if sRes:
+                if '2160' in sRes:
+                    oListItem.addStreamInfo('video', {'width': 3840, 'height': 2160})
+                elif '1080' in sRes:
+                    oListItem.addStreamInfo('video', {'width': 1920, 'height': 1080})
+                elif '720' in sRes:
+                    oListItem.addStreamInfo('video', {'width': 1280, 'height': 720})
+                elif '480' in sRes:
+                    oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
             # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
+            # https://alwinesch.github.io/group__python___info_tag_video.html
             # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(data.get('mediatype', ''))
             videoInfoTag.setTitle(data.get('title', ""))
@@ -442,7 +458,7 @@ class cGui:
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
             videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
-            # inutilisé ? et fragile
+            # inutilisé ? et fragile 
             # videoInfoTag.setCountries(data.get('country', ['']))
             videoInfoTag.setTrailer(data.get('trailer', ""))
             videoInfoTag.setTagLine(data.get('tagline', ""))
@@ -456,7 +472,29 @@ class cGui:
 
             videoInfoTag.setCast(data.get('cast', []))
 
-        oListItem.setArt({'poster': oGuiElement.getPoster(),
+            if sRes:
+                width = None
+                if '2160' in sRes:
+                    width = 3840
+                    height = 2160
+                elif '1080' in sRes:
+                    width = 1920
+                    height = 1080
+                elif '720' in sRes:
+                    width = 1280
+                    height = 720
+                elif '480' in sRes:
+                    width = 720
+                    height = 576
+                
+                if width:
+                    # [width, height, aspect, duration, codec, stereoMode, language])
+                    videoStreamDetail = xbmc.VideoStreamDetail(width=width, height=height)
+                    videoInfoTag.addVideoStream(videoStreamDetail)
+
+    
+        oListItem.setArt({
+                          'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
                           'fanart': oGuiElement.getFanart()})
@@ -635,7 +673,7 @@ class cGui:
         # attendre l'arret des thread utilisés pour récupérer les métadonnées
         total = len(self.thread_listing)
         if total > 0:
-            progress_ = progress().VScreate(addon().VSlang(30141))
+            progress_ = progress().VScreate(self.ADDON.VSlang(30141))
             for thread in self.thread_listing:
                 progress_.VSupdate(progress_, total)
                 thread.join(100)
@@ -699,7 +737,7 @@ class cGui:
         xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
 
     def viewInfo(self):
-        if addon().getSetting('information-view') == "false":
+        if self.ADDON.getSetting('information-view') == "false":
             from resources.lib.config import WindowsBoxes
 
             oInputParameterHandler = cInputParameterHandler()

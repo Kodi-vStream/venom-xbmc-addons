@@ -15,9 +15,11 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'iframe_secure', 'Iframe-Secure')
 
     def setUrl(self, url):
-        self._url = url.replace('http://www.iframe-secure.com/embed/', '')
-        self._url = self._url.replace('//iframe-secure.com/embed/', '')
-        self._url = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self._url
+        url = url.replace('http://www.iframe-secure.com/embed/', '')
+        url = url.replace('//iframe-secure.com/embed/', '')
+        url = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % url
+        super(cHoster, self).setUrl(url)
+
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)

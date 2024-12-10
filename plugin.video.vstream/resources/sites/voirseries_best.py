@@ -73,7 +73,7 @@ def showGenres():
     oGui = cGui()
 
     liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Adventure', 'adventure'],
-             ['Arts-Martiaux', 'arts-martiaux'], ['Biopic', 'biopic'], ['Biographie', 'biographie'],
+             ['Arts martiaux', 'arts-martiaux'], ['Biopic', 'biopic'], ['Biographie', 'biographie'],
              ['Biography', 'biography'], ['Comédie', 'comedie'], ['Comédie dramatique', 'comedie-dramatique'],
              ['Comédie musicale', 'comedie-musicale'], ['Crime', 'crime'], ['Documentaire', 'documentaire'],
              ['Drame', 'drame'], ['Epouvante-Horreur', 'epouvante-horreur'], ['Famille', 'famille'],
@@ -83,7 +83,7 @@ def showGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'genres/' + sUrl + '/')
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showSeries', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

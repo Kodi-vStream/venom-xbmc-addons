@@ -23,9 +23,11 @@ class cHoster(iHoster):
     def setUrl(self, url):
         # http://iframe-secured.com/embed/evovinec
         # http://iframe-secured.com/embed/iframe.php?u=evovinec
-        self._url = url.replace('http://iframe-secured.com/embed/', '')
-        self._url = self._url.replace('//iframe-secured.com/embed/', '')
-        self._url = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self._url
+        url = url.replace('http://iframe-secured.com/embed/', '')
+        url = url.replace('//iframe-secured.com/embed/', '')
+        url = 'http://iframe-secured.com/embed/iframe.php?u=%s' % url
+        super(cHoster, self).setUrl(url)
+        
 
     def _getMediaLinkForGuest(self):
         oParser = cParser()

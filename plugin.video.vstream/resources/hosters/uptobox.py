@@ -17,10 +17,10 @@ class cHoster(iHoster):
         self.oPremiumHandler = None
 
     def setUrl(self, url):
-        self._url = str(url)
-        self._url = self._url.replace('iframe/', '')
-        self._url = self._url.replace('http:', 'https:')
-        self._url = self._url.split('?aff_id')[0]
+        url = str(url).replace('iframe/', '')
+        url = url.replace('http:', 'https:')
+        url = url.split('?aff_id')[0]
+        super(cHoster, self).setUrl(url)
 
     def checkUrl(self, sUrl):
         return True

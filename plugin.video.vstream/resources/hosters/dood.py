@@ -7,11 +7,7 @@ import random
 import base64
 import time
 
-try:  # Python 2
-    import urllib2 as urllib
-except ImportError:  # Python 3
-    import urllib.request as urllib
-
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
@@ -34,24 +30,18 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'dood', 'Dood')
 
     def setUrl(self, url):
-        self._url = str(url).replace('/d/', '/e/').replace('doodstream.com', 'dood.la')
+        super(cHoster, self).setUrl(url.replace('/d/', '/e/').replace('doodstream.com', 'dood.la'))
 
     def _getMediaLinkForGuest(self):
-        api_call = False
-
-        headers = {'User-Agent': UA}
-
-        req = urllib.Request(self._url, None, headers)
-        with urllib.urlopen(req) as response:
-            sHtmlContent = response.read()
-            urlDownload = response.geturl()
-
-        try:
-            sHtmlContent = sHtmlContent.decode('utf8')
-        except:
-            pass
-
         oParser = cParser()
+        oRequestHandler = cRequestHandler(self._url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.request()
+        urlDownload = oRequestHandler.getRealUrl()
+        if urlDownload != self._url:
+            self._url = urlDownload
+
+        sHtmlContent = cRequestHandler(self._url).request()
 
         # redirection
         sPattern = '<iframe class="embed-responsive-item" src="([^"]+)"'
@@ -77,16 +67,9 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDownload.split('/')[2] + aResult[1][0]
 
-        headers.update({'Referer': urlDownload})
-
-        req = urllib.Request(url2, None, headers)
-        with urllib.urlopen(req) as response:
-            sHtmlContent = response.read()
-
-        try:
-            sHtmlContent = sHtmlContent.decode('utf8')
-        except:
-            pass
+        oRequestHandler = cRequestHandler(url2)
+        oRequestHandler.addHeaderEntry('Referer', urlDownload)
+        sHtmlContent = oRequestHandler.request()
 
         api_call = sHtmlContent + fin_url
 

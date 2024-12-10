@@ -12,6 +12,8 @@ import socket
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
+    REQUEST_TYPE_PUT = 2
+    REQUEST_TYPE_DELETE = 3
 
     def __init__(self, sUrl):
         self.__sUrl = sUrl
@@ -177,8 +179,12 @@ class cRequestHandler:
 
         if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
             method = "GET"
-        else:
+        elif self.__cType == cRequestHandler.REQUEST_TYPE_POST:
             method = "POST"
+        elif self.__cType == cRequestHandler.REQUEST_TYPE_PUT:
+            method = "PUT"
+        elif self.__cType == cRequestHandler.REQUEST_TYPE_DELETE:
+            method = "DELETE"
 
         if self.forceIPV4:
             urllib3_cn.allowed_gai_family = self.allowed_gai_family
@@ -223,7 +229,7 @@ class cRequestHandler:
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
                     self.__enableDNS = True
-                    return self.__callRequest()
+                    return self.__callRequest(jsonDecode)
                 else:
                     error_msg = '%s (%s)' % (addon().VSlang(30470), urlHostName(self.__sUrl))
                     dialog().VSerror(error_msg)
@@ -235,13 +241,13 @@ class cRequestHandler:
         except RequestException as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
-                return self.__callRequest()
+                return self.__callRequest(jsonDecode)
             elif self.__enableDNS == False and 'getaddrinfo failed' in str(e):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
                     self.__enableDNS = True
-                    return self.__callRequest()
+                    return self.__callRequest(jsonDecode)
                 else:
                     error_msg = '%s (%s)' % (addon().VSlang(30470), urlHostName(self.__sUrl))
             else:
@@ -277,8 +283,8 @@ class cRequestHandler:
                             sContent = response['solution']['response']
 
             if self.oResponse and not sContent:
-                # Ignorer ces deux codes erreurs.
-                ignoreStatus = [200, 302]
+                # Ignorer ces codes retours
+                ignoreStatus = [200, 204, 302]
                 if self.oResponse.status_code not in ignoreStatus:
                     dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), self.oResponse.status_code, self.__sUrl))
 

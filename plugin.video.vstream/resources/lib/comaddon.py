@@ -239,8 +239,10 @@ class CountdownDialog(object):
 
 
 class progress:
+    PROGRESS = None
+
     def __init__(self):
-        self.PROGRESS = None
+#        self.PROGRESS = None
         self.COUNT = 0
 
     def VScreate(self, title='', desc='', large=False):
@@ -257,22 +259,21 @@ class progress:
         if dlgId != 9999 and dlgId != 10138:  # 9999 = None
             return empty()
 
-        if self.PROGRESS == None:
+        if progress.PROGRESS == None:
             if not title:
                 title = addon().VSlang(30140)
-            
-            if large:
-                self.PROGRESS = xbmcgui.DialogProgress()
-            elif ADDONVS.getSetting('spinner_small') == 'true':
-                self.PROGRESS = xbmcgui.DialogProgressBG()
             else:
-                self.PROGRESS = xbmcgui.DialogProgress()
-            self.PROGRESS.create(title, desc)
+                title = str(title)
+            if large:
+                progress.PROGRESS = xbmcgui.DialogProgress()
+            else:
+                progress.PROGRESS = xbmcgui.DialogProgressBG()
+            progress.PROGRESS.create(title, desc)
 
         return self
 
     def VSupdate(self, dialog, total, text='', search=False):
-        if not self.PROGRESS:    # Déjà refermé
+        if not progress.PROGRESS:    # Déjà refermé
             return
 
         if not search and window(10101).getProperty('search') == 'true':
@@ -284,25 +285,27 @@ class progress:
         self.COUNT += 1
         iPercent = int(float(self.COUNT * 100) / total)
         text += ' : ' + str(self.COUNT) + '/' + str(total) + '\n'
-        if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
-            self.PROGRESS.update(iPercent, text )
+        if isinstance(progress.PROGRESS, xbmcgui.DialogProgress):
+            progress.PROGRESS.update(iPercent, text )
         else:
-            self.PROGRESS.update(iPercent, message = text )
+            progress.PROGRESS.update(iPercent, message = text )
 
     def iscanceled(self):
-        if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
-            return self.PROGRESS.iscanceled()
+        if isinstance(progress.PROGRESS, xbmcgui.DialogProgress):
+            return progress.PROGRESS.iscanceled()
         return False
 
-    def VSclose(self, dialog=''):
-        if not self.PROGRESS:
+    def VSclose(self, dialog=None):
+        if not progress.PROGRESS:
             return  # Déjà fermée
 
         if window(10101).getProperty('search') == 'true':
             return
 
-        if self.PROGRESS:  # test si pas fermé entre-temps
-            self.PROGRESS.close()
+        if progress.PROGRESS:  # test si pas fermé entre-temps
+            prgToClose = progress.PROGRESS
+            progress.PROGRESS = None
+            prgToClose.close()
 
     def getProgress(self):
         return self.COUNT

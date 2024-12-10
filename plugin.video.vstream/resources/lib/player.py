@@ -85,22 +85,21 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sUrl):
-
-        # # Vérification et/ou récupération des id tmdb ou imdb puis set dans la props ids de script.trakt pour scrobbling
-        # if self.ADDON.getSetting('use_trakt_addon') == 'true':
-        #     if self.sImdbId:
-        #         ids = json.dumps({u'imdb': self.sImdbId})
-        #         xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
-        #     elif not self.sTmdbId:
-        #         if self.sTitle or self.tvShowTitle:
-        #             if self.sCat:
-        #                 ctrakt = cTrakt()
-        #                 sType = ctrakt.convertCatToType(self.sCat)
-        #                 if sType != -1:
-        #                     self.sTmdbId = int(ctrakt.getTmdbID(self.sTitle, sType, oGuiElement.getItemValue('year')))
-        #     if self.sTmdbId:
-        #         ids = json.dumps({u'tmdb': self.sTmdbId})
-        #         xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
+        # Vérification et récupération des IDs TMDB ou IMDb, puis attribution dans les propriétés 'ids' de script.trakt pour le scrobbling.
+        if self.ADDON.getSetting('use_trakt_addon') == 'true':
+            if self.sImdbId:
+                ids = json.dumps({u'imdb': self.sImdbId})
+                xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
+            elif not self.sTmdbId:
+                if self.sTitle or self.tvShowTitle:
+                    if self.sCat:
+                        ctrakt = cTrakt()
+                        sType = ctrakt.convertCatToType(self.sCat)
+                        if sType != -1:
+                            self.sTmdbId = int(ctrakt.getTmdbID(self.sTitle, sType, oGuiElement.getItemValue('year')))
+            if self.sTmdbId:
+                ids = json.dumps({u'tmdb': self.sTmdbId})
+                xbmcgui.Window(10000).setProperty('script.trakt.ids', ids)
 
         # Lancement d'une vidéo sans avoir arrêté la précédente
         if self.isPlaying():
@@ -182,7 +181,7 @@ class cPlayer(xbmc.Player):
                 self.currentTime = self.getTime()
 
                 waitingNext += 1
-                if waitingNext == 10:  # attendre un peu avant de chercher le prochain épisode d'une série
+                if waitingNext == 180:  # attendre un peu avant de chercher le prochain épisode d'une série
                     self.totalTime = self.getTotalTime()
                     self.infotag = self.getVideoInfoTag()
                     UpNext().nextEpisode(oGuiElement)
@@ -227,6 +226,7 @@ class cPlayer(xbmc.Player):
     # qui n'est pas celle qui a été lancée si plusieurs vidéos se sont enchainées
     # sEpisode = l'épisode précédent en cas d'enchainement d'épisode
     def _setWatched(self, sEpisode=''):
+
         try:
             with cDb() as db:
                 if self.isPlaying():
@@ -242,15 +242,16 @@ class cPlayer(xbmc.Player):
                     # calcul le temp de lecture
                     # Dans le cas où on a vu intégralement le contenu, percent = 0.0
                     # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
+                    # if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
 
                     VALUE_WATCHTIME = 0.90
+                    TRAKT_ID = "script.trakt"
 
-                    # if self.ADDON.getSetting('use_trakt_addon') == 'true':
-                    #     TRAKT_ID = "script.trakt"
-                    #     traktAddon = xbmcaddon.Addon(TRAKT_ID)
-                    #     VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
+                    if self.ADDON.getSetting('use_trakt_addon') == 'true':
+                        traktAddon = xbmcaddon.Addon(TRAKT_ID)
+                        VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
 
-                    if (pourcent > VALUE_WATCHTIME) or (pourcent == 0.0 and self.currentTime == self.totalTime):
+                    if (pourcent > VALUE_WATCHTIME) or (pourcent == 0.0 and self.currentTime == self.totalTime):                    
 
                         # Marquer VU dans la BDD Vstream
                         sTitleWatched = self.infotag.getOriginalTitle()
@@ -301,12 +302,16 @@ class cPlayer(xbmc.Player):
                             meta['site'] = self.sSite
                             meta['point'] = self.currentTime
                             meta['total'] = self.totalTime
-                            matchedrow = db.insert_resume(meta)
+                            db.insert_resume(meta)
+
+                            # point de reprise dans les comptes externes
+                            self.__setProgress(sEpisode, self.currentTime, self.totalTime)
+                            
 
                             # Lecture en cours
                             meta['cat'] = self.sCat
                             meta['site'] = self.sSource
-                            meta['sTmdbId'] = self.sTmdbId
+                            meta['tmdbId'] = self.sTmdbId
 
                             # Lecture d'un épisode, on sauvegarde la saison
                             if self.sCat == '8':
@@ -330,7 +335,7 @@ class cPlayer(xbmc.Player):
                     # Lecture d'un épisode, on met la saison "En cours de lecture"
                     if saisonViewing:
                         meta['cat'] = '4'  # saison
-                        meta['sTmdbId'] = self.sTmdbId
+                        meta['tmdbId'] = self.sTmdbId
                         tvShowTitleWatched = cUtil().titleWatched(self.tvShowTitle).replace(' ', '')
                         if self.sSaison:
                             meta['season'] = self.sSaison
@@ -360,35 +365,62 @@ class cPlayer(xbmc.Player):
 
         with cDb() as db:
             # Reprendre la lecture
-            if self.isPlayingVideo() and self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
+            if self.isPlayingVideo() and self.getTime() < 180:  # si supérieur à 3 minutes, la reprise a été assuré par KODI
                 self.infotag = self.getVideoInfoTag()
                 sTitleWatched = self.infotag.getOriginalTitle()
                 if sTitleWatched:
                     meta = {'titleWatched': sTitleWatched}
                     resumePoint, total = db.get_resume(meta)
                     if resumePoint:
-                        h = resumePoint//3600
-                        ms = resumePoint-h*3600
-                        m = ms//60
-                        s = ms-m*60
-                        ret = dialog().VSselect(['Reprendre depuis %02d:%02d:%02d' %(h, m, s), 'Lire depuis le début'], 'Reprendre la lecture')
-                        if ret == 0:
-                            self.seekTime(resumePoint)
-                        elif ret == 1:
-                            self.seekTime(0.0)
-                            # RAZ du point de reprise
-                            db.del_resume(meta)
+                        
+                        if total == 1: # Gestion en pourcentage
+                            total = self.getTotalTime()
+                            resumePoint = total * resumePoint
 
+                        # au moins 3 minutes et si pas vu en entier
+                        if resumePoint > 180 and resumePoint < 0.9*total:
+                            h = resumePoint//3600
+                            ms = resumePoint-h*3600
+                            m = ms//60
+                            s = ms-m*60
+                            ret = dialog().VSselect(['Reprendre depuis %02d:%02d:%02d' %(h, m, s), 'Lire depuis le début'], 'Reprendre la lecture')
+                            if ret == 0:
+                                self.seekTime(resumePoint)
+                            elif ret == 1:
+                                self.seekTime(0.0)
+                                # RAZ du point de reprise
+                                db.del_resume(meta)
+
+    # Marqué VU dans les comptes externes
     def __setWatchlist(self, sEpisode=''):
-        # # Vérification de l'utilisation de l'addon Trakt ou non, si oui, on quitte la fonction.
-        # if self.ADDON.getSetting('use_trakt_addon') == 'true':
-        #     return
+        # Vérification de l'utilisation de l'addon Trakt -> si oui: on quitte la fonction.
+        if self.ADDON.getSetting('use_trakt_addon') == 'true':
+            return
         # Suivi de lecture dans Trakt si compte
         if self.ADDON.getSetting('bstoken') == '':
             return
         plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
         function = getattr(plugins, 'getAction')
         function(Action="SetWatched", sEpisode=sEpisode)
+
+
+    # Progression dans les comptes externes
+    def __setProgress(self, sEpisode='', currentTime=0, totalTime=0):
+        # Vérification de l'utilisation de l'addon Trakt -> si oui: on quitte la fonction.
+        if self.ADDON.getSetting('use_trakt_addon') == 'true':
+            return
+        # Suivi de lecture dans Trakt si compte
+        if self.ADDON.getSetting('bstoken') == '':
+            return
+        if totalTime == 0:
+            return
+        
+        progress = currentTime/ totalTime
+        
+        plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
+        function = getattr(plugins, 'getAction')
+        function(Action="SetProgress", sEpisode=sEpisode, progress=progress)
+
 
     def __getPlayerType(self):
         sPlayerType = self.ADDON.getSetting('playerType')

@@ -15,12 +15,14 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'vidzi', 'Vidzi')
 
     def setUrl(self, url):
-        self._url = url.replace('http://vidzi.tv/', '')
-        self._url = self._url.replace('https://vidzi.tv/', '')
-        self._url = self._url.replace('embed-', '')
-        self._url= re.sub(r'\-.*\.html', r'', self._url)
-        self._url = self._url.replace('.html', '')
-        self._url = 'https://vidzi.tv/' + str(self._url) + '.html'
+        url = url.replace('http://vidzi.tv/', '')
+        url = url.replace('https://vidzi.tv/', '')
+        url = url.replace('embed-', '')
+        url= re.sub(r'\-.*\.html', r'', url)
+        url = url.replace('.html', '')
+        url = 'https://vidzi.tv/' + str(url) + '.html'
+        super(cHoster, self).setUrl(url)
+
 
     def _getMediaLinkForGuest(self):
         api_call = ''

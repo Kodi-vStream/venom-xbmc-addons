@@ -41,7 +41,7 @@ def showMenuTvShows():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries', 'search-series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -87,7 +87,7 @@ def showSeriesGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-gratos/' + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -130,27 +130,29 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # url year lang thumb title
-    sPattern = '<article class="movie-box.+?href="([^"]+).+?<span class="icon-hd" title>(\w+).+?img data-src="([^"]+).+? alt="([^"]+).+?<\/a> <\/div><(div|\/div)'
+    # url year thumb title
+    sPattern = '<article class="movie-box.+?href="([^"]+).+?title="">(\d+)<.+?img data-src="([^"]+).+?alt="([^"]+).+?'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[4] != 'div': # filtre les medias non accessibles
-                continue
+            # if aEntry[4] != 'div': # filtre les medias non accessibles
+            #     continue
             sUrl2 = aEntry[0]
-            sThumb = aEntry[2]
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[3].strip()
+            # exclure les films, non accessibles
+            if '/films-' in sUrl2:
+                continue
 
+            sTitle = aEntry[3].strip()
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue  # Filtre de recherche
 
-            # sLang = aEntry[2].strip()
             sYear = aEntry[1]
+            sThumb = aEntry[2]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
 
             sDisplayTitle = '%s (%s)' % (sTitle, sYear)
 

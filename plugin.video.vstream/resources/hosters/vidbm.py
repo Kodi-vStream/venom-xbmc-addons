@@ -22,12 +22,14 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        self._url = re.sub('=img.vidbm.com/.+?', '', str(url))
-        self._url = self._url.replace('https://www.vidbm.com/', '')
-        self._url = self._url.replace('embed-', '')
-        self._url = self._url.replace('emb.html?', '')
-        self._url = self._url.replace('.html?auto=1', '')
-        self._url = self._url.replace('.html', '')
+        url = re.sub('=img.vidbm.com/.+?', '', str(url))
+        url = url.replace('https://www.vidbm.com/', '')
+        url = url.replace('embed-', '')
+        url = url.replace('emb.html?', '')
+        url = url.replace('.html?auto=1', '')
+        url = url.replace('.html', '')
+        super(cHoster, self).setUrl(url)
+
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)

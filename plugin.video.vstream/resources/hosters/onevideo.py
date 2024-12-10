@@ -32,10 +32,10 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, url):
-        self._url = str(url)
-        self._url = self._url.replace('http://www.onevideo.to/', '')
-        self._url = self._url.replace('embed.php?id=', '')
-        self._url = 'http://www.onevideo.to/embed.php?id=' + str(self._url)
+        url = url.replace('http://www.onevideo.to/', '')
+        url = url.replace('embed.php?id=', '')
+        super(cHoster, self).setUrl('http://www.onevideo.to/embed.php?id=' + url)
+        
 
     def _getMediaLinkForGuest(self):
         # api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') %

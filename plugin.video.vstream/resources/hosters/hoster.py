@@ -4,7 +4,7 @@ import re
 from resources.lib.util import Unquote
 
 
-class iHoster:
+class iHoster(object):
 
     def __init__(self, pluginIdentifier, displayName, color='skyblue'):
         self._defaultDisplayName = displayName
@@ -16,6 +16,7 @@ class iHoster:
         self._res = None    # La résolution du lien
         self._url = None
         self._mediaFile = None
+        self._mediaInfo = None
 
     def getPluginIdentifier(self):
         return self._pluginIdentifier
@@ -52,6 +53,8 @@ class iHoster:
         return self._res
 
     def setUrl(self, url):
+        if not url.startswith('http'):
+            url = ('https://' + url).replace('////', '//')
         self._url = str(url)
 
     def getUrl(self):
@@ -61,7 +64,15 @@ class iHoster:
         return self._getMediaLinkForGuest()
 
     # nom du fichier, interessant pour afficher la release
+    def setMediaInfo(self, mediaInfo):
+        self._mediaInfo = mediaInfo
+        
+    # nom du fichier, interessant pour afficher la release
     def getMediaFile(self):
+        
+        if self._mediaInfo:
+            return self._mediaInfo
+
         mediaFile = self._mediaFile
         if not mediaFile: 
             mediaFile = self._url
@@ -74,8 +85,12 @@ class iHoster:
         sMediaFile = Unquote(sMediaFile.split('/')[-1])
         sMediaFile = re.sub('TM\d+TM', '', sMediaFile)
         sMediaFile = re.sub('RES-.+?-RES', '', sMediaFile)
+        sMediaFile = sMediaFile.replace('-', ' ')
         sMediaFile = sMediaFile.replace('.', ' ')
         sMediaFile = sMediaFile.replace('_', ' ')
+        
+        self._mediaInfo = sMediaFile
+        
         return sMediaFile
 
     def _getMediaLinkForGuest(self):

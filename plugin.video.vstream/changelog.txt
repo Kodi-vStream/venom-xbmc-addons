@@ -10,6 +10,13 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.0.0 - 10/12/24 ***
+- Ergonomie : Refonte complete des menus qui proposent les medias depuis TMDB avant de lancer la recherche
+- Trakt : integration complete, avec reprise du point de lecture entre deux appareils
+- Films/séries : possiblité de recherche des listes pré-établies
+- Séries : sélection par diffuseurs
+ 
+
 *** 2.9.11 - 11/11/24 ***
 - Wiflix : blocage lors des recherches de séries
 - NeymarTV : Mise à jour

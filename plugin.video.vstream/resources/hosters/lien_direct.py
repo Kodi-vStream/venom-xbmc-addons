@@ -14,7 +14,9 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'lien_direct', 'Lien direct')
 
     def setUrl(self, url):
-        self._url = str(url).replace('+', '%20')  # un lien direct n'est pas forcement urlEncoded
+        # un lien direct n'est pas forcement urlEncoded
+        super(cHoster, self).setUrl(str(url).replace('+', '%20'))
+
 
     def _getMediaLinkForGuest(self):
         api_call = self._url

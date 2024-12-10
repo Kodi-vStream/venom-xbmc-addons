@@ -19,17 +19,17 @@ SITE_DESC = 'Animés & Dramas en streaming.'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = (True, 'showAnimMenu')
-ANIM_NEWS = (URL_MAIN + 'anime', 'showSeries')
-ANIM_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showSeries')
+ANIM_NEWS = ('anime', 'showSeries')
+ANIM_LIST = ('video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
+ANIM_VIEWS = ('video?search=&t=0&order=3', 'showSeries')
 
 DRAMA_DRAMAS = (True, 'showDramaMenu')
-DRAMA_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showSeries')
+DRAMA_LIST = ('video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
+DRAMA_VIEWS = ('video?search=&t=5&order=3', 'showSeries')
 
-URL_SEARCH = (URL_MAIN + 'video?search=', 'showSeries')
-URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=', 'showSeries')
-URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=', 'showSeries')
+URL_SEARCH = ('video?search=', 'showSeries')
+URL_SEARCH_ANIMS = ('video?t=0&order=0&search=', 'showSeries')
+URL_SEARCH_DRAMAS = ('video?t=5&order=0&search=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
 
 
@@ -54,13 +54,13 @@ def showAnimMenu():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnim', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnim', 'Recherche', 'search-animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Populaire)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Populaire)', 'popular.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -70,13 +70,13 @@ def showDramaMenu():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchDrama', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchDrama', 'Recherche', 'search-dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Dramas (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaire)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaire)', 'popular.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -131,33 +131,33 @@ def showGenres():
     sType2 = oInputParameterHandler.getValue('type2')
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'video?recherche=&genre3=1&type2=' + sType2])
-    liste.append(['Aventure', URL_MAIN + 'video?recherche=&genre3=2&type2=' + sType2])
-    liste.append(['Amour & Amitié', URL_MAIN + 'video?recherche=&genre3=3&type2=' + sType2])
-    liste.append(['Combat', URL_MAIN + 'video?recherche=&genre3=4&type2=' + sType2])
-    liste.append(['Comédie', URL_MAIN + 'video?recherche=&genre3=5&type2=' + sType2])
-    liste.append(['Contes & Récits', URL_MAIN + 'video?recherche=&genre3=6&type2=' + sType2])
-    liste.append(['Cyber & Mecha', URL_MAIN + 'video?recherche=&genre3=7&type2=' + sType2])
-    liste.append(['Dark Fantasy', URL_MAIN + 'video?recherche=&genre3=8&type2=' + sType2])
-    liste.append(['Drame', URL_MAIN + 'video?recherche=&genre3=9&type2=' + sType2])
-    liste.append(['Ecchi', URL_MAIN + 'video?recherche=&genre3=10&type2=' + sType2])
-    liste.append(['Éducatif', URL_MAIN + 'video?recherche=&genre3=11&type2=' + sType2])
-    liste.append(['Énigme & Policier', URL_MAIN + 'video?recherche=&genre3=12&type2=' + sType2])
-    liste.append(['Épique & Héroique', URL_MAIN + 'video?recherche=&genre3=13&type2=' + sType2])
-    liste.append(['Espace & Sci-Fiction', URL_MAIN + 'video?recherche=&genre3=14&type2=' + sType2])
-    liste.append(['Familial & Jeunesse', URL_MAIN + 'video?recherche=&genre3=15&type2=' + sType2])
-    liste.append(['Fantastique & Mythe', URL_MAIN + 'video?recherche=&genre3=16&type2=' + sType2])
-    liste.append(['Hentai', URL_MAIN + 'video?recherche=&genre3=17&type2=' + sType2])
-    liste.append(['Historique', URL_MAIN + 'video?recherche=&genre3=18&type2=' + sType2])
-    liste.append(['Horreur', URL_MAIN + 'video?recherche=&genre3=19&type2=' + sType2])
-    liste.append(['Magical Girl', URL_MAIN + 'video?recherche=&genre3=20&type2=' + sType2])
-    liste.append(['Musical', URL_MAIN + 'video?recherche=&genre3=21&type2=' + sType2])
-    liste.append(['Psychologique', URL_MAIN + 'video?recherche=&genre3=22&type2=' + sType2])
-    liste.append(['Sport', URL_MAIN + 'video?recherche=&genre3=23&type2=' + sType2])
-    liste.append(['Tranche de vie', URL_MAIN + 'video?recherche=&genre3=24&type2=' + sType2])
-    liste.append(['Shôjo-Ai', URL_MAIN + 'video?recherche=&genre3=25&type2=' + sType2])
-    liste.append(['Shônen-Ai', URL_MAIN + 'video?recherche=&genre3=26&type2=' + sType2])
-    liste.append(['Yaoi/BL', URL_MAIN + 'video?recherche=&genre3=27&type2=' + sType2])
+    liste.append(['Action', 'video?recherche=&genre3=1&type2=' + sType2])
+    liste.append(['Aventure', 'video?recherche=&genre3=2&type2=' + sType2])
+    liste.append(['Amour & Amitié', 'video?recherche=&genre3=3&type2=' + sType2])
+    liste.append(['Combat', 'video?recherche=&genre3=4&type2=' + sType2])
+    liste.append(['Comédie', 'video?recherche=&genre3=5&type2=' + sType2])
+    liste.append(['Contes & Récits', 'video?recherche=&genre3=6&type2=' + sType2])
+    liste.append(['Cyber & Mecha', 'video?recherche=&genre3=7&type2=' + sType2])
+    liste.append(['Dark Fantasy', 'video?recherche=&genre3=8&type2=' + sType2])
+    liste.append(['Drame', 'video?recherche=&genre3=9&type2=' + sType2])
+    liste.append(['Ecchi', 'video?recherche=&genre3=10&type2=' + sType2])
+    liste.append(['Éducatif', 'video?recherche=&genre3=11&type2=' + sType2])
+    liste.append(['Énigme & Policier', 'video?recherche=&genre3=12&type2=' + sType2])
+    liste.append(['Épique & Héroique', 'video?recherche=&genre3=13&type2=' + sType2])
+    liste.append(['Espace & Sci-Fiction', 'video?recherche=&genre3=14&type2=' + sType2])
+    liste.append(['Familial & Jeunesse', 'video?recherche=&genre3=15&type2=' + sType2])
+    liste.append(['Fantastique & Mythe', 'video?recherche=&genre3=16&type2=' + sType2])
+    liste.append(['Hentai', 'video?recherche=&genre3=17&type2=' + sType2])
+    liste.append(['Historique', 'video?recherche=&genre3=18&type2=' + sType2])
+    liste.append(['Horreur', 'video?recherche=&genre3=19&type2=' + sType2])
+    liste.append(['Magical Girl', 'video?recherche=&genre3=20&type2=' + sType2])
+    liste.append(['Musical', 'video?recherche=&genre3=21&type2=' + sType2])
+    liste.append(['Psychologique', 'video?recherche=&genre3=22&type2=' + sType2])
+    liste.append(['Sport', 'video?recherche=&genre3=23&type2=' + sType2])
+    liste.append(['Tranche de vie', 'video?recherche=&genre3=24&type2=' + sType2])
+    liste.append(['Shôjo-Ai', 'video?recherche=&genre3=25&type2=' + sType2])
+    liste.append(['Shônen-Ai', 'video?recherche=&genre3=26&type2=' + sType2])
+    liste.append(['Yaoi/BL', 'video?recherche=&genre3=27&type2=' + sType2])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -234,26 +234,30 @@ def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
         oUtil = cUtil()
-        sSearchText = sSearch.replace(URL_SEARCH_ANIMS[0], '')
-        sSearchText = sSearchText.replace(URL_SEARCH_DRAMAS[0], '')
+        sSearchText = sSearch.split('=')[-1]
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
+    if not 'http' in sUrl:
+        sUrl = URL_MAIN + sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = 'data-original="([^"]+)".+?class="top">.+?<a href="([^"]+)">.+?<span class="title">([^<]+)'
     aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
-    if not aResult:
-        oGui.addText(SITE_IDENTIFIER)
-    else:
+    if aResult:
         total = len(aResult)
         progress_ = progress().VScreate(SITE_NAME, large=total > 50)
         oOutputParameterHandler = cOutputParameterHandler()
+
+        # adulteContent = addon().getSetting('contenu_adulte') == "true"
+        #     # filtre parental
+        #     if not adulteContent and '/hentai/' in sUrl2:
+        #         continue
 
         for aEntry in aResult:
             progress_.VSupdate(progress_, total)
@@ -325,31 +329,36 @@ def showSaison():
     except:
         pass
 
-    sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
+    sPattern = '<p style="background-color:[^"]+">Animés licencié</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red] !!! Animé non disponible !!! [/COLOR]')
 
     else:
-        sPattern = '<li class="saison">.+?(\d+)<\/li>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent, 'class="lecteur-redirection large"')
         if aResult[0]:
-            oOutputParameterHandler = cOutputParameterHandler()
-            for aEntry in aResult[1]:
-
-                sNumSaison = aEntry[0]
-                sSaison = 'Saison ' + aEntry[0]
-                sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
-                sDisplayTitle = sMovieTitle + ' ' + sSaison
-                sTitle = sMovieTitle
-
-                oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-
-                oGui.addSeason(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red] !!! Animé non disponible !!! [/COLOR]')
+    
+        else:
+            sPattern = '<li class="saison" *>.+?(\d+)<\/li>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                for aEntry in aResult[1]:
+    
+                    sNumSaison = aEntry
+                    sSaison = 'Saison ' + aEntry
+                    sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
+                    sDisplayTitle = sMovieTitle + ' ' + sSaison
+                    sTitle = sMovieTitle
+    
+                    oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sDesc', sDesc)
+    
+                    oGui.addSeason(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -375,14 +384,21 @@ def showEpisode():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
-        sStart = 'class="saison">saison ' + sNumSaison
+        sStart = 'class="saison" >saison ' + sNumSaison
         sEnd = '<div class="saison-container">'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
         sPattern = '<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
+
+            total = len(aResult[1])
+            progress_ = progress().VScreate(SITE_NAME, large=total > 50)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
+                    break
                 sUrl = aEntry[0]
                 sEpisode = aEntry[1]
                 Saison = 'Saison ' + sNumSaison
@@ -405,6 +421,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sLang', sLang)
 
                 oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

@@ -22,14 +22,14 @@ def service():
     # mise à jour des setting si nécessaire
     cUpdate().getUpdateSetting()
 
+    # les flux TV ne permettent plus d'être enregistrés
+    return
+
     # gestion des enregistrements en cours
     ADDON = addon()
     recordIsActivate = ADDON.getSetting('enregistrement_activer')
     if recordIsActivate == 'false':
         return
-
-    # les flux TV ne permettent plus d'être enregistrés
-    return
 
     pathRecording = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
 #    pathRecording = ADDON.getSetting('path_enregistrement_programmation')

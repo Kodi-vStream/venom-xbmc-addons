@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import addon, VSlog, isMatrix, siteManager
+from resources.lib.comaddon import addon, isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -157,13 +157,13 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search-films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search-series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche animés', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche animés', 'search-animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
@@ -269,7 +269,7 @@ def showGenresMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -379,7 +379,7 @@ def showAlpha(url=None):
             sLetter = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'listes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -441,7 +441,7 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        adulteContent = addon().getSetting('contenu_adulte')
+        adulteContent = addon().getSetting('contenu_adulte') == "true"
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -471,7 +471,7 @@ def showMovies(sSearch=''):
 
             sTitle = sTitle.replace('()', '').strip()
 
-            if adulteContent == "false":
+            if not adulteContent:
                 # Enleve le contenu pour adulte.
                 if 'hentai' in sTitle.lower():
                     continue
@@ -893,8 +893,6 @@ def showHosters():
                 if '///' in sHosterUrl:
                     sHosterUrl = 'https://' + '/'.join(sHosterUrl.split('/')[5:])
 
-                VSlog(sHosterUrl)
-
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
@@ -941,14 +939,14 @@ def getTinyUrl(url):
         oRequestHandler.disableRedirect()
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-        sHtmlContent = oRequestHandler.request()
 
+        oRequestHandler.request()
         UrlRedirect = oRequestHandler.getRealUrl()
 
         if not(UrlRedirect == url):
             url = UrlRedirect
-        elif 'Location' in reponse.getResponseHeader():
-            url = reponse.getResponseHeader()['Location']
+        elif 'Location' in oRequestHandler.getResponseHeader():
+            url = oRequestHandler.getResponseHeader()['Location']
     return url
 
 

@@ -13,14 +13,15 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'rutube', 'RuTube')
 
     def setUrl(self, url):
-        self._url = url
-        self._url = self._url.replace('http://', '')
-        self._url = self._url.replace('https://', '')
-        self._url = self._url.replace('rutube.ru/video/embed/', '')
-        self._url = self._url.replace('video.rutube.ru/', '')
-        self._url = self._url.replace('rutube.ru/video/', '')
-        self._url = self._url.replace('rutube.ru/play/embed/', '')
-        self._url = 'http://rutube.ru/play/embed/' + str(self._url)
+        url = url.replace('http://', '')
+        url = url.replace('https://', '')
+        url = url.replace('rutube.ru/video/embed/', '')
+        url = url.replace('video.rutube.ru/', '')
+        url = url.replace('rutube.ru/video/', '')
+        url = url.replace('rutube.ru/play/embed/', '')
+        url = 'http://rutube.ru/play/embed/' + url
+        super(cHoster, self).setUrl(url)
+
 
     def __getIdFromUrl(self, url):
         sPattern = "\/play\/embed\/(\w+)"  # au cas ou test \/play\/embed\/(\w+)(?:\?|\\?)

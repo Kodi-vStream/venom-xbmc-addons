@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import addon, progress, siteManager
 
 SITE_IDENTIFIER = 'skyanimes'
 SITE_NAME = 'Sky-Animes'
@@ -46,37 +46,39 @@ def load():
 
 def showMenuAnims():
     oGui = cGui()
+    addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search-animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (Films)', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], addons.VSlang(30120), 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
-    liste = []
-    liste.append(['En Cours', URL_MAIN + 'streaming-animes-en-cours?p=-1'])
-    liste.append(['Terminés', URL_MAIN + 'download-animes-termines?p=-1'])
-
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', oOutputParameterHandler)
+    # liste = []
+    # liste.append(['En Cours', URL_MAIN + 'streaming-animes-en-cours?p=-1'])
+    # liste.append(['Terminés', URL_MAIN + 'download-animes-termines?p=-1'])
+    #
+    # for sTitle, sUrl in liste:
+    #     oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    #     oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showMenuDramas():
     oGui = cGui()
+    addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
     # contenu à contrôler
     # oOutputParameterHandler.addParameter('siteUrl', ANIM_OAVS[0])

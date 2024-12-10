@@ -44,22 +44,26 @@
             "active": "False",
             "url": "https://channelstream.es"
         },
-        "cinemay_cc": {
-            "label": "Cinemay_cc",
-            "active": "False",
-            "cloudflare": "True",
-            "url": "https://streamizseries.net/"
-        },
         "cinemay_com": {
             "label": "Cinemay",
             "active": "True",
             "url": "https://cinemay.li/"
         },
+		"cpasmieux": {
+			"label": "cpasmieux",
+			"active": "True",
+			"url": "https://www.cpasmieux.is/"
+		},
         "daddyhd": {
             "label": "DaddyHD",
             "active": "False",
             "url": "https://thedaddy.to/"
         },
+		"darkiworld": {
+			"label": "darkiworld",
+			"active": "True",
+			"url": "https://darkiworld.xyz/"
+		},
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
@@ -83,7 +87,8 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://2024tv.ru/",
+            "url": "https://gglive.ru/",
+            "site_info": "https://elitegol.lat/",
             "url_link": "ply"
         },
         "extreme_down": {
@@ -95,7 +100,7 @@
         "filmoflix": {
             "label": "Filmoflix",
             "active": "False",
-            "cloudflare": "False",
+            "cloudflare": "True",
             "url": "https://www.wishflix.icu/"
         },
         "filmsetvideos": {
@@ -112,7 +117,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.bond/"
+            "url": "https://www.free-telecharger.quest/"
         },
         "freebox": {
             "label": "Freebox",
@@ -124,10 +129,16 @@
             "active": "False",
             "url": "https://vf.frenchstream2.click/"
         },
+		"french_stream": {
+			"label": "French-stream",
+			"active": "True",
+			"site_info": "https://fstream.one/",
+			"url": "https://fsmirror12.lol/"
+		},
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "True",
-            "cloudflare": "False",
+            "active": "False",
+            "cloudflare": "True",
             "url": "https://vvw.french-stream.bio/"
         },
         "frenchanimes": {
@@ -175,7 +186,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv.sx/"
+            "url": "https://livetv817.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -205,7 +216,7 @@
         },
         "otakufr_com": {
             "label": "OtakuFR",
-            "active": "True",
+            "active": "False",
             "url": "https://otakufr.cc/"
         },
         "pastebin": {
@@ -228,6 +239,11 @@
             "active": "True",
             "url": ""
         },
+		"seefrench": {
+			"label": "SeeFrench",
+			"active": "True",
+			"url": "https://www.seefrench.xyz/"
+		},
         "sitedarkibox": {
             "label": "darkiBox",
             "active": "True",
@@ -237,11 +253,6 @@
             "label": "Mon Compte 1Fichier",
             "active": "True",
             "url": "https://1fichier.com/"
-        },
-        "siteuptobox": {
-            "label": "Mon Compte Uptobox",
-            "active": "False",
-            "url": "https://uptobox.link/"
         },
         "skyanimes": {
             "label": "Sky-Animes",
@@ -253,6 +264,12 @@
             "active": "False",
             "url": "https://www.tv1337.buzz/"
         },
+        "streamizseries": {
+            "label": "Streamiz S\u00e9ries",
+            "active": "True",
+            "cloudflare": "False",
+            "url": "https://streamizseries.net/"
+        },
         "themoviedb_org": {
             "label": "The Movie Database",
             "active": "True",
@@ -261,18 +278,18 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://ww1.toonanime.site/"
+            "url": "https://w3.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
             "active": "True",
             "url": "https://www.imdb.com/"
         },
-        "uptobox_live": {
-            "label": "Uptobox Live",
-            "active": "False",
-            "url": "https://api.uptobox.mov/"
-        },
+		"topstream": {
+			"label": "top-stream",
+			"active": "True",
+			"url": "https://top-stream.tv/"
+		},
         "vfilms": {
             "label": "VFilms",
             "active": "False",
@@ -303,17 +320,17 @@
             "label": "Wawacity",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.beauty/"
+            "url": "https://www.wawacity.center/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.net/"
+            "url": "https://wiflix-hd.bio/"
         },
         "wilifilm": {
             "label": "Wilifilm",
-            "active": "True",
+            "active": "False",
             "url": "https://wilifilm.info/"
         },
         "youtitou_com": {

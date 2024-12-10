@@ -16,7 +16,7 @@ from resources.lib.util import cUtil, QuoteSafe
 
 class cGuiElement:
 
-    DEFAULT_FOLDER_ICON = 'icon.png'
+    DEFAULT_FOLDER_ICON = 'library.png'
 
     def __init__(self):
 
@@ -49,7 +49,7 @@ class cGuiElement:
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
-        self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
+        self.__sFanart = self.__sRootArt + 'fanart.jpg'
         self.poster = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('backdrop_tmdb')
         self.sDecoColor = self.addons.getSetting('deco_color')
@@ -237,7 +237,7 @@ class cGuiElement:
             sTitle = '%s (%s) ' % (sTitle, self.__Date)
 
         # recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.sDecoColor + ']\\1[/COLOR]', sTitle)
+#        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.sDecoColor + ']\\1[/COLOR]', sTitle)
 
         # Recherche saisons et episodes si séries ou animes
         sa = ep = ''
@@ -436,6 +436,7 @@ class cGuiElement:
             data = db.get_watched(meta)
         return data
 
+    # reprendre les infos de la navigation précédente si elles ne sont pas fournies
     def getInfoLabel(self):
         meta = {'title': xbmc.getInfoLabel('ListItem.title'),
                 # 'label': xbmc.getInfoLabel('ListItem.title'),
@@ -457,26 +458,32 @@ class cGuiElement:
                 'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
                 'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
                 'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
-                'season': xbmc.getInfoLabel('ListItem.season'),
-                'episode': xbmc.getInfoLabel('ListItem.episode'),
+                # 'season': xbmc.getInfoLabel('ListItem.season'),
+                # 'episode': xbmc.getInfoLabel('ListItem.episode'),
                 'tvshowtitle': xbmc.getInfoLabel('ListItem.tvshowtitle')
                 }
 
+        
         if 'title' in meta and meta['title']:
             meta['title'] = self.getTitle()
+        else:   # rien à récupérer
+            return
 
         if 'backdrop_path' in meta and meta['backdrop_path']:
             url = meta.pop('backdrop_path')
             self.addItemProperties('fanart_image', url)
-            self.__sFanart = url
+            if not self.__sFanart or self.__sRootArt in self.__sFanart:
+                self.__sFanart = url
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
         if 'poster_path' in meta and meta['poster_path']:
             url = meta.pop('poster_path')
-            self.__sThumbnail = url
-            self.__sPoster = url
+            if not self.__sThumbnail:
+                self.__sThumbnail = url
+            if not self.__sPoster:
+                self.__sPoster = url
 
         # Completer au besoin
         for key, value in meta.items():
@@ -589,6 +596,12 @@ class cGuiElement:
             if url:
                 self.__sThumbnail = url
                 self.__sPoster = url
+    
+        if 'poster_thumb' in meta:  # aperçu episode
+            url = meta.pop('poster_thumb')
+            if url:
+                self.__sThumbnail = url
+#                self.__sPoster = url
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
@@ -669,7 +682,7 @@ class cGuiElement:
         # tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
-            # only for library content : self.addItemValues('DBID', str(self.getTmdbId()))
+            self.addItemValues('DBID', str(self.getTmdbId()))   # utiliser par certains addons tel que Trakt pour le scrobbling
 
         # imdbid
         if self.getImdbId():
@@ -732,7 +745,8 @@ class cGuiElement:
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):
-        self.__aProperties[sPropertyKey] = mPropertyValue
+        if sPropertyKey not in self.__aProperties:
+            self.__aProperties[sPropertyKey] = mPropertyValue
 
     def getItemProperties(self):
         return self.__aProperties

@@ -18,7 +18,7 @@ except NameError:
     xrange = range
 
 SITE_IDENTIFIER = 'topimdb'
-SITE_NAME = '[COLOR orange]Top 1000 IMDb[/COLOR]'
+SITE_NAME = 'Top 1000 IMDb'
 SITE_DESC = 'Base de donnees videos.'
 
 URL_MAIN = 'https://www.imdb.com/'
@@ -104,7 +104,8 @@ def showMovies(sSearch=''):
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'img alt="([^"]+).+?loadlate="([^"]+).+?primary">([^<]+).+?unbold">([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
+    # thumb, title, year
+    sPattern = 'srcSet=".+?, ([^\s]+) \d+w".+?ipc-title__text">\d+. ([^<]+).+?dli-title-metadata-item">(\d+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -116,20 +117,15 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # sTitle = unicode(aEntry[0], 'utf-8')  # converti en unicode
-            # sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
-            # sTitle = unescape(str(aEntry[1]))
-            # sTitle = sTitle.encode( "utf-8")
-
-            sTitle = ('%s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[4])
-            sThumb = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67', '0').replace('98', '0')
-            sYear = re.search('([0-9]{4})', aEntry[3]).group(1)
-            sDesc = aEntry[5]
+            sTitle = aEntry[1]
+            sThumb = aEntry[0].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67', '0').replace('98', '0')
+            sYear = aEntry[2]
+            sDesc = ''#aEntry[5]
 
             oOutputParameterHandler.addParameter('siteUrl', 'none')
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]), str('none')))
+            oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle, str('none')))
             oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)

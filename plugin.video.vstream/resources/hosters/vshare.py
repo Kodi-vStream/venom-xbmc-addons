@@ -19,9 +19,11 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        self._url = str(url)
-        self._url = re.sub('-*\d{3,4}x\d{3,4}', '', self._url)
-        self._url = self._url.replace('https', 'http')
+        url = str(url)
+        url = re.sub('-*\d{3,4}x\d{3,4}', '', url)
+        url = url.replace('https', 'http')
+        super(cHoster, self).setUrl(url)
+        
 
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)
