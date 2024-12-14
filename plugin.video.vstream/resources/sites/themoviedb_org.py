@@ -125,12 +125,7 @@ def showMenuActeur():
     oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', addons.VSlang(30076), 'search-actor.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'person/popular?language=en-EN')
-    oGui.addDir(SITE_IDENTIFIER, 'showActors', addons.VSlang(30102), 'actor.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler.addParameter('siteUrl', 'trending/person/day?language=fr-FR')
-    # oGui.addDir(SITE_IDENTIFIER, 'showActors', addons.VSlang(30102), 'actor.png', oOutputParameterHandler)
-
-
+    oGui.addDir(SITE_IDENTIFIER, 'searchActors', addons.VSlang(30102), 'actor.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -455,8 +450,7 @@ def showSearchSaga():
 
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        showSagas(sSearchText.replace(' ', '+'))
-        # oGui.setEndOfDirectory()
+        searchSagas(sSearchText.replace(' ', '+'))
         return
 
 
@@ -466,19 +460,16 @@ def showSearchSerie():
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
         showSeries(sSearchText.replace(' ', '+'))
-        # oGui.setEndOfDirectory()
         return
 
 
-def showSearchActor():
+def showSearchActors():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        showActors(sSearchText.replace(' ', '+'))
-        # oGui.setEndOfDirectory()
+        searchActors(sSearchText.replace(' ', '+'))
         return
-
 
 
 def showGenreMovie():
@@ -717,9 +708,14 @@ def showMovies(sSearch='', term=''):
     oGui.setEndOfDirectory()
 
 
-def showSagas(sSearch=''):
+def searchSagas(sSearch=''):
     oGui = cGui()
     grab = cTMDb()
+
+    if not sSearch:
+        oInputParameterHandler = cInputParameterHandler()
+        sSearch = oInputParameterHandler.getValue('searchtext')
+
 
     result = grab.getUrl('search/collection', 1, 'query=' + sSearch)
     try:
@@ -1174,19 +1170,21 @@ def showSeriesEpisode():
     oGui.setEndOfDirectory()
 
 
-def showActors(sSearch=''):
+def searchActors(sSearch=''):
     oGui = cGui()
     grab = cTMDb()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
+    if not sUrl:
+        sUrl = 'search/person'
+        
     iPage = 1
     if oInputParameterHandler.exist('page'):
         iPage = oInputParameterHandler.getValue('page')
 
-    if oInputParameterHandler.exist('sSearch'):
-        sSearch = oInputParameterHandler.getValue('sSearch')
+    if oInputParameterHandler.exist('searchtext'):    # pour les raccourcis d'habillage
+        sSearch = oInputParameterHandler.getValue('searchtext')
 
     if sSearch:
         # format obligatoire évite de modif le format de l'url dans la lib >> _call
@@ -1243,7 +1241,7 @@ def showActors(sSearch=''):
             if sSearch:
                 oOutputParameterHandler.addParameter('sSearch', sSearch)
 
-            oGui.addNext(SITE_IDENTIFIER, 'showActors', 'Page ' + str(iNextPage), oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'searchActors', 'Page ' + str(iNextPage), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

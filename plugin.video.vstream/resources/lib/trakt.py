@@ -312,12 +312,15 @@ class cTrakt:
             return
 
 
-    def searchList(self, sSearchText, sCat):
+    def searchList(self, sSearchText="", sCat=""):
         
         oGui = cGui()
 
+        if not sSearchText:
+            oInputParameterHandler = cInputParameterHandler()
+            sSearchText = oInputParameterHandler.getValue('searchtext')
+            sCat = oInputParameterHandler.getValue('sCat')
         sUrl = URL_API + 'search/list?query=' + sSearchText
-
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
