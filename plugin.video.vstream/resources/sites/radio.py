@@ -19,6 +19,10 @@ SITE_IDENTIFIER = 'radio'
 SITE_NAME = 'Radio'
 SITE_DESC = 'Radio'
 
+# d'autres liens ici :
+# https://fluxradios.blogspot.com/p/flux-radios-francaise.html
+# https://www.radio-en-ligne.fr/
+
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
 USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
@@ -57,7 +61,7 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Clubbing', 'Clubbing'],
+    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Clubbing', 'Clubbing'], ['Classique', 'Classique'],
              ['Dance', 'Dance'], ['Electronic', 'Electronic'], ['Funk', 'Funk'], ['Hip-Hop', 'Hip-hop'],
              ['Hits', 'Hits'], ['Jazz', 'Jazz'], ['Lounge', 'Lounge'], ['Metal', 'Metal'],
              ['News', 'News'], ['Pop', 'Pop'], ['Rock', 'Rock'], ['Slow', 'Slow'], ['Trance', 'Trance']]
