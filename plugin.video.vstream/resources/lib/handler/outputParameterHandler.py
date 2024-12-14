@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.util import urlEncode, Unquote
-import numbers
 
 class cOutputParameterHandler:
     def __init__(self):
@@ -10,7 +9,7 @@ class cOutputParameterHandler:
     def addParameter(self, sParameterName, mParameterValue):
         if not mParameterValue:
             return
-        if isinstance(mParameterValue, numbers.Number):
+        if not isinstance(mParameterValue, str):
             mParameterValue = str(mParameterValue)
         else:
             Unquote(mParameterValue)
