@@ -241,7 +241,7 @@
         },
         "seefrench": {
             "label": "SeeFrench",
-            "active": "True",
+            "active": "False",
             "url": "https://www.seefrench.xyz/"
         },
         "sitedarkibox": {
