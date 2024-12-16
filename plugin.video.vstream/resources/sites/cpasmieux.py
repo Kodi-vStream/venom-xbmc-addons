@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
-# import unicodedata
 
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
@@ -12,7 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-    
+
 SITE_IDENTIFIER = 'cpasmieux'
 SITE_NAME = 'cpasmieux'
 SITE_DESC = 'Films & Séries en streaming'
@@ -148,7 +147,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # url img title
-    sPattern = 'mi2-in-link" href="\/([^"]*)".+?<img src="\/([^"]*)" *alt="([^"]+)'
+    sPattern = 'mi2-in-link" href="\/([^"]*).+?<img src="([^"]*)" *alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # en cas de recherche vide, deuxieme tentative avec le mot le plus long
@@ -160,7 +159,6 @@ def showMovies(sSearch=''):
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
 
     if aResult[0]:
         titles = set()
@@ -168,7 +166,7 @@ def showMovies(sSearch=''):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = URL_MAIN[:-1] + aEntry[1]
             sTitle = aEntry[2]
 
             # tri des doublons
@@ -193,7 +191,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
+
             if isSerie:
                 sMovieTitle = re.sub('  S\d+', '', sTitle)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -231,8 +229,6 @@ def showSaisons():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
-    sThumb = URL_MAIN + oInputParameterHandler.getValue('sThumb')
-    sYear = oInputParameterHandler.getValue('sYear')
     sDesc = ''
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -248,13 +244,12 @@ def showSaisons():
         for aEntry in aResult[1][::-1]:
 
             sUrl = aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = URL_MAIN[:-1] + aEntry[1]
             sTitle = sMovieTitle + ' ' + aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -275,7 +270,7 @@ def showEpisodes():
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="floats clearfix">', '</div></div>')
 
     # url numEp
-    sPattern = 'href="([^"]+)".+?span>(\d+)'
+    sPattern = 'href="([^"]+).+?span>(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -283,7 +278,7 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + " E"+aEntry[1]
+            sTitle = sMovieTitle + " E" + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -306,7 +301,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'data-url="([^"]+)"'
+    sPattern = 'data-url="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -314,7 +309,6 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
@@ -322,6 +316,3 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-
-
