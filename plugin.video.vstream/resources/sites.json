@@ -266,7 +266,7 @@
         },
         "streamizseries": {
             "label": "Streamiz S\u00e9ries",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://streamizseries.net/"
         },
