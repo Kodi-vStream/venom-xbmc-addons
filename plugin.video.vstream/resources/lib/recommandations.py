@@ -34,7 +34,7 @@ class cRecommandations:
                 for data in row:
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', 'movie/'+data['tmdb_id']+'/recommendations')
-                    oGui.addDir(SITE_TMDB, 'showMovies', 'Parce que vous avez regardé: '+data['title'], 'search.png', oOutputParameterHandler)
+                    oGui.addDir(SITE_TMDB, 'showMovies', 'Parce que vous avez regardé: '+data['title'], 'films.png', oOutputParameterHandler)
         except:
             pass
         oGui.setEndOfDirectory()
@@ -52,5 +52,5 @@ class cRecommandations:
             for data in row:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'tv/'+data['tmdb_id']+'/recommendations')
-                oGui.addDir(SITE_TMDB, 'showSeries', 'Parce que vous avez regardé: '+data['title'], 'search.png', oOutputParameterHandler)
+                oGui.addDir(SITE_TMDB, 'showSeries', 'Parce que vous avez regardé: '+data['title'], 'series.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
