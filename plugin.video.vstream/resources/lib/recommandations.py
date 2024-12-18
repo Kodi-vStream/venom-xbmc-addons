@@ -1,3 +1,4 @@
+from sys import excepthook
 from resources.lib.comaddon import dialog, addon, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -5,6 +6,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 
 from resources.lib.db import cDb
 from resources.lib.tmdb import cTMDb
+from resources.lib.util import cUtil
+from resources.lib.gui.guiElement import cGuiElement
+from resources.sites.themoviedb_org import SITE_IDENTIFIER as SITE_TMDB
 
 
 
@@ -18,12 +22,28 @@ class cRecommandations:
 
     def showMoviesRecommandations(self):
         oGui = cGui()
-        addons = addon()
-        tmdb = cTMDb()
 
+        try:
+            with cDb() as DB:
+                row = DB.get_catWatched('1', 5)
+
+                if not row:
+                    oGui.setEndOfDirectory()
+                    return
+                
+                for data in row:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', 'movie/'+data['tmdb_id']+'/recommendations')
+                    oGui.addDir(SITE_TMDB, 'showMovies', 'Parce que vous avez regardé: '+data['title'], 'search.png', oOutputParameterHandler)
+        except:
+            pass
+        oGui.setEndOfDirectory()
+
+    def showShowsRecommandations(self):
+        oGui = cGui()
 
         with cDb() as DB:
-            row = DB.get_catWatched('1')
+            row = DB.get_catWatched('4', 5)
 
             if not row:
                 oGui.setEndOfDirectory()
@@ -31,37 +51,6 @@ class cRecommandations:
             
             for data in row:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('tmdbIdRecommandations', data['tmdb_id'])
-                oGui.addDir(SITE_IDENTIFIER, 'showRecommandationsForMovie', 'Parce que vous avez regardé: '+data['title'], 'search.png', oOutputParameterHandler)
-            
-            
-                # print("HEHO UN FILM")
-                # print(data['title'] + ' - ' + data['tmdb_id'])
-                # tmdb.get_recommandations_by_id_movie(data['tmdb_id'])
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('sCat', '1')       # films
-        # oGui.addDir('cWatched', 'getWatched', addons.VSlang(30120), 'films.png', oOutputParameterHandler)
-
-
+                oOutputParameterHandler.addParameter('siteUrl', 'tv/'+data['tmdb_id']+'/recommendations')
+                oGui.addDir(SITE_TMDB, 'showSeries', 'Parce que vous avez regardé: '+data['title'], 'search.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
-
-
-    def showRecommandationsForMovie(self):
-        oInputParameterHandler = cInputParameterHandler()
-        tmdbId = oInputParameterHandler.getValue('tmdbIdRecommandations')
-
-        print("Je recherche des reco pour:"+tmdbId)
-
-
-    def showSeriesRecommandations(self):
-        oGui = cGui()
-        addons = self.addons
-        oOutputParameterHandler = cOutputParameterHandler()
-
-        print("ICI JE VEUX AFFICHER MON HISTORIQUE SERIES")
-
-        oGui.addDir(SITE_IDENTIFIER, 'nothing series', "Nothing", 'search.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-

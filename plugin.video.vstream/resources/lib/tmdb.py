@@ -317,15 +317,13 @@ class cTMDb:
 
 
     def get_recommandations_by_id_movie(self, tmdbid):
-        print("JE SUIS BIEN APPELÉ")
-        
         meta = self._call('movie/'+tmdbid+'/recommendations')
 
         if 'errors' not in meta and 'status_code' not in meta:
-            print("POUR L'INSTANT TOUT VA BIEN")
-            print(meta)
-
-        return tmdbid
+            return meta
+        else:
+            meta = {}
+        return meta
 
 
     # Search for movies by title.

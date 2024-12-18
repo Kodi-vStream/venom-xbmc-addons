@@ -216,6 +216,7 @@ class cHome:
         oGui.addDir(SITE_TMDB, 'showMoviesNews', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         #Recommandations
+        oOutputParameterHandler.addParameter('siteUrl', 'movies/recommandations')
         oGui.addDir('cRecommandations', 'showMoviesRecommandations', "Mes recommandations", 'news.png', oOutputParameterHandler)
 
         # Populaires
@@ -277,7 +278,8 @@ class cHome:
         oGui.addDir(SITE_TMDB, 'showSeriesNews', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         #Recommandations
-        oGui.addDir('cRecommandations', 'showSeriesRecommandations', "Mes recommandations", 'news.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'shows/recommandations')
+        oGui.addDir('cRecommandations', 'showShowsRecommandations', "Mes recommandations", 'news.png', oOutputParameterHandler)
 
         # Populaires TMDB
         # oOutputParameterHandler.addParameter('siteUrl', 'discover/tv')
