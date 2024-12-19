@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import imp
 import platform
 import random
 import threading
 import time
 import xbmc
 import xbmcvfs
+try:
+    import importlib as imp
+except ImportError:
+    import imp
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, siteManager
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -71,7 +74,7 @@ VSlog('Pastebin - Python version : ' + PYVERSION)
 if '3.10' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt310.pyc'
-elif '3.11' in PYVERSION:
+elif '3.11' in PYVERSION or '3.12' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
 elif '2.' in PYVERSION:
