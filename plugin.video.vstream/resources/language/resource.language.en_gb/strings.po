@@ -1274,3 +1274,11 @@ msgstr "Add to existing list"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Select a list"
+
+msgctxt "#31213"
+msgid "Because you watched"
+msgstr "Because you watched"
+
+msgctxt "#31214"
+msgid "My Recommendations"
+msgstr "My Recommendations"

@@ -240,9 +240,6 @@ def isFav(sSiteName, sFunction):
 
 def isRecommandations(sSiteName, sFunction):
     if sSiteName == 'cRecommandations':
-
-        print("HEHEHEHEHEHEHEHEHEHE COUCOU")
-
         plugins = __import__('resources.lib.recommandations', fromlist=['cRecommandations']).cRecommandations()
         function = getattr(plugins, sFunction)
         function()

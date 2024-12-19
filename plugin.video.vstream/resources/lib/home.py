@@ -217,7 +217,7 @@ class cHome:
 
         #Recommandations
         oOutputParameterHandler.addParameter('siteUrl', 'movies/recommandations')
-        oGui.addDir('cRecommandations', 'showMoviesRecommandations', "Mes recommandations", 'listes.png', oOutputParameterHandler)
+        oGui.addDir('cRecommandations', 'showMoviesRecommandations', self.addons.VSlang(31214), 'listes.png', oOutputParameterHandler)
 
         # Populaires
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
@@ -279,7 +279,7 @@ class cHome:
 
         #Recommandations
         oOutputParameterHandler.addParameter('siteUrl', 'shows/recommandations')
-        oGui.addDir('cRecommandations', 'showShowsRecommandations', "Mes recommandations", 'listes.png', oOutputParameterHandler)
+        oGui.addDir('cRecommandations', 'showShowsRecommandations', self.addons.VSlang(31214), 'listes.png', oOutputParameterHandler)
 
         # Populaires TMDB
         # oOutputParameterHandler.addParameter('siteUrl', 'discover/tv')

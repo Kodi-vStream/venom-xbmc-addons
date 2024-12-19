@@ -1279,3 +1279,10 @@ msgctxt "#31212"
 msgid "Select a list"
 msgstr "Choisissez une liste"
 
+msgctxt "#31213"
+msgid "Because you watched"
+msgstr "Parce que vous avez regardé"
+
+msgctxt "#31214"
+msgid "My Recommendations"
+msgstr "Mes Recommandations"
