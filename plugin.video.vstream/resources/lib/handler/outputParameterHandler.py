@@ -11,8 +11,7 @@ class cOutputParameterHandler:
             return
         if not isinstance(mParameterValue, str):
             mParameterValue = str(mParameterValue)
-        else:
-            Unquote(mParameterValue)
+        mParameterValue = Unquote(mParameterValue)
         self.__aParams[sParameterName] = mParameterValue
 
     def getParameterAsUri(self):
