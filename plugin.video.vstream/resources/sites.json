@@ -1,5 +1,10 @@
 {
     "sites": {
+        "coflix": {
+            "label": "coflix",
+            "active": "True",
+            "url": "https://coflix.app/"
+        },
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "True",
