@@ -21,7 +21,7 @@ class cInputParameterHandler:
     def getValue(self, sParamName):
         if self.exist(sParamName):
             sParamValue = self.__aParams[sParamName]
-            if not sParamValue.startswith('http'):
+            if not sParamValue.startswith('http') and not 'url' in sParamName.lower():
                 return UnquotePlus(sParamValue)
             else:
                 return Unquote(sParamValue)

@@ -10,7 +10,6 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 
 
 SITE_IDENTIFIER = 'elitegol'
@@ -18,7 +17,7 @@ SITE_NAME = 'Elitegol'
 SITE_DESC = 'Chaines TV en directs'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-URL_LINK = siteManager().getProperty(SITE_IDENTIFIER, 'url_link')
+URL_LINK = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_link')
 
 
 SPORT_SPORTS = (True, 'load')
@@ -128,7 +127,7 @@ def showTV():
         sThumb = channel[1]
 
         sDisplayTitle = channel[0]
-        sHostUrl = URL_LINK + '/2/%d' % iChannel
+        sHostUrl = URL_LINK + '/%d' % iChannel
         oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -188,7 +187,7 @@ def showMovies():
         
         for streams in link['streams']:
             channel = streams['ch']
-            sHostUrl = '%s/2/%s' % (URL_LINK, channel)
+            sHostUrl = '%s/%s' % (URL_LINK, channel)
 
             lang = streams['lang']
             sDisplayTitle = '%s [%s]' % (sTitle, lang.upper())
@@ -242,13 +241,21 @@ def getHosterIframe(url, referer):
 
     referer = oRequestHandler.getRealUrl()
     
+    return getUrl(sHtmlContent, referer)
+
+
+def getUrl(sHtmlContent, referer):
+
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sHtmlContent = cPacker().unpack(sstr)
+        for sstr in aResult:
+            if not sstr.endswith(';'):
+                sstr = sstr + ';'
+            sHtmlContent = cPacker().unpack(sstr)
+            url = getUrl(sHtmlContent, referer)
+            if url:
+                return url
 
     sPattern = '.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -292,9 +299,9 @@ def getHosterIframe(url, referer):
     sPattern = ';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        url = aResult[0]
-        if '.m3u8' in url:
-            return url
+        for url in aResult:
+            if '.m3u8' in url:
+                return url + '|Referer=' + referer
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)

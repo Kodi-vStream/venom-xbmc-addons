@@ -152,7 +152,6 @@ def showMovies(sSearch=''):
     if sSearch:
         bvalid, stoken, scookie = getTokens()
         if not bvalid:
-            oGui.setEndOfDirectory()
             return
 
         oUtil = cUtil()

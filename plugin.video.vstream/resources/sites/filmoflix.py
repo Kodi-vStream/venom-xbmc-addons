@@ -272,8 +272,6 @@ def showMovies(sSearch=''):
                 else:
                     sDisplayTitle =('%s (%s)') % (sDisplayTitle, mark2)       #marquage de films
 
-            sDisplayTitle = sDisplayTitle
-
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

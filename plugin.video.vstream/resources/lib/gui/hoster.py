@@ -320,7 +320,7 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
-        if ('upvid' in sHostName) or ('opvid' in sHostName) or ('illvid' in sHostName):
+        if ('upvid' in sHostName) or ('opvid' in sHostName) or ('illvid' in sHostName) or ('golvid' in sHostName):
             return self.getHoster('upvid')
 
         if ('estream' in sHostName) and not ('widestream' in sHostName):
@@ -338,7 +338,7 @@ class cHosterGui:
         if sHostName.replace('o','').replace('0','').replace('stream','').split('.')[0] == 'dd':
             return self.getHoster('dood')
 
-        if ('voe' in sHostName) or ('jamessoundcost' in sHostName) or ('magasavor' in sHostName):
+        if ('voe' in sHostName) or ('jamessoundcost' in sHostName) or ('magasavor' in sHostName)  or ('sandratableother' in sHostName):
             return self.getHoster('voe')
 
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):

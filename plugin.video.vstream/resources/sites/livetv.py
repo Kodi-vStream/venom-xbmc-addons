@@ -273,6 +273,9 @@ def showHosters():  # affiche les videos disponible du live
         if not (url.startswith("http")):
             url = "http:" + url
 
+        if 'youtube' in url:
+            sHosterUrl = url
+
         if 'popofthestream' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
@@ -1303,7 +1306,7 @@ def showHosters():  # affiche les videos disponible du live
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'http:' + sHosterUrl
 
-            oHoster = cHosterGui().checkHoster(".m3u8")
+            oHoster = cHosterGui().checkHoster(sHosterUrl)#".m3u8")
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle2)  # nom affiche
                 oHoster.setFileName(sMovieTitle2)  # idem

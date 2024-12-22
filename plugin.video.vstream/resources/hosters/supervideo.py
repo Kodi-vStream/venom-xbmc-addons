@@ -25,21 +25,24 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             sHtmlContent = cPacker().unpack(aResult[1][0])
             sPattern = 'file:"([^<>"]+?\.mp4).+?label:"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if aResult[0] is True:
-            url = []
-            qua = []
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
-
-            # Choix des qualités
-            api_call = dialog().VSselectqual(qua, url)
-
+            if aResult[0]:
+                url = []
+                qua = []
+                for i in aResult[1]:
+                    url.append(str(i[0]))
+                    qua.append(str(i[1]))
+    
+                # Choix des qualités
+                api_call = dialog().VSselectqual(qua, url)
+            else:
+                sPattern = 'file:"([^"]+)'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if aResult[0]:
+                    api_call = aResult[1][0]
         if api_call:
             return True, api_call
 

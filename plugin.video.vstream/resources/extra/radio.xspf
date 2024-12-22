@@ -47,7 +47,7 @@
 		<track>
 			<location>http://stream.laut.fm/80sexitos</location>
 			<title>80s EXITOS</title>
-			<image>https://cdn.webradio.media/Images/41093-80-33.png</image>
+			<image>https://assets.laut.fm/51443b263d4b82dd4e7c24b811b8ddd7</image>
 			<identifier>80</identifier>
 		</track>
 		<track>
@@ -89,7 +89,7 @@
 		<track>
 			<location>http://stream.laut.fm/albumradiosouvenirs</location>
 			<title>Album Radio Club</title>
-			<image>https://cdn.webradio.media/Images/28084-AR-Club-70-80-90-300x300.png</image>
+			<image>https://assets.laut.fm/92a6d32386b7370c2b72034bc55c2367</image>
 			<identifier>Dancefloor</identifier>
 		</track>
 		<track>
@@ -125,13 +125,19 @@
 		<track>
 			<location>https://bretagne5.streamakaci.com/bretagne5.mp3</location>
 			<title>Bretagne 5</title>
-			<image>https://www.bretagne5.fr/sites/bretagne5.fr/files/logo_0.png</image>
+			<image>https://www.bretagne5.fr/sites/default/files/logo_0.png</image>
 			<identifier>News</identifier>
+		</track>
+		<track>
+			<location>http://broadcast.infomaniak.ch/beurfm-high.mp3</location>
+			<title>Beur FM</title>
+			<image>https://upload.wikimedia.org/wikipedia/fr/5/5d/Beur_FM.jpg</image>
+			<identifier>Pop</identifier>
 		</track>
 		<track>
 			<location>https://secure-stream.c9.fr/c9radio-192.mp3</location>
 			<title>C9 Radio</title>
-			<image>https://www.c9.fr/assets/c9.png</image>
+			<image>https://www.c9.fr/assets/c9_top_logo-8cdf5b5df2a1600fd76d34499ee491e82b45e92e37b08e3d72ecd516a04bbfb3.png</image>
 			<identifier>Pop</identifier>
 		</track>
 		<track>
@@ -171,15 +177,9 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://cristalfm.no-ip.biz:8000/</location>
-			<title>Cristal FM</title>
-			<image>http://www.cristalfm.org/favicon-196.png</image>
-			<identifier>Hits</identifier>
-		</track>
-		<track>
 			<location>http://ridibundus.divergence-fm.org:8000/divergence.mp3</location>
 			<title>Divergence FM</title>
-			<image>http://www.divergence-fm.org/divergencelogo.png</image>
+			<image>https://zikoccitanie.fr/wp-content/uploads/2023/07/Divergence-FM.jpg</image>
 			<identifier>Pop</identifier>
 		</track>
 		<track>
@@ -189,15 +189,21 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>https://ais-live.cloud-services.paris/europe1.mp3</location>
+			<location>http://stream.europe1.fr/europe1.mp3</location>
 			<title>Europe 1</title>
 			<image>https://cdn-europe1.lanmedia.fr/europe1/apple-touch-icon.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
+			<location>http://europe2.lmn.fm/europe2.mp3</location>
+			<title>Europe 2</title>
+			<image>https://www.europe2.fr/wp-content/uploads/europeradio/2022/10/news-1160x435.jpeg</image>
+			<identifier>Pop</identifier>
+		</track>
+		<track>
 			<location>https://evasion60e.ice.infomaniak.ch/evasion60e-128.mp3</location>
 			<title>Evasion</title>
-			<image>https://www.evasionfm.com/assets/img/logo_evasion_big.png</image>
+			<image>https://www.acpm.fr/var/ojd/storage/files/logos/C/logo_10712.jpg</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -315,6 +321,12 @@
 			<identifier>News</identifier>
 		</track>
 		<track>
+			<location>http://icecast.radiofrance.fr/francemusique-hifi.aac</location>
+			<title>France Musique</title>
+			<image>https://www.radio.fr/300/francemusique.png</image>
+			<identifier>Classique</identifier>
+		</track>
+		<track>
 			<location>http://freqplus.ice.infomaniak.ch/freqplus-high.mp3</location>
 			<title>Frequence Plus</title>
 			<image>https://dbs.radioline.fr/pictures/radio_ddcfaff132ad1be1a32b9ae001d5b9d1/logo200.jpg</image>
@@ -399,9 +411,10 @@
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>https://player.hits1radio.com</location>
-			<title>Hit1</title>
-			<image>https://cdn.webradio.media/Images/66886-1024.jpg</image>
+			<location>https://ecmanager3.pro-fhi.net:2680/hits1studio</location>
+			<title>Hits1 Radio</title>
+			<image>https://www.hits1radio.com/wp-content/uploads/2019/03/cropped-1024-5.png</image>
+			<image>https://www.hits1radio.com/wp-content/uploads/2019/03/cropped-1024-5.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -433,6 +446,12 @@
 			<title>Jamendo lounge</title>
 			<image>https://i3.radionomy.com/404.s200.jpg</image>
 			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3</location>
+			<title>Jazz Radio</title>
+			<image>https://upload.wikimedia.org/wikipedia/commons/0/06/Jazz-radio.png</image>
+			<identifier>Jazz</identifier>
 		</track>
 		<track>
 			<location>http://eagle.streemlion.com:4171/stream</location>
@@ -469,6 +488,12 @@
 			<title>La Grosse Radio</title>
 			<image>https://i3.radionomy.com/radios/200/60fc6a91-358e-4eb1-b112-c52dfee36fac.jpg</image>
 			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://start-latina.ice.infomaniak.ch/start-latina-high.mp3</location>
+			<title>Latina</title>
+			<image>https://www.radionumerique.biz/wp-content/uploads/2024/09/radio-latina-frequences-1024x622.jpg</image>
+			<identifier>Pop</identifier>
 		</track>
 		<track>
 			<location>http://www.maxi80.com/ecoute/maxi80.m3u</location>
@@ -617,7 +642,7 @@
 		<track>
 			<location>http://radio666.net:8000/666.mp3</location>
 			<title>Radio 666</title>
-			<image>http://www.radio666.com/wp-content/themes/radio666/images/logo-radio-666.png</image>
+			<image>https://radio666.com/wp-content/uploads/2023/11/cropped-cropped-logo666_horizontal_radio_rock-1-scaled-1.jpg</image>
 			<identifier>Rock</identifier>
 		</track>
 		<track>
@@ -641,7 +666,7 @@
 		<track>
 			<location>https://novazz.ice.infomaniak.ch/novazz-128.mp3</location>
 			<title>Radio Nova</title>
-			<image>https://www.nova.fr/wp-content/themes/lnei-wp-theme-child-nova/dist/images/nova-default_342a3fb2.png</image>
+			<image>https://www.nova.fr/wp-content/uploads/sites/2/2024/08/logo.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -785,7 +810,7 @@
 		<track>
 			<location>http://icecast.skyrock.net/s/natio_mp3_128k</location>
 			<title>Skyrock</title>
-			<image>https://i.skyrock.net/1589/23621589/pics/photo_23621589_24.gif</image>
+			<image>https://static.mytuner.mobi/media/tvos_radios/056/skyrock.b2e80fc9.png</image>
 			<identifier>Hip-hop</identifier>
 		</track>
 		<track>
@@ -795,7 +820,7 @@
 			<identifier>Jazz</identifier>
 		</track>
 		<track>
-			<location>https://stream.virginradio.fr/virgin.128.aac/playlist.m3u8</location>
+			<location>http://virginradio.ice.infomaniak.ch/virgin-radio.mp3</location>
 			<title>Virgin Radio</title>
 			<image>https://i3.radionomy.com/radios/200/48a8df4c-f063-4b46-8e1b-b5a1e65ed446.jpg</image>
 			<identifier>Hits</identifier>

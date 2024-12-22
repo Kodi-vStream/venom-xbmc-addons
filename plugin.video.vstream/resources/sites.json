@@ -1,5 +1,10 @@
 {
     "sites": {
+        "coflix": {
+            "label": "coflix",
+            "active": "True",
+            "url": "https://coflix.app/"
+        },
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "True",
@@ -49,21 +54,21 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
-		"cpasmieux": {
-			"label": "cpasmieux",
-			"active": "True",
-			"url": "https://www.cpasmieux.is/"
-		},
+        "cpasmieux": {
+            "label": "cpasmieux",
+            "active": "True",
+            "url": "https://www.cpasmieux.is/"
+        },
         "daddyhd": {
             "label": "DaddyHD",
             "active": "False",
             "url": "https://thedaddy.to/"
         },
-		"darkiworld": {
-			"label": "darkiworld",
-			"active": "True",
-			"url": "https://darkiworld.xyz/"
-		},
+        "darkiworld": {
+            "label": "darkiworld",
+            "active": "True",
+            "url": "https://darkiworld.xyz/"
+        },
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
@@ -89,7 +94,7 @@
             "active": "True",
             "url": "https://gglive.ru/",
             "site_info": "https://elitegol.lat/",
-            "url_link": "ply"
+            "url_link": "ply/3"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -129,12 +134,12 @@
             "active": "False",
             "url": "https://vf.frenchstream2.click/"
         },
-		"french_stream": {
-			"label": "French-stream",
-			"active": "True",
-			"site_info": "https://fstream.one/",
-			"url": "https://fsmirror12.lol/"
-		},
+        "french_stream": {
+            "label": "French-stream",
+            "active": "True",
+            "site_info": "https://fstream.one/",
+            "url": "https://fsmirror12.lol/"
+        },
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "False",
@@ -186,7 +191,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv817.me/"
+            "url": "https://livetv818.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -216,7 +221,7 @@
         },
         "otakufr_com": {
             "label": "OtakuFR",
-            "active": "False",
+            "active": "True",
             "url": "https://otakufr.cc/"
         },
         "pastebin": {
@@ -239,11 +244,11 @@
             "active": "True",
             "url": ""
         },
-		"seefrench": {
-			"label": "SeeFrench",
-			"active": "True",
-			"url": "https://www.seefrench.xyz/"
-		},
+        "seefrench": {
+            "label": "SeeFrench",
+            "active": "False",
+            "url": "https://www.seefrench.xyz/"
+        },
         "sitedarkibox": {
             "label": "darkiBox",
             "active": "True",
@@ -285,11 +290,11 @@
             "active": "True",
             "url": "https://www.imdb.com/"
         },
-		"topstream": {
-			"label": "top-stream",
-			"active": "True",
-			"url": "https://top-stream.tv/"
-		},
+        "topstream": {
+            "label": "top-stream",
+            "active": "True",
+            "url": "https://top-stream.tv/"
+        },
         "vfilms": {
             "label": "VFilms",
             "active": "False",
@@ -297,7 +302,7 @@
         },
         "viki_com": {
             "label": "Viki",
-            "active": "True",
+            "active": "False",
             "url": "https://www.viki.com/"
         },
         "voiranime": {

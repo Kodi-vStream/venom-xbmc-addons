@@ -1,15 +1,24 @@
 ## A Propos !
 
-vStream est un addon pour Kodi qui vous permet de visionner en streaming un grand nombre de sources vidéo (comme la télévision, les films, les séries, les mangas, les documentaires, etc..). Il vous est même possible de télécharger certaines sources, de les mettre en favoris ou de voir la bande annonce. Le tout 100% Français.
+vStream est un addon pour Kodi qui vous permet de visionner en streaming un grand nombre de sources vidéo (comme la télévision, les films, les séries, les mangas, les documentaires, etc..). Il vous est même possible de télécharger certaines sources, de les mettre en favoris et de synchroniser votre compte Trakt. Le tout 100% Français.
 
 ## Tout Savoir !
 
+Présentation rapide de vStream, avec quelques tutos simples : <br>
 [![images](https://img.shields.io/badge/Visiter-vstream&#46;io-yellowgreen.svg?style=for-the-badge)](https://kodi-vstream.github.io/)
+
+Retrouvez des tutos détaillés chez notre partenaire : **les alKODIQues** - Première communauté francophone d'entraide sur l'utilisation de Kodi<br>
+[![images](https://lesalkodiques.wiki/wp-content/uploads/2024/11/Les-alKODIques.png)](https://lesalkodiques.wiki/categorie/doc-vstream/)
+<br>https://lesalkodiques.wiki/categorie/doc-vstream/
 
 
 ## Échanger !
 
+Pour des discussions techniques avec l'équipe vStream à propos de cet addon :<br>
 [![images](https://img.shields.io/badge/Communauté-DISCORD-yellowgreen.svg?style=for-the-badge)](https://discord.gg/S65HBXm)
+
+Le Discord des alKODIques, pour des discussions générales autour de kodi avec la plus grande communauté d'utilisateurs francophone :<br>
+[![images](https://img.shields.io/badge/Communauté-DISCORD-yellowgreen.svg?style=for-the-badge)](https://discord.gg/3RTRvT2PSE)
 
 
 ## Installer !

@@ -21,23 +21,23 @@ URL_API = URL_MAIN + 'api/v1/download/'
 
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_NEWS = ('movies?order=popularity%3Adesc?type=movie', 'showMovies')
+MOVIE_NEWS = ('movies?order=popularity:desc?type=movie', 'showMovies')
 MOVIE_VIEWS = ('trending-movies?type=movie', 'showMovies')
-MOVIE_GENRES = ('movies?order=popularity%3Adesc&filters=%s?type=movie', 'showMovieGenres')
+MOVIE_GENRES = ('movies?order=popularity:desc&filters=%s?type=movie', 'showMovieGenres')
 
 SERIE_SERIES = (True, 'showMenuTvShows')
-SERIE_NEWS = ('series?order=popularity%3Adesc?type=series', 'showMovies')
-SERIE_GENRES = ('series?order=popularity%3Adesc&filters=%s?type=series', 'showTvGenres')
+SERIE_NEWS = ('series?order=popularity:desc?type=series', 'showMovies')
+SERIE_GENRES = ('series?order=popularity:desc&filters=%s?type=series', 'showTvGenres')
 
 ANIM_ANIMS = (True, 'showMenuAnimes')
-ANIM_NEWS = ('animes?order=popularity%3Adesc?type=animes', 'showMovies')
-ANIM_GENRES = ('animes?order=popularity%3Adesc&filters=%s?type=animes', 'showAnimGenres')
+ANIM_NEWS = ('animes?order=popularity:desc?type=animes', 'showMovies')
+ANIM_GENRES = ('animes?order=popularity:desc&filters=%s?type=animes', 'showAnimGenres')
 
 DOC_DOCS = (True, 'showMenuDivers')
-DOC_DOC = ('docs?filters=W3sia2V5IjoiZ2VucmVzIiwidmFsdWUiOls2XSwib3BlcmF0b3IiOiJoYXNBbGwifV0&order=popularity%3Adesc?type=movie', 'showMovies')
-DOC_SERIE = ('docs?filters=W3sia2V5IjoiZ2VucmVzIiwidmFsdWUiOls2XSwib3BlcmF0b3IiOiJoYXNBbGwifV0&order=popularity%3Adesc?type=serie', 'showMovies')
-DOC_SPECTACLE = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzYsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3Nn1d&order=popularity%3Adesc?type=movie', 'showMovies')
-DOC_REALITY = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3OH1d&order=popularity%3Adesc?type=serie', 'showMovies')
+DOC_DOC = ('docs?filters=W3sia2V5IjoiZ2VucmVzIiwidmFsdWUiOls2XSwib3BlcmF0b3IiOiJoYXNBbGwifV0&order=popularity:desc?type=movie', 'showMovies')
+DOC_SERIE = ('docs?filters=W3sia2V5IjoiZ2VucmVzIiwidmFsdWUiOls2XSwib3BlcmF0b3IiOiJoYXNBbGwifV0&order=popularity:desc?type=serie', 'showMovies')
+DOC_SPECTACLE = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzYsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3Nn1d&order=popularity:desc?type=movie', 'showMovies')
+DOC_REALITY = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3OH1d&order=popularity:desc?type=serie', 'showMovies')
 
 
 URL_SEARCH = ('search/', 'showSearch')
@@ -314,12 +314,15 @@ def showMovies(sSearch=''):
             oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not sSearch:
-        iPage = int(sPage) + 1
-        sPage = str(iPage)
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oOutputParameterHandler.addParameter('sPage', sPage)
-        oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPage, oOutputParameterHandler)
+        
+        # une seule page pour populaire
+        if not 'trending-movies' in siteUrl:
+            iPage = int(sPage) + 1
+            sPage = str(iPage)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sPage', sPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 

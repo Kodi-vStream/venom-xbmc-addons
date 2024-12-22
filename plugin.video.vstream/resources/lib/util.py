@@ -38,10 +38,11 @@ class cUtil:
     # percent : pourcentage de concordance, 75% = il faut au moins 3 mots sur 4
     # retourne True si pourcentage atteint
     def CheckOccurence(self, str1, str2, percent=75):
+        str1 = self.CleanName(str1)
         str2 = self.CleanName(str2)
         nbOccurence = nbWord = 0
         list2 = str2.split(' ')   # Comparaison mot à mot
-        for part in str1.lower().split(' '):
+        for part in str1.split(' '):
             if len(part) == 1:    # Ignorer une seule lettre
                 continue
             nbWord += 1           # nombre de mots au total
