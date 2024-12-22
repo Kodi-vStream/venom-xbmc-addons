@@ -434,7 +434,7 @@ def showMovieLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHtmlContent = cRequestHandler(sUrl).request()
-    sHtmlContent = cParser().parse(sHtmlContent, 'const playerUrls = (.+?);')
+    sHtmlContent = cParser().parse(sHtmlContent, 'playerUrls = (.+?);')
 
     if sHtmlContent[0]:
         hosters = json.loads(sHtmlContent[1][0])
