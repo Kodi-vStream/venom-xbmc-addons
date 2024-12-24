@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.1.1 - 24/12/24 ***
+- Correction pour la recherche des acteurs
+
+
 *** 3.1.0 - 21/12/24 ***
 - Intégration habillage : Pouvoir créer des raccourcis de recherche vers les listes et les sagas
 - Séries : Correction pour l'enchainement des épisodes

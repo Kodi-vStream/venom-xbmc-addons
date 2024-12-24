@@ -454,16 +454,17 @@ class cDb(object):
         return False, False
 
     def del_resume(self, meta):
-        title = QuotePlus(meta['titleWatched'])
+        sTitleWatched = meta['titleWatched']
+        if not sTitleWatched:
+            return False, False
 
-        sql_select = "DELETE FROM resume WHERE title = '%s'" % title
-
+        sql_delete = "DELETE FROM resume WHERE title = '%s'" % QuotePlus(sTitleWatched)
         try:
-            self.dbcur.execute(sql_select)
+            self.dbcur.execute(sql_delete)
             self.db.commit()
             return False, False
         except Exception as e:
-            VSlog('SQL ERROR %s' % sql_select)
+            VSlog('SQL ERROR %s' % sql_delete)
             return False, False
 
     #  ***********************************

@@ -67,7 +67,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld.xyz/"
+            "url": "https://darkiworld.biz/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -92,9 +92,9 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://gglive.ru/",
+            "url": "https://lefoot.ru/",
             "site_info": "https://elitegol.lat/",
-            "url_link": "ply/3"
+            "url_link": "plyz/3"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -138,7 +138,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror12.lol/"
+            "url": "https://fsmirror16.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
