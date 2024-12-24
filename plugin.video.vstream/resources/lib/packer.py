@@ -20,9 +20,6 @@
 
 import re
 
-from resources.lib.util import Unquote
-
-
 class cPacker():
     def detect(self, source):
         """Detects whether `source` is P.A.C.K.E.R. coded."""
@@ -75,7 +72,7 @@ class cPacker():
                 payload = payload.replace(getstring(i), symtab[i])
             return _replacejsstrings((self._replacestrings(payload)))
         else:
-            source = re.sub(r"\b\w+\b", lookup, payload, flags=re.ASCII)
+            source = re.sub(r"\b\w+\b", lookup, payload, flags=re.UNICODE)
             return self._replacestrings(source)
 
     def _filterargs(self, source):
