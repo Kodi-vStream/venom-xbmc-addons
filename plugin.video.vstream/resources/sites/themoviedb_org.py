@@ -463,7 +463,7 @@ def showSearchSerie():
         return
 
 
-def showSearchActors():
+def showSearchActor():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
