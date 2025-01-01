@@ -6,6 +6,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib import util
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
 
@@ -17,6 +18,9 @@ class cHoster(iHoster):
         oParser = cParser()
 
         oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Referer', self._url)
+        oRequest.addHeaderEntry('Sec-Fetch-Dest', "iframe")
         sHtmlContent = oRequest.request()
 
         sPattern = 'sources: *\[{file:"([^"]+)'
