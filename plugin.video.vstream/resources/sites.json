@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v5.animesultra.net/"
+            "url": "https://v6.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -122,7 +122,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.quest/"
+            "url": "https://www.free-telecharger.cloud/"
         },
         "freebox": {
             "label": "Freebox",
@@ -309,7 +309,7 @@
             "label": "voiranime",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://v5.voiranime.com/"
+            "url": "https://v6.voiranime.com/"
         },
         "voirseries_best": {
             "label": "VoirSeries",
@@ -331,7 +331,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.bio/"
+            "url": "https://wiflix-hd.store/"
         },
         "wilifilm": {
             "label": "Wilifilm",
