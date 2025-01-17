@@ -138,7 +138,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror27.lol/"
+            "url": "https://fsmirror01.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -331,7 +331,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.store/"
+            "url": "https://wiflix-hd.day/"
         },
         "wilifilm": {
             "label": "Wilifilm",
