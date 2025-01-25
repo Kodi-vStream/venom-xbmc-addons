@@ -925,9 +925,7 @@ def showSeries(sSearch='', term=''):
     oGui = cGui()
 
     try:
-        total = len(result)
-
-        if total > 0:
+        if len(result)>3:
             for i in result['results']:
                 # Mise en forme des infos (au format meta imdb)
                 i = grab._format(i, '', "tvshow")
