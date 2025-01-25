@@ -270,7 +270,10 @@ def showMovies(sSearch=''):
         if not 'is_series' in item:     # ce n'est pas une vidéo
             continue
         is_series = item['is_series']
-        itemType = item['type'] if 'type' in item else item['categorie']['model']
+        itemType = item['type'] if 'type' in item else item['categorie']['model'] if item['categorie'] else None
+        
+        if not itemType:
+            continue
         
         typeOK = False
         if sType == itemType:
