@@ -331,7 +331,8 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.day/"
+			"site_info": "https://wiflix-vraie-adresse.com/",
+            "url": "https://wiflix-hd.kim/"
         },
         "wilifilm": {
             "label": "Wilifilm",
