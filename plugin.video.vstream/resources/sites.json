@@ -92,7 +92,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://footlive.ru/",
+            "url": "https://foot-direct.ru/",
             "site_info": "https://elitegol.lat/",
             "url_link": "plyz/3"
         },
@@ -283,7 +283,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://w3.toonanime.co/"
+            "url": "https://w4.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -331,7 +331,7 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-			"site_info": "https://wiflix-vraie-adresse.com/",
+            "site_info": "https://wiflix-vraie-adresse.com/",
             "url": "https://wiflix-hd.kim/"
         },
         "wilifilm": {
