@@ -1,10 +1,5 @@
 {
     "sites": {
-        "coflix": {
-            "label": "coflix",
-            "active": "True",
-            "url": "https://coflix.app/"
-        },
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "True",
@@ -54,8 +49,13 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
+        "coflix": {
+            "label": "Coflix",
+            "active": "True",
+            "url": "https://coflix.moe/"
+        },
         "cpasmieux": {
-            "label": "cpasmieux",
+            "label": "Cpasmieux",
             "active": "True",
             "url": "https://cpasmieux.is/"
         },
