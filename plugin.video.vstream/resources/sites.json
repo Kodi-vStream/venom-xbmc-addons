@@ -92,7 +92,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://foot-direct.ru/",
+            "url": "https://remontadatv.ru/",
             "site_info": "https://elitegol.lat/",
             "url_link": "plyz/3"
         },
@@ -122,7 +122,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.cfd/"
+            "url": "https://www.free-telecharger.fun/"
         },
         "freebox": {
             "label": "Freebox",
@@ -190,8 +190,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
-            "url": "https://livetv819.me/"
+            "active": "False",
+            "url": "https://livetv.sx/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -293,6 +293,7 @@
         "topstream": {
             "label": "top-stream",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://top-stream.tv/"
         },
         "vfilms": {
