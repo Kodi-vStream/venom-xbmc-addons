@@ -210,14 +210,16 @@ def showLink():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    sHosterUrl = getHosterIframe(sUrl, sUrl)
-    if sHosterUrl:
-        sHosterUrl = sHosterUrl.strip()
-        oHoster = oHosterGui.checkHoster(sHosterUrl)
-        if oHoster:
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    allUrls = [sUrl.replace('/3/', f'/{a}/') for a in [1,2,3,4]]
+    for sUrl in allUrls:
+        sHosterUrl = getHosterIframe(sUrl, sUrl)
+        if sHosterUrl:
+            sHosterUrl = sHosterUrl.strip()
+            oHoster = oHosterGui.checkHoster(sHosterUrl)
+            if oHoster:
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -330,6 +332,12 @@ def getUrl(sHtmlContent, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return sHosterUrl + '|referer=' + referer
+
+    sPattern = "ThePlayerJS\('.+?','(.+?)'\);"
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://mustardshock.com/player/%s' % aResult[0]
         return sHosterUrl + '|referer=' + referer
 
     return False
