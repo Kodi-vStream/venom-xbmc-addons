@@ -94,8 +94,8 @@ def showGenres():
     liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comédie'],
              ['Crime', 'crime'], ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Familial', 'familial'],
              ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Histoire', 'histoire'], ['Horreur', 'horreur'],
-             ['Musique', 'musique'], ['Mystère', 'mystère'], ['Téléfilm', 'telefilm'], ['Romance', 'romance'],
-             ['Science-Fiction', 'science_fiction'], ['Sport', 'sport'], ['Thriller', 'thriller'],
+             ['Musique', 'musique'], ['Mystère', 'mystère'], ['Téléfilm', 'telefilm'],
+             ['Romance', 'romance'], ['Science-Fiction', 'science_fiction'], ['Sport', 'sport'], ['Thriller', 'thriller'],
              ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -147,7 +147,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # url img title
-    sPattern = 'mi2-in-link" href="([^"]*).+?<img src="([^"]*)" *alt="([^"]+)'
+    sPattern = 'mi2-in-link" href="\/([^"]*).+?<img src="\/([^"]*)" *alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # en cas de recherche vide, deuxieme tentative avec le mot le plus long
@@ -159,14 +159,15 @@ def showMovies(sSearch=''):
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             aResult = oParser.parse(sHtmlContent, sPattern)
+            
 
     if aResult[0]:
         titles = set()
         total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl = URL_MAIN[:-1] + aEntry[0]
-            sThumb = URL_MAIN[:-1] + aEntry[1]
+            sUrl = aEntry[0]
+            sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
 
             # tri des doublons
@@ -191,7 +192,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            
             if isSerie:
                 sMovieTitle = re.sub('  S\d+', '', sTitle)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -228,28 +229,29 @@ def showSaisons():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sDesc = ''
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="seasons">', '<div class="kino-related">')
 
     # url  /  thumb  /  title
-    sPattern = 'href="([^"]+).+?<img src="([^"]+).+?figcaption>([^<]+)'
+    sPattern = 'href="([^"]+).+?<img src="\/([^"]+).+?figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
 
-            sUrl = URL_MAIN[:-1] + aEntry[0]
-            sThumb = URL_MAIN[:-1] + aEntry[1]
+            sUrl = aEntry[0]
+            sThumb = URL_MAIN + aEntry[1]
             sTitle = sMovieTitle + ' ' + aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -264,7 +266,7 @@ def showEpisodes():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="floats clearfix">', '</div></div>')
 
@@ -276,7 +278,7 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sUrl = aEntry[0]
             sTitle = sMovieTitle + " E" + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -296,13 +298,14 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = 'data-url="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if aResult[0]:
         for aEntry in aResult[1]:
 
@@ -315,3 +318,6 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+
