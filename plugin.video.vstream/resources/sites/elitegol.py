@@ -30,13 +30,18 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 # chaines dans l'ordre d'affichage
 channels = {
     1: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
+    
     20: ['DAZN1', 'https://miguia.tv/channels/big_329@2x.png'],
+#    20: ['DAZN1\nC+ sport 2', 'https://miguia.tv/channels/big_329@2x.png'],
+#    20: ['Canal+ sport 2', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Canal%2B_Sport_2_PL.png'],
+    
+    
     21: ['prime video ligue 1', 'https://i.imgur.com/PvpkxgG.png'],
     # 20: ['prime video ligue 2', 'https://i.imgur.com/PvpkxgG.png'],
     11: ['Canal+', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
-    12: ['Canal+ Foot', 'https://thumb.canalplus.pro/bran/unsafe/870x486/image/62dab6a90b84c/uploads/media/C+FOOT_213x160.png'],
-    13: ['Canal+ sport', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG'],
-    14: ['Canal+ sport 360', 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png'],
+    12: ['Canal+ Foot', 'https://upload.wikimedia.org/wikipedia/fr/3/3b/C%2B_Foot.png'],
+    13: ['Canal+ sport', 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png'],
+    14: ['Canal+ sport 360', 'https://upload.wikimedia.org/wikipedia/fr/1/11/C%2B_Sport_360.png'],
     # 17: ['Canal+ décalé', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_257.PNG'],
     15: ['eurosport 1', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg'],
     16: ['eurosport 2', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg'],
@@ -211,7 +216,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     allUrls = [sUrl.replace('/3/', f'/{a}/') for a in [1,2,3,4]]
-    for sUrl in allUrls:
+    for sUrl in allUrls[::-1]:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
         sHosterUrl = getHosterIframe(sUrl, sUrl)
         if sHosterUrl:
             sHosterUrl = sHosterUrl.strip()
@@ -328,6 +333,13 @@ def getUrl(sHtmlContent, referer):
         sHosterUrl = oRequestHandler.getRealUrl()
         return sHosterUrl + '|referer=' + referer
 
+
+    sPattern = 'new Player\("100%","100%","player","(.+?)",{"(.+?)":'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return sHosterUrl + '|referer=' + referer
+
     sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -338,8 +350,6 @@ def getUrl(sHtmlContent, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://mustardshock.com/player/%s' % aResult[0]
-        return sHosterUrl + '|referer=' + referer
+        return getHosterIframe(sHosterUrl, referer)
 
     return False
-
-
