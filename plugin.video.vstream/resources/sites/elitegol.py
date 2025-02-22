@@ -164,10 +164,10 @@ def showTVLink():
 def showMovies():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sSearchType = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     links = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -190,6 +190,43 @@ def showMovies():
         else:
             sTitle = '%s - %s (%s)' % (time, home, league)
         
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sDesc', sTitle)
+
+        oGui.addDir(SITE_IDENTIFIER, 'showMovieLinks', sTitle, "sport.png", oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
+
+
+def showMovieLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sSearchTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    links = oRequestHandler.request(jsonDecode=True)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for link in links:
+        time = link['time']
+        home = link['home']
+        away = link['away']
+        league = link['league']
+        
+        time = datetime.datetime.fromtimestamp(int(time)/1000)
+#        time = datetime.datetime.strftime(time, '%d/%m/%Y %H:%M:%S')
+        time = datetime.datetime.strftime(time, '%H:%M:%S')
+        
+        if away:
+            sTitle = '%s - %s / %s (%s)' % (time, home, away, league)
+        else:
+            sTitle = '%s - %s (%s)' % (time, home, league)
+        
+        if sSearchTitle != sTitle:  # le titre recherché
+            continue
+        
         for streams in link['streams']:
             channel = streams['ch']
             sHostUrl = '%s/%s' % (URL_LINK, channel)
@@ -199,12 +236,12 @@ def showMovies():
             
             oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
-#            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
     
             oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, "sport.png", oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
+
 
 
 def showLink():
