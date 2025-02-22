@@ -1,10 +1,5 @@
 {
     "sites": {
-        "coflix": {
-            "label": "coflix",
-            "active": "True",
-            "url": "https://coflix.app/"
-        },
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "True",
@@ -27,7 +22,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v5.animesultra.net/"
+            "url": "https://v6.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -54,10 +49,15 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
-        "cpasmieux": {
-            "label": "cpasmieux",
+        "coflix": {
+            "label": "Coflix",
             "active": "True",
-            "url": "https://www.cpasmieux.is/"
+            "url": "https://coflix.moe/"
+        },
+        "cpasmieux": {
+            "label": "Cpasmieux",
+            "active": "True",
+            "url": "https://cpasmieux.is/"
         },
         "daddyhd": {
             "label": "DaddyHD",
@@ -67,7 +67,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld.biz/"
+            "url": "https://darkiworld3.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -81,7 +81,7 @@
         },
         "doc4u": {
             "label": "Doc4U",
-            "active": "True",
+            "active": "False",
             "url": "https://doc4u.top/"
         },
         "dulourd": {
@@ -92,7 +92,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://lefoot.ru/",
+            "url": "https://matele.ru/",
             "site_info": "https://elitegol.lat/",
             "url_link": "plyz/3"
         },
@@ -122,7 +122,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.quest/"
+            "url": "https://www.free-telecharger.fun/"
         },
         "freebox": {
             "label": "Freebox",
@@ -138,7 +138,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror16.lol/"
+            "url": "https://fsmirror03.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -190,8 +190,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
-            "url": "https://livetv818.me/"
+            "active": "False",
+            "url": "https://livetv.sx/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -283,7 +283,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://w3.toonanime.co/"
+            "url": "https://w4.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -293,6 +293,7 @@
         "topstream": {
             "label": "top-stream",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://top-stream.tv/"
         },
         "vfilms": {
@@ -309,7 +310,7 @@
             "label": "voiranime",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://v5.voiranime.com/"
+            "url": "https://v6.voiranime.com/"
         },
         "voirseries_best": {
             "label": "VoirSeries",
@@ -331,7 +332,8 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://wiflix-hd.bio/"
+            "site_info": "https://wiflix-vraie-adresse.com/",
+            "url": "https://wiflix-pro.site/"
         },
         "wilifilm": {
             "label": "Wilifilm",

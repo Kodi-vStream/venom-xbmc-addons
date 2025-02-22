@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'cpasmieux'
-SITE_NAME = 'cpasmieux'
+SITE_NAME = 'Cpasmieux'
 SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
@@ -183,7 +183,7 @@ def showMovies(sSearch=''):
             # filtre search
             if bMovie and 'saison' in sThumb:
                 continue
-            if bShow and not 'saison' in sThumb:
+            if bShow and 'saison' not in sThumb:
                 continue
             if sSearch and total > 5:
                 if not oUtil.CheckOccurence(sSearch, sTitle):
