@@ -252,8 +252,8 @@ def showLink():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    allUrls = [sUrl.replace('/3/', f'/{a}/') for a in [1,2,3,4]]
-    for sUrl in allUrls[::-1]:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
+    allUrls = [sUrl.replace('/3/', '/%d/' % a) for a in [4,3,2,1]]
+    for sUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
         sHosterUrl = getHosterIframe(sUrl, sUrl)
         if sHosterUrl:
             sHosterUrl = sHosterUrl.strip()

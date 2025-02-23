@@ -10,9 +10,11 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.1.3 - 23/02/24 ***
+- Compatibilité anciens Kodi 
+
 *** 3.1.2 - 22/02/24 ***
 - Maintenance des sources
-
 
 *** 3.1.1 - 24/12/24 ***
 - Correction pour la recherche des acteurs
