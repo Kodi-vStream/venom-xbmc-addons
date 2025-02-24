@@ -29,8 +29,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 
 # chaines dans l'ordre d'affichage
 channels = {
-    1: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
-    
+    1: ['bein Sports 1', 'https://prod-media.beinsports.com/image/85029984d97fda2dd293f3c7d6cf0c0d.png?ver=12-01-2025'],
     20: ['DAZN1', 'https://miguia.tv/channels/big_329@2x.png'],
 #    20: ['DAZN1\nC+ sport 2', 'https://miguia.tv/channels/big_329@2x.png'],
 #    20: ['Canal+ sport 2', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Canal%2B_Sport_2_PL.png'],
