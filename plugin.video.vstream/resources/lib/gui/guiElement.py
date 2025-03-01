@@ -220,6 +220,8 @@ class cGuiElement:
         # et au debut
         sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
+        self.__sCleanTitle = sTitle
+        
         """ Fin du nettoyage du titre """
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
@@ -321,6 +323,7 @@ class cGuiElement:
             if not self.__sCleanTitle:
                 self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
 
+        sTitle = self.__sCleanTitle
         if isMatrix():
             # Python 3 decode sTitle
             try:
@@ -333,10 +336,7 @@ class cGuiElement:
             except:
                 pass
 
-        if not sTitle.startswith('[COLOR'):
-            self.__sTitle = self.TraiteTitre(sTitle)
-        else:
-            self.__sTitle = sTitle
+        self.__sTitle = self.TraiteTitre(sTitle)
 
     def getTitle(self):
         return self.__sTitle

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+import re
+
 from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.util import QuotePlus, Unquote
+from resources.lib.util import QuotePlus, Unquote, cUtil
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -278,13 +280,12 @@ class cDb(object):
 
         # Lecture d'une episode, on retient aussi la saison
         if cat == "8":
+            oUtil = cUtil()
             meta['cat'] = 4
             meta['fav'] = meta['seasonFunc']
             meta['siteurl'] = meta['seasonUrl']
-            tvshowtitle = title[:title.rindex('E')].strip()
-            meta['title'] = tvshowtitle
-            titleWatched = titleWatched[:titleWatched.rindex('E')].strip()
-            meta['titleWatched'] = titleWatched
+            meta['title'] = oUtil.getEpisodeTitre(title)[0]
+            meta['titleWatched'] = oUtil.getEpisodeTitre(titleWatched)[0]
             self.insert_watched(meta)
 
     def get_watched(self, meta):
