@@ -211,7 +211,7 @@ class cUtil:
     def getEpisodeTitre(self, sTitle):
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
-            sTitle = sTitle.replace(string.group(1), '')
+            sTitle = sTitle.replace(string.group(1), '').strip()
             return sTitle, True
 
         return sTitle, False
