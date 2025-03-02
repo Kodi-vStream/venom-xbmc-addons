@@ -237,6 +237,10 @@ def showMovies3():  # affiche les videos disponible du live
             sUrl4 = aEntry[1]
             if not (sUrl4.startswith("http")):
                 sUrl4 = "http:" + sUrl4
+                
+            if 'cdn' in sUrl4:
+                sUrl4 = re.sub('http:\/\/cdn\.livetv\d+\.me\/', URL_MAIN, sUrl4)
+                
             sTitle = ('%s (%s)') % (sMovieTitle2, sLang[:4])
             sThumb = ''
 
@@ -764,24 +768,28 @@ def showHosters():  # affiche les videos disponible du live
                         sHosterUrl += '|referer=' + site
 
 
-        if 'wizospor' in url:
+        if 'wizospor' in url or 'tarjetarojaenvivo' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = '<div id="[^"]+".+?ThePlayerJS\(\'[^\']+\',\'([^\']+)'
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
-                url2 = 'https://sharecast.ws/player/' + aResult[0]
+                if 'wizospor' in url:
+                    url2 = 'https://sharecast.ws/player/' + aResult[0]
+                else:
+                    url2 = 'https://eyespeeled.click/player/' + aResult[0]
                 Referer = url
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent2 = oRequestHandler.request()
 
-                sPattern2 = '"player","([^"]+)",{\'([^\']+)'
+                sPattern2 = '"player","([^"]+)",{["\'](.+?)["\']'
 
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
-                    sHosterUrl += '|referer=https://sharecast.ws/'
+                    sHosterUrl += '|' + url2
+#                    sHosterUrl += '|referer=https://sharecast.ws/'
 
 
         if 'thesports4u.net' in url or 'soccerstreams' in url or 'all.ive' in url:  # Fini
