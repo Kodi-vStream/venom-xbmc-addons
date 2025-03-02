@@ -2,6 +2,11 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.util import urlEncode, Unquote
 
+try:
+    unicode    # Python 2: "unicode" is built-in
+except NameError:
+    unicode = str
+    
 class cOutputParameterHandler:
     def __init__(self):
         self.__aParams = {}
@@ -9,8 +14,8 @@ class cOutputParameterHandler:
     def addParameter(self, sParameterName, mParameterValue):
         if not mParameterValue:
             return
-        if not isinstance(mParameterValue, str):
-            mParameterValue = str(mParameterValue)
+        if not isinstance(mParameterValue, unicode):
+            mParameterValue = unicode(mParameterValue)
         mParameterValue = Unquote(mParameterValue)
         self.__aParams[sParameterName] = mParameterValue
 
