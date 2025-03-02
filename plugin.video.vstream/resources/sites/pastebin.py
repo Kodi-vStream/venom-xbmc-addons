@@ -51,7 +51,7 @@ SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
 ANIM_ANIMS = (URL_MAIN + '&sMedia=anime', 'showMenuMangas')
-ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2024', 'showMovies')
+ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2025', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
 ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
@@ -732,7 +732,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2025&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         if 'containFilmGenres' in contenu:
@@ -773,7 +773,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2024&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2025&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         if 'containSerieGenres' in contenu:
@@ -942,7 +942,7 @@ def showMenuFilms():
         oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
         # oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
         oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], addons.VSlang(30101), 'news.png', oOutputParameterHandler)
-        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024')
+        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2025')
         # oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -1002,7 +1002,7 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])#tv/on_the_air')
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2025')
     # oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
@@ -1048,7 +1048,7 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2025')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
