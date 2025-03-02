@@ -29,7 +29,7 @@ DEBUG = False
 if DEBUG:
 
     import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
+# decommenter pour DEBUG    sys.path.append('C:\Logiciels\Kodi20\system\Python\Lib\pysrc')
 
     try:
         import pysrc.pydevd as pydevd
