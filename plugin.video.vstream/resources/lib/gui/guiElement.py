@@ -220,7 +220,12 @@ class cGuiElement:
         # et au debut
         sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
-        self.__sCleanTitle = sTitle
+        # Nom en clair sans les langues, qualités, et autres décorations
+        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
+        if not self.__sCleanTitle:
+            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
+            if not self.__sCleanTitle:
+                self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
         
         """ Fin du nettoyage du titre """
 
@@ -295,10 +300,14 @@ class cGuiElement:
             sTitle2 = sTitle2 + 'E%02d' % int(self.__Episode)
 
         # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
-        self.__sTitleWatched = cUtil().titleWatched(sTitle).replace(' ', '')
-        if sTitle2:
-            self.addItemValues('tvshowtitle', cUtil().getSerieTitre(sTitle))
-            self.__sTitleWatched += '_' + sTitle2
+        if sTitle2: # série
+            tvshowtitle = cUtil().getSerieTitre(sTitle)
+            titleWatched = cUtil().titleWatched(tvshowtitle) + '_' + sTitle2
+            self.addItemValues('tvshowtitle', tvshowtitle)  # nom de la série
+        else:
+            titleWatched = cUtil().titleWatched(self.__sCleanTitle)
+
+        self.__sTitleWatched = titleWatched.replace(' ', '')
         self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
@@ -316,14 +325,6 @@ class cGuiElement:
         self.__sTitle = sTitle
         
     def setTitle(self, sTitle):
-        # Nom en clair sans les langues, qualités, et autres décorations
-        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
-        if not self.__sCleanTitle:
-            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
-            if not self.__sCleanTitle:
-                self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
-
-        sTitle = self.__sCleanTitle
         if isMatrix():
             # Python 3 decode sTitle
             try:
