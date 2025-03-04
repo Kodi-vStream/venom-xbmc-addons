@@ -74,6 +74,11 @@
             "active": "True",
             "url": "https://debrid-link.fr"
         },
+        "direct_stream": {
+            "label": "direct-streamfr",
+            "active": "True",
+            "url": "https://direct-streamfr.live/"
+        },
         "docu_fr": {
             "label": "Docu Fr",
             "active": "False",
