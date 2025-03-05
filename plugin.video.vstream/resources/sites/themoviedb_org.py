@@ -195,7 +195,7 @@ def showMyTmdb():
             oGui.addDir(SITE_IDENTIFIER, 'showUserLists', addons.VSlang(30441), 'listes.png', oOutputParameterHandler)
 
             oOutputParameterHandler.addParameter('siteUrl', 'http://')
-            oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', addons.VSlang(30309), 'listes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', '[COLOR red]' + addons.VSlang(30309) + '[/COLOR]', 'tmdb.png', oOutputParameterHandler)
 
         else:
             ouTMyTmdb()

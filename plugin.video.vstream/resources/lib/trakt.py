@@ -31,6 +31,7 @@ MAXRESULT = addon().getSetting('trakt_number_element')
 
 '''
 API
+https://trakt.docs.apiary.io/
 
 Matrice des actions
 https://github.com/vankasteelj/trakt.tv/blob/master/docs/available_methods.md
@@ -98,9 +99,10 @@ class cTrakt:
         # pour regen le token()
         # self.getToken()
         oGui = cGui()
+        bstoken = self.ADDON.getSetting('bstoken')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        if self.ADDON.getSetting('bstoken') == '':
+        if bstoken == '':
             VSlog('TRAKT - bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
@@ -112,7 +114,7 @@ class cTrakt:
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
                 oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % bstoken)
                 sHtmlContent = oRequestHandler.request(jsonDecode=True)
             except:
                 return self.getToken()
@@ -138,7 +140,7 @@ class cTrakt:
             # oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'annees.png', oOutputParameterHandler)
             
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getBsout', '[COLOR red]' + self.ADDON.VSlang(30309) + '[/COLOR]', 'trakt.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
