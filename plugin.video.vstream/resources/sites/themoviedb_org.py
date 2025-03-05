@@ -1321,6 +1321,7 @@ def showFilmActor():
 def showLists():
     oGui = cGui()
     grab = cTMDb()
+    addons = addon()
 
     oInputParameterHandler = cInputParameterHandler()
 
@@ -1329,7 +1330,10 @@ def showLists():
         iPage = oInputParameterHandler.getValue('page')
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    result = grab.getUrl('list/' + sUrl, iPage, '')
+    tmdb_session = addons.getSetting('tmdb_session')
+    result = grab.getUrl('list/' + sUrl, iPage, 'session_id=' + tmdb_session)
+    total_pages = result['total_pages']
+
     total = len(result)
     if total > 0:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1381,6 +1385,14 @@ def showLists():
                 oGuiElement.setGenre(i['genre'])
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        # Page suivante
+        iNextPage = int(iPage) + 1
+        if iNextPage <= total_pages:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showLists', 'Page ' + str(iNextPage), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
