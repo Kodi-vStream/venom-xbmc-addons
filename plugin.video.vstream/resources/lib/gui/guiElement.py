@@ -322,7 +322,7 @@ class cGuiElement:
 
     # Permet de forcer le titre sans aucun traitement
     def setRawTitle(self, sTitle):
-        self.__sTitle = sTitle
+        self.__sCleanTitle = self.__sTitle = sTitle
         
     def setTitle(self, sTitle):
         if isMatrix():
