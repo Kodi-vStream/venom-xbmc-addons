@@ -282,7 +282,7 @@ class cRequestHandler:
     
                             sContent = response['solution']['response']
 
-            if self.oResponse and not sContent:
+            if self.oResponse is not None and not sContent:
                 # Ignorer ces codes retours
                 ignoreStatus = [200, 204, 302]
                 if self.oResponse.status_code not in ignoreStatus:
