@@ -570,7 +570,7 @@ def showUserLists():
 
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             oOutputParameterHandler.addParameter('siteUrl', sId)
-            oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

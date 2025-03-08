@@ -166,7 +166,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
     
     # Recherche du sport sélectionné
-    # il faut echapper les parenthese qui peuvent apparitre dans les noms
+    # il faut echapper les parenthese qui peuvent apparaitre dans les noms
     sPattern = '<h3> %s <.+?<h3>' % sTitle.replace('(', '\(').replace(')', '\)')
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
