@@ -57,7 +57,7 @@ class cTMDb:
         10770: 'Téléfilm'
     }
 
-    URL = 'https://api.themoviedb.org/3/'
+    URL = 'https://api.themoviedb.org/%d/'
     URL_TRAILER = 'plugin://plugin.video.youtube/play/?video_id=%s' # ancien : 'plugin://plugin.video.youtube/?action=play_video&videoid=%s'
     CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
@@ -1134,7 +1134,7 @@ class cTMDb:
             return False
         return result
     
-    def getPostUrl(self, url, post):
+    def getPostUrl(self, url, post, API_VERSION = 3):
         # Execute une requete POST vers l'API
         # Utile pour :
         #       - Noter film
@@ -1154,7 +1154,7 @@ class cTMDb:
         from urllib import request
         session_id = self.ADDON.getSetting('tmdb_session')
 
-        urlapi = self.URL + url +'?api_key='+self.ADDON.getSetting('api_tmdb')+'&session_id='+ session_id
+        urlapi = ('%s%s?api_key=%s&session_id=%s') %(self.URL % API_VERSION, url, self.api_key, session_id)
         
         req = request.Request(urlapi, method="POST")
         req.add_header('Content-Type', 'application/json')
@@ -1166,9 +1166,9 @@ class cTMDb:
         data = json.loads(response)
         return data    
 
-    def _call(self, action, append_to_response=''):
+    def _call(self, action, append_to_response='', API_VERSION = 3):
         from resources.lib.handler.requestHandler import cRequestHandler
-        url = '%s%s?language=%s&api_key=%s' % (self.URL, action, self.lang, self.api_key)
+        url = '%s%s?language=%s&api_key=%s' % (self.URL % API_VERSION, action, self.lang, self.api_key)
         if append_to_response:
             url += '&%s' % append_to_response
 

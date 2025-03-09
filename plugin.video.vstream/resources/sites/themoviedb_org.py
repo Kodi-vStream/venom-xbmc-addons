@@ -253,11 +253,13 @@ def getContext():
     yn.append(True)
     lang.append(addons.VSlang(31210))  
 
+    # supprimer de la liste de suivi
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(False)
     lang.append(addons.VSlang(30446))
 
+    # supprimer des favoris
     disp.append('account/%s/favorite' % tmdb_account)
     fow.append('favorite')
     yn.append(False)
@@ -307,7 +309,8 @@ def getAction():
     sTMDB = oInputParameterHandler.getValue('sTmdbId')
     sSeason = oInputParameterHandler.getValue('sSeason')
     sEpisode = oInputParameterHandler.getValue('sEpisode')
-
+    API_Version = 3
+    
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
 
     if not sTMDB:
@@ -330,9 +333,6 @@ def getAction():
             return
 
     elif sAction == 'addtolist':
-        if sCat == 'tv':
-            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
-            return
         result = grab.getUrl('account/%s/lists' % addons.getSetting('tmdb_account'), term='session_id=%s' % addons.getSetting('tmdb_session'))
         total = len(result)
         if total == 0:
@@ -345,13 +345,11 @@ def getAction():
             return
         
         idliste = result['results'][idliste]['id']
-        sAction = 'list/%s/add_item' % (idliste)
-        sPost = {"media_id": sTMDB}
+        sAction = 'list/%s/items' % (idliste)
+        sPost = {"items": [{"media_type": sCat, "media_id": sTMDB}]}
+        API_Version = 4
 
     elif sAction == 'addtonewlist':
-        if sCat == 'tv':
-            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
-            return        
         # nom de la nouvelle liste
         listname = oGui.showKeyBoard()
         if listname == '':
@@ -369,14 +367,15 @@ def getAction():
             idliste = rep['list_id']
         else:
             return
-        # ajout du film à la nouvelle liste
-        sAction = 'list/%s/add_item' % (idliste)
-        sPost = {"media_id": sTMDB}
+        # ajout du media à la nouvelle liste
+        sAction = 'list/%s/items' % (idliste)
+        sPost = {"items": [{"media_type": sCat, "media_id": sTMDB}]}
+        API_Version = 4
 
     else:
         sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
 
-    data = grab.getPostUrl(sAction, sPost)
+    data = grab.getPostUrl(sAction, sPost, API_Version)
 
     if len(data) > 0:
         dialogs.VSinfo(data['status_message'])
