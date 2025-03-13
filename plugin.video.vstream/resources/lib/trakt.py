@@ -52,6 +52,7 @@ class cTrakt:
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addJSONEntry('client_id', API_KEY)
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
@@ -70,6 +71,7 @@ class cTrakt:
                     oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
                     oRequestHandler.setRequestType(1)
                     oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                     oRequestHandler.addJSONEntry('client_id', API_KEY)
                     oRequestHandler.addJSONEntry('client_secret', API_SECRET)
                     oRequestHandler.addJSONEntry('code', sHtmlContent['device_code'])
@@ -112,6 +114,7 @@ class cTrakt:
             try:
                 oRequestHandler = cRequestHandler(URL_API + 'users/me')
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
                 oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
                 oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % bstoken)
@@ -325,6 +328,7 @@ class cTrakt:
         sUrl = URL_API + 'search/list?query=' + sSearchText
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         
@@ -367,6 +371,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(URL_API + sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         if 'users/' in sUrl or '/sync/' in sUrl:
@@ -416,6 +421,7 @@ class cTrakt:
                 if not found:
                     oRequestHandler = cRequestHandler(URL_API + sUrl)
                     oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                     oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
                     oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
                     oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -462,6 +468,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -514,8 +521,10 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(traktUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
             oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
@@ -917,6 +926,7 @@ class cTrakt:
         # oRequestHandler = cRequestHandler(URL_API + 'sync/playback/' + ('movies' if sCat == '1' else 'episodes'))
         oRequestHandler = cRequestHandler(URL_API + 'sync/playback/episodes')
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1073,6 +1083,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1140,6 +1151,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1364,6 +1376,7 @@ class cTrakt:
         oRequestHandler = cRequestHandler(sAction)
         oRequestHandler.setRequestType(requestType)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
