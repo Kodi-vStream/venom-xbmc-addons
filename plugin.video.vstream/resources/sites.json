@@ -14,6 +14,11 @@
             "label": "AllDebrid",
             "active": "True"
         },
+        "animesama": {
+            "label": "Anime Sama",
+            "active": "True",
+            "url": "https://anime-sama.fr/"
+        },
         "animeultime": {
             "label": "Anime Ultime",
             "active": "True",
