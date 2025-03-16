@@ -141,7 +141,8 @@ class cUtil:
 
     def titleWatched(self, title):
 
-        title = title.replace('²', ' 2').replace('³', ' 3').replace('⁴', ' 4')
+        if isMatrix():
+            title = title.replace('²', ' 2').replace('³', ' 3').replace('⁴', ' 4')
 
         title = self.formatUTF8(title)
 
