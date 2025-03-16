@@ -159,13 +159,14 @@ def showMovies(sSearch=''):
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             aResult = oParser.parse(sHtmlContent, sPattern)
+            
 
     if aResult[0]:
         titles = set()
         total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl =  URL_MAIN + aEntry[0]
+            sUrl = aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
 
@@ -191,7 +192,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            
             if isSerie:
                 sMovieTitle = re.sub('  S\d+', '', sTitle)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -228,7 +229,7 @@ def showSaisons():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sDesc = ''
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -243,7 +244,7 @@ def showSaisons():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = sMovieTitle + ' ' + aEntry[2]
 
@@ -265,19 +266,19 @@ def showEpisodes():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="floats clearfix">', '</div></div>')
 
     # url numEp
-    sPattern = 'href="\/([^"]+).+?span>(\d+)'
+    sPattern = 'href="([^"]+).+?span>(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = aEntry[0]
             sTitle = sMovieTitle + " E" + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -297,7 +298,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -317,3 +318,6 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+
