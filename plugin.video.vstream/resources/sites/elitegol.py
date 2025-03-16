@@ -4,7 +4,7 @@ import re
 import datetime
 
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import isMatrix, siteManager
+from resources.lib.comaddon import isMatrix, siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -242,8 +242,6 @@ def showMovieLinks():
         
     oGui.setEndOfDirectory()
 
-
-
 def showLink():
     oGui = cGui()
     oHosterGui = cHosterGui()
@@ -290,18 +288,19 @@ def getHosterIframe(url, referer):
 
 def getUrl(sHtmlContent, referer):
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sstr in aResult:
             if not sstr.endswith(';'):
                 sstr = sstr + ';'
-            sHtmlContent = cPacker().unpack(sstr)
-            url = getUrl(sHtmlContent, referer)
+            html = cPacker().unpack(sstr)
+            html = html.replace('\\', '')
+            url = getUrl(html, referer)
             if url:
                 return url
 
-    sPattern = '.atob\("(.+?)"'
+    sPattern = r'.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         import base64
@@ -316,7 +315,7 @@ def getUrl(sHtmlContent, referer):
             except Exception as e:
                 pass
     
-    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
+    sPattern = r'<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
@@ -330,24 +329,24 @@ def getUrl(sHtmlContent, referer):
             if url:
                 return url
 
-    sPattern = 'player.load\({source: (.+?)\('
+    sPattern = r'player.load\({source: (.+?)\('
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         func = aResult[0]
-        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+        sPattern = r'function %s\(\) +{\n + return\(\[([^\]]+)' % func
         aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return sHosterUrl + '|referer=' + referer
 
-    sPattern = ';var.+?src=["\']([^"\']+)["\']'
+    sPattern = r';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
             if '.m3u8' in url:
                 return url + '|Referer=' + referer
 
-    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    sPattern = r'[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sHosterUrl in aResult:
@@ -362,7 +361,7 @@ def getUrl(sHtmlContent, referer):
     #            sHosterUrl = sHosterUrl.replace('index', 'mono')
                 return sHosterUrl + '|referer=' + referer
 
-    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    sPattern = r'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         oRequestHandler = cRequestHandler(aResult[0])
@@ -371,22 +370,69 @@ def getUrl(sHtmlContent, referer):
         return sHosterUrl + '|referer=' + referer
 
 
-    sPattern = 'new Player\("100%","100%","player","(.+?)",{"(.+?)":'
+    sPattern = r'new Player\("100%","100%","player","(.+?)",{"(.+?)":'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return sHosterUrl + '|referer=' + referer
 
-    sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+    sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
+    if not aResult:
+        sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+        aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return sHosterUrl + '|referer=' + referer
-
-    sPattern = "ThePlayerJS\('.+?','(.+?)'\);"
-    aResult = re.findall(sPattern, sHtmlContent)
+    
+    sPattern = r"new Player\('(.+?=)'\)"
+    aResult = re.findall(sPattern, sHtmlContent.replace('\\', ''))
     if aResult:
-        sHosterUrl = 'https://mustardshock.com/player/%s' % aResult[0]
+        VSlog('Lien chiffré par cryptographie non encore supporté')
+        #TODO Convertir en python la fonction Player(opts) dans /player-bundle-min.js : encrypted_json_string=opts,passphrase="jzAqXKPaoDu4KSaYsOne3rNOGGBXK71JoUFfkZ0DXrloaGcZmrwv9B0jmsHVruq",obj_json=JSON.parse(atob(encrypted_json_string)),encrypted=obj_json.ciphertext,salt=CryptoJS.enc.Hex.parse(obj_json.salt),iv=CryptoJS.enc.Hex.parse(obj_json.iv),key=CryptoJS.PBKDF2(passphrase,salt,{hasher:CryptoJS.algo.SHA512,keySize:8,iterations:1}),opts=CryptoJS.AES.decrypt(encrypted,key,{iv:iv}).toString(CryptoJS.enc.Utf8)
+        return False
+
+    sPattern = r"ThePlayerJS\('.+?','(.+?)'\);"
+    sPattern = r'''<script src="https://([^/]+)/embed.min.js\?v=3" +onload="ThePlayerJS\('.+?','(.+?)'\);"></script>'''
+    html = sHtmlContent.replace('\\','')
+    aResult = re.findall(sPattern, html)
+    if aResult:
+        sHosterUrl = r'https://%s/player/%s' % (aResult[0][0], aResult[0][1])
         return getHosterIframe(sHosterUrl, referer)
+    
+    decoded = reveal_pipe_split(sHtmlContent)
+    if decoded:
+        return getUrl(decoded, referer)
+    
+    decoded = reveal_char_by_char_url(sHtmlContent)
+    if decoded and '.m3u8' in decoded:
+        return decoded + '|referer=' + referer
 
     return False
+
+
+def reveal_char_by_char_url(html):
+    html = html.replace('\\','')
+    pattern = r'((?:".",)+".")\].join\(""\)'
+    result = re.findall(pattern, html)
+    if result:
+        text = ''
+        for char in result[0].split(','):
+            text += char.replace('"','')
+        return text
+
+def reveal_pipe_split(html):
+    pattern = r"return p\}(\(.*),'(.*?)'.split\('\|'\)"
+    html = html.replace('\\', '')
+    result = re.findall(pattern, html)
+    if not result:
+        return
+    mask = result[0][0]
+    keywords = result[0][1].split('|')
+    def replaceNumber(match):
+        num = int(match.group(0))
+        if num < len(keywords):
+            return keywords[num]
+        return match.group(0)
+    text = re.sub('([0-9]+)',replaceNumber, mask)
+    return text
