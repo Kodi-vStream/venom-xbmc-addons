@@ -524,7 +524,6 @@ class cTrakt:
         oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
             oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
