@@ -20,7 +20,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_API = URL_MAIN + 'api/v1/download/'
 
 
-MOVIE_MOVIE = (True, 'showMenuMovies')
+#MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = ('movies?order=popularity:desc?type=movie', 'showMovies')
 MOVIE_VIEWS = ('trending-movies?type=movie', 'showMovies')
 MOVIE_GENRES = ('movies?order=popularity:desc&filters=%s?type=movie', 'showMovieGenres')
@@ -51,7 +51,7 @@ URL_SEARCH_MISC = ('search/%s?type=doc', 'showMovies')
 def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'series.png', oOutputParameterHandler)
+#    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'series.png', oOutputParameterHandler)
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'films.png', oOutputParameterHandler)
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAnimes', 'Japanimes', 'animes.png', oOutputParameterHandler)
     oGui.addDir(SITE_IDENTIFIER, 'showMenuDivers', 'Autres', 'doc.png', oOutputParameterHandler)
@@ -116,14 +116,14 @@ def showMenuDivers():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
     oGui.addDir(SITE_IDENTIFIER, URL_SEARCH[1], 'Rechercher', 'search-divers.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOC[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOC[1], 'Documentaires Films', 'doc.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', DOC_DOC[0])
+    # oGui.addDir(SITE_IDENTIFIER, DOC_DOC[1], 'Documentaires Films', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_SERIE[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_SERIE[1], 'Documentaires Series', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', DOC_SPECTACLE[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_SPECTACLE[1], 'Spectacles', 'spectacle.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', DOC_SPECTACLE[0])
+    # oGui.addDir(SITE_IDENTIFIER, DOC_SPECTACLE[1], 'Spectacles', 'spectacle.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_REALITY[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_REALITY[1], 'Télé-Réalité', 'genres/Tele-Realite.png', oOutputParameterHandler)
