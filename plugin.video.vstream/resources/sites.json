@@ -92,9 +92,9 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://jokertv.ru/",
+            "url": "https://kakarotfoot.ru/",
             "site_info": "https://elitegol.lat/",
-            "url_link": "ccc/3"
+            "url_link": "goku/3"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -191,7 +191,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv821.me/"
+            "url": "https://livetv822.me/"
         },
         "monstream": {
             "label": "Mon Stream",
