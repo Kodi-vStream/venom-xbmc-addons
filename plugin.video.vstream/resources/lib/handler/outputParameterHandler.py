@@ -13,7 +13,7 @@ class cOutputParameterHandler:
         try:
             if not isinstance(mParameterValue, str):
                 mParameterValue = str(mParameterValue)
-        except UnicodeDecodeError:
+        except:
             if not isinstance(mParameterValue, unicode):
                 mParameterValue = unicode(mParameterValue)
 
