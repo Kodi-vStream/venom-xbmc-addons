@@ -194,18 +194,12 @@ class cGuiElement:
     def TraiteTitre(self, sTitle):
         bMatrix = isMatrix()
 
-        # convertion unicode ne fonctionne pas avec les accents
-        try:
-            # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
-            sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('SEASON', 'saison')\
-                           .replace('Saison', 'saison').replace('SAISON', 'saison')
-            sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
-                           .replace(' — saison', ' saison')
+        # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
+        sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('SEASON', 'saison')\
+                       .replace('Saison', 'saison').replace('SAISON', 'saison')
+        sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
+                       .replace(' — saison', ' saison')
 
-            if not bMatrix:
-                sTitle = sTitle.decode('utf-8')
-        except:
-            pass
 
         """ Début du nettoyage du titre """
         # vire doubles espaces et double points
@@ -226,6 +220,14 @@ class cGuiElement:
             self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
             if not self.__sCleanTitle:
                 self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
+
+        # convertion unicode ne fonctionne pas avec les accents
+        try:
+            if not bMatrix:
+                sTitle = sTitle.decode('utf-8')
+        except:
+            pass
+
         
         """ Fin du nettoyage du titre """
 
@@ -319,6 +321,7 @@ class cGuiElement:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.sDecoColor, self.__Year)
 
         return sTitle2
+
 
     # Permet de forcer le titre sans aucun traitement
     def setRawTitle(self, sTitle):
