@@ -223,8 +223,12 @@ class cRequestHandler:
                             pass
 
         except ConnectionError as e:
+            # Erreur SSL
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
+                self.BUG_SSL = True
+                return self.__callRequest(jsonDecode)
             # Retry with DNS only if addon is present
-            if self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
+            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
