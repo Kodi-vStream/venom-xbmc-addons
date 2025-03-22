@@ -12,6 +12,7 @@ Historique des modifications
 
 *** 3.2.0 - 22/03/24 ***
 - Compatibilité Python 3.12
+- DNS : Ajout du DNS CloudFlare pour résoudre les adresses
 - Trakt : Mise à jour automatique et periodique du token
 - TMDB : voir ses listes privés, pouvoir ajouter des séries dans ses listes
 - AnimeSama : Nouvelle source d'animes
