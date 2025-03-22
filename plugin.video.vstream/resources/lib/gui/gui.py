@@ -246,7 +246,7 @@ class cGui:
         
         sDecoColor = self.ADDON.getSetting('deco_color')
 
-        oGuiElement.setTitle('[COLOR %s]%s >[/COLOR]' % (sDecoColor, sLabel))
+        oGuiElement.setRawTitle('[COLOR %s]%s >[/COLOR]' % (sDecoColor, sLabel))
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
@@ -270,7 +270,7 @@ class cGui:
         oGuiElement.setFunction('DoNothing')
         if not sLabel:
             sLabel = self.ADDON.VSlang(30204)
-        oGuiElement.setTitle(sLabel)
+        oGuiElement.setRawTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)

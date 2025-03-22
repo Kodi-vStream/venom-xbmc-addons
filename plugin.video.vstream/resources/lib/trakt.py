@@ -31,6 +31,7 @@ MAXRESULT = addon().getSetting('trakt_number_element')
 
 '''
 API
+https://trakt.docs.apiary.io/
 
 Matrice des actions
 https://github.com/vankasteelj/trakt.tv/blob/master/docs/available_methods.md
@@ -51,6 +52,7 @@ class cTrakt:
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addJSONEntry('client_id', API_KEY)
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
@@ -69,6 +71,7 @@ class cTrakt:
                     oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
                     oRequestHandler.setRequestType(1)
                     oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                     oRequestHandler.addJSONEntry('client_id', API_KEY)
                     oRequestHandler.addJSONEntry('client_secret', API_SECRET)
                     oRequestHandler.addJSONEntry('code', sHtmlContent['device_code'])
@@ -76,6 +79,12 @@ class cTrakt:
 
                     if sHtmlContent['access_token']:
                         self.ADDON.setSetting('bstoken', str(sHtmlContent['access_token']))
+                        # Ajout : stockage du refresh token, de la durée d'expiration et de l'heure d'obtention
+                        if 'refresh_token' in sHtmlContent:
+                            self.ADDON.setSetting('refresh_token', str(sHtmlContent['refresh_token']))
+                        if 'expires_in' in sHtmlContent:
+                            self.ADDON.setSetting('expires_in', str(sHtmlContent['expires_in']))
+                        self.ADDON.setSetting('token_time', str(time.time()))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
 
                         # si l'addon est installé, le lier et désactiver le suivi vStream  
@@ -94,13 +103,55 @@ class cTrakt:
             return
         return
 
+    def refreshToken(self):
+        """
+        Rafraîchit l'access token en utilisant le refresh token.
+        """
+        refresh_token = self.ADDON.getSetting('refresh_token')
+        if not refresh_token:
+            self.DIALOG.VSinfo("Aucun refresh token trouvé, veuillez vous authentifier à nouveau.")
+            return self.getToken()
+
+        try:
+            oRequestHandler = cRequestHandler(URL_API + 'oauth/token')
+            oRequestHandler.setRequestType(1)  # POST
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+            oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
+            oRequestHandler.addJSONEntry('refresh_token', refresh_token)
+            oRequestHandler.addJSONEntry('client_id', API_KEY)
+            oRequestHandler.addJSONEntry('client_secret', API_SECRET)
+            oRequestHandler.addJSONEntry('grant_type', 'refresh_token')
+            sHtmlContent = oRequestHandler.request(jsonDecode=True)
+
+            if sHtmlContent.get('access_token'):
+                # Mise à jour des tokens, de la durée d'expiration et du temps d'obtention
+                self.ADDON.setSetting('bstoken', sHtmlContent['access_token'])
+                self.ADDON.setSetting('refresh_token', sHtmlContent['refresh_token'])
+                self.ADDON.setSetting('expires_in', str(sHtmlContent['expires_in']))
+                self.ADDON.setSetting('token_time', str(time.time()))
+                self.DIALOG.VSinfo("Token rafraîchi avec succès.")
+            else:
+                self.DIALOG.VSinfo("Échec du rafraîchissement du token.")
+        except Exception as e:
+            self.DIALOG.VSinfo("Erreur lors du rafraîchissement du token : " + str(e))
+
+    def isTokenExpired(self):
+        try:
+            expires_in = int(self.ADDON.getSetting('expires_in'))
+            token_time = float(self.ADDON.getSetting('token_time'))
+        except:
+            return True  # En cas d'erreur, considérer le token comme expiré
+        return time.time() > (token_time + expires_in)
+
     def getLoad(self):
-        # pour regen le token()
-        # self.getToken()
+        # Vérifier si le token est expiré avant de continuer
+        if self.isTokenExpired():
+            self.refreshToken()
         oGui = cGui()
+        bstoken = self.ADDON.getSetting('bstoken')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        if self.ADDON.getSetting('bstoken') == '':
+        if bstoken == '':
             VSlog('TRAKT - bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
@@ -110,9 +161,10 @@ class cTrakt:
             try:
                 oRequestHandler = cRequestHandler(URL_API + 'users/me')
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
                 oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
-                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % bstoken)
                 sHtmlContent = oRequestHandler.request(jsonDecode=True)
             except:
                 return self.getToken()
@@ -138,7 +190,7 @@ class cTrakt:
             # oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'annees.png', oOutputParameterHandler)
             
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getBsout', '[COLOR red]' + self.ADDON.VSlang(30309) + '[/COLOR]', 'trakt.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -256,7 +308,7 @@ class cTrakt:
         oOutputParameterHandler.addParameter('siteUrl', 'sync/watchlist/shows/added')
         oOutputParameterHandler.addParameter('sCat', '2')
         oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30311), 'pin.png', oOutputParameterHandler)
-#            liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows'])
+#            liste.append([self.ADDON.VSlang(30311), URL_API + 'sync/watchlist/shows/added'])
 
         # Collection
         oOutputParameterHandler.addParameter('siteUrl', 'sync/collection/shows')
@@ -323,6 +375,7 @@ class cTrakt:
         sUrl = URL_API + 'search/list?query=' + sSearchText
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         
@@ -365,6 +418,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(URL_API + sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         if 'users/' in sUrl or '/sync/' in sUrl:
@@ -414,6 +468,7 @@ class cTrakt:
                 if not found:
                     oRequestHandler = cRequestHandler(URL_API + sUrl)
                     oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
                     oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
                     oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
                     oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -460,6 +515,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -512,6 +568,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(traktUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
@@ -915,6 +972,7 @@ class cTrakt:
         # oRequestHandler = cRequestHandler(URL_API + 'sync/playback/' + ('movies' if sCat == '1' else 'episodes'))
         oRequestHandler = cRequestHandler(URL_API + 'sync/playback/episodes')
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1071,6 +1129,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1138,6 +1197,7 @@ class cTrakt:
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
@@ -1362,6 +1422,7 @@ class cTrakt:
         oRequestHandler = cRequestHandler(sAction)
         oRequestHandler.setRequestType(requestType)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('User-Agent', 'vStream')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))

@@ -29,6 +29,7 @@ ANIM_NEWS = (URL_MAIN + 'dernier-episodes/', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-vostfr/', 'showMovies')
 ANIM_ANNEES = (True, 'showYears')
+ANIM_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
@@ -47,6 +48,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Dernier ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
@@ -74,7 +78,7 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = [['Action', 'Action'], ['Animation', 'Action'], ['Aventure', 'Aventure'], ['Comédie', 'Comédie'],
+    liste = [['Action', 'Action'], ['Aventure', 'Aventure'], ['Comédie', 'Comédie'],
              ['Tranche de Vie', 'Tranche de vie'], ['Drame', 'Drame'], ['Fantasy', 'Fantasy'],
              ['Surnaturel', 'Surnaturel'], ['Mystère', 'Mystère'], ['Shonen', 'Shonen'],
              ['Psychologique', 'Psychologique'], ['Romance', 'Romance'], ['Science-Fiction', 'Sci-Fi']]
@@ -82,7 +86,7 @@ def showGenres():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/genre/' + sUrl + '/')
-        oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -91,7 +95,7 @@ def showYears():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(xrange(1982, 2024)):
+    for i in reversed(xrange(1982, 2026)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
@@ -130,7 +134,7 @@ def showMovies(sSearch=''):
     if "/films/" in sUrl:
         sPattern = '<article class="short__story.+?href="([^"]+).+?data-src="([^"]+)" alt="([^"]+).+?pg">([^<]+).+?text">([^<]+)'
     else:
-        sPattern = 'rtl"><div class="tick-item tick-eps">.+?img data-src="([^"]+).+?alt="([^"]+).+?href="([^"]+)'
+        sPattern = '<div class="film-detail">.+?img data-src="([^"]+).+?alt="([^"]+).+?href="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

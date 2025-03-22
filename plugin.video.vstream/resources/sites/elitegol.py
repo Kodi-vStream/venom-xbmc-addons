@@ -4,7 +4,7 @@ import re
 import datetime
 
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import isMatrix, siteManager
+from resources.lib.comaddon import isMatrix, siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -29,7 +29,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 
 # chaines dans l'ordre d'affichage
 channels = {
-    1: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
+    1: ['bein Sports 1', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png'],
     
     20: ['DAZN1', 'https://miguia.tv/channels/big_329@2x.png'],
 #    20: ['DAZN1\nC+ sport 2', 'https://miguia.tv/channels/big_329@2x.png'],
@@ -54,15 +54,15 @@ channels = {
     # 26: ['prime video ligue 1/2 (LDC8)', 'https://i.imgur.com/PvpkxgG.png'],
     # 27: ['prime video ligue 1/2 (LDC9)', 'https://i.imgur.com/PvpkxgG.png'],
     # 28: ['prime video ligue 1/2 (LDC10)', 'https://i.imgur.com/PvpkxgG.png'],
-    2: ['bein Sports 2', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
-    3: ['bein Sports 3', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
-    4: ['bein Sports MAX 4', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png'],
-    5: ['bein Sports MAX 5', 'https://images.beinsports.com/FE2dOGMxn1waqAFYxqsGxXKkvCo=/788714-5MAX.png'],
-    6: ['bein Sports MAX 6', 'https://images.beinsports.com/beNacZewwA5WqFglPAwOaD4n5QA=/788715-6MAX.png'],
-    7: ['bein Sports MAX 7', 'https://images.beinsports.com/6IXXUorOrK_n756SjT6a2Ko7jiM=/788716-7MAX.png'],
-    8: ['bein Sports MAX 8', 'https://images.beinsports.com/6aOfeAugcgMy93nrOfk8NAacALs=/788717-8MAX.png'],
-    9: ['bein Sports MAX 9', 'https://images.beinsports.com/etM_TIm1DmhWr0TZ_CbWGJvaTdQ=/788718-9MAX.png'],
-    10: ['bein Sports MAX 10', 'https://images.beinsports.com/LxFG3ZG88jlFsOyWo_C7o4mdY7M=/788719-10MAX.png'],
+    2: ['bein Sports 2', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png'],
+    3: ['bein Sports 3', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png'],
+    4: ['bein Sports MAX 4', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_4.png'],
+    5: ['bein Sports MAX 5', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_5.png'],
+    6: ['bein Sports MAX 6', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_6.png'],
+    7: ['bein Sports MAX 7', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_7.png'],
+    8: ['bein Sports MAX 8', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_8.png'],
+    9: ['bein Sports MAX 9', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_9.png'],
+    10: ['bein Sports MAX 10', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_10.png'],
     # 31: ['multisport+ 1', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
     # 32: ['multisport+ 2', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
     # 33: ['multisport+ 3', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
@@ -242,8 +242,6 @@ def showMovieLinks():
         
     oGui.setEndOfDirectory()
 
-
-
 def showLink():
     oGui = cGui()
     oHosterGui = cHosterGui()
@@ -290,18 +288,19 @@ def getHosterIframe(url, referer):
 
 def getUrl(sHtmlContent, referer):
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sstr in aResult:
             if not sstr.endswith(';'):
                 sstr = sstr + ';'
-            sHtmlContent = cPacker().unpack(sstr)
-            url = getUrl(sHtmlContent, referer)
+            html = cPacker().unpack(sstr)
+            html = html.replace('\\', '')
+            url = getUrl(html, referer)
             if url:
                 return url
 
-    sPattern = '.atob\("(.+?)"'
+    sPattern = r'.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         import base64
@@ -316,7 +315,7 @@ def getUrl(sHtmlContent, referer):
             except Exception as e:
                 pass
     
-    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
+    sPattern = r'<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
@@ -330,24 +329,24 @@ def getUrl(sHtmlContent, referer):
             if url:
                 return url
 
-    sPattern = 'player.load\({source: (.+?)\('
+    sPattern = r'player.load\({source: (.+?)\('
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         func = aResult[0]
-        sPattern = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+        sPattern = r'function %s\(\) +{\n + return\(\[([^\]]+)' % func
         aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return sHosterUrl + '|referer=' + referer
 
-    sPattern = ';var.+?src=["\']([^"\']+)["\']'
+    sPattern = r';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
             if '.m3u8' in url:
                 return url + '|Referer=' + referer
 
-    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    sPattern = r'[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sHosterUrl in aResult:
@@ -362,7 +361,7 @@ def getUrl(sHtmlContent, referer):
     #            sHosterUrl = sHosterUrl.replace('index', 'mono')
                 return sHosterUrl + '|referer=' + referer
 
-    sPattern = 'file: *["\'](https.+?\.m3u8)["\']'
+    sPattern = r'file: *["\'](https.+?\.m3u8)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         oRequestHandler = cRequestHandler(aResult[0])
@@ -371,22 +370,69 @@ def getUrl(sHtmlContent, referer):
         return sHosterUrl + '|referer=' + referer
 
 
-    sPattern = 'new Player\("100%","100%","player","(.+?)",{"(.+?)":'
+    sPattern = r'new Player\("100%","100%","player","(.+?)",{"(.+?)":'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return sHosterUrl + '|referer=' + referer
 
-    sPattern = 'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+    sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
+    if not aResult:
+        sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+        aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return sHosterUrl + '|referer=' + referer
-
-    sPattern = "ThePlayerJS\('.+?','(.+?)'\);"
-    aResult = re.findall(sPattern, sHtmlContent)
+    
+    sPattern = r"new Player\('(.+?=)'\)"
+    aResult = re.findall(sPattern, sHtmlContent.replace('\\', ''))
     if aResult:
-        sHosterUrl = 'https://mustardshock.com/player/%s' % aResult[0]
+        VSlog('Lien chiffré par cryptographie non encore supporté')
+        #TODO Convertir en python la fonction Player(opts) dans /player-bundle-min.js : encrypted_json_string=opts,passphrase="jzAqXKPaoDu4KSaYsOne3rNOGGBXK71JoUFfkZ0DXrloaGcZmrwv9B0jmsHVruq",obj_json=JSON.parse(atob(encrypted_json_string)),encrypted=obj_json.ciphertext,salt=CryptoJS.enc.Hex.parse(obj_json.salt),iv=CryptoJS.enc.Hex.parse(obj_json.iv),key=CryptoJS.PBKDF2(passphrase,salt,{hasher:CryptoJS.algo.SHA512,keySize:8,iterations:1}),opts=CryptoJS.AES.decrypt(encrypted,key,{iv:iv}).toString(CryptoJS.enc.Utf8)
+        return False
+
+    sPattern = r"ThePlayerJS\('.+?','(.+?)'\);"
+    sPattern = r'''<script src="https://([^/]+)/embed.min.js\?v=3" +onload="ThePlayerJS\('.+?','(.+?)'\);"></script>'''
+    html = sHtmlContent.replace('\\','')
+    aResult = re.findall(sPattern, html)
+    if aResult:
+        sHosterUrl = r'https://%s/player/%s' % (aResult[0][0], aResult[0][1])
         return getHosterIframe(sHosterUrl, referer)
+    
+    decoded = reveal_pipe_split(sHtmlContent)
+    if decoded:
+        return getUrl(decoded, referer)
+    
+    decoded = reveal_char_by_char_url(sHtmlContent)
+    if decoded and '.m3u8' in decoded:
+        return decoded + '|referer=' + referer
 
     return False
+
+
+def reveal_char_by_char_url(html):
+    html = html.replace('\\','')
+    pattern = r'((?:".",)+".")\].join\(""\)'
+    result = re.findall(pattern, html)
+    if result:
+        text = ''
+        for char in result[0].split(','):
+            text += char.replace('"','')
+        return text
+
+def reveal_pipe_split(html):
+    pattern = r"return p\}(\(.*),'(.*?)'.split\('\|'\)"
+    html = html.replace('\\', '')
+    result = re.findall(pattern, html)
+    if not result:
+        return
+    mask = result[0][0]
+    keywords = result[0][1].split('|')
+    def replaceNumber(match):
+        num = int(match.group(0))
+        if num < len(keywords):
+            return keywords[num]
+        return match.group(0)
+    text = re.sub('([0-9]+)',replaceNumber, mask)
+    return text

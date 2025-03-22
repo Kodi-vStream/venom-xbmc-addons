@@ -14,6 +14,11 @@
             "label": "AllDebrid",
             "active": "True"
         },
+        "animesama": {
+            "label": "Anime Sama",
+            "active": "True",
+            "url": "https://anime-sama.fr/"
+        },
         "animeultime": {
             "label": "Anime Ultime",
             "active": "True",
@@ -52,12 +57,12 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.moe/"
+            "url": "https://coflix.mov/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
             "active": "True",
-            "url": "https://cpasmieux.is/"
+            "url": "https://www.cpasmieux.ad/"
         },
         "daddyhd": {
             "label": "DaddyHD",
@@ -67,12 +72,17 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld3.com/"
+            "url": "https://darkiworld7.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
             "url": "https://debrid-link.fr"
+        },
+        "direct_stream": {
+            "label": "direct-streamfr",
+            "active": "True",
+            "url": "https://direct-streamfr.live/"
         },
         "docu_fr": {
             "label": "Docu Fr",
@@ -92,9 +102,9 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://jokertv.ru/",
+            "url": "https://kakarotfoot.ru/",
             "site_info": "https://elitegol.lat/",
-            "url_link": "ccc/3"
+            "url_link": "goku/3"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -138,7 +148,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror03.lol/"
+            "url": "https://fsmirror38.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -190,8 +200,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "False",
-            "url": "https://livetv.sx/"
+            "active": "True",
+            "url": "https://livetv822.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -333,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://wiflix-vraie-adresse.com/",
-            "url": "https://wiflix-pro.site/"
+            "url": "https://wiflix-max.top/"
         },
         "wilifilm": {
             "label": "Wilifilm",

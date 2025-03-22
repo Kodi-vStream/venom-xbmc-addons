@@ -223,8 +223,12 @@ class cRequestHandler:
                             pass
 
         except ConnectionError as e:
+            # Erreur SSL
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
+                self.BUG_SSL = True
+                return self.__callRequest(jsonDecode)
             # Retry with DNS only if addon is present
-            if self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
+            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
@@ -282,7 +286,7 @@ class cRequestHandler:
     
                             sContent = response['solution']['response']
 
-            if self.oResponse and not sContent:
+            if self.oResponse is not None and not sContent:
                 # Ignorer ces codes retours
                 ignoreStatus = [200, 204, 302]
                 if self.oResponse.status_code not in ignoreStatus:
@@ -323,7 +327,8 @@ class cRequestHandler:
                 host = host[:host.find("/")]
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
-            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']
+            # + Résolveurs CloudFlare
+            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40', '1.1.1.1', '2606:4700:4700::1111']
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
             VSlog("new_getaddrinfo found host %s" % host_found)

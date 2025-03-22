@@ -9,8 +9,14 @@ class cOutputParameterHandler:
     def addParameter(self, sParameterName, mParameterValue):
         if not mParameterValue:
             return
-        if not isinstance(mParameterValue, str):
-            mParameterValue = str(mParameterValue)
+
+        try:
+            if not isinstance(mParameterValue, str):
+                mParameterValue = str(mParameterValue)
+        except:
+            if not isinstance(mParameterValue, unicode):
+                mParameterValue = unicode(mParameterValue)
+
         mParameterValue = Unquote(mParameterValue)
         self.__aParams[sParameterName] = mParameterValue
 

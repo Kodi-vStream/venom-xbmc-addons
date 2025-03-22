@@ -21,12 +21,12 @@ SITE_DESC = 'Films & Séries en streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = dans sites.json
 
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
+MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
+SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
 # SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
@@ -60,6 +60,35 @@ def load():
 
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://film')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuSeries():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://serie')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

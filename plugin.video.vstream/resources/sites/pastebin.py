@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import imp
 import platform
 import random
 import threading
 import time
 import xbmc
 import xbmcvfs
+try:
+    import importlib as imp
+except ImportError:
+    import imp
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, siteManager
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -36,9 +39,9 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
-MOVIE_NEWS = ('discover/movie', 'showTmdbMovies')
-MOVIE_VIEWS = ('movie/popular', 'showTmdbSeries')
-MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
+MOVIE_NEWS = ('discover/movie', 'showMoviesNews')
+MOVIE_VIEWS = ('discover/movie', 'showMoviesViews')
+MOVIE_GENRES = ('discover/movie', 'showGenreMovieTMDB')
 MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
 MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
 #MOVIE_NOTES = ('movie/top_rated', 'showTmdbSeries')
@@ -51,7 +54,7 @@ SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
 ANIM_ANIMS = (URL_MAIN + '&sMedia=anime', 'showMenuMangas')
-ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2024', 'showMovies')
+ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2025', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
 ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
@@ -71,7 +74,7 @@ VSlog('Pastebin - Python version : ' + PYVERSION)
 if '3.10' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt310.pyc'
-elif '3.11' in PYVERSION:
+elif '3.11' in PYVERSION or '3.12' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
 elif '2.' in PYVERSION:
@@ -732,7 +735,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2025&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         if 'containFilmGenres' in contenu:
@@ -773,7 +776,7 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2024&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2025&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         if 'containSerieGenres' in contenu:
@@ -942,7 +945,7 @@ def showMenuFilms():
         oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
         # oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
         oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], addons.VSlang(30101), 'news.png', oOutputParameterHandler)
-        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2024')
+        # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2025')
         # oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -952,8 +955,8 @@ def showMenuFilms():
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', addons.VSlang(30123), 'listes.png', oOutputParameterHandler)
 
     if not sRes:
-        oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
-        oGui.addDir(SITE_IDENTIFIER, 'showGenreMovieTMDB', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+        oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
     else:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
@@ -1002,7 +1005,7 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])#tv/on_the_air')
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2025')
     # oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
@@ -1048,7 +1051,7 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2024')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2025')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1146,7 +1149,7 @@ def showGenreMovieTMDB():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    result = grab.getUrl(sUrl)
+    result = grab.getUrl('genre/movie/list')
     total = len(result)
     if total > 0:
         bMatrix = isMatrix()
@@ -1156,9 +1159,9 @@ def showGenreMovieTMDB():
 
             if not bMatrix:
                 sTitle = sTitle.encode("utf-8")
-            sUrl = 'genre/' + str(sId) + '/movies'
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addGenre(SITE_IDENTIFIER, 'showTMDB', str(sTitle), oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sId)
+            oGui.addGenre(SITE_IDENTIFIER, 'showMoviesGenres', str(sTitle), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1176,11 +1179,12 @@ def showGenreMovie():
         bMatrix = isMatrix()
         oOutputParameterHandler = cOutputParameterHandler()
         for genre in result['genres']:
-            sId, sTitle = str(genre['id']), genre['name']
+            sGenre, sTitle = str(genre['id']), genre['name']
             if not bMatrix:
                 sTitle = sTitle.encode("utf-8")
-            oOutputParameterHandler.addParameter('siteUrl', siteUrl + '&sGenre=' + sId)
-            oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sGenre)
+            oGui.addGenre(SITE_IDENTIFIER, 'showMoviesGenres', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1207,11 +1211,28 @@ def showGenreTV():
     oGui.setEndOfDirectory()
 
 
-def showTmdbMovies():
+def showMoviesNews():
     term = 'with_original_language=en|fr'
-    term += '&sort_by=primary_release_date.desc&'
-    term += 'without_genres=99&'
-    term += 'vote_count.gte=10'
+    term += '&sort_by=primary_release_date.desc'
+    term += '&without_genres=99'
+    term += '&vote_count.gte=50'
+    showTMDB(term)
+
+def showMoviesViews():
+    term = 'with_original_language=en|fr'
+    term += '&sort_by=popularity.desc'
+    term += '&primary_release_date.gte=2024-06-30'
+    term += '&without_genres=99'
+    term += '&vote_count.gte=300'
+    showTMDB(term)
+
+def showMoviesGenres():
+    oInputParameterHandler = cInputParameterHandler()
+    sGenre = oInputParameterHandler.getValue('sMovieTitle')
+    term = 'with_original_language=en|fr'
+    term += '&sort_by=primary_release_date.desc'
+    term += '&with_genres=' + sGenre
+    term += '&vote_count.gte=50'
     showTMDB(term)
 
 def showTmdbSeries():

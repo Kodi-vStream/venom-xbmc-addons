@@ -225,7 +225,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox']
+                            'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -269,6 +269,9 @@ class cHosterGui:
             return self.getHoster('vidcloud')
 
         if ('livestream' in sHostName):
+            return self.getHoster('lien_direct')
+
+        if ('mustardshock' in sHostName):
             return self.getHoster('lien_direct')
 
         # vidtodo et clone

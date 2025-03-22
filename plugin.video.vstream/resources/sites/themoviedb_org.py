@@ -195,7 +195,7 @@ def showMyTmdb():
             oGui.addDir(SITE_IDENTIFIER, 'showUserLists', addons.VSlang(30441), 'listes.png', oOutputParameterHandler)
 
             oOutputParameterHandler.addParameter('siteUrl', 'http://')
-            oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', addons.VSlang(30309), 'listes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', '[COLOR red]' + addons.VSlang(30309) + '[/COLOR]', 'tmdb.png', oOutputParameterHandler)
 
         else:
             ouTMyTmdb()
@@ -253,11 +253,13 @@ def getContext():
     yn.append(True)
     lang.append(addons.VSlang(31210))  
 
+    # supprimer de la liste de suivi
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(False)
     lang.append(addons.VSlang(30446))
 
+    # supprimer des favoris
     disp.append('account/%s/favorite' % tmdb_account)
     fow.append('favorite')
     yn.append(False)
@@ -307,7 +309,8 @@ def getAction():
     sTMDB = oInputParameterHandler.getValue('sTmdbId')
     sSeason = oInputParameterHandler.getValue('sSeason')
     sEpisode = oInputParameterHandler.getValue('sEpisode')
-
+    API_Version = 3
+    
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
 
     if not sTMDB:
@@ -330,9 +333,6 @@ def getAction():
             return
 
     elif sAction == 'addtolist':
-        if sCat == 'tv':
-            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
-            return
         result = grab.getUrl('account/%s/lists' % addons.getSetting('tmdb_account'), term='session_id=%s' % addons.getSetting('tmdb_session'))
         total = len(result)
         if total == 0:
@@ -345,13 +345,11 @@ def getAction():
             return
         
         idliste = result['results'][idliste]['id']
-        sAction = 'list/%s/add_item' % (idliste)
-        sPost = {"media_id": sTMDB}
+        sAction = 'list/%s/items' % (idliste)
+        sPost = {"items": [{"media_type": sCat, "media_id": sTMDB}]}
+        API_Version = 4
 
     elif sAction == 'addtonewlist':
-        if sCat == 'tv':
-            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
-            return        
         # nom de la nouvelle liste
         listname = oGui.showKeyBoard()
         if listname == '':
@@ -369,14 +367,15 @@ def getAction():
             idliste = rep['list_id']
         else:
             return
-        # ajout du film à la nouvelle liste
-        sAction = 'list/%s/add_item' % (idliste)
-        sPost = {"media_id": sTMDB}
+        # ajout du media à la nouvelle liste
+        sAction = 'list/%s/items' % (idliste)
+        sPost = {"items": [{"media_type": sCat, "media_id": sTMDB}]}
+        API_Version = 4
 
     else:
         sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
 
-    data = grab.getPostUrl(sAction, sPost)
+    data = grab.getPostUrl(sAction, sPost, API_Version)
 
     if len(data) > 0:
         dialogs.VSinfo(data['status_message'])
@@ -515,6 +514,7 @@ def showGenreTV():
 
     term = 'with_original_language=en|fr&'
     term += '&without_genres=10763|10764|10767'
+    term += '&sort_by=first_air_date.desc'
     term += '&with_status=3|4'
     term += '&with_genres=%d'
 
@@ -570,7 +570,7 @@ def showUserLists():
 
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             oOutputParameterHandler.addParameter('siteUrl', sId)
-            oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1321,6 +1321,7 @@ def showFilmActor():
 def showLists():
     oGui = cGui()
     grab = cTMDb()
+    addons = addon()
 
     oInputParameterHandler = cInputParameterHandler()
 
@@ -1329,7 +1330,10 @@ def showLists():
         iPage = oInputParameterHandler.getValue('page')
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    result = grab.getUrl('list/' + sUrl, iPage, '')
+    tmdb_session = addons.getSetting('tmdb_session')
+    result = grab.getUrl('list/' + sUrl, iPage, 'session_id=' + tmdb_session)
+    total_pages = result['total_pages']
+
     total = len(result)
     if total > 0:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1381,6 +1385,14 @@ def showLists():
                 oGuiElement.setGenre(i['genre'])
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        # Page suivante
+        iNextPage = int(iPage) + 1
+        if iNextPage <= total_pages:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showLists', 'Page ' + str(iNextPage), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

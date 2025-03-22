@@ -141,7 +141,8 @@ class cUtil:
 
     def titleWatched(self, title):
 
-        title = title.replace('²', ' 2').replace('³', ' 3').replace('⁴', ' 4')
+        if isMatrix():
+            title = title.replace('²', ' 2').replace('³', ' 3').replace('⁴', ' 4')
 
         title = self.formatUTF8(title)
 
@@ -211,7 +212,7 @@ class cUtil:
     def getEpisodeTitre(self, sTitle):
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
-            sTitle = sTitle.replace(string.group(1), '')
+            sTitle = sTitle.replace(string.group(1), '').strip()
             return sTitle, True
 
         return sTitle, False
