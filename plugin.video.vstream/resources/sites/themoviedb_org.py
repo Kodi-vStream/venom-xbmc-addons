@@ -514,6 +514,7 @@ def showGenreTV():
 
     term = 'with_original_language=en|fr&'
     term += '&without_genres=10763|10764|10767'
+    term += '&sort_by=first_air_date.desc'
     term += '&with_status=3|4'
     term += '&with_genres=%d'
 
