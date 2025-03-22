@@ -41,7 +41,7 @@ UNCLASSIFIED = 'Indéterminé'
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
 MOVIE_NEWS = ('discover/movie', 'showMoviesNews')
 MOVIE_VIEWS = ('discover/movie', 'showMoviesViews')
-MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
+MOVIE_GENRES = ('discover/movie', 'showGenreMovieTMDB')
 MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
 MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
 #MOVIE_NOTES = ('movie/top_rated', 'showTmdbSeries')
@@ -955,8 +955,8 @@ def showMenuFilms():
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', addons.VSlang(30123), 'listes.png', oOutputParameterHandler)
 
     if not sRes:
-        oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
-        oGui.addDir(SITE_IDENTIFIER, 'showGenreMovieTMDB', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+        oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
     else:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
@@ -1149,7 +1149,7 @@ def showGenreMovieTMDB():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    result = grab.getUrl(sUrl)
+    result = grab.getUrl('genre/movie/list')
     total = len(result)
     if total > 0:
         bMatrix = isMatrix()
@@ -1159,9 +1159,9 @@ def showGenreMovieTMDB():
 
             if not bMatrix:
                 sTitle = sTitle.encode("utf-8")
-            sUrl = 'genre/' + str(sId) + '/movies'
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addGenre(SITE_IDENTIFIER, 'showTMDB', str(sTitle), oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sId)
+            oGui.addGenre(SITE_IDENTIFIER, 'showMoviesGenres', str(sTitle), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1179,11 +1179,12 @@ def showGenreMovie():
         bMatrix = isMatrix()
         oOutputParameterHandler = cOutputParameterHandler()
         for genre in result['genres']:
-            sId, sTitle = str(genre['id']), genre['name']
+            sGenre, sTitle = str(genre['id']), genre['name']
             if not bMatrix:
                 sTitle = sTitle.encode("utf-8")
-            oOutputParameterHandler.addParameter('siteUrl', siteUrl + '&sGenre=' + sId)
-            oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sGenre)
+            oGui.addGenre(SITE_IDENTIFIER, 'showMoviesGenres', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1223,6 +1224,15 @@ def showMoviesViews():
     term += '&primary_release_date.gte=2024-06-30'
     term += '&without_genres=99'
     term += '&vote_count.gte=300'
+    showTMDB(term)
+
+def showMoviesGenres():
+    oInputParameterHandler = cInputParameterHandler()
+    sGenre = oInputParameterHandler.getValue('sMovieTitle')
+    term = 'with_original_language=en|fr'
+    term += '&sort_by=primary_release_date.desc'
+    term += '&with_genres=' + sGenre
+    term += '&vote_count.gte=50'
     showTMDB(term)
 
 def showTmdbSeries():
