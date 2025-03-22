@@ -39,8 +39,8 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
-MOVIE_NEWS = ('discover/movie', 'showTmdbMovies')
-MOVIE_VIEWS = ('movie/popular', 'showTmdbSeries')
+MOVIE_NEWS = ('discover/movie', 'showMoviesNews')
+MOVIE_VIEWS = ('discover/movie', 'showMoviesViews')
 MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
 MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
 MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
@@ -1210,11 +1210,19 @@ def showGenreTV():
     oGui.setEndOfDirectory()
 
 
-def showTmdbMovies():
+def showMoviesNews():
     term = 'with_original_language=en|fr'
-    term += '&sort_by=primary_release_date.desc&'
-    term += 'without_genres=99&'
-    term += 'vote_count.gte=10'
+    term += '&sort_by=primary_release_date.desc'
+    term += '&without_genres=99'
+    term += '&vote_count.gte=50'
+    showTMDB(term)
+
+def showMoviesViews():
+    term = 'with_original_language=en|fr'
+    term += '&sort_by=popularity.desc'
+    term += '&primary_release_date.gte=2024-06-30'
+    term += '&without_genres=99'
+    term += '&vote_count.gte=300'
     showTMDB(term)
 
 def showTmdbSeries():
