@@ -327,7 +327,8 @@ class cRequestHandler:
                 host = host[:host.find("/")]
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
-            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']
+            # + Résolveurs CloudFlare
+            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40', '1.1.1.1', '2606:4700:4700::1111']
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
             VSlog("new_getaddrinfo found host %s" % host_found)
