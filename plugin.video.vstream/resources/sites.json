@@ -318,7 +318,7 @@
         },
         "voiranime": {
             "label": "voiranime",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://v6.voiranime.com/"
         },
