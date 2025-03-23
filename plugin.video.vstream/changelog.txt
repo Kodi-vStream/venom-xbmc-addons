@@ -14,7 +14,7 @@ Historique des modifications
 - Compatibilité Python 3.12
 - DNS : Ajout du DNS CloudFlare pour résoudre les adresses
 - Trakt : Mise à jour automatique et periodique du token
-- TMDB : voir ses listes privés, pouvoir ajouter des séries dans ses listes
+- TMDB : voir ses listes privées, pouvoir ajouter des séries dans ses listes
 - AnimeSama : Nouvelle source d'animes
 - DirectStreamFR : Nouvelle source de chaines sportives
 
