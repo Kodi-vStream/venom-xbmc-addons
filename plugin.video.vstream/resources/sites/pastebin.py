@@ -935,8 +935,9 @@ def showMenuFilms():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sSearch=')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', "%s - %s" % (addons.VSlang(30076), addons.VSlang(30120)), 'search-films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSaga', "%s - %s" % (addons.VSlang(30076), addons.VSlang(30139)), 'search-sagas.png', oOutputParameterHandler)
+    if not sRes:
+        oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchSaga', "%s - %s" % (addons.VSlang(30076), addons.VSlang(30139)), 'search-sagas.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30134), 'added.png', oOutputParameterHandler)
@@ -957,9 +958,9 @@ def showMenuFilms():
     if not sRes:
         oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
         oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
-    else:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
+    # else:
+    #     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    #     oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
 
     # if not sRes:
     #     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1268,7 +1269,7 @@ def showTMDB(paramTerm = ''):
             sMedia = 'film' if 'movie' in siteUrl else 'serie'
             sType = 'movie' if 'movie' in siteUrl else 'tvshow'
             results = result['results']
-        total = len(results)
+        total = len(results) if results else 0
 
     if total > 0 and results:
         bMatrix = isMatrix()
@@ -2055,7 +2056,7 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('IMAX', 'IMAX'), ('4K', '4K [2160p]'), ('CRITERION', 'CRITERION'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2380,7 +2381,7 @@ def showMovies(sSearch=''):
 
                 bValid = False
                 for res in listRes:
-                    res = res.upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P')
+                    res = res.upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P').replace('SDR', '')
                     if sRes in res:
                         bValid = True
                         break
