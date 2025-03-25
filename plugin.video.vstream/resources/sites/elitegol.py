@@ -288,7 +288,7 @@ def getHosterIframe(url, referer):
 
 def getUrl(sHtmlContent, referer):
 
-    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))' # Recherche "eval(function(...{}))"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sstr in aResult:
@@ -424,15 +424,17 @@ def reveal_char_by_char_url(html):
 def reveal_pipe_split(html):
     pattern = r"return p\}(\(.*),'(.*?)'.split\('\|'\)"
     html = html.replace('\\', '')
-    result = re.findall(pattern, html)
-    if not result:
+    results = re.findall(pattern, html)
+    if not results:
         return
-    mask = result[0][0]
-    keywords = result[0][1].split('|')
     def replaceNumber(match):
         num = int(match.group(0))
         if num < len(keywords):
             return keywords[num]
         return match.group(0)
-    text = re.sub('([0-9]+)',replaceNumber, mask)
+    text = ''
+    for result in results:
+        mask = result[0]
+        keywords = result[1].split('|')
+        text += re.sub('([0-9]+)',replaceNumber, mask)
     return text
