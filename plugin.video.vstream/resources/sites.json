@@ -2,7 +2,7 @@
     "sites": {
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
-            "active": "True",
+            "active": "False",
             "url": "https://app.1seriestreaming.io/"
         },
         "adkami_com": {
@@ -148,7 +148,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror38.lol/"
+            "url": "https://mirror66.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -281,7 +281,7 @@
         },
         "streamizseries": {
             "label": "Streamiz S\u00e9ries",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://streamizseries.net/"
         },
