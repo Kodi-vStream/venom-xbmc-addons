@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.3.0 - 29/03/24 ***
+- DNS Python : Adresses paramétrables, DNSCloudFlare en premier
+
 *** 3.2.0 - 22/03/24 ***
 - Compatibilité Python 3.12
 - DNS : Ajout du DNS CloudFlare pour résoudre les adresses
