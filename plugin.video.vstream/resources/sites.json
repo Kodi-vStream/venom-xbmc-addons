@@ -2,7 +2,7 @@
     "sites": {
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
-            "active": "True",
+            "active": "False",
             "url": "https://app.1seriestreaming.io/"
         },
         "adkami_com": {
@@ -84,6 +84,11 @@
             "active": "True",
             "url": "https://direct-streamfr.live/"
         },
+        "dnspython": {
+            "label": "DNS Python",
+            "active": "True",
+            "url": "['1.1.1.1', '2606:4700:4700::1111', '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']"
+        },
         "docu_fr": {
             "label": "Docu Fr",
             "active": "False",
@@ -148,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror38.lol/"
+            "url": "https://mirror66.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -281,7 +286,7 @@
         },
         "streamizseries": {
             "label": "Streamiz S\u00e9ries",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://streamizseries.net/"
         },
@@ -318,7 +323,7 @@
         },
         "voiranime": {
             "label": "voiranime",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://v6.voiranime.com/"
         },

@@ -23,8 +23,8 @@ URL_SEARCH_SERIES = ('searchTV=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_NEWS = ('films-streaming', 'showMovies')
-MOVIE_VIEWS = ('film-boxoffice', 'showMovies')
+MOVIE_NEWS = ('films', 'showMovies')
+MOVIE_VIEWS = ('films/boxoffice', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -181,18 +181,18 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    # img url title year description
-    sPattern = 'lazyload" src=([^ ]+).+?href="([^"]+).+?.+?serif;">([^<]+).+?>\s*(\d+)\s*<.+?<p>([^<]*)'
+    # url title img year
+    sPattern = 'href="([^"]+)" title="([^"]+)".+?src=" *([^"]+)".+?i> *(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sDesc = ''
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
-            sUrl2 = aEntry[1]
-            sTitle = aEntry[2]
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
+            sThumb = aEntry[2]
             sYear = aEntry[3]
-            sDesc = aEntry[4]
 
             # Titre recherché
             if sSearch:

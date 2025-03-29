@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
-import json
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -201,7 +200,7 @@ def showMovies(sSearch=''):
             series = set()  # une seule fois la série
             
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1][::-1]:
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sThumb = aEntry[1].replace('/red.php?src=', '').replace('&.webp', '')
             if 'http' not in sThumb:
@@ -280,7 +279,7 @@ def showSaisons():
         sHtmlContent = cRequestHandler(sUrl).request()
         
         # url    title    thumb
-        sPattern = 'img-box with-mask" href="([^"]+)" alt="([^"]+)"> *<img src="([^"]+)"'
+        sPattern = 'img-box with-mask" href="([^"]+)" alt="([^"]+)">.+?<img src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0]:
@@ -434,33 +433,38 @@ def showMovieLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHtmlContent = cRequestHandler(sUrl).request()
-    sHtmlContent = cParser().parse(sHtmlContent, 'playerUrls = (.+?);')
 
-    if sHtmlContent[0]:
-        hosters = json.loads(sHtmlContent[1][0])
+    # url hoster    
+    sPattern = 'data-url-default="([^"]+)">([^<]+)<(.+?)</button>'
+    aResult = cParser().parse(sHtmlContent, sPattern)
 
-        if len(hosters):
-            for hosterName, links in hosters.items():
-                liens = set()
-                for sLang in sorted(links):
-                    if 'Default' in sLang:
-                        continue    #  le lien par défaut est ensuite reproposé avec la langue
-                    
-                    # suppression des liens vide ou en en doublon
-                    link = links[sLang]
-                    if not link:
-                        continue
-                    if link in liens:
-                        continue
-                    liens.add(link)
-                    
-                    sDisplayTitle = '%s (%s)' % (sMovieTitle, sLang)
-        
-                    oHoster = cHosterGui().checkHoster(hosterName)
-                    if oHoster:
-                        oHoster.setDisplayName(sDisplayTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, link, sThumb)
+    if aResult[0]:
+        links = []
+        for aEntry in aResult[1][::-1]:
+            sDisplayTitle =  '%s (%s)' % (sMovieTitle, aEntry[1])
+            sHosterUrl = aEntry[0]
+            links.append(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if oHoster:
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+                sHosterLang = aEntry[2]
+                sPattern = 'version="([^"]+)" data-url="([^"]+)'
+                aResult = cParser().parse(sHosterLang, sPattern)
+                if aResult[0]:
+                    for aEntry in aResult[1][::-1]:
+                        sHosterUrl = aEntry[1]
+                        if sHosterUrl in links:
+                            continue
+                        links.append(sHosterUrl)
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if oHoster:
+                            sDisplayTitleLang =  '%s [%s]' % (sDisplayTitle, aEntry[0])
+                            oHoster.setDisplayName(sDisplayTitleLang)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

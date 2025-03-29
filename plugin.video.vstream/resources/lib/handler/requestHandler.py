@@ -14,6 +14,7 @@ class cRequestHandler:
     REQUEST_TYPE_POST = 1
     REQUEST_TYPE_PUT = 2
     REQUEST_TYPE_DELETE = 3
+    SITE_IDENTIFIER = "dnspython"
 
     def __init__(self, sUrl):
         self.__sUrl = sUrl
@@ -310,6 +311,7 @@ class cRequestHandler:
         try:
             import sys
             import dns.resolver
+            from resources.lib.comaddon import siteManager
 
             if isMatrix():
                 path = VSPath('special://home/addons/script.module.dnspython/lib/')
@@ -328,7 +330,11 @@ class cRequestHandler:
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
             # + Résolveurs CloudFlare
-            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40', '1.1.1.1', '2606:4700:4700::1111']
+            
+            URL_MAIN = siteManager().getUrlMain(self.SITE_IDENTIFIER)
+            if URL_MAIN == '':
+                URL_MAIN = "['1.1.1.1', '2606:4700:4700::1111', '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']"
+            resolver.nameservers = eval(URL_MAIN)
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
             VSlog("new_getaddrinfo found host %s" % host_found)

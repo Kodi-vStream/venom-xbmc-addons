@@ -290,6 +290,9 @@ class cHosterGui:
         if ('flashx' in sHostName) or ('filez' in sHostName):
             return self.getHoster('flashx')
 
+        if ('xcoic' in sHostName):
+            return self.getHoster('filemoon')
+
         if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
 
@@ -335,12 +338,15 @@ class cHosterGui:
         if ('flixeo' in sHostName):
             return self.getHoster('allow_redirects')
 
+        if ('bigwarp' in sHostName):
+            return self.getHoster('flix555')
+ 
         if sHostName.replace('o','').replace('0','').replace('stream','').split('.')[0] == 'dd':
             return self.getHoster('dood')
         if ('ds2play' in sHostName) or ('ds2video' in sHostName) or ('dooodster' in sHostName):
             return self.getHoster('dood')
 
-        if ('voe' in sHostName) or ('jamessoundcost' in sHostName) or ('magasavor' in sHostName)  or ('sandratableother' in sHostName):
+        if ('voe' in sHostName) or ('jamessoundcost' in sHostName) or ('magasavor' in sHostName)  or ('sandratableother' in sHostName) or ('alejandrocenturyoil' in sHostName):
             return self.getHoster('voe')
 
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
@@ -351,7 +357,7 @@ class cHosterGui:
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
-                                'vfsplayer', 'gotochus', 'sendvid', "femax"] if x in sHostName), None)
+                                'vfsplayer', 'gotochus', 'sendvid', 'femax'] if x in sHostName), None)
         if val:
             return self.getHoster("frenchvid")
 
