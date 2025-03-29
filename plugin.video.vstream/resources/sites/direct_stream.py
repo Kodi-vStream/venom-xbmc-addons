@@ -24,7 +24,7 @@ SPORT_TV = ('lecteur/', 'showTV')
 channels = [
     
     ['DAZN 1', [57, 'https://miguia.tv/channels/big_329@2x.png']],
-    ['DAZN 2', [58, 'https://miguia.tv/channels/big_329@2x.png']],
+    ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
     
     ['bein Sports 1', [8, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
     ['bein Sports 2', [9, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
