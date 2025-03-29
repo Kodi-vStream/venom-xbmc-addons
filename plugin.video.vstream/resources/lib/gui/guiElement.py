@@ -221,7 +221,7 @@ class cGuiElement:
             if not self.__sCleanTitle:
                 self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
 
-        # convertion unicode ne fonctionne pas avec les accents
+        # conversion unicode ne fonctionne pas avec les accents
         try:
             if not bMatrix:
                 sTitle = sTitle.decode('utf-8')
