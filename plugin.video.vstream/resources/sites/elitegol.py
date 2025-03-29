@@ -392,7 +392,6 @@ def getUrl(sHtmlContent, referer):
         #TODO Convertir en python la fonction Player(opts) dans /player-bundle-min.js : encrypted_json_string=opts,passphrase="jzAqXKPaoDu4KSaYsOne3rNOGGBXK71JoUFfkZ0DXrloaGcZmrwv9B0jmsHVruq",obj_json=JSON.parse(atob(encrypted_json_string)),encrypted=obj_json.ciphertext,salt=CryptoJS.enc.Hex.parse(obj_json.salt),iv=CryptoJS.enc.Hex.parse(obj_json.iv),key=CryptoJS.PBKDF2(passphrase,salt,{hasher:CryptoJS.algo.SHA512,keySize:8,iterations:1}),opts=CryptoJS.AES.decrypt(encrypted,key,{iv:iv}).toString(CryptoJS.enc.Utf8)
         return False
 
-    sPattern = r"ThePlayerJS\('.+?','(.+?)'\);"
     sPattern = r'''<script src="https://([^/]+)/embed.min.js\?v=3" +onload="ThePlayerJS\('.+?','(.+?)'\);"></script>'''
     html = sHtmlContent.replace('\\','')
     aResult = re.findall(sPattern, html)

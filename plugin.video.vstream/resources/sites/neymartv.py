@@ -30,24 +30,23 @@ channels = [
     
 #    ['DAZN 1', ['https://poscitechs.lol/live/stream-106.php', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png']],
     
-    ['bein Sports 1', ['2023/01/bein-sports-1-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
-    ['bein Sports 2', ['2023/01/bein-sports-2-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
-    ['bein Sports 3', ['2023/01/bein-sports-3-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png']],
+    ['bein Sports 1', ['2025/03/bein-sports-1-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
+    ['bein Sports 2', ['2025/03/bein-sports-2-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
+    ['bein Sports 3', ['2025/03/bein-sports-3-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png']],
 
-    ['RMC Sport 1', ['2023/01/rmc-sport-1-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1']],
-    ['RMC Sport 2', ['2023/01/rmc-sport-2-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1']],
+    ['RMC Sport 1', ['2025/03/rmc-sport-1-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1']],
+    ['RMC Sport 2', ['2025/03/rmc-sport-2-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1']],
 
-    ['Canal+', ['2023/01/canal-france-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG']],
-#    ['Canal+ sport', ['2022/03/canal-sport-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG']],
-    ['Canal+ Sports', ['2023/01/all-canal-channels-france-full-hd.html', 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png']],
+    ['Canal+', ['2025/03/canal-france-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG']],
+    ['Canal+ Sports', ['2025/03/canal-sport-full-hd.html', 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png']],
 
-    ['eurosport 1', ['2022/03/eurosport-1-full-hd-france.html', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg']],
-    ['eurosport 2', ['2022/03/eurosport-2-full-hd-france.html', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg']],
+    ['eurosport 1', ['2025/03/all-eurosport-channels-france-full-hd.html', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg']],
+    ['eurosport 2', ['2025/03/all-eurosport-channels-france-full-hd.html', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg']],
 
-    ['L\'equipe TV', ['2022/05/l-tv-full-hd.html', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
-    ['Golf Channel', ['2023/01/all-canal-channels-france-full-hd.html', 'https://www.golfchannel.fr/upload/media/golf-channel-600af6fe955c3.png']],
+    ['L\'equipe TV', ['2025/03/lequipe-tv-full-hd.html', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
+    # ['Golf Channel', ['2023/01/all-canal-channels-france-full-hd.html', 'https://www.golfchannel.fr/upload/media/golf-channel-600af6fe955c3.png']],
 
-    ['bein Sports MAX', ['2023/01/all-bein-sports-channels-france.html', 'https://c.clc2l.com/t/b/e/bein-sports-Q3N2zb.jpg']],
+    ['bein Sports MAX', ['2025/03/all-bein-sports-channels-france.html', 'https://c.clc2l.com/t/b/e/bein-sports-Q3N2zb.jpg']],
     # ['bein Sports MAX 4', ['2023/01/all-bein-sports-channels-france.html', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png']],
     # ['bein Sports MAX 5', ['2023/01/all-bein-sports-channels-france.html', 'https://images.beinsports.com/FE2dOGMxn1waqAFYxqsGxXKkvCo=/788714-5MAX.png']],
     # ['bein Sports MAX 6', ['2023/01/all-bein-sports-channels-france.html', 'https://images.beinsports.com/beNacZewwA5WqFglPAwOaD4n5QA=/788715-6MAX.png']],
@@ -460,9 +459,9 @@ def getHosterIframe(url, referer):
     sPattern = ';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        url = aResult[0]
-        if '.m3u8' in url:
-            return True, url + '|referer=' + referer
+        for url in aResult:
+            if '.m3u8' in url:
+                return True, url + '|referer=' + referer
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -494,6 +493,55 @@ def getHosterIframe(url, referer):
         sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
         return True, sHosterUrl + '|referer=' + referer
 
+    sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if not aResult:
+        sPattern = r'new Player\("100%","100%","player","(.+?)".+?,"([^"]+)"'
+        aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sHosterUrl = 'https://%s/hls/%s/live.m3u8' % (aResult[0][1], aResult[0][0])
+        return True, sHosterUrl + '|referer=' + referer
+    
+    sPattern = r"new Player\('(.+?=)'\)"
+    aResult = re.findall(sPattern, sHtmlContent.replace('\\', ''))
+    if aResult:
+        # VSlog('Lien chiffré par cryptographie non encore supporté')
+        #TODO Convertir en python la fonction Player(opts) dans /player-bundle-min.js : encrypted_json_string=opts,passphrase="jzAqXKPaoDu4KSaYsOne3rNOGGBXK71JoUFfkZ0DXrloaGcZmrwv9B0jmsHVruq",obj_json=JSON.parse(atob(encrypted_json_string)),encrypted=obj_json.ciphertext,salt=CryptoJS.enc.Hex.parse(obj_json.salt),iv=CryptoJS.enc.Hex.parse(obj_json.iv),key=CryptoJS.PBKDF2(passphrase,salt,{hasher:CryptoJS.algo.SHA512,keySize:8,iterations:1}),opts=CryptoJS.AES.decrypt(encrypted,key,{iv:iv}).toString(CryptoJS.enc.Utf8)
+        return False
+
+    sPattern = r'''<script src="https://([^/]+)/embed.min.js\?v=3" +onload="ThePlayerJS\('.+?','(.+?)'\);"></script>'''
+    html = sHtmlContent.replace('\\','')
+    aResult = re.findall(sPattern, html)
+    if aResult:
+        url = r'https://%s/player/%s' % (aResult[0][0], aResult[0][1])
+        b, url = getHosterIframe(url, referer)
+        if b:
+            return True, url
+
+    sPattern = r'https://(.+?\.xyz)/mono.php\?id=([0-9]+)'
+    result = re.findall(sPattern, referer)
+    if result:
+        domain = result[0][0]
+        id = result[0][1]
+
+        oRequestHandler = cRequestHandler('https://' + domain + '/server_lookup.php?channel_id=mono' + id)
+        response = oRequestHandler.request(jsonDecode=True)
+        serverKey = response['server_key']
+        channelKey = "mono" + id
+        return True, "https://" + serverKey + "new.koskoros.ru/" + serverKey + "/" + channelKey + "/mono.m3u8|Referer=" + referer
+
+    decoded = reveal_pipe_split(sHtmlContent)
+    if decoded:
+        b, url = getHosterIframe(decoded, referer)
+        if b:
+            return True, url
+    
+    decoded = reveal_char_by_char_url(sHtmlContent)
+    if decoded and '.m3u8' in decoded:
+        url = decoded + '|referer=' + referer
+        if url:
+            return True, url
+
     return False, False
 
 
@@ -508,3 +556,28 @@ def getPkpakiUrl(url, sHtmlContent, referer):
         return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8|Referer=%s' % (serverKey, result[0], serverKey, premiumId, url)
     return False, False
 
+def reveal_char_by_char_url(html):
+    html = html.replace('\\','')
+    pattern = r'((?:".",)+".")\].join\(""\)'
+    result = re.findall(pattern, html)
+    if result:
+        text = ''
+        for char in result[0].split(','):
+            text += char.replace('"','')
+        return text
+
+def reveal_pipe_split(html):
+    pattern = r"return p\}(\(.*),'(.*?)'.split\('\|'\)"
+    html = html.replace('\\', '')
+    result = re.findall(pattern, html)
+    if not result:
+        return
+    mask = result[0][0]
+    keywords = result[0][1].split('|')
+    def replaceNumber(match):
+        num = int(match.group(0))
+        if num < len(keywords):
+            return keywords[num]
+        return match.group(0)
+    text = re.sub('([0-9]+)',replaceNumber, mask)
+    return text

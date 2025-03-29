@@ -194,11 +194,17 @@ class cGuiElement:
     def TraiteTitre(self, sTitle):
         bMatrix = isMatrix()
 
+        # conversion unicode ne fonctionne pas avec les accents
+        # try:
+        #     if not bMatrix:
+        #         sTitle = sTitle.decode('utf-8')
+        # except:
+        #     pass
+
         # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
         sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('SEASON', 'saison')\
                        .replace('Saison', 'saison').replace('SAISON', 'saison')
-        sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
-                       .replace(' — saison', ' saison')
+        #sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')#.replace(' — saison', ' saison')
 
 
         """ Début du nettoyage du titre """
@@ -220,14 +226,6 @@ class cGuiElement:
             self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
             if not self.__sCleanTitle:
                 self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
-
-        # conversion unicode ne fonctionne pas avec les accents
-        try:
-            if not bMatrix:
-                sTitle = sTitle.decode('utf-8')
-        except:
-            pass
-
         
         """ Fin du nettoyage du titre """
 
@@ -287,12 +285,12 @@ class cGuiElement:
                 if not self.__Season:
                     self.__Season = '1'   # forcer pour les séries sans saison
 
-        # on repasse en utf-8
-        if not bMatrix:
-            try:
-                sTitle = sTitle.encode('utf-8')
-            except:
-                pass
+        # # on repasse en utf-8
+        # if not bMatrix:
+        #     try:
+        #         sTitle = sTitle.encode('utf-8')
+        #     except:
+        #         pass
 
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
