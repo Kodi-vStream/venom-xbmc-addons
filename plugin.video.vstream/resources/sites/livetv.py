@@ -13,7 +13,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Unquote
+from resources.lib.util import cUtil, Unquote, urlHostName
+from resources.sites.elitegol import reveal_pipe_split
 
 try:
     import json
@@ -1308,6 +1309,8 @@ def showHosters():  # affiche les videos disponible du live
                 if aResult1:
                     sHosterUrl = aResult1[0] + '|User-Agent=' + UA + '&referer=' + url
 
+        if url.endswith('.m3u8'): # par exemple https://www.yosintv.net/player2.html?url=https://lasvideoblobs2prod-standard.b-cdn.net/vods/blobs2/67d2940e7effca33103a4d64.m3u8
+            return url
         # Tentative avec les pattern les plus répendus
         if not sHosterUrl:
             sHosterUrl = getHosterIframe(url, url)
@@ -1358,13 +1361,20 @@ def getHosterIframe(url, referer):
     sHtmlContent = str(oRequestHandler.request())
     if not sHtmlContent:
         return False
+    return getUrl(sHtmlContent, url)
 
+def getUrl(sHtmlContent, url):
     referer = url
+    oParser = cParser()
     
     # import xbmcvfs
     # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
     # f.write(sHtmlContent)
     # f.close()
+
+    decoded = reveal_pipe_split(sHtmlContent)
+    if decoded:
+        return getUrl(decoded, referer)
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -1454,16 +1464,29 @@ def getHosterIframe(url, referer):
         sHosterUrl = oRequestHandler.getRealUrl()
         return sHosterUrl + '|referer=' + referer
     
+    sPattern = r'"streamurl":"(https.+?\.m3u8)["\']' # pour apl373.me
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        link = aResult[1][0]
+        return link + '|referer=' + referer
+    
     sPattern = r'https://(.+?\.xyz)/mono.php\?id=([0-9]+)'
     result = re.findall(sPattern, referer)
+    hostname = None
     if result:
-        domain = result[0][0]
+        hostname = result[0][0]
         id = result[0][1]
-
-        oRequestHandler = cRequestHandler('https://' + domain + '/server_lookup.php?channel_id=mono' + id)
+        channelKey = "mono" + id
+    else:    # topembed.pw
+        sPattern = 'var channelKey = "([^"]+)";'
+        result = re.findall(sPattern, sHtmlContent)
+        if result:
+            hostname = urlHostName(referer)
+            channelKey = result[0]
+    if hostname:
+        oRequestHandler = cRequestHandler('https://' + hostname + '/server_lookup.php?channel_id=' + channelKey)
         response = oRequestHandler.request(jsonDecode=True)
         serverKey = response['server_key']
-        channelKey = "mono" + id
         return "https://" + serverKey + "new.koskoros.ru/" + serverKey + "/" + channelKey + "/mono.m3u8|Referer=" + referer
-
+    
     return False
