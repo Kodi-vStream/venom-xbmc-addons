@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.3.2 - 30/03/24 ***
+- Sports : Ajout de chaines
+
 *** 3.3.0 - 29/03/24 ***
 - DNS Python : Adresses paramétrables, DNSCloudFlare en premier
 
