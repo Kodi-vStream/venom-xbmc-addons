@@ -31,7 +31,7 @@ SPORT_GENRES = ('frx/allupcoming/', 'showGenres')  # Liste de diffusion des spor
 SPORT_LIVE = ('frx/', 'showLive')  # streaming Actif
 SPORT_SPORTS = (True, 'load')
 
-HEURE_HIVER = True
+HEURE_HIVER = False
 
 
 def load():
