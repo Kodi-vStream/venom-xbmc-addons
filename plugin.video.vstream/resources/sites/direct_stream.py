@@ -25,6 +25,7 @@ channels = [
     
     ['DAZN', [57, 'https://logodownload.org/wp-content/uploads/2019/03/dazn-logo-1-1.png']],
     ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
+    ['DAZN 3', [73, 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg']],
     
     ['bein Sports 1', [8, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
     ['bein Sports 2', [9, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
@@ -32,8 +33,12 @@ channels = [
 
     ['Canal+', [40, 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG']],
     ['Canal+ Foot', [6, 'https://upload.wikimedia.org/wikipedia/fr/3/3b/C%2B_Foot.png']],
+    ['Canal+ Sport 1', [74, 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png']],
+    ['Canal+ Sport 2', [75, 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png']],
+    ['Canal+ Sport 3', [76, 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png']],
+    ['Canal+ Sport 4', [77, 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png']],
     ['Canal+ sport 360', [5, 'https://upload.wikimedia.org/wikipedia/fr/1/11/C%2B_Sport_360.png']],
-    ['Canal+ Sports', [12, 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png']],
+#    ['Canal+ Sports', [12, 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png']],
 
     ['eurosport 1', [14, 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg']],
     ['eurosport 2', [15, 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg']],

@@ -23,7 +23,7 @@ SPORT_GENRES = ('p/all-sports-tv-schedule.html', 'showGenres')
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
-HEURE_HIVER = True
+HEURE_HIVER = False
 
 # chaines
 channels = [
@@ -401,7 +401,7 @@ def getHosterIframe(url, referer):
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    if 'pkpakiplay' in url:
+    if 'webxzplay' in url:
         return getPkpakiUrl(url, sHtmlContent, referer)
 
     
@@ -548,7 +548,7 @@ def getHosterIframe(url, referer):
 def getPkpakiUrl(url, sHtmlContent, referer):
     
     premiumId = url.split('=')[1]
-    oRequestHandler = cRequestHandler('https://pkpakiplay.xyz/server_lookup.php?channel_id=premium' + premiumId)
+    oRequestHandler = cRequestHandler('https://webxzplay.cfd/server_lookup.php?channel_id=premium' + premiumId)
     response = oRequestHandler.request(jsonDecode=True)
     serverKey = response['server_key']
     result = re.findall('https://top1\.([^\.]+)', sHtmlContent)
