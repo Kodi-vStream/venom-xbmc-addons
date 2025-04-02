@@ -279,11 +279,6 @@
             "active": "True",
             "url": "http://www.sky-animes.com/"
         },
-        "streamonsport": {
-            "label": "Streamonsport",
-            "active": "False",
-            "url": "https://www.tv1337.buzz/"
-        },
         "streamizseries": {
             "label": "Streamiz S\u00e9ries",
             "active": "False",
