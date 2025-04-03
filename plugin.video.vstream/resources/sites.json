@@ -107,9 +107,9 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://kakarotfoot.ru/",
+            "url": "https://tutvlive.ru/",
             "site_info": "https://elitegol.lat/",
-            "url_link": "goku/%d"
+            "url_link": "player/%d"
         },
         "extreme_down": {
             "label": "ExtremeDown",
@@ -205,7 +205,7 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
+            "active": "False",
             "url": "https://livetv822.me/"
         },
         "monstream": {
