@@ -23,7 +23,7 @@ SPORT_TV = ('lecteur/', 'showTV')
 # chaines
 channels = [
     
-    ['DAZN', [57, 'https://logodownload.org/wp-content/uploads/2019/03/dazn-logo-1-1.png']],
+#    ['DAZN', [57, 'https://logodownload.org/wp-content/uploads/2019/03/dazn-logo-1-1.png']],
     ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
     ['DAZN 3', [73, 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg']],
     
@@ -64,7 +64,7 @@ def showTV():
     oOutputParameterHandler = cOutputParameterHandler()
 
     for sDisplayTitle, value in channels:
-        sUrl = 'player.php?id=%d' % value[0]
+        sUrl = 'api/player.php?id=%d' % value[0]
         sThumb = value[1]
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
@@ -90,8 +90,16 @@ def showLink():
 
     if aResult[0]:
         sHosterUrl = aResult[1][0]
+        
+        # redirection de lien
+        oRequestHandler = cRequestHandler(sHosterUrl)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+
         oHoster = oHosterGui.checkHoster(sHosterUrl)
         if oHoster:
+            
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
