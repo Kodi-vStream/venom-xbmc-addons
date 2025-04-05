@@ -82,11 +82,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
+    #
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -249,7 +249,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    allUrls = [(sUrl % a) for a in range (4, 0, -1)]
+    allUrls = [(sUrl % a) for a in (2, 4, 3, 1)]
     numLien = 1
     oOutputParameterHandler = cOutputParameterHandler()
     for sHostUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
@@ -450,7 +450,7 @@ def reveal_pipe_split(html):
     
     def is_numeric_mode():
         for char in list('abcdefghij'):
-            if not re.search(rf"\b{char}\b", html):
+            if not re.search(r"\b{}\b".format(char), html):
                 return True
         return False
     
