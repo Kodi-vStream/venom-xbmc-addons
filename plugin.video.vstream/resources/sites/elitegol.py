@@ -82,11 +82,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
+    #
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -249,7 +249,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    allUrls = [(sUrl % a) for a in range (4, 0, -1)]
+    allUrls = [(sUrl % a) for a in (2, 4, 3, 1)]
     numLien = 1
     oOutputParameterHandler = cOutputParameterHandler()
     for sHostUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
@@ -308,7 +308,7 @@ def getHosterIframe(url, referer):
 
 def getUrl(sHtmlContent, referer):
 
-    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))' # Recherche "eval(function(...{}))"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for sstr in aResult:
@@ -443,15 +443,44 @@ def reveal_char_by_char_url(html):
 def reveal_pipe_split(html):
     pattern = r"return p\}(\(.*),'(.*?)'.split\('\|'\)"
     html = html.replace('\\', '')
-    result = re.findall(pattern, html)
-    if not result:
+    results = re.findall(pattern, html)
+    
+    if not results:
         return
-    mask = result[0][0]
-    keywords = result[0][1].split('|')
+    
+    def is_numeric_mode():
+        for char in list('abcdefghij'):
+            if not re.search(r"\b{}\b".format(char), html):
+                return True
+        return False
+    
+    numeric_mode = is_numeric_mode()
+
+    def tokenToInt(token):
+        if numeric_mode:
+            return int(token)
+        if token.isalpha() and not token.isupper(): # a-z
+            return ord(token) - 87   # -> 10-35
+        elif token.isupper():                         # A-Z
+            return ord(token) - 29   # -> 36-61
+        elif len(token) == 1:                         # 0-9
+            return int(token)        # -> 0-9
+        return int(token) + 52   # -> 62-151
+    
     def replaceNumber(match):
-        num = int(match.group(0))
+        token = match.group(0)
+        num = tokenToInt(token)
+
         if num < len(keywords):
-            return keywords[num]
-        return match.group(0)
-    text = re.sub('([0-9]+)',replaceNumber, mask)
+            if keywords[num]:
+                return keywords[num]
+            else:
+                return token
+        return token
+    
+    text = ''
+    for result in results:
+        mask = result[0]
+        keywords = result[1].split('|')
+        text += re.sub('([0-9a-zA-Z]+)',replaceNumber, mask)
     return text
