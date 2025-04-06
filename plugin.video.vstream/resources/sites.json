@@ -205,8 +205,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "False",
-            "url": "https://livetv822.me/"
+            "active": "True",
+            "url": "https://livetv852.me/"
         },
         "monstream": {
             "label": "Mon Stream",
