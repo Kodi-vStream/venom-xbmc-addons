@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.3.4 - 06/04/25 ***
+- Sports : Retour de la source LiveTV
+
 *** 3.3.3 - 05/04/25 ***
 - Sports : Ajout de chaines
 
