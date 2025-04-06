@@ -23,7 +23,7 @@ SPORT_TV = ('lecteur/', 'showTV')
 # chaines
 channels = [
     
-#    ['DAZN', [57, 'https://logodownload.org/wp-content/uploads/2019/03/dazn-logo-1-1.png']],
+    ['DAZN 1', [57, 'https://cdn.sincroguia.tv/uploads/images/e/q/k/xdazn1.jpg.pagespeed.ic.oaUemASdvr.jpg']],
     ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
     ['DAZN 3', [73, 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg']],
     
