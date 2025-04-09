@@ -104,7 +104,7 @@ def showLink():
 
         oHoster = oHosterGui.checkHoster(sHosterUrl)
         if oHoster:
-            
+            sHosterUrl += "|Referer=" + URL_MAIN
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
