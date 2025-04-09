@@ -1461,10 +1461,10 @@ def getUrl(sHtmlContent, url):
                     sHosterUrl = oRequestHandler.getRealUrl()
                     return sHosterUrl + '|referer=' + referer
 
-    sPattern = r'file: *["\'](https.+?\.m3u8)["\']'
+    sPattern = r'file|src: *["\'](https.+?\.m3u8(\?.+?=.+?)?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler = cRequestHandler(aResult[0][0])
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
         return sHosterUrl + '|referer=' + referer
