@@ -82,7 +82,7 @@
         "direct_stream": {
             "label": "direct-streamfr",
             "active": "True",
-            "url": "https://play.frembed.xyz/"
+            "url": "https://play.frembed.cc/"
         },
         "dnspython": {
             "label": "DNS Python",
