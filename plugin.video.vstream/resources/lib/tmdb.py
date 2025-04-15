@@ -315,6 +315,17 @@ class cTMDb:
             return meta['name'] # titre de série
         return False
 
+
+    def get_recommandations_by_id_movie(self, tmdbid):
+        meta = self._call('movie/'+tmdbid+'/recommendations')
+
+        if 'errors' not in meta and 'status_code' not in meta:
+            return meta
+        else:
+            meta = {}
+        return meta
+
+
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
 
