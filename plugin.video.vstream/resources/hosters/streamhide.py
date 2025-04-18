@@ -5,6 +5,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
+#from resources.lib.comaddon import VSlog
 
 
 class cHoster(iHoster):
@@ -20,6 +21,12 @@ class cHoster(iHoster):
         if aResult[0]:
             sHtmlContent = cPacker().unpack(aResult[1][0])
             sPattern = '{file:"([^"]+)"}]'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                return True, aResult[1][0]
+
+            #seconde version
+            sPattern = 'links={"[^"]+":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
                 return True, aResult[1][0]
