@@ -21,7 +21,7 @@ URL_LINK = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_link')
 
 
 SPORT_SPORTS = (True, 'load')
-SPORT_GENRES = ('json.php', 'showGenres')  # FOOT
+#SPORT_GENRES = ('json.php', 'showGenres')  # FOOT
 SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('lecteur/', 'showTV')
 

@@ -343,7 +343,7 @@ class cHosterGui:
  
         if sHostName.replace('o','').replace('0','').replace('stream','').split('.')[0] == 'dd':
             return self.getHoster('dood')
-        if ('ds2play' in sHostName) or ('ds2video' in sHostName) or ('dooodster' in sHostName):
+        if ('ds2play' in sHostName) or ('ds2video' in sHostName) or ('dooodster' in sHostName) or ('vidply' in sHostName):
             return self.getHoster('dood')
 
         if ('voe' in sHostName) or ('jamessoundcost' in sHostName) or ('magasavor' in sHostName)  or ('sandratableother' in sHostName) or ('alejandrocenturyoil' in sHostName):

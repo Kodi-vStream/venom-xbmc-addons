@@ -368,7 +368,7 @@ def showHostersEpisode():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
 
-    sPattern = "onclick=\"loadVideo\('([^']+)"
+    sPattern = "loadVideo\('([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 
@@ -394,7 +394,7 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = "onclick=\"loadVideo\('([^']+)"
+    sPattern = "loadVideo\('([^']+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:

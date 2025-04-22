@@ -36,7 +36,7 @@
         },
         "blueseries": {
             "label": "BLUEseries",
-            "active": "True",
+            "active": "False",
             "url": "https://www.blueseries.cc/"
         },
         "buzzmonclick_com": {
@@ -62,7 +62,7 @@
         "cpasmieux": {
             "label": "Cpasmieux",
             "active": "True",
-            "url": "https://www.cpasmieux.ad/"
+            "url": "https://www.cpasmieux.is/"
         },
         "daddyhd": {
             "label": "DaddyHD",
@@ -137,7 +137,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.fun/"
+            "url": "https://www.free-telecharger.click/"
         },
         "freebox": {
             "label": "Freebox",
@@ -236,7 +236,7 @@
         },
         "otakufr_com": {
             "label": "OtakuFR",
-            "active": "True",
+            "active": "False",
             "url": "https://otakufr.cc/"
         },
         "pastebin": {
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://wiflix-vraie-adresse.com/",
-            "url": "https://wiflix-max.cam/"
+            "url": "https://wiflix-max.cloud/"
         },
         "wilifilm": {
             "label": "Wilifilm",

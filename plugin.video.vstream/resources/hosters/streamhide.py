@@ -24,4 +24,10 @@ class cHoster(iHoster):
             if aResult[0]:
                 return True, aResult[1][0]
 
+            #seconde version
+            sPattern = 'links={"[^"]+":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                return True, aResult[1][0]
+
         return False, False

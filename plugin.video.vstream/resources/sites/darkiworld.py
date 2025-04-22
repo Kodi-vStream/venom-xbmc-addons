@@ -41,7 +41,7 @@ DOC_REALITY = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9
 
 
 URL_SEARCH = ('search/', 'showSearch')
-URL_SEARCH_MOVIES = ('search/%s?type=movie', 'showMovies')
+#URL_SEARCH_MOVIES = ('search/%s?type=movie', 'showMovies')
 URL_SEARCH_SERIES = ('search/%s?type=series', 'showMovies')
 URL_SEARCH_ANIMS = ('search/%s?type=animes', 'showMovies')
 URL_SEARCH_MISC = ('search/%s?type=doc', 'showMovies')
@@ -62,8 +62,8 @@ def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, URL_SEARCH[1], 'Rechercher', 'search-films.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    # oGui.addDir(SITE_IDENTIFIER, URL_SEARCH[1], 'Rechercher', 'search-films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
