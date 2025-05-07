@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v6.animesultra.net/"
+            "url": "https://v7.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -72,7 +72,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld9.com/"
+            "url": "https://darki-tometjerry.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -293,7 +293,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://w4.toonanime.co/"
+            "url": "https://w5.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://wiflix-vraie-adresse.com/",
-            "url": "https://wiflix-max.store/"
+            "url": "https://wiflix-max.cloud/"
         },
         "wilifilm": {
             "label": "Wilifilm",
