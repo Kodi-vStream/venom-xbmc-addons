@@ -36,8 +36,7 @@ DIFFUSEURS = {
             213: 'Netflix', 1024: 'Prime Video',
             285: 'Canal+', 1899: 'OCS Max',
             2058: '13e rue', 129: 'A&E',
-            2: 'ABC', 1628: 'Arte', 88: 'FX',
-            5522: 'Arte.TV', 80: 'Adult Swim',
+            2: 'ABC', 88: 'FX', 80: 'Adult Swim',
             2552: 'Apple TV+', 4: 'BBC One',
             16: 'CBS', 64: 'Discovery',
             2739: 'Disney+', 19: 'FOX',
@@ -46,7 +45,8 @@ DIFFUSEURS = {
             43: 'National Geographic', 13: 'Nickelodeon',
             67: 'Showtime', 318: 'Starz',
             77: 'Syfy', 290: 'TF1', 174: 'AMC',
-            71: 'The CW', 3353: 'Peacock'
+            71: 'The CW', 3353: 'Peacock',
+            7846: 'illico+'
             }
 
 
