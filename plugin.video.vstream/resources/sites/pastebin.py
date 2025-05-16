@@ -2381,7 +2381,10 @@ def showMovies(sSearch=''):
 
                 bValid = False
                 for res in listRes:
-                    res = res.upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P').replace('SDR', '')
+                    res = res.upper().replace('FULLHD', '1080P') \
+                        .replace('HDR', '').replace('HD', '720P').replace('2160P', '4K') \
+                        .replace('WEB', '720P').replace('SDR', '') \
+                        .replace('DVD', '').replace('DV', 'DOLBY VISION')
                     if sRes in res:
                         bValid = True
                         break
@@ -2778,7 +2781,11 @@ def getHosterList(siteUrl):
 
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
-                        resMovie = listResMovie[idxResMovie].upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P')
+                        resMovie = listResMovie[idxResMovie].upper() \
+                                    .replace('HDR', '').replace('SDR', '') \
+                                    .replace('FULLHD', '1080P').replace('HD', '720P') \
+                                    .replace('2160P', '4K').replace('WEB', '720P') \
+                                    .replace('DVD', '').replace('DV', 'DOLBY VISION')
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
                     else:
