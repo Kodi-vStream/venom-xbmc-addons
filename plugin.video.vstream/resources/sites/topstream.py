@@ -32,14 +32,14 @@ SERIE_VIEWS = ('trending?type=tv&sort=like_count', 'showMovies')
 SERIE_GENRES = ('tv-shows?type=tv&genre=%s&sort=created_at', 'showSeriesGenres')
 SERIE_ANNEES = ('tv-shows?type=tv&sort=release_date&release=%d', 'showMovies')
 
-# ANIM_ANIMS = ('genre=15', 'load')
-# ANIM_VIEWS = ('tv-shows?type=tv&genre=15&sort=view', 'showMovies')
+ANIM_ANIMS = ('type=anime', 'showMenuAnimes')
+ANIM_VIEWS = ('trending?type=anime&sort=like_count', 'showMovies')
 
 
 URL_SEARCH = ('search/%s', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + '?type=movie', 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + '?type=tv', 'showMovies')
-#URL_SEARCH_ANIMS = (URL_SEARCH[0] + '?genre=15', 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0] + '?type=anime', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -52,8 +52,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showMenuAnimes', 'Japanimes', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuAnimes', 'Japanimes', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -93,17 +93,17 @@ def showMenuTvShows():
     oGui.setEndOfDirectory()
 
 
-# def showMenuAnimes():
-#     oGui = cGui()
-#
-#     oOutputParameterHandler = cOutputParameterHandler()
-#     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
-#     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search-animes.png', oOutputParameterHandler)
-#
-#     oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
-#     oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
-#
-#     oGui.setEndOfDirectory()
+def showMenuAnimes():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search-animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
 
 
 def showSearch():
@@ -321,7 +321,7 @@ def showEpisodes():
             sTitle = sMovieTitle + ' ' + aEntry[1].replace('n°', '')
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle.split(' ')[0])
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
@@ -343,23 +343,25 @@ def showHosters():
     oParser = cParser()
     
     # zone publicitaire !
-    zonePub = oParser.abParse(sHtmlContent, '<div class="container">', '<style>')
-    zonePub = zonePub.replace('\\', '')
-    sPattern = '/(embed/\d+)'
-    aResult = oParser.parse(zonePub, sPattern)
-    if not aResult[0]:
-        # page sans pub
-        sPattern = '<iframe id="video-iframe".+?src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+    # zonePub = oParser.abParse(sHtmlContent, '<div class="container">', '<style>')
+    # zonePub = zonePub.replace('\\', '')
+    # sPattern = '/(embed/\d+)'
+    # aResult = oParser.parse(zonePub, sPattern)
+    # if not aResult[0]:
+    #     # page sans pub
+    #     sPattern = '<iframe id="video-iframe".+?src="([^"]+)"'
+    #     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0]:
-        url = aResult[1][0]
-        if not 'http' in url:
-            url = URL_MAIN + url
-        oRequestHandler = cRequestHandler(url)
-        sHtmlContent = oRequestHandler.request()
-        aResult = oParser.parse(sHtmlContent, '<source src="([^"]+)"')
+    # if aResult[0]:
+    #     url = aResult[1][0]
+    #     if not 'http' in url:
+    #         url = URL_MAIN + url
+    #     oRequestHandler = cRequestHandler(url)
+    #     sHtmlContent = oRequestHandler.request()
+    #     aResult = oParser.parse(sHtmlContent, '<source src="([^"]+)"')
 
+    sPattern = 'download\.php\?url=([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oHosterGui = cHosterGui()
         for sHosterUrl in aResult[1]:
