@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
             titles.add(cleanTitle)
 
             # non fonctionnel
-            if 'F1 2024' in sTitle:
+            if 'F1 2024' in sTitle or 'F1 2025' in sTitle:
                 continue
 
             # filtre search
@@ -275,11 +275,22 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+        
+        # les liens sont inversés par rapport aux épisodes !!!
+        numEP = 1
+        
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + " E" + aEntry[1]
+            sTitle = sMovieTitle + " E%d" % numEP
+        
+            # les liens sont inversés par rapport aux épisodes !!!
+            numEP = numEP+1
+            
+            # le premier épisode est un doublon du dernier, on ne le propose pas, spoil !
+            if numEP == 2 :
+                continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
