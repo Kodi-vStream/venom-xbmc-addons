@@ -93,7 +93,7 @@
 			<identifier>Dancefloor</identifier>
 		</track>
 		<track>
-			<location>http://d3-soundcast-edge-1.infomaniak.ch/alouette-high.mp3</location>
+			<location>http://alouette.ice.infomaniak.ch/alouette-high.mp3</location>
 			<title>Alouette</title>
 			<image>https://images.lesindesradios.fr/fit-in/300x2000/filters:quality(100)/radios/alouette/images/logo.png</image>
 			<identifier>Hits</identifier>
@@ -818,6 +818,12 @@
 			<title>TSF Jazz</title>
 			<image>https://static.mytuner.mobi/media/tvos_radios/vdDEMNJrzp.png</image>
 			<identifier>Jazz</identifier>
+		</track>
+		<track>
+			<location>https://vibration.ice.infomaniak.ch/vibration-high.mp3</location>
+			<title>Vibration</title>
+			<image>https://static.mytuner.mobi/media/tvos_radios/55xdFZ2596.png</image>
+			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://virginradio.ice.infomaniak.ch/virgin-radio.mp3</location>
