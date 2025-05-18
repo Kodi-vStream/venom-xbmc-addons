@@ -629,21 +629,18 @@ class cTrakt:
                         sDate = ""
 
                     if 'show' in i:
+                        cTrakt.CONTENT = '2'
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sYear, sImdb, sTmdb = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb']
-
-                        cTrakt.CONTENT = '2'
-                        sFunction = 'showSearch'
                     else:
+                        cTrakt.CONTENT = '1'
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
                         
-                        cTrakt.CONTENT = '1'
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
-
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
                     sTitle = self.decode(sTitle)
                     searchtext = sTitle
                     sFile = sTitle
@@ -717,6 +714,8 @@ class cTrakt:
                 # Lecture en progression
                 elif '/playback/' in sUrl :
                     sSeason = sEpisode = None
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
 
                     if 'show' in i:
                         show = i['show']
@@ -725,15 +724,11 @@ class cTrakt:
                         cTrakt.CONTENT = '2'
                         sSeason = i['episode']['season']
                         sEpisode = i['episode']['number']
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
 
                     # récuperer les points de lecture
                     progress = i['progress']
@@ -752,6 +747,8 @@ class cTrakt:
                 # historique de lecture
                 elif '/watched/' in sUrl:
                     # commun
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
@@ -759,8 +756,6 @@ class cTrakt:
                         cTrakt.CONTENT = '2'
 #                        sFunction = 'getBseasons'
                         #media['episode']['season'], media['episode']['number']
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
                         
                         # Indicateur VU
                         saisonsWatched.append(i)
@@ -770,8 +765,6 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
 
                     if sTitle:
                         sTitle = self.decode(sTitle, Unicode=True)
@@ -804,15 +797,11 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year'], i['first_aired']
                         sSaison, sEpisode = i['episode']['season'], i['episode']['number']
-                        searchtext = sTitle
-                        sFile = sTitle
                         sTitle = 'S%sE%s - %s' % (sSaison, sEpisode, sTitle)
                         cTrakt.CONTENT = '2'
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
-                        searchtext = sTitle
-                        sFile = sTitle
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year'], i['first_aired']
                         cTrakt.CONTENT = '1'
 
@@ -824,6 +813,8 @@ class cTrakt:
 
                         sTitle = self.decode(sTitle)
 
+                    searchtext = sTitle
+                    sFile = sTitle
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
