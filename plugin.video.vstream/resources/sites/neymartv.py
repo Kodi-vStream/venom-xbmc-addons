@@ -29,7 +29,6 @@ HEURE_HIVER = False
 channels = [
     
 #    ['DAZN 1', ['https://poscitechs.lol/live/stream-106.php', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png']],
-    
     ['bein Sports 1', ['2025/03/bein-sports-1-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
     ['bein Sports 2', ['2025/03/bein-sports-2-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
     ['bein Sports 3', ['2025/03/bein-sports-3-full-hd-france.html', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png']],
@@ -395,13 +394,13 @@ def getHosterIframe(url, referer):
     # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
     # f.write(sHtmlContent)
     # f.close()
-
+    
 #    cook = oRequestHandler.GetCookies()
 
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    if 'webxzplay' in url:
+    if '.php?id=' in url:
         return getPkpakiUrl(url, sHtmlContent, referer)
 
     
@@ -546,14 +545,19 @@ def getHosterIframe(url, referer):
 
 
 def getPkpakiUrl(url, sHtmlContent, referer):
-    
     premiumId = url.split('=')[1]
-    oRequestHandler = cRequestHandler('https://webxzplay.cfd/server_lookup.php?channel_id=premium' + premiumId)
+    site = url.split('/')[2]
+    url = 'https://%s/server_lookup.php?channel_id=premium%s' % ( site, premiumId)
+    
+    oRequestHandler = cRequestHandler(url)
+    if referer:
+        oRequestHandler.addHeaderEntry('Referer', referer)
     response = oRequestHandler.request(jsonDecode=True)
-    serverKey = response['server_key']
-    result = re.findall('https://top1\.([^\.]+)', sHtmlContent)
-    if result:
-        return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8|Referer=%s' % (serverKey, result[0], serverKey, premiumId, url)
+    if 'server_key' in response:
+        serverKey = response['server_key']
+        result = re.findall('https://top1\.([^\.]+)', sHtmlContent)
+        if result:
+            return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8|Referer=%s' % (serverKey, result[0], serverKey, premiumId, url)
     return False, False
 
 def reveal_char_by_char_url(html):
