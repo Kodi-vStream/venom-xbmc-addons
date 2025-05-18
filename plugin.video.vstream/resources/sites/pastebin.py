@@ -2056,7 +2056,7 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('IMAX', 'IMAX'), ('4K', '4K [2160p]'), ('CRITERION', 'CRITERION'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions = [('DOLBY VISION', 'DOLBY VISION'), (' IMAX', 'IMAX'), ('4K', '4K [2160p]'), ('CRITERION', 'CRITERION'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2381,7 +2381,7 @@ def showMovies(sSearch=''):
 
                 bValid = False
                 for res in listRes:
-                    res = res.upper().replace('FULLHD', '1080P') \
+                    res = str(res).upper().replace('FULLHD', '1080P') \
                         .replace('HDR', '').replace('HD', '720P').replace('2160P', '4K') \
                         .replace('WEB', '720P').replace('SDR', '') \
                         .replace('DVD', '').replace('DV', 'DOLBY VISION')
