@@ -10,6 +10,14 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.4.0 - 19/05/25 ***
+- Pastebin : MAJ des diffuseurs de séries
+- TopStream : retour et ajout des animes
+- wiflix : retour
+- Recherche des acteurs : plus pertinent
+- Radio : MAJ de stations
+- trakt : correction pour la lecture des séries depuis "Ma collection"
+
 *** 3.3.6 - 23/04/25 ***
 - Wiflix : Retour de la source
 

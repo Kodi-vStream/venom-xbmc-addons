@@ -240,13 +240,13 @@ class cClear:
             return
 
         # désactiver toutes les sources
-        elif (env == 'disableSources'):
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                sitesManager = siteManager()
-                sitesManager.disableAll()
-                sitesManager.save()
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
-
+        elif (env == 'disableSources' or env == 'disableSourcesSilent' ):
+            if env == 'disableSources' and not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                return
+            sitesManager = siteManager()
+            sitesManager.disableAll()
+            sitesManager.save()
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
             return
 
         # aciver/désactiver les sources

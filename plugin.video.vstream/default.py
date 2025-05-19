@@ -8,7 +8,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, VSlog, addon, window, siteManager
+from resources.lib.comaddon import progress, VSlog, addon, window, siteManager, addonManager
 from resources.lib.search import cSearch
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
@@ -63,6 +63,10 @@ class main:
             sFunction = "load"
 
         if sFunction == 'setSetting':
+            addon = None
+            if oInputParameterHandler.exist('addon'):
+                addon = oInputParameterHandler.getValue('addon')
+
             if oInputParameterHandler.exist('id'):
                 plugin_id = oInputParameterHandler.getValue('id')
             else:
@@ -73,7 +77,7 @@ class main:
             else:
                 return
 
-            setSetting(plugin_id, value)
+            setSetting(addon, plugin_id, value)
             return
 
         if sFunction == 'setSettings':
@@ -175,13 +179,19 @@ class main:
                 return
 
 
-def setSetting(plugin_id, value):
+def setSetting(addon_id, param, value):
+    
+    if addon_id:
+        if 'vstream_source_' in addon_id:
+            return siteManager().setProperty(addon_id.replace('vstream_source_', ''), param, value)
+        return addonManager().setSettingAddon(addon_id, param, value)
+        
     addons = addon()
-    setting = addons.getSetting(plugin_id)
+    setting = addons.getSetting(param)
 
     # modifier si différent
     if setting != value:
-        addons.setSetting(plugin_id, value)
+        addons.setSetting(param, value)
         return True
 
     return False

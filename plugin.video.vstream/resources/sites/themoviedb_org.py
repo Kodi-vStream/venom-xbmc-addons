@@ -36,8 +36,8 @@ DIFFUSEURS = {
             213: 'Netflix', 1024: 'Prime Video',
             285: 'Canal+', 1899: 'OCS Max',
             2058: '13e rue', 129: 'A&E',
-            2: 'ABC', 1628: 'Arte', 88: 'FX',
-            5522: 'Arte.TV', 80: 'Adult Swim',
+            2: 'ABC', 88: 'FX', 7846: 'illico+',
+            80: 'Adult Swim',
             2552: 'Apple TV+', 4: 'BBC One',
             16: 'CBS', 64: 'Discovery',
             2739: 'Disney+', 19: 'FOX',
@@ -1200,17 +1200,35 @@ def searchActors(sSearch=''):
         # récup le nombre de page pour NextPage
         nbrpage = result['total_pages']
 
+        actorFamous = []
         for actor in result['results']:
-            sName, sThumb = actor['name'], actor['profile_path']
-
-            # filtrer les acteurs peu connus 
-            if len(actor['known_for']) < 3 or actor['popularity'] < 5.0:
-                continue 
-            # enlever les acteurs asie/inde
-            film_lang = actor['known_for'][0]['original_language']
-            if 'en' not in film_lang and 'fr' not in film_lang:
+            # Ne garder que les acteurs
+            if actor['known_for_department'] != 'Acting':
+                continue
+            
+            # Ne pas garder garder les éléments non-genrés
+            if actor['gender'] == 0:
+                continue
+            
+            #les inconnus
+            if actor['popularity'] < 0.6:
                 continue
 
+            # Enlever les acteurs asie/inde
+            if len(actor['known_for'])>0:
+                film_lang = actor['known_for'][0]['original_language']
+                if film_lang not in ('fr', 'en', 'es', 'pt', 'it', 'da', 'be'):
+                    continue
+                actorFamous.append(actor)
+
+        for actor in actorFamous:
+            sName, sThumb = actor['name'], actor['profile_path']
+
+            # filtrer les acteurs peu connus
+            if len(actorFamous) > 10:
+                if len(actor['known_for']) < 3 or actor['popularity'] < 5.0:
+                    continue
+ 
             if sThumb:
                 POSTER_URL = grab.poster
                 sThumb = POSTER_URL + sThumb

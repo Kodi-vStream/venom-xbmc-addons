@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v6.animesultra.net/"
+            "url": "https://v7.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -72,7 +72,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld9.com/"
+            "url": "https://darki-tometjerry.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -82,7 +82,7 @@
         "direct_stream": {
             "label": "direct-streamfr",
             "active": "True",
-            "url": "https://play.frembed.cc/"
+            "url": "https://play.frembed.club/"
         },
         "dnspython": {
             "label": "DNS Python",
@@ -102,7 +102,7 @@
         "dulourd": {
             "label": "DuLourd",
             "active": "True",
-            "url": "https://www.dulourd.uno/"
+            "url": "https://www.dulourd.day/"
         },
         "elitegol": {
             "label": "Elitegol",
@@ -153,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://mirror66.lol/"
+            "url": "https://fsmirror57.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -212,7 +212,7 @@
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.blog/"
+            "url": "https://monstream.blue/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -293,7 +293,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://w4.toonanime.co/"
+            "url": "https://w5.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -303,8 +303,8 @@
         "topstream": {
             "label": "top-stream",
             "active": "True",
-            "cloudflare": "True",
-            "url": "https://top-stream.tv/"
+            "cloudflare": "False",
+            "url": "https://top-stream.io/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://wiflix-vraie-adresse.com/",
-            "url": "https://wiflix-max.cloud/"
+            "url": "https://flemmix.ws/"
         },
         "wilifilm": {
             "label": "Wilifilm",

@@ -181,7 +181,7 @@ def showMovies(sSearch=''):
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
-            sTitle = aEntry[1].replace(' wiflix', '')
+            sTitle = aEntry[1].replace(' wiflix', '').replace(' flemmix', '')
             sUrl = aEntry[2]
             sLang = aEntry[3]
             sQual = aEntry[4]
@@ -286,7 +286,7 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace('- Saison ', 'S').replace(' wiflix', '')
+            sTitle = aEntry[1].replace('- Saison ', 'S').replace(' wiflix', '').replace(' flemmix', '')
             
             # Filtre de recherche
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):

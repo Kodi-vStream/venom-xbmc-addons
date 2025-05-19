@@ -106,12 +106,12 @@ PASTE_PAR_GROUPE = 100   # jusqu'à 100 liens pastebin par dossier
 def getCacheDuration():
     cacheDuration = addon().getSetting(SITE_IDENTIFIER + '_cacheDuration')
     if not cacheDuration:
-        cacheDuration = "72"  # en heure
+        cacheDuration = "24"  # en heure
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', cacheDuration)
     
     nDuration = int(cacheDuration)
-    if nDuration < 12:
-        nDuration = 12  # minimum
+    if nDuration < 6:
+        nDuration = 6  # minimum
     
     return nDuration
 
@@ -2056,7 +2056,7 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('IMAX', 'IMAX'), ('4K', '4K [2160p]'), ('CRITERION', 'CRITERION'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions = [('DOLBY VISION', 'DOLBY VISION'), (' IMAX', 'IMAX'), ('4K', '4K [2160p]'), ('CRITERION', 'CRITERION'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -2381,7 +2381,10 @@ def showMovies(sSearch=''):
 
                 bValid = False
                 for res in listRes:
-                    res = res.upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P').replace('SDR', '')
+                    res = str(res).upper().replace('FULLHD', '1080P') \
+                        .replace('HDR', '').replace('HD', '720P').replace('2160P', '4K') \
+                        .replace('WEB', '720P').replace('SDR', '') \
+                        .replace('DVD', '').replace('DV', 'DOLBY VISION')
                     if sRes in res:
                         bValid = True
                         break
@@ -2778,7 +2781,11 @@ def getHosterList(siteUrl):
 
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
-                        resMovie = listResMovie[idxResMovie].upper().replace('FULLHD', '1080P').replace('HD', '720P').replace('2160P', '4K').replace('WEB', '720P')
+                        resMovie = listResMovie[idxResMovie].upper() \
+                                    .replace('HDR', '').replace('SDR', '') \
+                                    .replace('FULLHD', '1080P').replace('HD', '720P') \
+                                    .replace('2160P', '4K').replace('WEB', '720P') \
+                                    .replace('DVD', '').replace('DV', 'DOLBY VISION')
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
                     else:

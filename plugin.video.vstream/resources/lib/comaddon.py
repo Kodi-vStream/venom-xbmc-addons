@@ -541,14 +541,16 @@ class siteManager:
             # ... et on l'enregistre
             value = defaultProps.get(propName)
             self.setProperty(sourceName, propName, value)
-            self.save()
             return value
 
 
     def setProperty(self, sourceName, propName, value):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
-            sourceData[propName] = str(value)
+            oldValue = sourceData[propName]
+            if oldValue != value:
+                sourceData[propName] = str(value)
+                self.save()
 
     def setDefaultProps(self, props):
         self.defaultData = props
@@ -631,3 +633,16 @@ class addonManager:
         except KeyError:
             VSlog('enable_addon received an unexpected response - ' + addon_id, xbmc.LOGERROR)
             return False
+
+    # change le setting d'un addon
+    def setSettingAddon(self, addon_id, param, value):
+        if not self.isAddonExists(addon_id):
+            self.installAddon(addon_id)
+        if self.isAddonExists(addon_id):
+            oldValue = xbmcaddon.Addon(id=addon_id).getSetting(param)
+            if value != oldValue:
+                return xbmcaddon.Addon(id=addon_id).setSetting(param, value)
+            return True
+        return False
+
+

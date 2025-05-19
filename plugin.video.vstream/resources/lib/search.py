@@ -22,6 +22,8 @@ class cSearch:
             if not sSearchText:
                 oInputParameterHandler = cInputParameterHandler()
                 sSearchText = oInputParameterHandler.getValue('searchtext')
+                if not sSearchText:
+                    sSearchText = oInputParameterHandler.getValue('sMovieTitle')
                 sCat = oInputParameterHandler.getValue('sCat')
 
             sSearchText = sSearchText.replace(':', ' ').strip()
@@ -123,6 +125,10 @@ class cSearch:
 
     def _initSearch(self, searchText, searchCat):
         try:
+            
+            if searchCat == '4':  # on retire la saison
+                searchText = re.sub(' S\d+', '', searchText)
+            
             listPlugins = self._getAvailablePlugins(searchText, searchCat)
             if not listPlugins:
                 return []
