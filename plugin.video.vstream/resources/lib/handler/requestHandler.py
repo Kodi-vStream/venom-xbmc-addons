@@ -272,10 +272,14 @@ class cRequestHandler:
                     json_response = False
                     try:
                         # On fait une requete.
-                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
+                        paramJson = {
                             'cmd': 'request.%s' % method.lower(),
                             'url': self.__sUrl
-                        })
+                        }
+                        if 'postData' in self.__aParamaters:
+                            paramJson['postData'] = self.__aParamaters['postData']
+                        
+                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
                     except:
                         dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sUrl)))
 
