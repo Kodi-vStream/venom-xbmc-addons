@@ -541,14 +541,16 @@ class siteManager:
             # ... et on l'enregistre
             value = defaultProps.get(propName)
             self.setProperty(sourceName, propName, value)
-            self.save()
             return value
 
 
     def setProperty(self, sourceName, propName, value):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
-            sourceData[propName] = str(value)
+            oldValue = sourceData[propName]
+            if oldValue != value:
+                sourceData[propName] = str(value)
+                self.save()
 
     def setDefaultProps(self, props):
         self.defaultData = props
