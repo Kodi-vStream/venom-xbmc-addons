@@ -1043,7 +1043,7 @@ class cTMDb:
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
         name = name.replace('VOSTFR','')
-        name = re.sub('(\W|_|^)FR(\W|_|$)', '', name) # FR s'il n'est pas entouré de caractere
+        name = re.sub(r'(\W|_|^)FR(\W|_|$)', '', name) # FR s'il n'est pas entouré de caractere
         cleanTitle = None
         
         # VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
@@ -1053,7 +1053,7 @@ class cTMDb:
             # Obligatoire pour pointer vers les bonnes infos dans la base de données
             if not tmdb_id:
                 if media_type in ("season", "tvshow", "anime", "episode"):
-                    name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)', '', name)
+                    name = re.sub(r'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^\"]+)|)', '', name)
 
             cleanTitle = self._clean_title(name)
             if not cleanTitle:

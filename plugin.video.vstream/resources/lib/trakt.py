@@ -1360,12 +1360,12 @@ class cTrakt:
                 sTitle = oInputParameterHandler.getValue('tvShowTitle')
                 sSeason = oInputParameterHandler.getValue('sSeason')
                 if not sSeason:
-                    sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
+                    sSeason = re.search(r'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
                     sEpisode = oInputParameterHandler.getValue('sEpisode')
                 if not sEpisode:
                     sFileName = oInputParameterHandler.getValue('sFileName')
-                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sFileName).group(2)
+                    sEpisode = re.search(r'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sFileName).group(2)
             else:
                 if self.ADDON.getSetting('trakt_movies_activate_scrobbling') == 'false':
                     return
@@ -1551,7 +1551,7 @@ class cTrakt:
         # on cherche l'annee
         year = sYear
         if year == '':
-            r = re.search('(\([0-9]{4}\))', sTitle)
+            r = re.search(r'(\([0-9]{4}\))', sTitle)
             if r:
                 year = str(r.group(0))
                 sTitle = sTitle.replace(year, '')

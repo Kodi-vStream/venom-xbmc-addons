@@ -139,7 +139,7 @@ class cPremiumHandler:
         cookies = ''
         if 'Set-Cookie' in head:
             oParser = cParser()
-            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            sPattern = r'(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
             # print(aResult)
             if (aResult[0] == True):

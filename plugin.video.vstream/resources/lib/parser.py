@@ -52,7 +52,7 @@ class cParser:
         return re.escape(sValue)
 
     def getNumberFromString(self, sValue):
-        sPattern = '\d+'
+        sPattern = r'\d+'
         aMatches = re.findall(sPattern, sValue)
         if (len(aMatches) > 0):
             return aMatches[0]

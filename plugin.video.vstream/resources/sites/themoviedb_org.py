@@ -838,7 +838,6 @@ def showSeriesNetworks():
         oOutputParameterHandler.addParameter('siteUrl', 'discover/tv')
         oOutputParameterHandler.addParameter('term', term % netID)
         oOutputParameterHandler.addParameter('sTmdbId', netID)    # Utilisé par TMDB
-#        oOutputParameterHandler.addParameter('network', netID)    # Utilisé par TMDB
         
         oGui.addNetwork(SITE_IDENTIFIER, 'showSeries', name, 'host.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
@@ -883,7 +882,7 @@ def showAnimesTop():
 
 
 # drama 'with_origin_country=KR'
-# def showDramas():
+# def showDramas:
 
 
 # séries classées par défaut : POPULAIRE
