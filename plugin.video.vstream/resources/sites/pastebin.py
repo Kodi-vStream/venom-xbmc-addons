@@ -10,6 +10,7 @@ try:
     import importlib as imp
 except ImportError:
     import imp
+import ast
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, siteManager
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -332,7 +333,7 @@ class PasteContent:
 
         # Lecture en cache
         if sContent:
-            lines = eval(sContent)       # TODO trop long
+            lines = ast.literal_eval(sContent)  # Remplacement de eval par ast.literal_eval
             if lines[0].startswith('#'):    # paste index
                 if renew: # renouveller le cache du paste index
                     threading.Timer(10, renewPaste, args=(pasteBin, )).start()
@@ -385,6 +386,7 @@ class PasteContent:
 
         isFilm = sMediaPaste in ('film', 'divers')
         links = []
+        seen = set()
         for k in lines[1:]:
             line = k.split(";")
             line.append(pasteBin)
@@ -402,7 +404,10 @@ class PasteContent:
                     link = link.replace(":'", ": '" + hebergeur) # format en ligne
                     line[self.URLS] = link.replace(": '", ": '" + hebergeur)  # format du cache
 
-            links.append(line)
+            line_tuple = tuple(line)
+            if line_tuple not in seen:
+                seen.add(line_tuple)
+                links.append(line)
 
         return links
 
@@ -1547,6 +1552,7 @@ def showActors(sSearch=''):
 def showGenres():
     from resources.lib.tmdb import cTMDb
     tmdb = cTMDb()
+   
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -2012,8 +2018,14 @@ def showYears():
                 continue
 
             year = line[pbContent.YEAR].strip()
-            if not year:
-                year = UNCLASSIFIED
+            # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
+            if sYear:
+                if sYear == UNCLASSIFIED:
+                    if year != '':
+                        continue
+                elif not year or sYear != year:
+                    continue
+
             years.add(year)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -2199,43 +2211,11 @@ def showMovies(sSearch=''):
         movies = moviesNews
 
     # Classement par ID TMDB, pseudo-classement par sortie pour la même année
-    if sYear or sGenre:
-        try:
-            movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
-        except Exception as e:
-            raise
-            
-    # Recherche par ordre alphabétique => le tableau doit être trié
-    if sAlpha:
-        movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
+    if sType == 'person':
+        if pbContent.YEAR >= 0:
+            movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
-    # Recherche par saga => trie par années
-    if sSaga and pbContent.YEAR >= 0:
-        movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
-
-    # Dans un dossier => trie par années inversées (du plus récent)
-    if sGroupe or sDirector or sCast:
-        movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
-
-    # Gestion de la pagination
-    numPage = int(numPage)
-    if numPage > 1 and numItem == 0:  # choix d'une page
-        numItem = (numPage-1) * ITEM_PAR_PAGE
-        if numItem > len(movies):   # accès direct à la dernière page
-            numPage = len(movies) / ITEM_PAR_PAGE
-            numItem = (numPage-1) * ITEM_PAR_PAGE
-
-    if bRandom:
-        # Génération d'indices aléatoires, ajout d'une marge car les doublons aléatoires sont rassemblés
-        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE*2)]
-
-    movieIds = set()
-
-    nbItem = 0
-    index = 0
-
-    if not bSilent:
-        progress_ = progress().VScreate(SITE_NAME)
+    progress_ = progress().VScreate(SITE_NAME)
     oOutputParameterHandler = cOutputParameterHandler()
 
     if sRes:
@@ -3014,8 +2994,8 @@ def getPasteList(pasteID = None):
             pastebin = addons.getSetting(prefixID)
             if pastebin:
                 listeIDs += getPasteList(numID)
-        return dict.fromkeys(listeIDs).keys()   # suppression des doublons et conserve l'ordre
-
+        # Optimisation : suppression des doublons avec set
+        return list(dict.fromkeys(listeIDs))
 
     IDs = []
     prefixID = SETTING_PASTE_ID + str(pasteID)
