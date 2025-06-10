@@ -16,7 +16,7 @@ class cRequestHandler:
     REQUEST_TYPE_DELETE = 3
     SITE_IDENTIFIER = "dnspython"
 
-    def __init__(self, sUrl):
+    def __init__(self, sUrl, site_name=None):
         self.__sUrl = sUrl
         self.__sRealUrl = ''
         self.__cType = 0
@@ -39,6 +39,7 @@ class cRequestHandler:
         self.json = {}
         self.forceIPV4 = False
         self.oResponse = None
+        self.site_name = site_name  # Ajout du nom de la source
 
     def statusCode(self):
         return self.oResponse.status_code
@@ -281,7 +282,9 @@ class cRequestHandler:
                         
                         json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
                     except:
-                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sUrl)))
+                        # Ajout du nom de la source dans l'erreur Cloudflare
+                        site_info = f"[{self.site_name}] " if self.site_name else ""
+                        dialog().VSerror("%s%s (%s)" % (site_info, "Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sUrl)))
 
                     if json_response:
                         response = json_response.json()

@@ -238,7 +238,7 @@ def showMovies(sSearch=''):
         siteUrl, sType = sSearch.split('?type=')
         sSearchText = siteUrl.replace(URL_SEARCH[0],'')
         sSearchText = oUtil.CleanName(sSearchText)
-        oRequestHandler = cRequestHandler(URL_MAIN + siteUrl)
+        oRequestHandler = cRequestHandler(URL_MAIN + siteUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
         startJson = '{"searchPage":'
         endJson = ',"rendered_ssr"'
@@ -257,7 +257,7 @@ def showMovies(sSearch=''):
         else:
             sUrl += '&page=' + sPage
 #        sType = 'series' if 'series?' in siteUrl else 'movie' if 'movie' in siteUrl else 'doc' if siteUrl.startswith('doc') else 'animes'
-        oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
+        oRequestHandler = cRequestHandler(URL_MAIN + sUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
         startJson = '"data":'
         endJson = '},"loader":'
@@ -341,7 +341,7 @@ def showMovieLinks():
     sYear = oInputParameterHandler.getValue('sYear')
 
     sUrl = URL_MAIN + 'download-page/' + videoID
-    oRequest = cRequestHandler(sUrl)
+    oRequest = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequest.request()
     
     # liens darkibox
@@ -375,7 +375,7 @@ def showSaisons():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = '%stitles/%s/series' % (URL_MAIN, videoID)
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     startJson = '"seasons":{"current_page":1,'
@@ -422,7 +422,7 @@ def showEpisodes():
     if sPage:
         sUrl += '?staleTime=300000&perPage=30&query=&page=' + sPage
 
-    oRequestHandler = cRequestHandler(URL_MAIN + 'titles/' + sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + 'titles/' + sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     startJson = '"loader":"seasonPage","episodes":'
@@ -469,7 +469,7 @@ def showMovieHoster():
     sDisplayTitle = sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequest = cRequestHandler(URL_API + videoID)
+    oRequest = cRequestHandler(URL_API + videoID, site_name=SITE_IDENTIFIER)
     oRequest.addHeaderEntry('Referer', URL_MAIN + '/download/' + videoID)
     oRequest.addHeaderEntry('Accept', 'application/json')
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')

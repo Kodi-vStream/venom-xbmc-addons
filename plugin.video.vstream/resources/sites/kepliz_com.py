@@ -142,7 +142,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     # L'url change tres souvent donc faut la retrouver
-    oRequestHandler = cRequestHandler(URL_HOST)
+    oRequestHandler = cRequestHandler(URL_HOST, site_name=SITE_IDENTIFIER)
     data = oRequestHandler.request()
     aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')  # Compatible avec plusieurs clones
     if not aResult[0]:
@@ -160,7 +160,7 @@ def showMovies(sSearch=''):
 
         siteName = sMainUrl.split('/')[2].split('.')[0]
         sUrl = sMainUrl + 'home/{0!s}'.format(siteName)
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('searchword', sSearch)
         sABPattern = '<div class="column24"'
@@ -172,7 +172,7 @@ def showMovies(sSearch=''):
         else:
             sABPattern = '<div class="column20"'
         sUrl = sUrl.replace(URL_MAIN, sMainUrl)
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
 
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
@@ -254,7 +254,7 @@ def showHosters():
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
 
-        oRequestHandler = cRequestHandler(sLink)
+        oRequestHandler = cRequestHandler(sLink, site_name=SITE_IDENTIFIER)
         data = oRequestHandler.request()
 
         sPattern = 'document\.location\.href="([^"]+)'
@@ -263,7 +263,7 @@ def showHosters():
             sLink = aResult[1][0]
             if sLink.startswith('/'):
                 sLink = URL_HOST[:-1] + sLink
-            oRequestHandler = cRequestHandler(sLink)
+            oRequestHandler = cRequestHandler(sLink, site_name=SITE_IDENTIFIER)
             data = oRequestHandler.request()
     
         sPattern = 'file: *"(.+?)"'

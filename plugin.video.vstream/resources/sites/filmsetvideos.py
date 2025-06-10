@@ -82,12 +82,12 @@ def showMovies(sSearch=''):
 
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         sUrl = sSearch
-        oRequest = cRequestHandler(sUrl)
+        oRequest = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequest.request()
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
 
     sPattern = 'rounded-t-lg" src="([^"]+)" alt="([^"]+)"><\/a> <div class="p-5"><a href="/([^"]+)">.+?Sortie en: (\d+)'
@@ -162,7 +162,7 @@ def showSearchMovies(sSearch=''):
 
     sSearch = sSearch.replace(' ', '+').replace('%20', '+')
     sUrl = URL_MAIN + sSearch
-    oRequest = cRequestHandler(sUrl)
+    oRequest = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequest.request()
     result = json.loads(sHtmlContent)
     data = result['nodes'][3]
@@ -234,7 +234,7 @@ def showMovieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequest = cRequestHandler(sUrl)
+    oRequest = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
