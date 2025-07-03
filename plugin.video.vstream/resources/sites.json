@@ -137,7 +137,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.life/"
+            "url": "https://www.free-telecharger.icu/"
         },
         "freebox": {
             "label": "Freebox",
@@ -153,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fs-mirror06.lol/"
+            "url": "https://fs-mirror08.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.cv/"
+            "url": "https://flemmix.mov/"
         },
         "wilifilm": {
             "label": "Wilifilm",
