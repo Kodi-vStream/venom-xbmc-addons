@@ -184,7 +184,7 @@ class cHosterGui:
         # Recuperation du host
         try:
             from urllib.parse import urlparse
-            sHostName = urlparse(sHosterUrl).hostname or ""
+            sHostName = urlparse(sHosterUrl).hostname or sHosterUrl
         except Exception:
             sHostName = sHosterUrl
 
