@@ -59,7 +59,7 @@ class cHoster(iHoster):
                         file = s[i]
                 #VSlog(file)
 
-                api_call = file + '|User-Agent=' + UA  + '&Referer=' + url
+                api_call = file + '|User-Agent=' + UA # + '&Referer=' + url
 
         if api_call:
             return True, api_call
