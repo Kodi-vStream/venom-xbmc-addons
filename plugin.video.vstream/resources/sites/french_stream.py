@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager,VSlog
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'french_stream'
@@ -17,11 +17,11 @@ SITE_DESC = 'Films & séries'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-MOVIE_NEWS = ('xfsearch/genre-1/', 'showMovies')
+MOVIE_NEWS = ('films/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VOSTFR = ('xfsearch/version-film/VOSTFR/', 'showMovies')
 
-SERIE_NEWS = ('xfsearch/version-serie/', 'showMovies')
+SERIE_NEWS = ('s-tv/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VOSTFRS = ('s-tv/s-vostfr/', 'showMovies')
 
@@ -196,8 +196,6 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        if bSearchSerie:
-            series = set()  # une seule fois la série
             
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -213,11 +211,6 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if '- Saison' not in sTitle:
                     continue
-                sTitle = sTitle.split('- Saison')[0].strip()
-                cleanTitle = cUtil().CleanName(sTitle)
-                if cleanTitle in series:
-                    continue
-                series.add(cleanTitle)
 
             # Filtre de recherche
             if sSearch:
@@ -231,7 +224,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if bSearchSerie:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
