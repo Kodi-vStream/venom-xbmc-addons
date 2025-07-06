@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import siteManager, VSlog
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 
@@ -224,7 +224,7 @@ def showAnimesGenres():
 
     oGui.setEndOfDirectory()
 
-def searchAPI(search = ''):
+def searchAPI(sSearch = ''):
     oGui = cGui()
     oUtil = cUtil()
     oInputParameterHandler = cInputParameterHandler()
@@ -232,10 +232,13 @@ def searchAPI(search = ''):
     
     oOutputParameterHandler = cOutputParameterHandler()
     
-    if search:
-        siteUrl = search
+    if sSearch:
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+        siteUrl = sSearch
 
-    oRequestHandler = cRequestHandler(URL_MAIN + search)
+    oRequestHandler = cRequestHandler(URL_MAIN + sSearch)
     responses = oRequestHandler.request(jsonDecode=True)
 
     for movie in responses:
@@ -246,6 +249,11 @@ def searchAPI(search = ''):
         sYear = movie['year']
         sDesc = movie['excerpt']
         sThumb = 'https:' + re.search('src="([^"]+)', movie['image']).group(1)
+
+        # Filtre de recherche
+        if sSearch:
+            if not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue
 
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -260,7 +268,9 @@ def searchAPI(search = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
+
 
 def showMoviesAPI():
     oGui = cGui()
