@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://www.animesultra.net/"
+            "url": "https://v8.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -42,7 +42,7 @@
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
             "active": "True",
-            "url": "https://buzzmonclick.net/category/replay-tv/"
+            "url": "https://buzzmonclick.io/category/replay-tv/"
         },
         "channelstream": {
             "label": "ChannelStream",
