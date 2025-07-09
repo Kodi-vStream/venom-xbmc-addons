@@ -24,26 +24,25 @@ key_search_series = '#searchsomeseries'
 key_search_reality = '#searchsomereality'
 
 # Pour les Films
-MOVIE_NEWS = (URL_MAIN + 'films-t/', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films-t/', 'showGenres')
-MOVIE_ANNEES = (True, 'showMovieYears')
+MOVIE_NEWS = (URL_MAIN + 'zeus-films/', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + 'zeus-films/', 'showGenres')
+MOVIE_ANNEES = (URL_MAIN + 'zeus-films/annee/', 'showMovieYears')
 
 # Pour les Series
-SERIE_NEWS = (URL_MAIN + 'series-t/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series-t/', 'showSeriesGenres')
-SERIE_VF = (URL_MAIN + 'series-t/series-vf/', 'showMovies')
-SERIE_VOSTFR = (URL_MAIN + 'series-t/series-vostfr/', 'showMovies')
-SERIE_ANNEES = (True, 'showSerieYears')
+SERIE_NEWS = (URL_MAIN + 'zeus-series/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'zeus-series/', 'showSeriesGenres')
+SERIE_VOSTFR = (URL_MAIN + 'zeus-series/series-vostfr/', 'showMovies')
+SERIE_ANNEES = (URL_MAIN + 'zeus-series/annee/', 'showSerieYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 # télé réalité
-REPLAYTV_NEWS = (URL_MAIN + 'f/genre=reality', 'showMovies')
-REPLAYTV_REPLAYTV = (URL_MAIN + 'f/genre=reality', 'showMovies')
-URL_SEARCH_REPLAY = (key_search_reality , 'showMovies')
-URL_SEARCH_REPLAYTV = 'f/genre=reality/l.title='
+# REPLAYTV_NEWS = (URL_MAIN + 'f/genre=reality', 'showMovies')
+# REPLAYTV_REPLAYTV = (URL_MAIN + 'f/genre=reality', 'showMovies')
+# URL_SEARCH_REPLAY = (key_search_reality , 'showMovies')
+# URL_SEARCH_REPLAYTV = 'f/genre=reality/l.title='
 
 
 # recherche utilisée quand on n'utilise pas la globale
@@ -65,8 +64,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    # oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -106,9 +105,6 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
@@ -147,6 +143,8 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
     listeGenre = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'],
                   ['Biopic', 'biopic'], ['Comédie', 'comedie'], ['Documentaire', 'documentaire'],
                   ['Drame', 'drame'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
@@ -156,7 +154,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-t/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl + sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -165,11 +163,13 @@ def showGenres():
 def showMovieYears():
     import datetime
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1955, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-t/annee/' + sYear)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -177,6 +177,8 @@ def showMovieYears():
 
 def showSeriesGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
     listeGenre = [['Action', 'action-s'], ['Animation', 'animation-s'], ['Aventure', 'aventure-s'],
                   ['Biopic', 'biopic-s'], ['Comédie', 'comedie-s'], ['Documentaire', 'documentaire-s'],
                   ['Drame', 'drame-s'], ['Famille', 'famille-s'], ['Fantastique', 'fantastique-s'],
@@ -187,7 +189,7 @@ def showSeriesGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in listeGenre:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-t/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl + sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -196,11 +198,13 @@ def showSeriesGenres():
 def showSerieYears():
     import datetime
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1959, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-t/annee/' + sYear)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -229,12 +233,12 @@ def showMovies(sSearch=''):
             sSearchText = oUtil.CleanName(sSearch)
             sSearch = sSearch.replace(' ', '+')
             pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
-        if key_search_reality in sSearch:
-            sSearch = sSearch.replace(key_search_reality, '')
-            bSearchSerie = True
-            sSearchText = oUtil.CleanName(sSearch)
-            sSearch = sSearch.replace(' ', '+')
-            url = URL_MAIN + URL_SEARCH_REPLAYTV + sSearch
+        # if key_search_reality in sSearch:
+        #     sSearch = sSearch.replace(key_search_reality, '')
+        #     bSearchSerie = True
+        #     sSearchText = oUtil.CleanName(sSearch)
+        #     sSearch = sSearch.replace(' ', '+')
+        #     url = URL_MAIN + URL_SEARCH_REPLAYTV + sSearch
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
@@ -266,10 +270,10 @@ def showMovies(sSearch=''):
             sTitle = aEntry[1]
 
             if bSearchMovie:
-                if '/series-t' in sUrl2:
+                if '-series' in sUrl2:
                     continue
             if bSearchSerie:
-                if '/series-t' not in sUrl2:
+                if '-series' not in sUrl2:
                     continue
 
             if sSearch:
@@ -281,7 +285,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series-t' not in sUrl2:
+            if '-series' not in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)

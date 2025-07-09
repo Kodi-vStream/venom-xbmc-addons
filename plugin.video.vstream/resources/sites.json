@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://v7.animesultra.net/"
+            "url": "https://v8.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -42,7 +42,7 @@
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
             "active": "True",
-            "url": "https://buzzmonclick.net/category/replay-tv/"
+            "url": "https://buzzmonclick.io/category/replay-tv/"
         },
         "channelstream": {
             "label": "ChannelStream",
@@ -62,7 +62,7 @@
         "cpasmieux": {
             "label": "Cpasmieux",
             "active": "True",
-            "url": "https://www.cpasmieux.is/"
+            "url": "https://www.cpasmieux.icu/"
         },
         "daddyhd": {
             "label": "DaddyHD",
@@ -72,7 +72,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darki-tometjerry.com/"
+            "url": "https://darkiworld2025.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -137,7 +137,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.click/"
+            "url": "https://www.free-telecharger.icu/"
         },
         "freebox": {
             "label": "Freebox",
@@ -153,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fsmirror57.lol/"
+            "url": "https://fs-mirror08.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -206,7 +206,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv852.me/"
+            "url": "https://livetv854.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -222,7 +222,7 @@
         "neymartv": {
             "label": "NeymarTV",
             "active": "True",
-            "url": "https://v1.neymartv.net/"
+            "url": "https://v1.messitv.net/"
         },
         "o1streaming": {
             "label": "O1 streaming",
@@ -293,7 +293,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://w5.toonanime.co/"
+            "url": "https://v8.toonanime.co/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -342,8 +342,8 @@
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
-            "site_info": "https://wiflix-vraie-adresse.com/",
-            "url": "https://flemmix.ws/"
+            "site_info": "https://www.wiflix-nouvelle-adresse.site/",
+            "url": "https://flemmix.mov/"
         },
         "wilifilm": {
             "label": "Wilifilm",

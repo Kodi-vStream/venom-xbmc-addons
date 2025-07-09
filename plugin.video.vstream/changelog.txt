@@ -10,6 +10,13 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.4.1 - 09/07/25 ***
+- frenchStream : retour des liens pour cette source
+- wiflix : ajout de liens et accés aux premiers épisodes des séries
+- Kepliz : retour des liens
+- CPasMieux : retour des liens et ajout des japanimés
+- monStream : retour des liens
+
 *** 3.4.0 - 19/05/25 ***
 - Pastebin : MAJ des diffuseurs de séries
 - TopStream : retour et ajout des animes

@@ -46,10 +46,10 @@ ANIM_NEWS = ('wp-json/apiflix/v1/options/?post_type=animes&sort=1&page=', 'showM
 ANIM_GENRES = ('wp-json/apiflix/v1/options/?post_type=animes&genres=%d&sort=1&page=', 'showAnimesGenres')
 ANIM_ANNEES = ('wp-json/apiflix/v1/options/?post_type=animes&years=%d&sort=1&page=', 'showYears')
 
-URL_SEARCH = ('index.php?do=search', 'showMovies')
-URL_SEARCH_MOVIES = ('?post_type=movies&s=', 'showMovies')
-URL_SEARCH_SERIES = ('?post_type=series&s=', 'showMovies')
-URL_SEARCH_ANIMS = ('?post_type=animes&s=', 'showMovies')
+URL_SEARCH = ('suggest.php?query=', 'searchAPI')
+URL_SEARCH_MOVIES = ('suggest.php?query=', 'searchAPI')
+URL_SEARCH_SERIES = ('suggest.php?query=', 'searchAPI')
+URL_SEARCH_ANIMS = ('suggest.php?query=', 'searchAPI')
 
 API_EPISODES = 'wp-json/apiflix/v1/series/%s/%s'  # serieID, numSaison
 API_EPISODE_LINK = 'wp-json/apiflix/v1/playerepisode?post_id=%s'
@@ -135,7 +135,7 @@ def showSearch():
         oInputParameterHandler = cInputParameterHandler()
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         sUrl = siteUrl + sSearchText
-        showMovies(sUrl)
+        searchAPI(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -224,6 +224,53 @@ def showAnimesGenres():
 
     oGui.setEndOfDirectory()
 
+def searchAPI(sSearch = ''):
+    oGui = cGui()
+    oUtil = cUtil()
+    oInputParameterHandler = cInputParameterHandler()
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    
+    if sSearch:
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+        siteUrl = sSearch
+
+    oRequestHandler = cRequestHandler(URL_MAIN + sSearch)
+    responses = oRequestHandler.request(jsonDecode=True)
+
+    for movie in responses:
+        sTitle = oUtil.unescape(movie['title'])
+        movie_id = movie['ID']
+        sUrl = movie['url']
+        sCat = movie['post_type']
+        sYear = movie['year']
+        sDesc = movie['excerpt']
+        sThumb = 'https:' + re.search('src="([^"]+)', movie['image']).group(1)
+
+        # Filtre de recherche
+        if sSearch:
+            if not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue
+
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sDesc', sDesc)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oOutputParameterHandler.addParameter('sYear', sYear)
+
+        if sCat == 'movies':
+            sUrl = API_MOVIE_LINK % movie_id
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        else:
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()
+
 
 def showMoviesAPI():
     oGui = cGui()
@@ -292,6 +339,7 @@ def showMovies(sSearch=''):
         sSearchText = oUtil.CleanName(sSearch.split('=')[-1])
         sUrl = URL_MAIN + sSearch
         oRequest = cRequestHandler(sUrl)
+
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequest.request()
         sHtmlContent = oParser.abParse(sHtmlContent, '<main id="content"', 'wdgt_lateral_movies-')

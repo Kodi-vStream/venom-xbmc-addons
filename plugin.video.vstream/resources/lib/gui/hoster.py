@@ -158,10 +158,19 @@ class cHosterGui:
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
 
-    def checkHoster(self, sHosterUrl, debrid=True):
+    def checkHoster(self, sHosterUrl, debrid=True, tried_urls=None, depth=0, max_depth=3):
         # securite
         if not sHosterUrl:
             return False
+
+        if tried_urls is None:
+            tried_urls = set()
+        if sHosterUrl in tried_urls or depth > max_depth:
+            VSlog(f"Boucle évitée ou profondeur max atteinte pour {sHosterUrl}")
+            return False
+        tried_urls.add(sHosterUrl)
+
+        fullURL = sHosterUrl
 
         # lien direct ?
         if any(x in sHosterUrl for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
@@ -174,8 +183,9 @@ class cHosterGui:
 
         # Recuperation du host
         try:
-            sHostName = sHosterUrl.split('/')[2]
-        except:
+            from urllib.parse import urlparse
+            sHostName = urlparse(sHosterUrl).hostname or sHosterUrl
+        except Exception:
             sHostName = sHosterUrl
 
         if debrid: # premiere tentative avec debrideur, si on revient ici, ce sera pour tester sans debrideur
@@ -335,8 +345,8 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('flixeo' in sHostName):
-            return self.getHoster('allow_redirects')
+        # if ('flixeo' in sHostName):
+        #     return self.getHoster('allow_redirects')
 
         if ('bigwarp' in sHostName):
             return self.getHoster('flix555')
@@ -354,6 +364,10 @@ class cHosterGui:
 
         if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
             return self.getHoster('netu')
+
+        if ('tapepops' in sHostName):
+            return self.getHoster('streamtape')
+
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
@@ -375,6 +389,24 @@ class cHosterGui:
 
         if ('myfiles.alldebrid.com' in sHostName):
             return self.getHoster('lien_direct')
+
+        # Si on a rien trouvé mais que le lien semble valide (ex: /e/ dans l'URL)
+        if "/e/" in fullURL:
+            try:
+                from resources.lib.handler.requestHandler import cRequestHandler
+                oRequest = cRequestHandler(fullURL)
+                html = oRequest.request()
+                sHosterUrl2 = None
+                import re
+                if 'content="VOE">' in html or re.search(r'voe', html, re.I):
+                    # Reconstruit l'URL pour voe
+                    sHosterUrl2 = f"https://voe.com/{fullURL.split('/e/', 1)[1]}"
+                elif 'filemoon' in html:
+                    sHosterUrl2 = f"https://filemoon.com/{fullURL.split('/e/', 1)[1]}"
+                if sHosterUrl2:
+                    return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
+            except Exception as e:
+                pass
 
         return False
 

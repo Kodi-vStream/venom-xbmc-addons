@@ -222,6 +222,7 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showHosters():
+    from urllib.parse import urlparse
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -270,11 +271,10 @@ def showHosters():
         aResult = oParser.parse(data, sPattern)
 
         if aResult[0]:
-            for aEntry in aResult[1]:
-
-                sLink2 = aEntry
+            for sLink2 in aResult[1]:
                 oHoster = cHosterGui().checkHoster(sLink2)
-
+                sLink2 += '|Referer=' + urlparse(sLink2).netloc
+                
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
