@@ -345,8 +345,8 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        if ('flixeo' in sHostName):
-            return self.getHoster('allow_redirects')
+        # if ('flixeo' in sHostName):
+        #     return self.getHoster('allow_redirects')
 
         if ('bigwarp' in sHostName):
             return self.getHoster('flix555')
@@ -364,6 +364,10 @@ class cHosterGui:
 
         if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
             return self.getHoster('netu')
+
+        if ('tapepops' in sHostName):
+            return self.getHoster('streamtape')
+
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
@@ -387,26 +391,22 @@ class cHosterGui:
             return self.getHoster('lien_direct')
 
         # Si on a rien trouvé mais que le lien semble valide (ex: /e/ dans l'URL)
-        if not sHostName and "/e/" in fullURL:
+        if "/e/" in fullURL:
             try:
                 from resources.lib.handler.requestHandler import cRequestHandler
                 oRequest = cRequestHandler(fullURL)
                 html = oRequest.request()
-                VSlog(fullURL)
-                import re
-                from urllib.parse import urlparse
-                parts = urlparse(fullURL)
                 sHosterUrl2 = None
+                import re
                 if 'content="VOE">' in html or re.search(r'voe', html, re.I):
                     # Reconstruit l'URL pour voe
                     sHosterUrl2 = f"https://voe.com/{fullURL.split('/e/', 1)[1]}"
                 elif 'filemoon' in html:
                     sHosterUrl2 = f"https://filemoon.com/{fullURL.split('/e/', 1)[1]}"
                 if sHosterUrl2:
-                    VSlog(f"Redirection dynamique détectée : {sHosterUrl2}")
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
             except Exception as e:
-                VSlog(f"Erreur lors de la détection dynamique du hoster : {e}")
+                pass
 
         return False
 
