@@ -166,7 +166,7 @@ class cHosterGui:
         if tried_urls is None:
             tried_urls = set()
         if sHosterUrl in tried_urls or depth > max_depth:
-            VSlog(f"Boucle évitée ou profondeur max atteinte pour {sHosterUrl}")
+            VSlog("Boucle évitée ou profondeur max atteinte pour %s" % sHosterUrl)
             return False
         tried_urls.add(sHosterUrl)
 
@@ -400,9 +400,9 @@ class cHosterGui:
                 import re
                 if 'content="VOE">' in html or re.search(r'voe', html, re.I):
                     # Reconstruit l'URL pour voe
-                    sHosterUrl2 = f"https://voe.com/{fullURL.split('/e/', 1)[1]}"
+                    sHosterUrl2 = 'https://voe.com/%s' % (fullURL.split('/e/', 1)[1])
                 elif 'filemoon' in html:
-                    sHosterUrl2 = f"https://filemoon.com/{fullURL.split('/e/', 1)[1]}"
+                    sHosterUrl2 = 'https://filemoon.com/%s' % (fullURL.split('/e/', 1)[1])
                 if sHosterUrl2:
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
             except Exception as e:

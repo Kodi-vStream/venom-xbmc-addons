@@ -438,10 +438,10 @@ def showMovieLinks():
             sPattern = '([^"]+)": "([^"]+)"'
             aResult = oParser.parse(links, sPattern)
             if aResult[0]:
-        links = []
+                links = []
                 for aEntry in aResult[1]:
                     sLang = aEntry[0].replace('Default', '')
-                        sHosterUrl = aEntry[1]
+                    sHosterUrl = aEntry[1]
                     if not sHosterUrl:
                         continue
                         if sHosterUrl in links:
@@ -449,7 +449,7 @@ def showMovieLinks():
                         links.append(sHosterUrl)
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
                         if oHoster:
-                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
+                            sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
                             oHoster.setDisplayName(sDisplayTitleLang)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
