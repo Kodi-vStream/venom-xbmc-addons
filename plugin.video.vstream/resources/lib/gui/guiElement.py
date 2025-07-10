@@ -209,35 +209,35 @@ class cGuiElement:
 
         """ Début du nettoyage du titre """
         # vire doubles espaces et double points
-        sTitle = re.sub(' +', ' ', sTitle)
-        sTitle = re.sub('\.+', '.', sTitle)
+        sTitle = re.sub(r' +', ' ', sTitle)
+        sTitle = re.sub(r'\.+', '.', sTitle)
 
         # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         # vire espace et - a la fin
-        sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
+        sTitle = re.sub(r'[- –_\.\[]+$', '', sTitle)
         # et au debut
-        sTitle = re.sub('^[- –_\.]+', '', sTitle)
+        sTitle = re.sub(r'^[- –_\.]+', '', sTitle)
 
         # Nom en clair sans les langues, qualités, et autres décorations
-        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
+        self.__sCleanTitle = re.sub(r'\[.*\]|\(.*\)', '', sTitle)
         if not self.__sCleanTitle:
-            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
+            self.__sCleanTitle = re.sub(r'\[.+?\]|\(.+?\)', '', sTitle)
             if not self.__sCleanTitle:
                 self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
         
         """ Fin du nettoyage du titre """
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
-        string = re.search('[^\w ]([0-9]{4})[^\w ]', sTitle)
+        string = re.search(r'[^\w ]([0-9]{4})[^\w ]', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Year = str(string.group(1))
             self.addItemValues('year', self.__Year)
 
         # recherche une date
-        string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
+        string = re.search(r'([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Date = str(string.group(0))
@@ -250,7 +250,7 @@ class cGuiElement:
         sa = ep = ''
         
         if self.__sCat in (2, 3, 4, 8, 9):
-            m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+            m = re.search(r'(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
                 sa = m.group(3)
                 ep = m.group(7)
@@ -260,12 +260,12 @@ class cGuiElement:
                     sTitle = sTitle.replace(m.group(0), '')
                     
             else:  # Juste l'épisode
-                m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+                m = re.search(r'(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(0), '')
                     ep = m.group(4)
                 else:  # juste la saison
-                    m = re.search('( S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+                    m = re.search(r'( S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
                     if m:
                         sTitle = sTitle.replace(m.group(0), '')
                         sa = m.group(3)
@@ -274,7 +274,7 @@ class cGuiElement:
             if sa or ep:
                 sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
                 # vire espace et - a la fin
-                sTitle = re.sub('[- –_\.\[]+$', '', sTitle)
+                sTitle = re.sub(r'[- –_\.\[]+$', '', sTitle)
     
             if sa:
                 self.__Season = sa

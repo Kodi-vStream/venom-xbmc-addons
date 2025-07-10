@@ -51,7 +51,7 @@ class UpNext:
         # tvShowTitle n'est pas toujours disponible.
         tvShowTitle = guiElement.getItemValue('tvshowtitle')
         if not tvShowTitle:
-            tvShowTitle = re.search('\[\/COLOR\](.+?)\[COLOR', guiElement.getItemValue('title')).group(1)
+            tvShowTitle = re.search(r'\[\/COLOR\](.+?)\[COLOR', guiElement.getItemValue('title')).group(1)
 
         sMovieTitle = tvShowTitle
 

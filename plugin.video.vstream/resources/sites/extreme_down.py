@@ -342,7 +342,7 @@ def showMovies(sSearch=''):
 
         if nextPageSearch:
             sSearch += '&search_start=' + nextPageSearch
-        oRequestHandler = cRequestHandler(siteUrl)
+        oRequestHandler = cRequestHandler(siteUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
 
         sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'À propos')
@@ -352,7 +352,7 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearch = oUtil.CleanName(sSearch)
     else:
-        oRequestHandler = cRequestHandler(siteUrl)
+        oRequestHandler = cRequestHandler(siteUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
 
     sPattern = 'class="top-last thumbnails" href="([^"]+)".+?"img-post" src="([^"]+).+?alt="([^"]+)'
@@ -476,7 +476,7 @@ def showMoviesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     # récupération du Synopsis
@@ -537,7 +537,7 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     # récupération du Synopsis
@@ -632,7 +632,7 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     # Detection de la taille des fichier pour separer les fichier premium des parties en .rar
@@ -712,7 +712,7 @@ def showHosters():
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl
 
-        oRequestHandler = cRequestHandler(sUrl_Bypass)
+        oRequestHandler = cRequestHandler(sUrl_Bypass, site_name=SITE_IDENTIFIER)
         sHtmlContent = json.loads(oRequestHandler.request())
 
         HostURL = sHtmlContent["data"]["links"]

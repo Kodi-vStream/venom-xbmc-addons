@@ -137,7 +137,7 @@ class cUtil:
 
             return text  # leave as is
 
-        return re.sub('&#?\w+;', fixup, text)
+        return re.sub(r'&#?\w+;', fixup, text)
 
     def titleWatched(self, title):
 
@@ -154,7 +154,7 @@ class cUtil:
         title = title.replace('[', '').replace(']', '')
 #        title = re.sub(r'\[.*\]|\(.*\)', r'', str(title))
         title = title.replace('VF', '').replace('VOSTFR', '')
-        title = re.sub('(\W|_|^)FR(\W|_|$)', '', title) # FR s'il n'est pas entouré de caractere
+        title = re.sub(r'(\W|_|^)FR(\W|_|$)', '', title) # FR s'il n'est pas entouré de caractere
         # title = re.sub(r'[0-9]+?', r'', str(title))
         title = title.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
         title = title.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
@@ -171,17 +171,15 @@ class cUtil:
 
         # on cherche l'annee
         annee = ''
-        m = re.search('(\([0-9]{4}\))', name)
+        m = re.search(r'(\([0-9]{4}\))', name)
         if m:
             annee = str(m.group(0))
             name = name.replace(annee, '')
 
         # Suppression des ponctuations
-        name = re.sub("[\’\'\-\–\:\+\._]", ' ', name)
-        name = re.sub("[\,\&\?\!]", '', name)
-
-        # vire tag
-        name = re.sub('[\(\[].+?[\)\]]', '', name)
+        name = re.sub(r"[\’\'\-\–\:\+\._]", ' ', name)
+        name = re.sub(r"[\,\&\?\!]", '', name)
+        name = re.sub(r'[\(\[].+?[\)\]]', '', name)
         name = name.replace('[', '').replace(']', '') # crochet orphelin
 
         # enlève les accents, si nécessaire
@@ -202,7 +200,7 @@ class cUtil:
 
     def getSerieTitre(self, sTitle):
         serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
-        serieTitle = re.sub('[- –]+$', '', serieTitle)
+        serieTitle = re.sub(r'[- –]+$', '', serieTitle)
 
         if '|' in serieTitle:
             serieTitle = serieTitle[:serieTitle.index('|')]
@@ -210,7 +208,7 @@ class cUtil:
         return serieTitle
 
     def getEpisodeTitre(self, sTitle):
-        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
+        string = re.search(r'(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(1), '').strip()
             return sTitle, True

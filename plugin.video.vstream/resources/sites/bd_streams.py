@@ -29,7 +29,7 @@ def load():
     sUrl = URL_MAIN
 
     oParser = cParser()
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
     sPattern = "<li class='archivedate'><a href='(.+?)'>"
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -37,7 +37,7 @@ def load():
     if aResult[0]:
         sUrl = aResult[1][0]
         sPattern = "<h3 class='post-title.+?href='(.+?)'.+?snippetized'>(.+?)<"
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
         sHtmlContent = oRequestHandler.request()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -71,7 +71,7 @@ def showMovies(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = "<iframe .+? src='.+?mid=([^&]+)&"
@@ -102,7 +102,7 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, site_name=SITE_IDENTIFIER)
     sHtmlContent = oRequestHandler.request();
     result = json.loads(sHtmlContent)
 
