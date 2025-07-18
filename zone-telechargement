@@ -1,0 +1,199 @@
+# -*- coding: utf-8 -*-
+# vStream Zone-Telechargement Source
+
+import re
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
+from resources.lib.comaddon import progress, VSlog
+
+SITE_IDENTIFIER = 'zone_telechargement'
+SITE_NAME = 'Zone-Telechargement'
+SITE_DESC = 'Films, séries, animés, documentaires, sport, replay'
+
+URL_MAIN = 'https://www.zone-telechargement.motorcycles/'
+
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+MY_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+MY_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+MY_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
+
+FUNCTION_SEARCH = 'showMovies'
+
+MOVIE_MOVIE = (URL_MAIN, 'showMenuMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films/top/', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'films/hdlight/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showMovieYears')
+MOVIE_VF = (URL_MAIN + 'films/vf/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'films/vostfr/', 'showMovies')
+
+SERIE_SERIES = (URL_MAIN, 'showMenuTvShows')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'series/top/', 'showMovies')
+SERIE_HD = (URL_MAIN + 'series/hdlight/', 'showMovies')
+SERIE_GENRES = (True, 'showGenres')
+SERIE_ANNEES = (True, 'showSerieYears')
+SERIE_VFS = (URL_MAIN + 'series/vf/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
+
+ANIM_ANIMS = (URL_MAIN, 'showMenuAnims')
+ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
+ANIM_VIEWS = (URL_MAIN + 'animes/top/', 'showMovies')
+ANIM_GENRES = (True, 'showGenres')
+ANIM_ANNEES = (True, 'showAnimesYears')
+ANIM_VFS = (URL_MAIN + 'animes/vf/', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'animes/vostfr/', 'showMovies')
+ANIM_ENFANTS = (URL_MAIN + 'animes/', 'showMovies')
+
+DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
+DOC_GENRES = (True, 'showGenres')
+
+SPORT_SPORTS = (URL_MAIN + 'sport/', 'showMovies')
+SPORT_LIVE = (URL_MAIN + 'sport/live/', 'showMovies')
+SPORT_GENRES = (URL_MAIN + 'sport/genres/', 'showGenres')
+
+REPLAYTV_REPLAYTV = (URL_MAIN + 'replay/', 'showMovies')
+REPLAYTV_NEWS = (URL_MAIN + 'replay/', 'showMovies')
+REPLAYTV_GENRES = (True, 'showGenres')
+
+
+def load():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    # Films
+    for label, menu in [
+        ('Films (Derniers ajouts)', MOVIE_NEWS),
+        ('Films', MOVIE_MOVIE),
+        ('Films (Genres)', MOVIE_GENRES),
+        ('Films (Par Années)', MOVIE_ANNEES),
+        ('Films (Les plus vus)', MOVIE_VIEWS),
+        ('Films (VF)', MOVIE_VF),
+        ('Films (VOSTFR)', MOVIE_VOSTFR),
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'films.png', oOutputParameterHandler)
+
+    # Séries
+    for label, menu in [
+        ('Séries (Derniers ajouts)', SERIE_NEWS),
+        ('Séries', SERIE_SERIES),
+        ('Séries (Genres)', SERIE_GENRES),
+        ('Séries (Par Années)', SERIE_ANNEES),
+        ('Séries (VF)', SERIE_VFS),
+        ('Séries (VOSTFR)', SERIE_VOSTFRS),
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'series.png', oOutputParameterHandler)
+
+    # Animés
+    for label, menu in [
+        ('Animés (Derniers ajouts)', ANIM_NEWS),
+        ('Animés (Genres)', ANIM_GENRES),
+        ('Animés (VF)', ANIM_VFS),
+        ('Animés (VOSTFR)', ANIM_VOSTFRS),
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'animes.png', oOutputParameterHandler)
+
+    # Documentaires
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'news.png', oOutputParameterHandler)
+
+    # Sports
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sports', 'sport.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'live.png', oOutputParameterHandler)
+
+    # Replay TV
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showGenres():
+    oGui = cGui()
+    liste = [
+        ['Action', URL_MAIN + 'films/action/'],
+        ['Animation', URL_MAIN + 'films/animation/'],
+        ['Aventure', URL_MAIN + 'films/aventure/'],
+        ['Comédie', URL_MAIN + 'films/comedie/'],
+        ['Drame', URL_MAIN + 'films/drame/'],
+        ['Epouvante-Horreur', URL_MAIN + 'films/epouvante-horreur/'],
+        ['Fantastique', URL_MAIN + 'films/fantastique/'],
+        ['Policier', URL_MAIN + 'films/policier/'],
+        ['Romance', URL_MAIN + 'films/romance/'],
+        ['Science-Fiction', URL_MAIN + 'films/science-fiction/'],
+        ['Thriller', URL_MAIN + 'films/thriller/'],
+        ['Documentaire', URL_MAIN + 'documentaires/'],
+        ['Divers', URL_MAIN + 'films/divers/']
+    ]
+    oOutputParameterHandler = cOutputParameterHandler()
+    for sTitle, sUrl in liste:
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+def showSearch():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if sSearchText:
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    for label, menu in [
+        ('Recherche Films', MY_SEARCH_MOVIES),
+        ('Films (Derniers ajouts)', MOVIE_NEWS),
+        ('Films (Genres)', MOVIE_GENRES),
+        ('Films (VF)', MOVIE_VF),
+        ('Films (VOSTFR)', MOVIE_VOSTFR)
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'films.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+def showMenuTvShows():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    for label, menu in [
+        ('Recherche Séries', MY_SEARCH_SERIES),
+        ('Séries (Derniers ajouts)', SERIE_NEWS),
+        ('Séries (Genres)', SERIE_GENRES),
+        ('Séries (VF)', SERIE_VFS),
+        ('Séries (VOSTFR)', SERIE_VOSTFRS)
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'series.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+def showMenuAnims():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    for label, menu in [
+        ('Recherche Animés', MY_SEARCH_ANIMS),
+        ('Animés (Derniers ajouts)', ANIM_NEWS),
+        ('Animés (Genres)', ANIM_GENRES),
+        ('Animés (VF)', ANIM_VFS),
+        ('Animés (VOSTFR)', ANIM_VOSTFRS)
+    ]:
+        oOutputParameterHandler.addParameter('siteUrl', menu[0])
+        oGui.addDir(SITE_IDENTIFIER, menu[1], label, 'animes.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
