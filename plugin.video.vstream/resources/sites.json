@@ -206,7 +206,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv854.me/"
+            "url": "https://livetv858.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.zip/"
+            "url": "https://flemmix.stream/"
         },
         "wilifilm": {
             "label": "Wilifilm",
