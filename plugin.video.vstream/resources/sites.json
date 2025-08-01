@@ -153,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.one/",
-            "url": "https://fs-mirror08.lol/"
+            "url": "https://fsmirror46.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -196,7 +196,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://iramiv.com/"
+            "url": "https://moovbob.com/"
         },
         "les_docus": {
             "label": "Les docus",
@@ -206,7 +206,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv854.me/"
+            "url": "https://livetv860.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -343,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.mov/"
+            "url": "https://flemmix.biz/"
         },
         "wilifilm": {
             "label": "Wilifilm",

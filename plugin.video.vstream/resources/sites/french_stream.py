@@ -444,15 +444,20 @@ def showMovieLinks():
                     sHosterUrl = aEntry[1]
                     if not sHosterUrl:
                         continue
-                        if sHosterUrl in links:
-                            continue
-                        links.append(sHosterUrl)
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if oHoster:
-                            sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
-                            oHoster.setDisplayName(sDisplayTitleLang)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    if sHosterUrl in links:
+                        continue
+                    links.append(sHosterUrl)
+                    if "flixeo" in sHosterUrl:
+                        oRequestHandler = cRequestHandler(sHosterUrl)
+                        oRequestHandler.request()
+                        sHosterUrl = oRequestHandler.getRealUrl()
+
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if oHoster:
+                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
+                        oHoster.setDisplayName(sDisplayTitleLang)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
