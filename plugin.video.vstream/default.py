@@ -107,6 +107,9 @@ class main:
             if isFav(sSiteName, sFunction):
                 return
 
+            if isRecommandations(sSiteName, sFunction):
+                return
+
             if isWatched(sSiteName, sFunction):
                 return
 
@@ -240,6 +243,14 @@ def isGui(sSiteName, sFunction):
 def isFav(sSiteName, sFunction):
     if sSiteName == 'cFav':
         plugins = __import__('resources.lib.bookmark', fromlist=['cFav']).cFav()
+        function = getattr(plugins, sFunction)
+        function()
+        return True
+    return False
+
+def isRecommandations(sSiteName, sFunction):
+    if sSiteName == 'cRecommandations':
+        plugins = __import__('resources.lib.recommandations', fromlist=['cRecommandations']).cRecommandations()
         function = getattr(plugins, sFunction)
         function()
         return True
