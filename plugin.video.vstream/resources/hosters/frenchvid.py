@@ -5,7 +5,8 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
+import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -51,24 +52,65 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', self._url)
         oRequest.addParametersLine(postdata)
-        page = oRequest.request(jsonDecode=True)
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
-    
-            api_call = dialog().VSselectqual(qua, url)
-    
-            oRequest = cRequestHandler(api_call)
-            oRequest.addHeaderEntry('Host', 'fvs.io')
-            oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.request()
-            api_call = oRequest.getRealUrl()
-    
-            if api_call:
-                return True, api_call + '|User-Agent=' + UA
+        
+        # Enhanced debugging - log the API request details
+        VSlog("FrenchVid Debug - API URL: %s" % url)
+        VSlog("FrenchVid Debug - POST data: %s" % postdata)
+        VSlog("FrenchVid Debug - Referer: %s" % self._url)
+        
+        try:
+            # First get raw response to check what we're actually receiving
+            raw_response = oRequest.request(jsonDecode=False)
+            VSlog("FrenchVid Debug - Raw response length: %d" % len(raw_response) if raw_response else 0)
+            VSlog("FrenchVid Debug - Raw response preview: %s" % raw_response[:200] if raw_response else "Empty response")
+            
+            # Check if response looks like JSON
+            if not raw_response:
+                VSlog("FrenchVid Error - Empty response from API")
+                dialog().VSerror("Erreur : Réponse vide de l'API (%s)" % url)
+                return False, False
+            
+            if not raw_response.strip().startswith('{') and not raw_response.strip().startswith('['):
+                VSlog("FrenchVid Error - Response is not JSON format: %s" % raw_response[:100])
+                dialog().VSerror("Erreur : Réponse invalide de l'API (non-JSON)")
+                return False, False
+            
+            # Try to decode JSON manually with better error handling
+            try:
+                page = json.loads(raw_response)
+                VSlog("FrenchVid Debug - JSON parsed successfully")
+            except json.JSONDecodeError as e:
+                VSlog("FrenchVid Error - JSON decode error: %s" % str(e))
+                VSlog("FrenchVid Error - Failed response content: %s" % raw_response)
+                dialog().VSerror("Erreur : Connexion impossible (JSON invalide) %s" % url)
+                return False, False
+            
+            if page and 'data' in page:
+                url = []
+                qua = []
+                for x in page['data']:
+                    url.append(x['file'])
+                    qua.append(x['label'])
+        
+                api_call = dialog().VSselectqual(qua, url)
+        
+                oRequest = cRequestHandler(api_call)
+                oRequest.addHeaderEntry('Host', 'fvs.io')
+                oRequest.addHeaderEntry('User-Agent', UA)
+                oRequest.request()
+                api_call = oRequest.getRealUrl()
+        
+                if api_call:
+                    return True, api_call + '|User-Agent=' + UA
+            else:
+                VSlog("FrenchVid Error - No 'data' key in JSON response: %s" % str(page))
+                dialog().VSerror("Erreur : Format de réponse API invalide")
+                return False, False
+                
+        except Exception as e:
+            VSlog("FrenchVid Error - General exception: %s" % str(e))
+            dialog().VSerror("Erreur : Connexion impossible (%s) %s" % (str(e), url))
+            return False, False
 
 
         oRequestHandler = cRequestHandler(self._url)
