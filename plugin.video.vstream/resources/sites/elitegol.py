@@ -22,7 +22,7 @@ URL_LINK = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_link')
 
 SPORT_SPORTS = (True, 'load')
 #SPORT_GENRES = ('json.php', 'showGenres')  # FOOT
-SPORT_LIVE = ('json.php', 'showMovies')
+#SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('lecteur/', 'showTV')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -66,6 +66,7 @@ channels = {
     # 35: ['multisport+ 5', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
     # 36: ['multisport+ 6', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
     # 24: ['TF1', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/TF1_logo_2013.png/800px-TF1_logo_2013.png'],
+    # 25: ['TMC', ''],
     # 26: ['M6', ''],
     # 27: ['W9', ''],
     # 28: ['France 2', 'https://i.imgur.com/PvpkxgG.png'],

@@ -6,7 +6,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib import util
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0'
 
 class cHoster(iHoster):
 
@@ -28,7 +28,7 @@ class cHoster(iHoster):
 
         if aResult[0] is True:
             api_call = aResult[1][0]
-            api_call = api_call.replace(',', '').replace('.urlset', '')
+            #api_call = api_call.replace(',', '').replace('.urlset', '')
             api_call = api_call + '|Referer=' + util.urlHostName(self._url)
             return True, api_call
 

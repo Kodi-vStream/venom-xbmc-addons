@@ -837,5 +837,11 @@
 			<image>https://images.lesindesradios.fr/fit-in/300x2000/filters:format(webp)/filters:quality(100)/radios/voltage/images/logo_ExCzyMRb7o.jpeg</image>
 			<identifier>Hits</identifier>
 		</track>
+		<track>
+			<location>https://stream.radiobeton.com:8001/stream.mp3</location>
+			<title>Radio Béton</title>
+			<image>https://www.radiobeton.com/www/wp-content/uploads/2024/08/cropped-betonVect.png</image>
+			<identifier>Hip-hop</identifier>
+		</track>
 	</trackList>
 </playlist>

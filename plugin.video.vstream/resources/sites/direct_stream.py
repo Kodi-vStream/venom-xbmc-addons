@@ -53,6 +53,25 @@ channels = [
     ['L\'equipe', [71, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
     ['L\'equipe Live 1', [79, 'https://frembed.xyz/logo/channels/lequipe-live-1-min.png']],
     ['L\'equipe Live 2', [80, 'https://frembed.xyz/logo/channels/lequipe-live-2-min.png']],
+
+    # ['France 24', [85, '']],
+    # ['LCI', [117, '']],
+    # ['MTV Hits', [120, '']],
+    # ['', [122, '']],
+    
+
+    # ['J ONE', [90, '']],
+    # ['Nickelodeon', [92, '']],
+    # ['Canal J', [93, '']],
+    # ['Boomerang', [94, '']],
+    # ['Toute l'histoire', [101, '']],
+    # ['', [102, 'Canal+ Family']],
+    # ['', [103, '']],
+    # ['', [104, '']],
+    # ['', [105, '']],
+    # ['Discovery', [108, '']],
+    # ['Planete+ Aventure', [109, '']],
+    
     ]
 
 

@@ -2605,6 +2605,7 @@ def showHosters(searchUrl = ''):
     listRes = getHosterList(siteUrl)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    uniqueLinks = set()
 
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
     sorted(listRes.keys(), key=trie_res)
@@ -2613,6 +2614,11 @@ def showHosters(searchUrl = ''):
             sUrl = sHosterUrl
             link, paste, movies = sUrl.split('|')
     
+            # filtrer les doublons fournis dans des pastes différents
+            if link in uniqueLinks:
+                continue
+            uniqueLinks.add(link) 
+
             sDisplayName = sTitle
             sDisplayRes = res
             if res:
