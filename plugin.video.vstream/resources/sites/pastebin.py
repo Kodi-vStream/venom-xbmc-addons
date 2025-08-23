@@ -346,15 +346,21 @@ class PasteContent:
                 return []
 
             if lines[0].startswith('#'):  # paste index
-                allLines = self.readIndex(lines)
-                if allLines:
-                    self._getCache().save(pasteBin, lines, self.movies)
-                return allLines
+                for paste in lines:
+                    if paste.startswith('#'):    # ligne en commentaire
+                        continue
+                    if len(paste.strip()) == 0:  # ligne vide
+                        continue
+                    listePastes.append(paste)
+            else:
+                listePastes.append(pasteBin)
+
+            # mise en cache
+            self._getCache().save(pasteBin, lines, self.movies)
 
         return listePastes
 
 
-            
     def getLines(self, pasteBin, sMedia=''):
 
         sContent, self.movies, renew = self._getCache().read(pasteBin)
@@ -385,8 +391,7 @@ class PasteContent:
 
             if lines[0].startswith('#'):  # paste index
                 allLines = self.readIndex(lines, sMedia)
-                if allLines:
-                    self._getCache().save(pasteBin, lines, self.movies)
+                self._getCache().save(pasteBin, lines, self.movies)
                 return allLines
 
             # Vérifie si la ligne d'entête existe avec les champs obligatoires
