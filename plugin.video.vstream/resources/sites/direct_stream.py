@@ -51,8 +51,8 @@ channels = [
     ['Automoto', [68, 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg']],
 
     ['L\'equipe', [71, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
-    ['L\'equipe Live 1', [79, 'https://frembed.xyz/logo/channels/lequipe-live-1-min.png']],
-    ['L\'equipe Live 2', [80, 'https://frembed.xyz/logo/channels/lequipe-live-2-min.png']],
+    ['L\'equipe Live 1', [79, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
+    ['L\'equipe Live 2', [80, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
 
     # ['France 24', [85, '']],
     # ['LCI', [117, '']],
