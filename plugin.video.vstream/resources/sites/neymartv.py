@@ -18,7 +18,7 @@ SITE_DESC = 'Toutes les chaines de Sport'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-SPORT_GENRES = ('p/all-sports-tv-schedule.html', 'showGenres')
+#SPORT_GENRES = ('p/all-sports-tv-schedule.html', 'showGenres')
 
 TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
@@ -70,8 +70,8 @@ def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
