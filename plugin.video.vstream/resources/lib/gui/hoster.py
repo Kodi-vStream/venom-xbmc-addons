@@ -300,7 +300,7 @@ class cHosterGui:
         if ('flashx' in sHostName) or ('filez' in sHostName):
             return self.getHoster('flashx')
 
-        if ('xcoic' in sHostName):
+        if ('xcoic' in sHostName) or ('filmoon' in sHostName):
             return self.getHoster('filemoon')
 
         if ('mystream' in sHostName) or ('mstream' in sHostName):
@@ -401,8 +401,13 @@ class cHosterGui:
                 if 'content="VOE">' in html or re.search(r'voe', html, re.I):
                     # Reconstruit l'URL pour voe
                     sHosterUrl2 = 'https://voe.com/%s' % (fullURL.split('/e/', 1)[1])
-                elif 'filemoon' in html:
+                elif 'filemoon' in html or 'filmoon' in html:
                     sHosterUrl2 = 'https://filemoon.com/%s' % (fullURL.split('/e/', 1)[1])
+                elif 'Redirecting...' in html:
+                    urlMatch = re.search(r"window\.location\.href\s*=\s*'([^']+)", html)
+                    if urlMatch:
+                        sHosterUrl2 = urlMatch.group(1)
+                    
                 if sHosterUrl2:
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
             except Exception as e:

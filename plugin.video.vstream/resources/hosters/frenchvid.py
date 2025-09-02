@@ -5,7 +5,8 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
+import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -51,24 +52,53 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', self._url)
         oRequest.addParametersLine(postdata)
-        page = oRequest.request(jsonDecode=True)
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
-    
-            api_call = dialog().VSselectqual(qua, url)
-    
-            oRequest = cRequestHandler(api_call)
-            oRequest.addHeaderEntry('Host', 'fvs.io')
-            oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.request()
-            api_call = oRequest.getRealUrl()
-    
-            if api_call:
-                return True, api_call + '|User-Agent=' + UA
+        
+        try:
+            # First get raw response to check what we're actually receiving
+            raw_response = oRequest.request(jsonDecode=False)
+            
+            # Check if response looks like JSON
+            if not raw_response:
+                VSlog("FrenchVid Error - Empty response from API")
+                return False, False
+            
+            raw_response = raw_response.strip()
+            if not raw_response.startswith('{') and not raw_response.startswith('['):
+                VSlog("FrenchVid Error - Response is not JSON format: %s" % raw_response[:100])
+                return False, False
+            
+            # Try to decode JSON manually with better error handling
+            try:
+                page = json.loads(raw_response)
+            except json.JSONDecodeError as e:
+                VSlog("FrenchVid Error - JSON decode error: %s" % str(e))
+                VSlog("FrenchVid Error - Failed response content: %s" % raw_response)
+                return False, False
+            
+            if page and 'data' in page:
+                url = []
+                qua = []
+                for x in page['data']:
+                    url.append(x['file'])
+                    qua.append(x['label'])
+        
+                api_call = dialog().VSselectqual(qua, url)
+        
+                oRequest = cRequestHandler(api_call)
+                oRequest.addHeaderEntry('Host', 'fvs.io')
+                oRequest.addHeaderEntry('User-Agent', UA)
+                oRequest.request()
+                api_call = oRequest.getRealUrl()
+        
+                if api_call:
+                    return True, api_call + '|User-Agent=' + UA
+            else:
+                VSlog("FrenchVid Error - No 'data' key in JSON response: %s" % str(page))
+                return False, False
+                
+        except Exception as e:
+            VSlog("FrenchVid Error - General exception: %s" % str(e))
+            return False, False
 
 
         oRequestHandler = cRequestHandler(self._url)

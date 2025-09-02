@@ -315,6 +315,51 @@ class PasteContent:
         #         mode = int(addons.getSetting("hoster_uptobox_mode_default"))
         #     self.upToStream = 4-mode
         # return self.upToStream
+        
+        
+    # return les codes d'un index ou le code lui-même si ce n'est pas un index
+    def getCodesIndex(self, pasteBin):
+
+        listePastes = []
+
+        sContent, self.movies, renew = self._getCache().read(pasteBin)
+        
+        # Lecture en cache
+        if sContent:
+            if sContent.startswith("['#"):    # paste index
+                if renew: # renouveller le cache du paste index
+                    threading.Timer(10, renewPaste, args=(pasteBin, )).start()
+
+                lines = eval(sContent)       # TODO trop long
+                for paste in lines:
+                    if paste.startswith('#'):    # ligne en commentaire
+                        continue
+                    if len(paste.strip()) == 0:  # ligne vide
+                        continue
+                    listePastes.append(paste)
+            else:
+                listePastes.append(pasteBin)
+        else:
+            # test si paste accessible
+            lines, self.movies = self._decompress(pasteBin)
+            if not lines:
+                return []
+
+            if lines[0].startswith('#'):  # paste index
+                for paste in lines:
+                    if paste.startswith('#'):    # ligne en commentaire
+                        continue
+                    if len(paste.strip()) == 0:  # ligne vide
+                        continue
+                    listePastes.append(paste)
+            else:
+                listePastes.append(pasteBin)
+
+            # mise en cache
+            self._getCache().save(pasteBin, lines, self.movies)
+
+        return listePastes
+
 
     def getLines(self, pasteBin, sMedia=''):
 
@@ -334,8 +379,6 @@ class PasteContent:
         if sContent:
             lines = eval(sContent)       # TODO trop long
             if lines[0].startswith('#'):    # paste index
-                if renew: # renouveller le cache du paste index
-                    threading.Timer(10, renewPaste, args=(pasteBin, )).start()
                 return self.readIndex(lines, sMedia)
             entete = lines[0].split(";")
 
@@ -348,8 +391,7 @@ class PasteContent:
 
             if lines[0].startswith('#'):  # paste index
                 allLines = self.readIndex(lines, sMedia)
-                if allLines:
-                    self._getCache().save(pasteBin, lines, self.movies)
+                self._getCache().save(pasteBin, lines, self.movies)
                 return allLines
 
             # Vérifie si la ligne d'entête existe avec les champs obligatoires
@@ -2154,7 +2196,11 @@ def showMovies(sSearch=''):
     pasteMaxLen = []
     maxlen = 0
 
-    listeIDs = getPasteList(pasteID)
+    # si les codes à la racine sont des index, on les déplis
+    listeIndex = getPasteList(pasteID)
+    listeIDs = []
+    for pasteBin in listeIndex:
+        listeIDs.extend(pbContent.getCodesIndex(pasteBin))
 
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)

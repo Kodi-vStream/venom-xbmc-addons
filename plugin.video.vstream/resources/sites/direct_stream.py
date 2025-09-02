@@ -23,9 +23,9 @@ SPORT_TV = ('lecteur/', 'showTV')
 # chaines
 channels = [
     
-    ['DAZN 1', [57, 'https://cdn.sincroguia.tv/uploads/images/e/q/k/xdazn1.jpg.pagespeed.ic.oaUemASdvr.jpg']],
-    ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
-    ['DAZN 3', [73, 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg']],
+    # ['DAZN 1', [57, 'https://cdn.sincroguia.tv/uploads/images/e/q/k/xdazn1.jpg.pagespeed.ic.oaUemASdvr.jpg']],
+    # ['DAZN 2', [58, 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg']],
+    # ['DAZN 3', [73, 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg']],
     
     ['bein Sports 1', [8, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png']],
     ['bein Sports 2', [9, 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png']],
@@ -33,12 +33,12 @@ channels = [
 
     ['Canal+', [40, 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG']],
     ['Canal+ Foot', [6, 'https://upload.wikimedia.org/wikipedia/fr/3/3b/C%2B_Foot.png']],
-    ['Canal+ Sport', [12, 'https://frembed.xyz/logo/channels/canal-plus-sport.png']],
-    ['Canal+ Sport 1', [74, 'https://frembed.xyz/logo/channels/canal-plus-sport-1-min.png']],
-    ['Canal+ Sport 2', [75, 'https://frembed.xyz/logo/channels/canal-plus-sport-2.png']],
-    ['Canal+ Sport 3', [76, 'https://frembed.xyz/logo/channels/canal-plus-sport-3.png']],
-    ['Canal+ Sport 4', [77, 'https://frembed.xyz/logo/channels/canal-plus-sport-4.png']],
-    ['Canal+ Sport 5', [78, 'https://frembed.xyz/logo/channels/canal-plus-sport-5-min.png']],
+    ['Canal+ Sport', [12, 'https://upload.wikimedia.org/wikipedia/fr/2/2c/C%2B_Sport_%282023%29.png']],
+    ['Canal+ Sport 1', [74, 'https://icdb.tv/images/9679d2b4b59b44e1914255178fe869fa.jpg']],
+    ['Canal+ Sport 2', [75, 'https://upload.wikimedia.org/wikipedia/commons/4/40/Canal%2B_Sport_2_PL.png']],
+    ['Canal+ Sport 3', [76, 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Canal%2B_Sport_3_PL.svg/960px-Canal%2B_Sport_3_PL.svg.png']],
+    ['Canal+ Sport 4', [77, 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Canal%2B_Sport_4_PL.png']],
+    ['Canal+ Sport 5', [78, 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/CANAL%2B_Sport_5.png/800px-CANAL%2B_Sport_5.png']],
     ['Canal+ sport 360', [5, 'https://upload.wikimedia.org/wikipedia/fr/1/11/C%2B_Sport_360.png']],
 
     ['eurosport 1', [14, 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg']],
@@ -51,8 +51,8 @@ channels = [
     ['Automoto', [68, 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg']],
 
     ['L\'equipe', [71, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
-    ['L\'equipe Live 1', [79, 'https://frembed.xyz/logo/channels/lequipe-live-1-min.png']],
-    ['L\'equipe Live 2', [80, 'https://frembed.xyz/logo/channels/lequipe-live-2-min.png']],
+    ['L\'equipe Live 1', [79, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
+    ['L\'equipe Live 2', [80, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
 
     # ['France 24', [85, '']],
     # ['LCI', [117, '']],
