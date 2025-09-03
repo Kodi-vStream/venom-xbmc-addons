@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "url": "https://www.animesultra.net/"
+            "url": "https://v8.animesultra.net/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -42,7 +42,7 @@
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
             "active": "True",
-            "url": "https://buzzmonclick.net/category/replay-tv/"
+            "url": "https://buzzmonclick.io/category/replay-tv/"
         },
         "channelstream": {
             "label": "ChannelStream",
@@ -57,12 +57,12 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.mov/"
+            "url": "https://coflix.cc/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
             "active": "True",
-            "url": "https://www.cpasmieux.icu/"
+            "url": "https://www.cpasmieux.is/"
         },
         "daddyhd": {
             "label": "DaddyHD",
@@ -72,7 +72,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld2025.com/"
+            "url": "https://darkiworld11.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -102,7 +102,7 @@
         "dulourd": {
             "label": "DuLourd",
             "active": "True",
-            "url": "https://www.dulourd.day/"
+            "url": "https://www.dulourd.boo/"
         },
         "elitegol": {
             "label": "Elitegol",
@@ -152,8 +152,8 @@
         "french_stream": {
             "label": "French-stream",
             "active": "True",
-            "site_info": "https://fstream.one/",
-            "url": "https://fs-mirror08.lol/"
+            "site_info": "https://fstream.info/",
+            "url": "https://fsmirror46.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -196,7 +196,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://iramiv.com/"
+            "url": "https://kambad.com/"
         },
         "les_docus": {
             "label": "Les docus",
@@ -206,7 +206,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv854.me/"
+            "url": "https://livetv860.me/"
         },
         "livetv_b": {
             "label": "Live TV BIS",
@@ -348,7 +348,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.mov/"
+            "url": "https://flemmix.sbs/"
         },
         "wilifilm": {
             "label": "Wilifilm",

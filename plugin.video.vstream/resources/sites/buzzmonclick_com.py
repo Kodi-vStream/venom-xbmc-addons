@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-import unicodedata
 import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
@@ -86,7 +85,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div id="post-[0-9]+".+?<a class="clip-link.+?title="([^"]+)" href="([^"]+).+?img src="([^"]+)'
+    sPattern = '<div id="post-[0-9]+".+?href="([^"]+).+?img src="([^"]+)" alt="([^"]+)" \/'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -96,21 +95,14 @@ def showMovies(sSearch=''):
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
-            try:
-                sTitle = unicode(aEntry[0], 'utf-8')  # converti en unicode
-                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
-                # sTitle = unescape(str(sTitle))
-                sTitle = sTitle.encode("utf-8")
-            except NameError:
-                sTitle = aEntry[0]
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]
 
             # mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', sTitle)
             sTitle = re.sub(', (?:Replay|Video|Vidéo|vidéo)', '', sTitle)
-            sUrl = aEntry[1]
-            sThumb = aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

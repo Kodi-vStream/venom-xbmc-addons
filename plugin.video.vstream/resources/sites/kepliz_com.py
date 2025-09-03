@@ -193,13 +193,13 @@ def showMovies(sSearch=''):
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue    # Filtre de recherche
 
-            sDisplayTitle = ("%s (%s) [%s]") % (sTitle, sYear, sQual)
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sQual', sQual)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)

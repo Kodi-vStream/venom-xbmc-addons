@@ -575,12 +575,7 @@ class cDb(object):
         sTmdbId = meta['tmdbId'] if 'tmdbId' in meta else ''
 
         # on enleve avant de remettre pour retrier
-        ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
-        try:
-            self.dbcur.execute(ex)
-        except Exception as e:
-            VSlog('SQL ERROR - ' + ex)
-            pass
+        self.del_viewing(meta)
 
         try:
             ex = 'INSERT INTO viewing (tmdb_id, title_id, title, siteurl, site, fav, cat, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
@@ -629,10 +624,17 @@ class cDb(object):
             self.db.commit()
             update = self.db.total_changes
 
-            # si pas trouvé, on essaie sans la cat, juste le titre
-            if not update and sTitleWatched and 'cat' in meta:
-                del meta['cat']
-                return self.del_viewing(meta)
+            # si pas trouvé
+            if not update and sTitleWatched:
+                # si série, on essaie les saisons S01 -> S1
+                if meta['cat'] == '4' and '_S0' in sTitleWatched:
+                    meta['titleWatched'] = meta['titleWatched'].replace('_S0', '_S')
+                    return self.del_viewing(meta)
+    
+                # on essaie sans la cat, juste le titre
+                if 'cat' in meta:
+                    del meta['cat']
+                    return self.del_viewing(meta)
 
             return True
         except Exception as e:

@@ -107,9 +107,14 @@ class cTrakt:
         """
         Rafraîchit l'access token en utilisant le refresh token.
         """
+        
+        # vérifier si necéssaire
+        if not self.isTokenExpired():
+            return
+
         refresh_token = self.ADDON.getSetting('refresh_token')
         if not refresh_token:
-            self.DIALOG.VSinfo("Aucun refresh token trouvé, veuillez vous authentifier à nouveau.")
+            self.DIALOG.VSinfo("Aucun token trouvé, veuillez vous authentifier à nouveau.")
             return self.getToken()
 
         try:
@@ -144,9 +149,8 @@ class cTrakt:
         return time.time() > (token_time + expires_in)
 
     def getLoad(self):
-        # Vérifier si le token est expiré avant de continuer
-        if self.isTokenExpired():
-            self.refreshToken()
+        self.refreshToken() # renouveller le token si nécessaire
+
         oGui = cGui()
         bstoken = self.ADDON.getSetting('bstoken')
 
@@ -403,6 +407,9 @@ class cTrakt:
 
 
     def getLists(self, count = 0, sPage=None):
+        
+        self.refreshToken() # renouveller le token si nécessaire
+
         oGui = cGui()
         bNext = count==0
         oInputParameterHandler = cInputParameterHandler()
@@ -510,6 +517,8 @@ class cTrakt:
 
 
     def getBsout(self):
+        self.refreshToken() # renouveller le token si nécessaire
+
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -572,6 +581,7 @@ class cTrakt:
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
         oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
         if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
+            self.refreshToken() # renouveller le token si nécessaire
             oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
         sHeaders = oRequestHandler.getResponseHeader()
@@ -958,8 +968,11 @@ class cTrakt:
 
 
     # Récupérer les épisodes qui n'ont pas été lus jusqu'au bout
+    #https://api.trakt.tv/sync/playback/type
     def setEpisodeProgress(self):
-        #https://api.trakt.tv/sync/playback/type
+
+        self.refreshToken() # renouveller le token si nécessaire
+
         # oRequestHandler = cRequestHandler(URL_API + 'sync/playback/' + ('movies' if sCat == '1' else 'episodes'))
         oRequestHandler = cRequestHandler(URL_API + 'sync/playback/episodes')
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -1110,6 +1123,8 @@ class cTrakt:
 
 
     def getBseasons(self):
+        self.refreshToken() # renouveller le token si nécessaire
+
         oGui = cGui()
 
         oInputParameterHandler = cInputParameterHandler()
@@ -1174,6 +1189,8 @@ class cTrakt:
 
     
     def getBepisodes(self):
+        self.refreshToken() # renouveller le token si nécessaire
+
         oGui = cGui()
 
         oInputParameterHandler = cInputParameterHandler()
@@ -1326,9 +1343,7 @@ class cTrakt:
 
     def getAction(self, Action='', sEpisode = '', progress=0, requestType = cRequestHandler.REQUEST_TYPE_POST):
 
-        if self.ADDON.getSetting('bstoken') == '':
-            self.DIALOG.VSinfo('Vous devez être connecté')
-            return
+        self.refreshToken() # renouveller le token si nécessaire
 
         oInputParameterHandler = cInputParameterHandler()
         if Action:

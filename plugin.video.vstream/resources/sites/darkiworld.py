@@ -240,6 +240,8 @@ def showMovies(sSearch=''):
         sSearchText = oUtil.CleanName(sSearchText)
         oRequestHandler = cRequestHandler(URL_MAIN + siteUrl)
         sHtmlContent = oRequestHandler.request()
+        if oRequestHandler.oResponse.status_code != 200:
+            return
         startJson = '{"searchPage":'
         endJson = ',"rendered_ssr"'
         aResult = oParser.abParse(sHtmlContent, startJson, endJson)
@@ -259,6 +261,10 @@ def showMovies(sSearch=''):
 #        sType = 'series' if 'series?' in siteUrl else 'movie' if 'movie' in siteUrl else 'doc' if siteUrl.startswith('doc') else 'animes'
         oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
         sHtmlContent = oRequestHandler.request()
+        if oRequestHandler.oResponse.status_code != 200:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]## NO CONNEXION ##[/COLOR]')
+            oGui.setEndOfDirectory()
+            return
         startJson = '"data":'
         endJson = '},"loader":'
         aResult = oParser.abParse(sHtmlContent, startJson, endJson)
@@ -343,6 +349,10 @@ def showMovieLinks():
     sUrl = URL_MAIN + 'download-page/' + videoID
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
+    if oRequest.oResponse.status_code != 200:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]## NO CONNEXION ##[/COLOR]')
+        oGui.setEndOfDirectory()
+        return
     
     # liens darkibox
     sHtmlContent = oParser.abParse(sHtmlContent, 'class="fi-ta-table', 'class="fi-ta-table')
@@ -377,6 +387,10 @@ def showSaisons():
     sUrl = '%stitles/%s/series' % (URL_MAIN, videoID)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    if oRequestHandler.oResponse.status_code != 200:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]## NO CONNEXION ##[/COLOR]')
+        oGui.setEndOfDirectory()
+        return
 
     startJson = '"seasons":{"current_page":1,'
     endJson = '},"rendered_ssr":'

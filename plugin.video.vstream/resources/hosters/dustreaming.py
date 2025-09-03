@@ -4,7 +4,7 @@ import json
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 
 
 class cHoster(iHoster):
@@ -21,18 +21,43 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Referer', self._url)
         oRequest.addParameters('r', '')
         oRequest.addParameters('d', 'dustreaming.fr')
-        sHtmlContent = oRequest.request()
+        
+        try:
+            sHtmlContent = oRequest.request()
+            # Check if response is empty or invalid
+            if not sHtmlContent:
+                VSlog("DustStreaming Error - Empty response from API")
+                return False, False
+            
+            sHtmlContent = sHtmlContent.strip()
+            if not sHtmlContent.startswith('{') and not sHtmlContent.startswith('['):
+                VSlog("DustStreaming Error - Response is not JSON format: %s" % sHtmlContent[:100])
+                return False, False
+            
+            # Try to parse JSON with better error handling
+            try:
+                page = json.loads(sHtmlContent)
+            except json.JSONDecodeError as e:
+                VSlog("DustStreaming Error - JSON decode error: %s" % str(e))
+                VSlog("DustStreaming Error - Failed response content: %s" % sHtmlContent)
+                return False, False
 
-        page = json.loads(sHtmlContent)
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
+            if page and 'data' in page:
+                url_list = []
+                qua = []
+                for x in page['data']:
+                    url_list.append(x['file'])
+                    qua.append(x['label'])
 
-            if url:
-                api_call = dialog().VSselectqual(qua, url)
+                if url_list:
+                    api_call = dialog().VSselectqual(qua, url_list)
+            else:
+                VSlog("DustStreaming Error - No 'data' key in JSON response: %s" % str(page))
+                return False, False
+
+        except Exception as e:
+            VSlog("DustStreaming Error - General exception: %s" % str(e))
+            return False, False
 
         if api_call:
             return True, api_call

@@ -120,7 +120,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/json')
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParameters('postData', pdata)
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
@@ -130,6 +130,7 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+
 
     # url year thumb title
     sPattern = '<article class="movie-box.+?href="([^"]+).+?title="">(\d+)<.+?img data-src="([^"]+).+?alt="([^"]+).+?'

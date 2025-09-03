@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import siteManager,VSlog
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'french_stream'
@@ -371,7 +371,7 @@ def showSerieLinks():
             if 'clear' in aEntryTab[0]:
                 continue
             
-            sLang = aEntryTab[1].strip().split(' ')[-1]
+            sLang = aEntryTab[1].replace('.', '').strip().split(' ')[-1]
             aResult = oParser.parse(aEntryTab[2], sPattern)
             if aResult[0]:
                 for aEntry in aResult[1]:
@@ -427,37 +427,37 @@ def showMovieLinks():
 
     sHtmlContent = cRequestHandler(sUrl).request()
 
-    # url hoster    
-    sPattern = 'data-url-default="([^"]+)">([^<]+)<(.+?)</button>'
-    aResult = cParser().parse(sHtmlContent, sPattern)
+    oParser = cParser()
+    sHtmlContent = oParser.abParse(sHtmlContent, 'playerUrls = {', '};')
+    sPattern = '"([^"]+)": {([^}]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        links = []
-        for aEntry in aResult[1][::-1]:
-            sDisplayTitle =  '%s (%s)' % (sMovieTitle, aEntry[1])
-            sHosterUrl = aEntry[0]
-            links.append(sHosterUrl)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        for aEntry in aResult[1]:
+            links = aEntry[1]
+            sPattern = '([^"]+)": "([^"]+)"'
+            aResult = oParser.parse(links, sPattern)
+            if aResult[0]:
+                links = []
+                for aEntry in aResult[1]:
+                    sLang = aEntry[0].replace('Default', '')
+                    sHosterUrl = aEntry[1]
+                    if not sHosterUrl:
+                        continue
+                    if sHosterUrl in links:
+                        continue
+                    links.append(sHosterUrl)
+                    if "flixeo" in sHosterUrl:
+                        oRequestHandler = cRequestHandler(sHosterUrl)
+                        oRequestHandler.request()
+                        sHosterUrl = oRequestHandler.getRealUrl()
 
-                sHosterLang = aEntry[2]
-                sPattern = 'version="([^"]+)" data-url="([^"]+)'
-                aResult = cParser().parse(sHosterLang, sPattern)
-                if aResult[0]:
-                    for aEntry in aResult[1][::-1]:
-                        sHosterUrl = aEntry[1]
-                        if sHosterUrl in links:
-                            continue
-                        links.append(sHosterUrl)
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if oHoster:
-                            sDisplayTitleLang =  '%s [%s]' % (sDisplayTitle, aEntry[0])
-                            oHoster.setDisplayName(sDisplayTitleLang)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if oHoster:
+                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
+                        oHoster.setDisplayName(sDisplayTitleLang)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
