@@ -229,7 +229,7 @@ class cRequestHandler:
                 self.BUG_SSL = True
                 return self.__callRequest(jsonDecode)
             # Retry with DNS only if addon is present
-            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
+            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e) or 'Failed to resolve' in str(e)):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
@@ -337,7 +337,7 @@ class cRequestHandler:
             
             URL_MAIN = siteManager().getUrlMain(self.SITE_IDENTIFIER)
             if URL_MAIN == '':
-                URL_MAIN = "['1.1.1.1', '2606:4700:4700::1111', '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']"
+                URL_MAIN = "['1.1.1.1', '2606:4700:4700::1111', '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40', '45.90.28.130', '2a07:a8c0::71:a65b', '45.90.30.130', '2a07:a8c1::71:a65b']"
             resolver.nameservers = eval(URL_MAIN)
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
