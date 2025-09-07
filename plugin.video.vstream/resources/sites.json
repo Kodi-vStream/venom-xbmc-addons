@@ -212,7 +212,7 @@
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.blue/"
+            "url": "https://monstream.bike/"
         },
         "mysteriam": {
             "label": "MySteriam",
