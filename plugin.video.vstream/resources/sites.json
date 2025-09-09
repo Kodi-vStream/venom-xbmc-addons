@@ -152,7 +152,7 @@
         "french_stream": {
             "label": "French-stream",
             "active": "True",
-            "site_info": "https://fstream.info/",
+            "site_info": "https://fstream.click/",
             "url": "https://fsmirror46.lol/"
         },
         "french_stream_lol": {
@@ -206,7 +206,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv860.me/"
+            "url": "https://livetv863.me/"
         },
         "monstream": {
             "label": "Mon Stream",
