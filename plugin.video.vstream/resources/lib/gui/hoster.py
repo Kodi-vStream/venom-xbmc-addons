@@ -266,7 +266,7 @@ class cHosterGui:
         if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
 
-        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName):
+        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName) or ('earnvids' in sHostName):
             return self.getHoster('filelions')
 
         if ('playvidto' in sHostName):
@@ -391,7 +391,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
 
         # Si on a rien trouvé mais que le lien semble valide (ex: /e/ dans l'URL)
-        if "/e/" in fullURL:
+        if ("/e/" in fullURL) or ("/v/" in fullURL):
             try:
                 from resources.lib.handler.requestHandler import cRequestHandler
                 oRequest = cRequestHandler(fullURL)
@@ -403,6 +403,10 @@ class cHosterGui:
                     sHosterUrl2 = 'https://voe.com/%s' % (fullURL.split('/e/', 1)[1])
                 elif 'filemoon' in html or 'filmoon' in html:
                     sHosterUrl2 = 'https://filemoon.com/%s' % (fullURL.split('/e/', 1)[1])
+                elif 'vidhide' in html:
+                    sHosterUrl2 = 'https://earnvids.com/%s' % (fullURL.split('/v/', 1)[1])
+                elif 'guardstorage' in html:
+                    sHosterUrl2 = 'https://vidguard.com/%s' % (fullURL.split('/e/', 1)[1])
                 elif 'Redirecting...' in html:
                     urlMatch = re.search(r"window\.location\.href\s*=\s*'([^']+)", html)
                     if urlMatch:
