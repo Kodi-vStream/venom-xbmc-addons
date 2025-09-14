@@ -31,6 +31,13 @@ class cHoster(iHoster):
 
         if aResult[0] is True:
             api_call = aResult[1][0]
+        else:
+            #Deuxieme essais
+            sPattern = '["\']hls[24]["\']:\s*["\']([^"\']+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if aResult[0] is True:
+                api_call = aResult[1][0]
 
         if api_call:
             return True, api_call
