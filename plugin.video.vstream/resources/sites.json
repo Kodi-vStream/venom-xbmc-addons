@@ -27,6 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://v8.animesultra.net/"
         },
         "bd_streams": {
@@ -82,7 +83,7 @@
         "direct_stream": {
             "label": "direct-streamfr",
             "active": "True",
-            "url": "https://play.frembed.club/"
+            "url": "https://play.frembed.lat/"
         },
         "dnspython": {
             "label": "DNS Python",
@@ -304,7 +305,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.io/"
+            "url": "https://top-stream.me/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -343,7 +344,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.sbs/"
+            "url": "https://flemmix.monster/"
         },
         "wilifilm": {
             "label": "Wilifilm",
