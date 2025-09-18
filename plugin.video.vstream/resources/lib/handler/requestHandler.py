@@ -229,7 +229,9 @@ class cRequestHandler:
                 self.BUG_SSL = True
                 return self.__callRequest(jsonDecode)
             # Retry with DNS only if addon is present
-            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e)):
+            elif self.__enableDNS == False and ('getaddrinfo failed' in str(e) or
+                                                 'Failed to establish a new connection' in str(e) or
+                                                 'Failed to resolve' in str(e)):
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
