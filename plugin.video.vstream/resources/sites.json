@@ -58,7 +58,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.cc/"
+            "url": "https://coflix.tel/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -153,8 +153,8 @@
         "french_stream": {
             "label": "French-stream",
             "active": "True",
-            "site_info": "https://fstream.click/",
-            "url": "https://fsmirror46.lol/"
+            "site_info": "https://fstream.info/",
+            "url": "https://fs-miroir6.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
