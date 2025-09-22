@@ -187,8 +187,8 @@ def showHosters():
         sPattern = 'window.location.href = "([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sHosterUrl = aResult[1][0]
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+            sHosterUrl = aResult[1][0].strip()
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     elif 'dood.forum-tv.org' in sUrl:
         showDoodHosters(sMovieTitle, sUrl)

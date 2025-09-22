@@ -27,6 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
+            "cloudflare": "True",
             "url": "https://v8.animesultra.net/"
         },
         "bd_streams": {
@@ -57,7 +58,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.cc/"
+            "url": "https://coflix.tel/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -82,7 +83,7 @@
         "direct_stream": {
             "label": "direct-streamfr",
             "active": "True",
-            "url": "https://play.frembed.club/"
+            "url": "https://play.frembed.lat/"
         },
         "dnspython": {
             "label": "DNS Python",
@@ -153,7 +154,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fsmirror46.lol/"
+            "url": "https://fs-miroir6.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -206,13 +207,13 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv860.me/"
+            "url": "https://livetv863.me/"
         },
         "monstream": {
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.blue/"
+            "url": "https://monstream.bike/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -304,7 +305,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.io/"
+            "url": "https://top-stream.me/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -343,7 +344,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.sbs/"
+            "url": "https://flemmix.monster/"
         },
         "wilifilm": {
             "label": "Wilifilm",
