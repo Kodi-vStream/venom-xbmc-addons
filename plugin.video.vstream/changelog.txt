@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.6.1 - 22/09/25 ***
+- liens : meilleure détection de plusieurs liens
+
 *** 3.6.0 - 02/09/25 ***
 - Pastebin : Meilleurs propositions prenant en compte les différents codes
 - Séries en cours de lecture : Correction des séries en double
