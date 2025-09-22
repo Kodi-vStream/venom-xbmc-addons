@@ -208,7 +208,7 @@ def addEpisode(sUrl, sMovieTitle):
     sSaison = data[-2]
     sLang = data[-1].upper()
 
-    sPattern = '<script type="text/javascript" src="([^"]+)\" defer'
+    sPattern = '<script type="text/javascript" src=[\'"]([^\'"]+)[\'"] *defer'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
 
