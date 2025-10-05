@@ -225,7 +225,7 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload', 'fsvid',
+                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload', 'fsvid', 'sendvid',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
@@ -234,7 +234,7 @@ class cHosterGui:
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
-                            'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
+                            'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
                             'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
 
 # désactivé 'uptostream', 'uptobox'
@@ -371,7 +371,7 @@ class cHosterGui:
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
-                                'vfsplayer', 'gotochus', 'sendvid', 'femax'] if x in sHostName), None)
+                                'vfsplayer', 'gotochus', 'femax'] if x in sHostName), None)
         if val:
             return self.getHoster("frenchvid")
 

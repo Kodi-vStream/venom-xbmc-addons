@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.6.2 - 06/10/25 ***
+- AnimeSama : retour des liens
+- liens : meilleure détection de plusieurs liens
+
 *** 3.6.1 - 22/09/25 ***
 - liens : meilleure détection de plusieurs liens
 

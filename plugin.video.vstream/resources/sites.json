@@ -28,7 +28,7 @@
             "label": "Animes Ultra",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://v8.animesultra.net/"
+            "url": "https://animesultra.org/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -58,7 +58,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.tel/"
+            "url": "https://coflix.zip/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -83,7 +83,7 @@
         "direct_stream": {
             "label": "direct-streamfr",
             "active": "True",
-            "url": "https://play.frembed.lat/"
+            "url": "https://play.frembed.sbs/"
         },
         "dnspython": {
             "label": "DNS Python",
@@ -109,7 +109,6 @@
             "label": "Elitegol",
             "active": "True",
             "url": "https://tutvlive.ru/",
-            "site_info": "https://elitegol.lat/",
             "url_link": "player/%d"
         },
         "extreme_down": {
@@ -138,7 +137,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.icu/"
+            "url": "https://www.free-telecharger.hair/"
         },
         "freebox": {
             "label": "Freebox",
@@ -154,7 +153,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs-miroir6.lol/"
+            "url": "https://fs-miroir13.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -305,7 +304,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.me/"
+            "url": "https://top-stream.cc/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -344,7 +343,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.monster/"
+            "url": "https://flemmix.wiki/"
         },
         "wilifilm": {
             "label": "Wilifilm",

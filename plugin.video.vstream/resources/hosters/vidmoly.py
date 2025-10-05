@@ -16,6 +16,8 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         api_call = ''
         oParser = cParser()
+        
+        self._url = self._url.replace('vidmoly.to', 'vidmoly.net')
 
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
