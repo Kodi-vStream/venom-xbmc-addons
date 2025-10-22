@@ -138,7 +138,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.hair/"
+            "url": "https://www.free-telecharger.mom/"
         },
         "freebox": {
             "label": "Freebox",
@@ -154,7 +154,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs4.lol/"
+            "url": "https://fs6.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -337,14 +337,14 @@
             "label": "Wawacity",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.center/"
+            "url": "https://www.wawacity.irish/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.town/"
+            "url": "https://flemmix.mom/"
         },
         "wilifilm": {
             "label": "Wilifilm",
