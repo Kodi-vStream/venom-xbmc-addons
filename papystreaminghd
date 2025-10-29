@@ -1,0 +1,462 @@
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+from resources.lib.gui.hoster import cHosterGui  # systeme de recherche pour l'hôte
+from resources.lib.gui.gui import cGui  # systeme d'affichage pour xbmc
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler  # entree des parametres
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler  # sortie des parametres
+from resources.lib.handler.requestHandler import cRequestHandler  # requête url
+from resources.lib.parser import cParser  # recherche de code
+from resources.lib.comaddon import progress, VSlog  # import du dialog progress
+
+SITE_IDENTIFIER = 'papystreaminghd'  # identifant (nom de votre fichier)
+SITE_NAME = 'PapyStreamingHD'  # nom que KODI affiche
+SITE_DESC = 'Films et séries en streaming HD gratuit, VF et VOSTFR' # description courte de votre source
+
+URL_MAIN = 'https://papystreaminghd.net/'  # url de la source
+
+# definit les url pour les catégories principale
+URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showMovies')
+# recherche global films
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+MY_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')  # filtre uniquement les films pour la recherche
+# recherche global serie
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+MY_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')  # filtre uniquement les séries pour la recherche
+# recherche global anime
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
+MY_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')  # filtre uniquement les animes pour la recherche
+
+FUNCTION_SEARCH = 'showMovies'
+
+# menu films existant dans l'accueil (Home)
+MOVIE_MOVIE = ('http://', 'showMenuMovies')  # films (sous menu)
+MOVIE_NEWS = (URL_MAIN + 'film-gratuit/', 'showMovies')  # films (derniers ajouts)
+MOVIE_HD = (URL_MAIN + 'film-hd/', 'showMovies')  # films HD
+MOVIE_VIEWS = (URL_MAIN + 'film-populaire/', 'showMovies')  # films populaires
+MOVIE_COMMENTS = (URL_MAIN + 'film-top/', 'showMovies')  # films top
+MOVIE_NOTES = (URL_MAIN + 'film-note/', 'showMovies')  # films bien notés
+MOVIE_GENRES = (True, 'showGenres')  # films genres
+MOVIE_ANNEES = (True, 'showMovieYears')  # films (par années)
+# menu supplementaire
+MOVIE_VF = (URL_MAIN + 'film-francais/', 'showMovies')  # films VF
+MOVIE_VOSTFR = (URL_MAIN + 'film-vostfr/', 'showMovies')  # films VOSTFR
+
+# menu serie existant dans l'accueil (Home)
+SERIE_SERIES = ('http://', 'showMenuTvShows')  # séries (sous menu)
+SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')  # séries (derniers ajouts)
+SERIE_VIEWS = (URL_MAIN + 'serie-populaire/', 'showMovies')  # series populaires
+SERIE_HD = (URL_MAIN + 'serie-hd/', 'showMovies')  # séries HD
+SERIE_GENRES = (True, 'showGenres')  # séries genres
+SERIE_ANNEES = (True, 'showSerieYears')  # séries (par années)
+SERIE_VFS = (URL_MAIN + 'serie-francais/', 'showMovies')  # séries VF
+SERIE_VOSTFRS = (URL_MAIN + 'serie-vostfr/', 'showMovies')  # séries Vostfr
+
+# menu animes existant dans l'accueil (Home)
+ANIM_ANIMS = ('http://', 'showMenuAnims')  # animés (sous menu)
+ANIM_NEWS = (URL_MAIN + 'anime/', 'showMovies')  # animés (derniers ajouts)
+ANIM_VIEWS = (URL_MAIN + 'anime-populaire/', 'showMovies')  # animés populaires
+ANIM_GENRES = (True, 'showGenres')  # anime genres
+ANIM_ANNEES = (True, 'showAnimesYears')  # anime (par années)
+ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')  # animés VF
+ANIM_VOSTFRS = (URL_MAIN + 'anime-vostfr/', 'showMovies')  # animés VOSTFR
+
+# Documentaires
+DOC_NEWS = (URL_MAIN + 'documentaire/', 'showMovies')  # Documentaire
+DOC_DOCS = ('http://', 'load')  # Documentaire Load
+DOC_GENRES = (True, 'showGenres')  # Documentaires Genres
+
+
+def load():  # fonction chargée automatiquement par l'addon, acceuil de la source.
+    oGui = cGui()  # ouvre l'affichage
+
+    oOutputParameterHandler = cOutputParameterHandler()  # appelle la fonction pour sortir un paramètre
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')  # sortie du parametres siteUrl
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'hd.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF) ', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+
+    # fin des menus
+    oGui.setEndOfDirectory()  # ferme l'affichage
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'hd.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films (VF)', 'vf.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTvShows():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries (HD)', 'hd.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuAnims():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_ANIMS[1], 'Recherche Animés ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSearch():  # fonction de recherche
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()  # appelle le clavier xbmc
+    if sSearchText:
+        sUrl = URL_SEARCH[0] + sSearchText  # modifie l'url de recherche
+        showMovies(sUrl)  # appelle la fonction qui pourra lire la page de resultats
+        oGui.setEndOfDirectory()
+        return
+
+
+def showGenres():  # affiche les genres
+    oGui = cGui()
+
+    # Categories adaptées pour PapyStreamingHD
+    liste = []
+    liste.append(['Action', URL_MAIN + 'genre/action/'])
+    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
+    liste.append(['Biographie', URL_MAIN + 'genre/biographie/'])
+    liste.append(['Comédie', URL_MAIN + 'genre/comedie/'])
+    liste.append(['Crime', URL_MAIN + 'genre/crime/'])
+    liste.append(['Documentaire', URL_MAIN + 'genre/documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
+    liste.append(['Familial', URL_MAIN + 'genre/familial/'])
+    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
+    liste.append(['Histoire', URL_MAIN + 'genre/histoire/'])
+    liste.append(['Horreur', URL_MAIN + 'genre/horreur/'])
+    liste.append(['Musique', URL_MAIN + 'genre/musique/'])
+    liste.append(['Mystère', URL_MAIN + 'genre/mystere/'])
+    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
+    liste.append(['Science-Fiction', URL_MAIN + 'genre/science-fiction/'])
+    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
+    liste.append(['Western', URL_MAIN + 'genre/western/'])
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for sTitle, sUrl in liste:  # boucle
+        oOutputParameterHandler.addParameter('siteUrl', sUrl) # sortie de l'url en paramètre
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMovieYears():  # creer une liste inversée d'annees
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1950, 2026)):
+        Year = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSerieYears():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1950, 2026)):
+        Year = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie/annee/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showAnimesYears():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1950, 2026)):
+        Year = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'anime/annee/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMovies(sSearch=''):
+    oGui = cGui()  # ouvre l'affichage
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')  # recupere l'url sortie en paramètre
+    if sSearch:  # si une url et envoyer directement grace a la fonction showSearch
+        sUrl = sSearch.replace(' ', '+')
+
+    oRequestHandler = cRequestHandler(sUrl)  # envoye une requête a l'url
+    sHtmlContent = oRequestHandler.request()  # requête
+
+    # Pattern à adapter selon la structure HTML de PapyStreamingHD
+    # Ce pattern devra être testé et ajusté selon le HTML réel du site
+    sPattern = '<div class="item"[^>]*>.*?<img[^>]*src="([^"]*)"[^>]*>.*?<h3[^>]*><a[^>]*href="([^"]*)"[^>]*>([^<]*)</a></h3>.*?<span[^>]*class="quality"[^>]*>([^<]*)</span>.*?<span[^>]*class="year"[^>]*>([^<]*)</span>'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    # Le plus simple est de faire un VSlog(str(aResult)),
+    # dans le fichier log de Kodi vous pourrez voir un array de ce que recupere le script
+    # et modifier sPattern si besoin
+    VSlog(str(aResult))  # Commenter ou supprimer cette ligne une fois fini
+
+    # affiche une information si aucun resulat
+    if not aResult[0]:
+        oGui.addText(SITE_IDENTIFIER)
+
+    if aResult[0]:
+        total = len(aResult[1])
+        # dialog barre de progression
+        progress_ = progress().VScreate(SITE_NAME)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            # dialog update
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sThumb = aEntry[0]
+            sUrl2 = aEntry[1]
+            sTitle = aEntry[2]
+            sQual = aEntry[3] if len(aEntry) > 3 else ''
+            sYear = aEntry[4] if len(aEntry) > 4 else ''
+            sDesc = ''
+
+            # Nettoyer le titre
+            sTitle = sTitle.replace('En streaming', '').strip()
+
+            # Formatage du titre avec les infos disponibles
+            if sQual and sYear:
+                sTitle = ('%s (%s) [%s]') % (sTitle, sYear, sQual.upper())
+            elif sYear:
+                sTitle = ('%s (%s)') % (sTitle, sYear)
+            elif sQual:
+                sTitle = ('%s [%s]') % (sTitle, sQual.upper())
+
+            # Vérifier si l'URL est complète
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN + sUrl2.lstrip('/')
+
+            # Vérifier si l'image est complète
+            if sThumb and not sThumb.startswith('http'):
+                sThumb = URL_MAIN + sThumb.lstrip('/')
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)  # sortie de l'url
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  # sortie du titre
+            oOutputParameterHandler.addParameter('sThumb', sThumb)  # sortie du poster
+            oOutputParameterHandler.addParameter('sDesc', sDesc)  # sortie de la description
+            oOutputParameterHandler.addParameter('referer', sUrl)  # URL d'origine
+
+            if '/serie' in sUrl2 or '/series' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/anime' in sUrl2:
+                oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/documentaire' in sUrl2:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)  # fin du dialog
+
+    if not sSearch:
+        sNextPage = __checkForNextPage(sHtmlContent)  # cherche la page suivante
+        if sNextPage:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            # Essayer d'extraire le numéro de page
+            sNumPage = re.search('/page/([0-9]+)', sNextPage)
+            if sNumPage:
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage.group(1), oOutputParameterHandler)
+            else:
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()  # ferme l'affichage
+
+
+def __checkForNextPage(sHtmlContent):  # cherche la page suivante
+    oParser = cParser()
+    # Pattern à adapter selon la pagination de PapyStreamingHD
+    sPattern = '<a[^>]*class="[^"]*next[^"]*"[^>]*href="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if aResult[0]:
+        return aResult[1][0]
+
+    return False
+
+
+def showHosters():  # recherche et affiche les hôtes
+    oGui = cGui()  # ouvre l'affichage
+    oInputParameterHandler = cInputParameterHandler()  # apelle l'entree de paramètre
+    sUrl = oInputParameterHandler.getValue('siteUrl')  # apelle siteUrl
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')  # appelle le titre
+    sThumb = oInputParameterHandler.getValue('sThumb')  # appelle le poster
+    referer = oInputParameterHandler.getValue('referer')  # récupère l'URL appelante
+
+    oRequestHandler = cRequestHandler(sUrl)  # requête sur l'url
+    if referer:
+        oRequestHandler.addHeaderEntry('Referer', referer)  # paramètre pour passer l'URL appelante
+    sHtmlContent = oRequestHandler.request()  # requête sur l'url
+
+    oParser = cParser()
+    # Pattern à adapter selon la structure des liens de streaming de PapyStreamingHD
+    sPattern = '<iframe[^>]*src="([^"]+)"'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    # pensez a faire un VSlog(str(aResult)) pour verifier
+    VSlog(str(aResult))
+
+    # si un lien ne s'affiche pas, peut-être que l'hôte n'est pas supporté par l'addon
+    if aResult[0]:
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            
+            # Vérifier si l'URL est complète
+            if not sHosterUrl.startswith('http'):
+                sHosterUrl = URL_MAIN + sHosterUrl.lstrip('/')
+                
+            oHoster = cHosterGui().checkHoster(sHosterUrl)  # recherche l'hôte dans l'addon
+            if oHoster:
+                oHoster.setDisplayName(sMovieTitle)  # nom affiche
+                oHoster.setFileName(sMovieTitle)  # idem
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()  # fin
+
+
+# Pour les series, il y a généralement une étape en plus pour la selection des episodes ou saisons.
+def ShowSerieSaisonEpisodes():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
