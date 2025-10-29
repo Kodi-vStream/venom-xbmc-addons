@@ -52,13 +52,14 @@
         },
         "cinemay_com": {
             "label": "Cinemay",
+            "cloudflare": "True",
             "active": "True",
             "url": "https://cinemay.li/"
         },
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.zip/"
+            "url": "https://coflix.boo/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -73,7 +74,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld11.com/"
+            "url": "https://darkiworld14.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -137,7 +138,7 @@
             "label": "Free Telechargement",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://www.free-telecharger.hair/"
+            "url": "https://www.free-telecharger.mom/"
         },
         "freebox": {
             "label": "Freebox",
@@ -153,7 +154,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs-miroir13.lol/"
+            "url": "https://fs6.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -206,13 +207,13 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv863.me/"
+            "url": "https://livetv868.me/"
         },
         "monstream": {
             "label": "Mon Stream",
             "active": "True",
             "cloudflare": "True",
-            "url": "https://monstream.bike/"
+            "url": "https://monstream.archi/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -304,7 +305,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.cc/"
+            "url": "https://top-stream.co/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -336,14 +337,14 @@
             "label": "Wawacity",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.center/"
+            "url": "https://www.wawacity.irish/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.wiki/"
+            "url": "https://flemmix.mom/"
         },
         "wilifilm": {
             "label": "Wilifilm",
