@@ -1203,7 +1203,7 @@ def searchActors(sSearch=''):
         actorFamous = []
         for actor in result['results']:
             # Ne garder que les acteurs
-            if actor['known_for_department'] != 'Acting':
+            if actor.get('known_for_department', None) != 'Acting':
                 continue
             
             # Ne pas garder garder les éléments non-genrés
