@@ -59,7 +59,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.boo/"
+            "url": "https://coflix.art/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -180,7 +180,7 @@
         "ianime": {
             "label": "Ianime",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://www.ianimes.one/"
         },
         "illimitestreaming": {
@@ -305,7 +305,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.net/"
+            "url": "https://top-stream.co/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -344,7 +344,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.mom/"
+            "url": "https://flemmix.cam/"
         },
         "wilifilm": {
             "label": "Wilifilm",
