@@ -1,6 +1,6 @@
 {
     "sites": {
-        "_1seriestreaming": {
+		"_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "False",
             "url": "https://app.1seriestreaming.io/"
@@ -56,10 +56,15 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
+		"cloudproxy": {
+            "label": "Proxy cloudflare",
+            "active": "True",
+            "url": "https://corsproxy.io/?url="
+        },
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.art/"
+            "url": "https://coflix.bet/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -305,7 +310,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.co/"
+            "url": "https://top-stream.ink/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -344,7 +349,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.cam/"
+            "url": "https://flemmix.club/"
         },
         "wilifilm": {
             "label": "Wilifilm",
