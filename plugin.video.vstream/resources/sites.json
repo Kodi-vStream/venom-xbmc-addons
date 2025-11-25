@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.bet/"
+            "url": "https://coflix.foo/"
         },
         "cpasmieux": {
             "label": "Cpasmieux",
@@ -79,7 +79,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld14.com/"
+            "url": "https://darkiworld15.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -159,7 +159,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs6.lol/"
+            "url": "https://fs8.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
