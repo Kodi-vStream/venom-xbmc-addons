@@ -411,6 +411,8 @@ class cHosterGui:
                     urlMatch = re.search(r"window\.location\.href\s*=\s*'([^']+)", html)
                     if urlMatch:
                         sHosterUrl2 = urlMatch.group(1)
+                elif '.doodcdn' in html:
+                    sHosterUrl2 = 'https://dood.com/%s' % (fullURL.split('/e/', 1)[1])
                     
                 if sHosterUrl2:
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
