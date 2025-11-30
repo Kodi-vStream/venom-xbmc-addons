@@ -430,16 +430,19 @@ def showMovieLinks():
     oParser = cParser()
     sHtmlContent = oParser.abParse(sHtmlContent, 'playerUrls = {', '};')
     sPattern = '"([^"]+)": {([^}]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    aResultHoster = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0]:
-        for aEntry in aResult[1]:
+    if aResultHoster[0]:
+        for aEntry in aResultHoster[1]:
+            hosterName = aEntry[0].replace('Premium', 'fsvid')
+            oHoster = cHosterGui().checkHoster(hosterName)
+            if oHoster :
             links = aEntry[1]
             sPattern = '([^"]+)": "([^"]+)"'
-            aResult = oParser.parse(links, sPattern)
-            if aResult[0]:
+                aResultLink = oParser.parse(links, sPattern)
+                if aResultLink[0]:
                 links = []
-                for aEntry in aResult[1]:
+                    for aEntry in aResultLink[1]:
                     sLang = aEntry[0].replace('Default', '')
                     sHosterUrl = aEntry[1]
                     if not sHosterUrl:
@@ -452,12 +455,10 @@ def showMovieLinks():
                         oRequestHandler.request()
                         sHosterUrl = oRequestHandler.getRealUrl()
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if oHoster:
-                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
-                        oHoster.setDisplayName(sDisplayTitleLang)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
+                    oHoster.setDisplayName(sDisplayTitleLang)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
