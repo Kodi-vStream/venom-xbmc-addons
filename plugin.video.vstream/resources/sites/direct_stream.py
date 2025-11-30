@@ -54,23 +54,61 @@ channels = [
     ['L\'equipe Live 1', [79, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
     ['L\'equipe Live 2', [80, 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png']],
 
+    # ['TNT Sports 4', [1, '']],
+    # ['NOVELAS TV', [3, '']],
+
+    # ['TFX', [16, '']],
+    # ['W9', [18, '']],
+    # ['M6', [39, '']],
+    # ['6ter', [70, '']],
+    # ['SyFy', [29, '']],
+    # ['TF1 Serie Films', [122, '']],
+    # ['Serie club', [128, '']],
+
+    # ['National Geographic', [20, '']],
+    # ['National Geographic Wild', [21, '']],
+    # ['RMC Decouverte', [26, '']],
+    # ['Toute l'histoire', [101, '']],
+    # ['Discovery', [108, '']],
+    # ['Planete+ Aventure', [109, '']],
+    # ['Science et Vie', [121, '']],
+
     # ['France 24', [85, '']],
     # ['LCI', [117, '']],
+    # ['BFM tv', [89, '']],
+    
+    # ['MTV', [46, '']],
+    
+    # Musique
     # ['MTV Hits', [120, '']],
+    # ['CStar', [111, '']],
     # ['', [122, '']],
     
 
+    # ['Game 1', [10, '']],
+    # ['Cartoon Network', [28, '']],
     # ['J ONE', [90, '']],
+    # ['Tiji', [91, '']],
     # ['Nickelodeon', [92, '']],
     # ['Canal J', [93, '']],
     # ['Boomerang', [94, '']],
-    # ['Toute l'histoire', [101, '']],
-    # ['', [102, 'Canal+ Family']],
+    # ['Cartoonito', [110, '']],
+    # ['Disney Channel', [112, '']],
+    # ['Gong', [113, '']],
+    # ['Teletoon+', [116, '']],
+
+    # ['TLC', [107, '']],
+    
+    # cinema
+    # ['', [50, '']],
+    # ['Action', [51, '']],
+    # ['WB tv', [53, '']],
+    # ['Canal+ Family', [102, '']],
     # ['', [103, '']],
     # ['', [104, '']],
     # ['', [105, '']],
-    # ['Discovery', [108, '']],
-    # ['Planete+ Aventure', [109, '']],
+    # ['', [106, '']],
+    # ['Paramount Network', [127, '']],
     
     ]
 
