@@ -26,7 +26,6 @@ MOVIE_VOSTFR = ('xfsearch/version-film/VOSTFR/', 'showMovies')
 SERIE_NEWS = ('s-tv/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VIEWS = ('s-tv/sries-du-moment/', 'showMovies')
-
 SERIE_VOSTFRS = ('s-tv/s-vostfr/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
@@ -341,18 +340,25 @@ def showEpisodes():
         episodeList = json.loads(content)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        for lang in episodeList:
-            for sEpisode in episodeList[lang]:
+        for sLang in episodeList:
+            for sEpisode in episodeList[sLang]:
                 if sEpisode in numEpisodes:
                     continue
-                numEpisodes.append(sEpisode)
-                sTitle = sMovieTitle + ' Episode' + sEpisode
-                sDisplayTitle = sTitle
-                oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + sEpisode)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                found = False   # on garde les numéros d'épisodes qui ont au moins un lien, quelque soit la langue
+                sHosterList = episodeList[sLang][sEpisode]
+                for sHosterName in sHosterList:
+                    if sHosterList[sHosterName]:
+                        numEpisodes.append(sEpisode)
+                        found = True
+                        break
+                if found:
+                    sTitle = sMovieTitle + ' Episode' + sEpisode
+                    sDisplayTitle = sTitle
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + sEpisode)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sLang', sLang)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -381,26 +387,27 @@ def showSerieLinks():
         content = content.replace('{"}', '{}').replace(',"}', ',}').replace('},}', '}}')
         episodeList = json.loads(content)
 
-        for lang in episodeList:
-            for sEpisode in episodeList[lang]:
+        for sLang in episodeList:
+            for sEpisode in episodeList[sLang]:
                 if sEpisode != sEpSearch:
                     continue
 
-                sHosterList = episodeList[lang][sEpisode]
+                sHosterList = episodeList[sLang][sEpisode]
                 for sHosterName in sHosterList:
                     oHoster = cHosterGui().checkHoster(sHosterName)
                     if oHoster:
                         sHosterUrl = sHosterList[sHosterName]
                         if sHosterUrl:
                             if 'Player.php' in sHosterUrl:
-                                sDisplayTitle = '%s [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sHosterName) 
+                                sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), sHosterName) 
                                 oOutputParameterHandler = cOutputParameterHandler()
                                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                                oOutputParameterHandler.addParameter('sLang', sLang)
                                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
                             else:
-                                sTitle = '%s (%s)' % (sMovieTitle, lang.upper())
+                                sTitle = '%s (%s)' % (sMovieTitle, sLang.upper())
                                 oHoster.setDisplayName(sTitle)
                                 oHoster.setFileName(sMovieTitle)
                                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -443,7 +450,7 @@ def showMovieLinks():
                         if sHosterUrl in links:
                             continue
                         links.append(sHosterUrl)
-                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang)
+                        sDisplayTitleLang =  '%s [%s]' % (sMovieTitle, sLang.upper())
                         
                         if "flixeo" in sHosterUrl:
                             oRequestHandler = cRequestHandler(sHosterUrl)
