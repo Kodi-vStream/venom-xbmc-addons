@@ -17,6 +17,12 @@ class cHoster(iHoster):
     def setDisplayName(self, displayName):
         self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + "/" + self.getRealHost() + '[/COLOR]'
 
+    def isDownloadable(self):
+        token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
+        if token_Alldebrid and len(token_Alldebrid)>15: # il faut un token valide
+            return True
+        return False
+
     def _getMediaLinkForGuest(self):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
         if token_Alldebrid:
