@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'cpasmal'
-SITE_NAME = 'CpasMal'
+SITE_NAME = 'CPasMal'
 SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
