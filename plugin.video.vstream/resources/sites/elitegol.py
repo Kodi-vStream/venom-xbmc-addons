@@ -51,9 +51,9 @@ channels = {
     18: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
     19: ['L\'equipe', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png'],
     23: ['Automoto', 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg'],
-    32: ['Canal+ Live 1', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-1-fr.png'],
-    34: ['Canal+ Live 2', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-2-fr.png'],
-    35: ['Canal+ Live 3', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-3-fr.png'],
+    31: ['Canal+ Live 1', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-1-fr.png'],
+    32: ['Canal+ Live 2', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-2-fr.png'],
+    33: ['Canal+ Live 3', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-3-fr.png'],
     2: ['bein Sports 2', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png'],
     3: ['bein Sports 3', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png'],
     4: ['bein Sports MAX 4', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_4.png'],
@@ -122,7 +122,7 @@ def showGenres():
 def showTV():
     oGui = cGui()
 
-    chaines = [20, 21, 22, 39, 40, 11, 12, 13, 14, 17, 18, 15, 16, 19, 23, 32, 34, 35, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    chaines = [20, 21, 22, 39, 40, 11, 12, 13, 14, 17, 18, 15, 16, 19, 23, 31, 32, 33, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     
     # if 'sport' in sUrl:
     # chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
