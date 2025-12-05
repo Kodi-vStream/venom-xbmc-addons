@@ -225,7 +225,7 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'speedvid', 'letsupload', 'fsvid', 'sendvid',
+                            'rutube', 'megawatch', 'vidzi', 'vidzy', 'filetrip', 'speedvid', 'letsupload', 'fsvid', 'sendvid',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
                             'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune', 'playtube',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
@@ -235,14 +235,13 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
-                            'tomacloud', 'myvi', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
+                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
 
 # désactivé 'uptostream', 'uptobox'
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
             return self.getHoster(val.replace('.', ''))
-
 
         # Gestion classique
         if ('vidbm' in sHostName) or ('vedbom' in sHostName):
@@ -362,8 +361,9 @@ class cHosterGui:
         if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
             return self.getHoster('allow_redirects')
 
-        if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
-            return self.getHoster('netu')
+        # le catptcha ne fonctionne pas
+        # if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
+        #     return self.getHoster('netu')
 
         if ('tapepops' in sHostName):
             return self.getHoster('streamtape')
@@ -418,6 +418,10 @@ class cHosterGui:
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
             except Exception as e:
                 pass
+
+        # a la fin, pour éviter d'attraper avant ce qui commence par myvi... (myvidplay)
+        if ('myvi' in sHostName):
+            return self.getHoster('myvi')
 
         return False
 
