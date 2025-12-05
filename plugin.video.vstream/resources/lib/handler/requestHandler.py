@@ -269,6 +269,15 @@ class cRequestHandler:
             if self.oResponse.status_code in [503, 403]:
                 if "Forbidden" not in sContent:
                     
+                    # Tenter par un proxy Cloudflare
+                    from resources.lib.comaddon import siteManager
+                    sitesManager = siteManager()
+                    if sitesManager.isActive('cloudproxy'):
+                        cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
+                        if cloudProxyUrl and cloudProxyUrl not in self.__sUrl:
+                            self.__sUrl = cloudProxyUrl + self.__sUrl
+                            return self.__callRequest(jsonDecode)
+    
                     # Tenter par FlareSolverr
                     
                     CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
