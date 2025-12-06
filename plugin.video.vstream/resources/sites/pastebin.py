@@ -22,11 +22,10 @@ try:
     from sqlite3 import dbapi2 as sqlite
 except:
     from pysqlite2 import dbapi2 as sqlite
-
+    
 
 SITE_IDENTIFIER = 'pastebin'
 SITE_NAME = '[COLOR orange]PasteBin[/COLOR]'
-
 
 
 SITE_DESC = 'Liste depuis %s' % SITE_NAME
@@ -2641,9 +2640,9 @@ def showEpisodesLinks(siteUrl=''):
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+    
 
-
-def showHosters(searchUrl = ''):
+def showHosters(searchUrl=''):
     oGui = cGui()
     from resources.lib.gui.hoster import cHosterGui
     oHosterGui = cHosterGui()
@@ -2664,11 +2663,11 @@ def showHosters(searchUrl = ''):
     for res in sorted(listRes.keys(), key=trie_res):
         for sUrl, lang in listRes[res]:
             link, paste, movies = sUrl.split('|')
-    
+
             # éviter les doublons (même lien dans plusieurs pastes)
             if link in uniqueLinks:
                 continue
-            uniqueLinks.add(link) 
+            uniqueLinks.add(link)
 
             # Libellé affiché (titre exact + rés/ langue)
             sDisplayName = sTitle
@@ -2683,7 +2682,7 @@ def showHosters(searchUrl = ''):
 
             if lang:
                 sDisplayName += ' (%s)' % lang
-    
+
             if movies == 'FALSE':
                 # lien direct vers un hoster, on crée l’item tout de suite
                 oHoster = oHosterGui.checkHoster(link)
@@ -2703,8 +2702,8 @@ def showHosters(searchUrl = ''):
 
     if not searchUrl: # si pas recherche tmdb
         oGui.setEndOfDirectory()
-
-
+    
+    
 def showHoster():
     from resources.lib.gui.hoster import cHosterGui
     oHosterGui = cHosterGui()
@@ -2717,6 +2716,7 @@ def showHoster():
     hosterLienDirect = oHosterGui.getHoster('lien_direct')
 
     resolvedLinks = pbContent.resolveLink(paste, link)
+
     for sHosterUrl, res, lang in resolvedLinks:
         if sHosterUrl:
             if not sHosterUrl.startswith('http'):
@@ -2735,6 +2735,7 @@ def showHoster():
     oGui.setEndOfDirectory()
 
 
+
 # Retrouve tous les liens disponibles pour un film ou un épisode, gère les groupes multipaste
 def getHosterList(siteUrl):
     # Pour supporter les caractères '&' et '+' dans les noms alors qu'ils sont réservés
@@ -2750,6 +2751,12 @@ def getHosterList(siteUrl):
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
     searchTitle = aParams['sTitle'].replace(' | ', ' & ')
+
+    # Supporter la numérotation des épisodes/saisons sous la forme 1 ou 01
+    if searchSaison and searchSaison.isdigit():
+        searchSaison = int(searchSaison)
+    if searchEpisode and searchEpisode.isdigit():
+        searchEpisode = int(searchEpisode)
 
     if sRes == UNCLASSIFIED:
         sRes = ''
@@ -2796,7 +2803,7 @@ def getHosterList(siteUrl):
                 sSaisons = movie[pbContent.SAISON].strip()
                 if sSaisons:
                     if sSaisons.isdigit():
-                        sSaisons = '%02d' % int(sSaisons)
+                        sSaisons = int(sSaisons)
                     if searchSaison != sSaisons:
                         continue
 
@@ -2824,7 +2831,7 @@ def getHosterList(siteUrl):
                         if numEpisode.isdigit():
                             numEpisode = int(numEpisode)    # enlever les 0 devant
                         
-                        if str(numEpisode) == searchEpisode:
+                        if numEpisode == searchEpisode:
                             listLinks.append(link)  # TODO utiliser expend si liste de liens ?
                             break
                 else:
