@@ -278,14 +278,8 @@ def showSaisons():
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
-#            sUrl = aEntry[0]
-            sDisplayTitle = sSaison = aEntry[1].strip()
-            sTitle = sMovieTitle
-            if 'Saison' in sSaison:
-                sTitle = sMovieTitle + ' ' + sSaison
-                sDisplayTitle = sMovieTitle + ' ' + sSaison
-
+            sSaison = aEntry[1].strip()
+            sTitle = sDisplayTitle = sMovieTitle + ' ' + sSaison
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
