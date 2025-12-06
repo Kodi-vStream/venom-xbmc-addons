@@ -154,9 +154,12 @@ def showMovies(sSearch=''):
         pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
-        # oRequest.setRequestType(1)
+        oRequest.request()
+        cookie = oRequest.GetCookies()
+        oRequest.addHeaderEntry('Cookie', cookie)
+        oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
+        oRequest.addHeaderEntry('Referer', URL_SEARCH[0])
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
