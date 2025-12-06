@@ -50,7 +50,7 @@ class cHoster(iHoster):
                 from resources.lib.comaddon import dialog
                 dialog().VSinfo(reponse['error']['message'])
             VSlog('Hoster Alldebrid - Error: ' + reponse['error']['code'])
-                return False, self._url   # quelque soit l'erreur, on retourne le lien pour utiliser un autre hoster
+            return False, self._url   # quelque soit l'erreur, on retourne le lien pour utiliser un autre hoster
 
         api_call = HostURL = reponse["data"]["link"]
         try:
