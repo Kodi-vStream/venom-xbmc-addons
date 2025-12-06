@@ -443,6 +443,9 @@ class cGui:
                     oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
+            tmdbID = oGuiElement.getTmdbId()
+            if tmdbID:
+                videoInfoTag.setUniqueIDs({'tmdb': tmdbID}, None)
 
             # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
             # https://alwinesch.github.io/group__python___info_tag_video.html

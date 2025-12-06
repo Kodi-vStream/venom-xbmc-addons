@@ -1291,6 +1291,8 @@ def showTMDB(paramTerm = ''):
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     term = oInputParameterHandler.getValue('term')
+    # Vignette : prend 'sThumb' depuis la query-string si fourni, sinon image par défaut (évite NameError quand le param manque).
+    sThumbParam = oInputParameterHandler.getValue('sThumb')
     if not term:
         term = paramTerm
     numPage = oInputParameterHandler.getValue('numPage')
@@ -1377,14 +1379,17 @@ def showTMDB(paramTerm = ''):
             if sTmdbId:
                 oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
 
+            # Utiliser une vignette si transmise (facultatif - pour player tmdb-helper)
+            thumbToUse = sThumbParam if sThumbParam else 'no-image.png'
+
             if sMedia == 'serie':
-                oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, thumbToUse, '', '', oOutputParameterHandler)
             elif sMedia == 'anime':
-                oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, thumbToUse, '', '', oOutputParameterHandler)
             elif sMedia == 'divers':
-                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, thumbToUse, '', '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, thumbToUse, '', '', oOutputParameterHandler)
 
             if len(tmdbIds) == 0:
                 break
@@ -2644,6 +2649,7 @@ def showHosters(searchUrl = ''):
     oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
+    sThumb = oInputParameterHandler.getValue('sThumb') or ''      # Pour le Poster transmis par TMDb Helper / player JSON
     if searchUrl:
         siteUrl = searchUrl
     else:
@@ -2656,35 +2662,44 @@ def showHosters(searchUrl = ''):
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
     sorted(listRes.keys(), key=trie_res)
     for res in sorted(listRes.keys(), key=trie_res):
-        for sHosterUrl, lang in listRes[res]:
-            sUrl = sHosterUrl
+        for sUrl, lang in listRes[res]:
             link, paste, movies = sUrl.split('|')
     
-            # filtrer les doublons fournis dans des pastes différents
+            # éviter les doublons (même lien dans plusieurs pastes)
             if link in uniqueLinks:
                 continue
             uniqueLinks.add(link) 
 
+            # Libellé affiché (titre exact + rés/ langue)
             sDisplayName = sTitle
             sDisplayRes = res
             if res:
-                sDisplayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K').replace('WEB', 'HD')
+                sDisplayRes = (res.replace('P', 'p')
+                                   .replace('1080p', 'fullHD')
+                                   .replace('720p', 'HD')
+                                   .replace('2160p', '4K')
+                                   .replace('WEB', 'HD'))
                 sDisplayName += ' [%s]' % sDisplayRes
-                oOutputParameterHandler.addParameter('sRes', sDisplayRes)
+
             if lang:
                 sDisplayName += ' (%s)' % lang
     
             if movies == 'FALSE':
+                # lien direct vers un hoster, on crée l’item tout de suite
                 oHoster = oHosterGui.checkHoster(link)
                 if oHoster:
                     oHoster.setDisplayName(sDisplayName)
                     oHoster.setFileName(sTitle)
                     oHoster.setRes(sDisplayRes)
-                    oHosterGui.showHoster(oGui, oHoster, link)
+                    oHosterGui.showHoster(oGui, oHoster, link, sThumb)
             else:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayName, 'host.png', '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sRes', sDisplayRes)
+                oGui.addLink(SITE_IDENTIFIER, 'showHoster',
+                             sDisplayName,
+                             sThumb or 'host.png', '', oOutputParameterHandler)
 
     if not searchUrl: # si pas recherche tmdb
         oGui.setEndOfDirectory()
@@ -2697,6 +2712,7 @@ def showHoster():
     pbContent = PasteContent()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb') or ''    # Pour le Poster transmis par TMDb Helper / player JSON
     link, paste, pbContent.movies = oInputParameterHandler.getValue('siteUrl').split('|')
     hosterLienDirect = oHosterGui.getHoster('lien_direct')
 
@@ -2712,10 +2728,9 @@ def showHoster():
                 oHoster = oHosterGui.checkHoster(sHosterUrl)
     
             if oHoster:
-                sDisplayName = sTitle
-                oHoster.setDisplayName(sDisplayName)
+                oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
