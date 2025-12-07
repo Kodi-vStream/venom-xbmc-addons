@@ -443,6 +443,7 @@ class cHosterGui:
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         sCat = oInputParameterHandler.getValue('sCat')
         sMeta = oInputParameterHandler.getValue('sMeta')
+        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         if not sTitle:
             sTitle = sFileName
@@ -485,7 +486,9 @@ class cHosterGui:
                     oGuiElement.setCat(sCat)
                     oGuiElement.setMeta(sMeta)
                     oGuiElement.setTitle(sTitle)
-                    oGuiElement.getInfoLabel()
+                    oGuiElement.setTmdbId(sTmdbId)
+                    if not sTmdbId:
+                        oGuiElement.getInfoLabel()  # récupération manuelle des infos
 
                     from resources.lib.player import cPlayer
                     oPlayer = cPlayer()

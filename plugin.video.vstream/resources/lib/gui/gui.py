@@ -443,37 +443,39 @@ class cGui:
                     oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
+            videoInfoTag.setMediaType(data.get('mediatype', ''))
+            videoInfoTag.setSeason(int(data.get('season') or "-1"))
+            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
+            videoInfoTag.setTitle(data.get('title', ""))
+            videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
+            # oListItem.setInfo(oGuiElement.getType(), data)
+
             tmdbID = oGuiElement.getTmdbId()
             if tmdbID:
                 videoInfoTag.setUniqueIDs({'tmdb': tmdbID}, None)
-
-            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
-            # https://alwinesch.github.io/group__python___info_tag_video.html
-            # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(data.get('mediatype', ''))
-            videoInfoTag.setTitle(data.get('title', ""))
-            videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
-            videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
-            videoInfoTag.setPlot(data.get('plot', ""))
-            videoInfoTag.setPlotOutline(data.get('tagline', ""))
-            videoInfoTag.setYear(int(data.get('year', 0)))
-            videoInfoTag.setRating(float(data.get('rating', 0.0)))
-            videoInfoTag.setMpaa(data.get('mpaa', ""))
-            videoInfoTag.setDuration(int(data.get('duration', 0)))
-            videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
-            # inutilisé ? et fragile 
-            # videoInfoTag.setCountries(data.get('country', ['']))
-            videoInfoTag.setTrailer(data.get('trailer', ""))
-            videoInfoTag.setTagLine(data.get('tagline', ""))
-            videoInfoTag.setStudios(list(data.get('studio', '').split("/")))
-            videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
-            videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
-            videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season') or "-1"))
-            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
-            videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
-
-            videoInfoTag.setCast(data.get('cast', []))
+            else:   # les infos récupérées par vStream si pas d'ID TMDB
+                # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
+                # https://alwinesch.github.io/group__python___info_tag_video.html
+                videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
+                videoInfoTag.setPlot(data.get('plot', ""))
+                videoInfoTag.setPlotOutline(data.get('tagline', ""))
+                videoInfoTag.setYear(int(data.get('year', 0)))
+                videoInfoTag.setRating(float(data.get('rating', 0.0)))
+                videoInfoTag.setMpaa(data.get('mpaa', ""))
+                videoInfoTag.setDuration(int(data.get('duration', 0)))
+                videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
+                # inutilisé ? et fragile 
+                # videoInfoTag.setCountries(data.get('country', ['']))
+                videoInfoTag.setTrailer(data.get('trailer', ""))
+                videoInfoTag.setTagLine(data.get('tagline', ""))
+                videoInfoTag.setStudios(list(data.get('studio', '').split("/")))
+                videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
+                videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
+                videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
+                videoInfoTag.setSeason(int(data.get('season') or "-1"))
+                videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
+                videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
+                videoInfoTag.setCast(data.get('cast', []))
 
             if sRes:
                 width = None
