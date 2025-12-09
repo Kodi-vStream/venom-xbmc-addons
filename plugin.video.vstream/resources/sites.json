@@ -1,6 +1,6 @@
 {
     "sites": {
-		"_1seriestreaming": {
+        "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "False",
             "url": "https://app.1seriestreaming.io/"
@@ -27,7 +27,7 @@
         "animesultra": {
             "label": "Animes Ultra",
             "active": "True",
-            "cloudflare": "True",
+            "cloudflare": "False",
             "url": "https://animesultra.org/"
         },
         "bd_streams": {
@@ -52,11 +52,11 @@
         },
         "cinemay_com": {
             "label": "Cinemay",
-            "cloudflare": "True",
-            "active": "True",
+            "cloudflare": "False",
+            "active": "False",
             "url": "https://cinemay.li/"
         },
-		"cloudproxy": {
+        "cloudproxy": {
             "label": "Proxy cloudflare",
             "active": "True",
             "url": "https://corsproxy.io/?url="
@@ -119,7 +119,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://tutvlive.ru/",
+            "url": "https://bolaloca.my/",
             "url_link": "player/%d"
         },
         "extreme_down": {
@@ -164,7 +164,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs8.lol/"
+            "url": "https://fs3.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -221,7 +221,7 @@
         },
         "monstream": {
             "label": "Mon Stream",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://monstream.archi/"
         },
@@ -248,7 +248,7 @@
         "otakufr_com": {
             "label": "OtakuFR",
             "active": "False",
-            "url": "https://otakufr.cc/"
+            "url": "https://on.jetanimes.com/"
         },
         "pastebin": {
             "label": "PasteBin",
