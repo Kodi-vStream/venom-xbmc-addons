@@ -443,13 +443,20 @@ class cGui:
                     oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
-
-            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
-            # https://alwinesch.github.io/group__python___info_tag_video.html
-            # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(data.get('mediatype', ''))
+            videoInfoTag.setSeason(int(data.get('season') or "-1"))
+            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
             videoInfoTag.setTitle(data.get('title', ""))
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
+            # oListItem.setInfo(oGuiElement.getType(), data)
+
+            tmdbID = oGuiElement.getTmdbId()
+            if tmdbID:
+                videoInfoTag.setUniqueIDs({'tmdb': tmdbID, 'tvshow.tmdb': tmdbID}, None)
+            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
+            # https://alwinesch.github.io/group__python___info_tag_video.html
+
+            # les infos récupérées par vStream
             videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
             videoInfoTag.setPlot(data.get('plot', ""))
             videoInfoTag.setPlotOutline(data.get('tagline', ""))
@@ -466,14 +473,12 @@ class cGui:
             videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
             videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
             videoInfoTag.setGenres(''.join(data.get('genre', [""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season') or "-1"))
-            videoInfoTag.setEpisode(int(data.get('episode') or "-1"))
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
-
             videoInfoTag.setCast(data.get('cast', []))
-
+        
             if sRes:
                 width = None
+                height = None
                 if '2160' in sRes:
                     width = 3840
                     height = 2160
@@ -502,7 +507,7 @@ class cGui:
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
             oListItem.setProperty(sPropertyKey, str(sPropertyValue))
-
+        
         return oListItem
 
     # Marquer vu/Non vu

@@ -354,7 +354,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequest.request()
 
-        if siteUrl == 'film':
+        if siteUrl == MOVIE_VIEWS[0]:
             sHtmlContent = oParser.abParse(sHtmlContent, 'wdgt_lateral_movies-', 'wdgt_lateral_movies-')
         else:   # séries populaires
             sHtmlContent = oParser.abParse(sHtmlContent, 'wdgt_lateral_movies-7')
@@ -497,6 +497,7 @@ def showMovieLinks():
     if aResult[0]:
         sHosterUrl = aResult[1][0]
         oRequestHandler = cRequestHandler(sHosterUrl)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
         sPattern = '<li onclick="showVideo\(\'([^\']+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -529,6 +530,7 @@ def showHosters():
         if 'online' in links:
             for hosters in links['online']:
                 oRequestHandler = cRequestHandler(hosters['link'])
+                oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
                 sHtmlContent = oRequestHandler.request()
                 sPattern = '<li onclick="showVideo\(\'([^\']+)'
                 aResult = oParser.parse(sHtmlContent, sPattern)

@@ -3,7 +3,8 @@
 #
 from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from resources.lib.util import urlHostName
+from resources.lib.util import urlHostName, QuotePlus
+
 
 import requests.packages.urllib3.util.connection as urllib3_cn
 import socket
@@ -154,7 +155,7 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
-    def __callRequest(self, jsonDecode=False):
+    def __callRequest(self, jsonDecode=False, paramGet=True):
         if self.__enableDNS:
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
@@ -164,7 +165,7 @@ class cRequestHandler:
         else:
             sParameters = self.__aParamaters
 
-        if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
+        if (paramGet and self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
                 if (self.__sUrl.find('?') == -1):
                     self.__sUrl = self.__sUrl + '?' + str(sParameters)
@@ -208,21 +209,6 @@ class cRequestHandler:
             self.__sResponseHeader = self.oResponse.headers
             self.__sRealUrl = self.oResponse.url
 
-            if jsonDecode == True:
-                sContent = self.oResponse.json()
-            else:
-                sContent = self.oResponse.content
-                # Necessaire pour Python 3
-                if isMatrix() and 'youtube' not in self.oResponse.url:
-                    try:
-                        sContent = sContent.decode()
-                    except:
-                        # Decodage minimum obligatoire.
-                        try:
-                            sContent = sContent.decode('unicode-escape')
-                        except:
-                            pass
-
         except ConnectionError as e:
             errorMsg = str(e)
             # Erreur SSL
@@ -244,8 +230,7 @@ class cRequestHandler:
                     dialog().VSerror(error_msg)
                     sContent = ''
             else:
-                sContent = ''
-                return sContent
+                return ''
 
         except RequestException as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
@@ -266,34 +251,59 @@ class cRequestHandler:
             sContent = ''
 
         if self.oResponse is not None:
-            if self.oResponse.status_code in [503, 403]:
-                if "Forbidden" not in sContent:
-                    
-                    # Tenter par FlareSolverr
-                    
-                    CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
-
-                    json_response = False
+            if jsonDecode:
+                sContent = self.oResponse.json()
+            else:
+                sContent = self.oResponse.content
+                # Necessaire pour Python 3
+                if isMatrix() and 'youtube' not in self.oResponse.url:
                     try:
-                        # On fait une requete.
-                        paramJson = {
-                            'cmd': 'request.%s' % method.lower(),
-                            'url': self.__sUrl
-                        }
-                        if 'postData' in self.__aParamaters:
-                            paramJson['postData'] = self.__aParamaters['postData']
-                        
-                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
+                        sContent = sContent.decode()
                     except:
-                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sUrl)))
+                        # Decodage minimum obligatoire.
+                        try:
+                            sContent = sContent.decode('unicode-escape')
+                        except:
+                            pass
 
-                    if json_response:
-                        response = json_response.json()
-                        if 'solution' in response:
-                            if self.__sUrl != response['solution']['url']:
-                                self.__sRealUrl = response['solution']['url']
+            if self.oResponse.status_code in [503, 403]:
+                if 'Forbidden' not in sContent and 'Just a moment' not in sContent :
+                # si on peut lire Forbidden c'est que la page est accessible mais pas le contenu
+                    
+                    # Tenter par un proxy Cloudflare
+                    from resources.lib.comaddon import siteManager
+                    sitesManager = siteManager()
+                    if sitesManager.isActive('cloudproxy'):
+                        cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
+                        if cloudProxyUrl and cloudProxyUrl not in self.__sUrl:
+                            self.__sUrl = cloudProxyUrl + QuotePlus(self.__sUrl)
+                            return self.__callRequest(jsonDecode, False)
     
-                            sContent = response['solution']['response']
+                    # Tenter par FlareSolverr
+                    if addon().getSetting('use_flaresolverr') == 'true':
+                        CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
+                        json_response = False
+                        try:
+                            # On fait une requete.
+                            paramJson = {
+                                'cmd': 'request.%s' % method.lower(),
+                                'url': self.__sUrl
+                            }
+                            if 'postData' in self.__aParamaters:
+                                paramJson['postData'] = self.__aParamaters['postData']
+                            
+                            json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
+                            if json_response:
+                                response = json_response.json()
+                                if 'solution' in response:
+                                    if self.__sUrl != response['solution']['url']:
+                                        self.__sRealUrl = response['solution']['url']
+            
+                                    sContent = response['solution']['response']
+                        except:
+                            dialog().VSerror("%s (%s)" % ("Page protegee malgré FlareSolverr", urlHostName(self.__sRealUrl)))
+                    else:
+                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sRealUrl)))
 
             if self.oResponse is not None and not sContent:
                 # Ignorer ces codes retours

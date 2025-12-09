@@ -10,6 +10,19 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.7.0 - 09/12/25 ***
+- FrenchStream : les liens sont de nouveaux accessibles, ajout de nombreux nouveaux liens, et d'un menu "Populaire"
+- CPasMal :  nouvelle source de films et de séries
+- coflix : liens de nouveaux accessibles
+- Kepliz : liens proposés lors d'une recherche globale
+- VIDZY : Support de ce nouvel hébergeur
+- Cloudflare : plus de blocage. vStream contourne la protection Cloudflare
+- EliteGol : Retour des chaines sportives
+- Recherche d'acteurs : certaines recherches ne fonctionnaient pas
+- Radio : meilleure qualité audio pour plusieurs radios, passage en hifi/AAC
+- TMDBHelper : gestion des Player et ajout d'informations contextuelles
+- Ergonomie : version plus propre de toutes les icones
+
 *** 3.6.3 - 29/10/25 ***
 - EliteGol : Ajout des chaines Ligue1+
 

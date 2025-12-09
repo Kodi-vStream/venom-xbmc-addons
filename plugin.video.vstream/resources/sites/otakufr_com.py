@@ -22,7 +22,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = (URL_MAIN, 'load')
 ANIM_NEWS = (URL_MAIN, 'showMovies')
-ANIM_MOVIES = (URL_MAIN + 'film', 'showMovies')
+ANIM_MOVIES = ('/films', 'showMovies')
 ANIM_GENRES = (True, 'ShowGenre')
 ANIM_LIST = (URL_MAIN + 'liste-anime/', 'showAlpha')
 
@@ -41,8 +41,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIES[1], 'Animés (Film)', 'films.png', oOutputParameterHandler)
@@ -71,14 +71,15 @@ def showMovies(sSearch=''):
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    if sSearch or '/genre/' in sUrl or '/film' in sUrl:  # news
-        sPattern = '<figure class="m-0">.+?ref="([^"]+).+?(?:src="(.+?)"|\.?) class.+?</i>([^<]+).+?Synopsis:.+?>([^<]+)'
+    if sSearch or '/genre/' in sUrl or ANIM_MOVIES[0] in sUrl:  # news
+        # sPattern = '<figure class="m-0">.+?ref="([^"]+).+?(?:src="(.+?)"|\.?) class.+?</i>([^<]+).+?Synopsis:.+?>([^<]+)'
+        sPattern = 'article id="post-\d+".+?img src="([^"]+)" alt="([^"]+)".+?href="([^"]+)"'
     else:  # populaire et search
-        sPattern = '<article class=".+?ref="([^"]+).+?src="([^"]+).+?title="([^"]+)'
+        sPattern = '<article class=".+?img src="([^"]+).+? alt="([^"]+).+?href="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -94,16 +95,16 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
-            sTitle = aEntry[2]
+            sThumb = aEntry[0]
+            sTitle = aEntry[1].replace(':', '')
+            sUrl2 = aEntry[2]
             sLang = ''
             if 'Vostfr' in sTitle:
                 sLang = 'VOSTFR'
                 sTitle = sTitle.replace('Vostfr', '')
             sDesc = ''
-            if sSearch or '/genre/' in sUrl or '/film' in sUrl:
-                sDesc = aEntry[3]
+            # if sSearch or '/genre/' in sUrl or '/film' in sUrl:
+            #     sDesc = aEntry[3]
 
             sDisplayTitle = sTitle + ' (' + sLang + ')'
 
@@ -111,10 +112,10 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if sSearch or '/genre/' in sUrl or '/film' in sUrl:
+            if sSearch or '/genre/' in sUrl or ANIM_MOVIES[0] not in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -254,7 +255,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -321,19 +322,36 @@ def showHosters():
 
     sHosterUrl = sUrl
     if 'parisanime' in sUrl:
-
         sHtmlContent = unCap(sUrl, siteRefer)
 
         sPattern = "data-url='([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sHosterUrl = aResult[1][0]
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if oHoster:
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster:
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    # deuxieme type de liens
+    else:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = "<li id='player-option-[0-9]+' class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            for aEntry in aResult[1]:
+                sHosterUrl = geturl(aEntry)
+                if 'secured' in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if oHoster:
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -387,3 +405,30 @@ def cleanDesc(sDesc):
         for aEntry in aResult[1]:
             sDesc = sDesc.replace(aEntry, '')
     return sDesc
+
+def geturl(aEntry):
+    UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+    oParser = cParser()
+
+    sPost = aEntry[1]
+    sNum = aEntry[2]
+    sType = aEntry[0]
+
+    pdata = 'action=doo_player_ajax&post=' + sPost + '&nume=' + sNum + '&type=' + sType
+
+    sUrl = URL_MAIN + 'wp-admin/admin-ajax.php'
+
+    oRequest = cRequestHandler(sUrl)
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', UA)
+    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    oRequest.addParametersLine(pdata)
+
+    sHtmlContent = oRequest.request()
+
+    sPattern = 'url":"([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        return aResult[1][0]
+    else:
+        return ''

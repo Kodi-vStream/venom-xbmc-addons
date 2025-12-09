@@ -36,12 +36,11 @@ class cHoster(iHoster):
         oParser = cParser()
         oRequestHandler = cRequestHandler(self._url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.request()
+        sHtmlContent = oRequestHandler.request()
         urlDownload = oRequestHandler.getRealUrl()
         if urlDownload != self._url:
             self._url = urlDownload
-
-        sHtmlContent = cRequestHandler(self._url).request()
+            sHtmlContent = cRequestHandler(self._url).request()
 
         # redirection
         sPattern = '<iframe class="embed-responsive-item" src="([^"]+)"'

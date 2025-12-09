@@ -163,6 +163,8 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('searchword', sSearch)
+        oRequestHandler.addParameters('Referer', sUrl)
+        oRequestHandler.addHeaderEntry('Cookie', 'g=true')
         sABPattern = '<div class="column24"'
     else:
         oInputParameterHandler = cInputParameterHandler()

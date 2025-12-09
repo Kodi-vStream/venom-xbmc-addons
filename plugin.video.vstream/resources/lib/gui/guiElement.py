@@ -140,8 +140,16 @@ class cGuiElement:
     def getSeason(self):
         return self.__Season
 
+    def setSeason(self, season):
+        self.__Season = season
+        self.addItemValues('season', self.__Season)
+
     def getEpisode(self):
         return self.__Episode
+
+    def setEpisode(self, episode):
+        self.__Episode = episode
+        self.addItemValues('episode', self.__Episode)
 
     def setTotalTime(self, data):
         self.__TotalTime = data
@@ -192,8 +200,7 @@ class cGuiElement:
         return self.__sFunctionName
 
     def TraiteTitre(self, sTitle):
-        bMatrix = isMatrix()
-
+        # bMatrix = isMatrix()
         # conversion unicode ne fonctionne pas avec les accents
         # try:
         #     if not bMatrix:
@@ -210,7 +217,7 @@ class cGuiElement:
         """ Début du nettoyage du titre """
         # vire doubles espaces et double points
         sTitle = re.sub(' +', ' ', sTitle)
-        sTitle = re.sub('\.+', '.', sTitle)
+        # sTitle = re.sub('\.+', '.', sTitle)
 
         # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
@@ -278,10 +285,10 @@ class cGuiElement:
     
             if sa:
                 self.__Season = sa
-                self.addItemValues('Season', self.__Season)
+                self.addItemValues('season', self.__Season)
             if ep:
                 self.__Episode = ep
-                self.addItemValues('Episode', self.__Episode)
+                self.addItemValues('episode', self.__Episode)
                 if not self.__Season:
                     self.__Season = '1'   # forcer pour les séries sans saison
 
@@ -458,6 +465,10 @@ class cGuiElement:
                 'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
                 'plot': xbmc.getInfoLabel('ListItem.plot'),
                 'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+                # 'thumbnail': xbmc.getInfoLabel('ListItem.thumb'),
+                # 'icon': xbmc.getInfoLabel('ListItem.Art(icon)'),
+                # 'poster': xbmc.getInfoLabel('ListItem.Art(poster)'),
+                # 'videoinfo': xbmc.getInfoLabel('ListItem.getVideoInfoTag()'),
                 'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
                 'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
                 # 'season': xbmc.getInfoLabel('ListItem.season'),
@@ -486,6 +497,12 @@ class cGuiElement:
                 self.__sThumbnail = url
             if not self.__sPoster:
                 self.__sPoster = url
+#        if 'poster' in meta and meta['poster']:
+#            url = meta.pop('poster')
+#            if not self.__sPoster:
+#                self.__sPoster = url
+#            if not self.__sThumbnail:
+#                self.__sThumbnail = url
 
         # Completer au besoin
         for key, value in meta.items():
