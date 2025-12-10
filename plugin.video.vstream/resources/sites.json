@@ -17,7 +17,7 @@
         "animesama": {
             "label": "Anime Sama",
             "active": "True",
-            "url": "https://anime-sama.org/"
+            "url": "https://anime-sama.eu/"
         },
         "animeultime": {
             "label": "Anime Ultime",
@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.foo/"
+            "url": "https://coflix.fi/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -354,7 +354,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.one/"
+            "url": "https://flemmix.bond/"
         },
         "wilifilm": {
             "label": "Wilifilm",
