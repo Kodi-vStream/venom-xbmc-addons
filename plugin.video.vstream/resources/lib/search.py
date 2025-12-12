@@ -85,7 +85,8 @@ class cSearch:
 
             cGui.CONTENT = 'files'
 
-            oGui.setEndOfDirectory()
+            # non, à l'appelant de décider
+            # oGui.setEndOfDirectory()
 
         except Exception as error:
             VSlog('Error with searchGlobal: ' + str(error))

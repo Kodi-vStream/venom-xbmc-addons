@@ -7,7 +7,7 @@ import xbmc
 import xbmcplugin
 import sys
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isNexus, progress, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, window, isNexus, progress, VSlog, siteManager
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -451,12 +451,17 @@ class cGui:
             # oListItem.setInfo(oGuiElement.getType(), data)
 
             tmdbID = oGuiElement.getTmdbId()
-            if tmdbID:
-                videoInfoTag.setUniqueIDs({'tmdb': tmdbID, 'tvshow.tmdb': tmdbID}, None)
-            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
-            # https://alwinesch.github.io/group__python___info_tag_video.html
+            # Kodi attend des chaînes pour les IDs uniques
+            if tmdbID not in (None, '', 0, '0'):
+                try:
+                    tmdb_str = str(tmdbID)
+                    videoInfoTag.setUniqueIDs({'tmdb': tmdb_str}, 'tmdb')
+                except TypeError:
+                    # En cas de type exotique, on évite de faire planter le thread
+                    pass
 
-            # les infos récupérées par vStream
+            # On RENSEIGNE TOUJOURS les métadonnées, même si un ID TMDb est présent
+            # => le synopsis/local data de vStream/pastebin reste utilisable.
             videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
             videoInfoTag.setPlot(data.get('plot', ""))
             videoInfoTag.setPlotOutline(data.get('tagline', ""))
@@ -672,8 +677,11 @@ class cGui:
     def setEndOfDirectory(self, forceViewMode=False):
         iHandler = cPluginHandler().getPluginHandle()
 
+        # Notification si aucun élément
         if not self.listing:
-            self.addText('cGui')
+            self.showNofication(self.ADDON.VSlang(30204))
+            xbmcplugin.endOfDirectory(iHandler, succeeded=False, cacheToDisc=False)
+            return
 
         # attendre l'arret des thread utilisés pour récupérer les métadonnées
         total = len(self.thread_listing)
@@ -910,8 +918,14 @@ class cGui:
     def openSettings(self):
         return False
 
-    def showNofication(self, sTitle, iSeconds=0):
-        return False
+    def showNofication(self, sDesc, sTitle='vStream', iSeconds=3):
+        # Pas de notif  lors des recherches globales
+        if window(10101).getProperty('search') == 'true':
+            return
+        oInputParameterHandler = cInputParameterHandler()
+        sSite = oInputParameterHandler.getValue('site')
+        siteName = siteManager().getProperty(sSite, siteManager.LABEL)
+        return dialog().VSinfo(sDesc, siteName, iSeconds)
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         return False
