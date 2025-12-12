@@ -197,7 +197,7 @@ class cHome:
         oSearch = cSearch()
         sCat = oInputParameterHandler.getValue('sCat')
         oSearch.searchGlobal(sSearchText, sCat)
-        oGui.setEndOfDirectory()
+
 
     def showMovies(self):
         oGui = cGui()
