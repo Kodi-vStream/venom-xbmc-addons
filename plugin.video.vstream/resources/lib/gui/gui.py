@@ -450,15 +450,14 @@ class cGui:
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
             # oListItem.setInfo(oGuiElement.getType(), data)
 
+            # ID TMDB, pour les films et les séries 
             tmdbID = oGuiElement.getTmdbId()
-            # Kodi attend des chaînes pour les IDs uniques
             if tmdbID not in (None, '', 0, '0'):
                 try:
-                    tmdb_str = str(tmdbID)
-                    videoInfoTag.setUniqueIDs({'tmdb': tmdb_str}, 'tmdb')
+                    tmdb_str = str(tmdbID)  # au format texte
+                    videoInfoTag.setUniqueIDs({'tmdb': tmdb_str, 'tvshow.tmdb': tmdb_str}, 'tmdb')
                 except TypeError:
-                    # En cas de type exotique, on évite de faire planter le thread
-                    pass
+                    pass  # En cas de type exotique, on évite de faire planter le thread
 
             # On RENSEIGNE TOUJOURS les métadonnées, même si un ID TMDb est présent
             # => le synopsis/local data de vStream/pastebin reste utilisable.
