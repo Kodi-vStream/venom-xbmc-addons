@@ -429,18 +429,27 @@ class cGui:
                 else:
                     data['cast'].append((i['name'], i['character'], i['order'], i.get('thumbnail', "")))
 
+        # Fournir la resolution si connue
+        width = None
+        if sRes:
+            if '2160' in sRes:
+                width = 3840
+                height = 2160
+            elif '1080' in sRes:
+                width = 1920
+                height = 1080
+            elif '720' in sRes:
+                width = 1280
+                height = 720
+            elif '480' in sRes:
+                width = 720
+                height = 576
+            
         if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
-            if sRes:
-                if '2160' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 3840, 'height': 2160})
-                elif '1080' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 1920, 'height': 1080})
-                elif '720' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 1280, 'height': 720})
-                elif '480' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
+            if width:
+                oListItem.addStreamInfo('video', {'width': width, 'height': height})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
             videoInfoTag.setMediaType(data.get('mediatype', ''))
@@ -480,26 +489,10 @@ class cGui:
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
             videoInfoTag.setCast(data.get('cast', []))
         
-            if sRes:
-                width = None
-                height = None
-                if '2160' in sRes:
-                    width = 3840
-                    height = 2160
-                elif '1080' in sRes:
-                    width = 1920
-                    height = 1080
-                elif '720' in sRes:
-                    width = 1280
-                    height = 720
-                elif '480' in sRes:
-                    width = 720
-                    height = 576
-                
-                if width:
-                    # [width, height, aspect, duration, codec, stereoMode, language])
-                    videoStreamDetail = xbmc.VideoStreamDetail(width=width, height=height)
-                    videoInfoTag.addVideoStream(videoStreamDetail)
+            if width:
+                # [width, height, aspect, duration, codec, stereoMode, language])
+                videoStreamDetail = xbmc.VideoStreamDetail(width=width, height=height)
+                videoInfoTag.addVideoStream(videoStreamDetail)
 
     
         oListItem.setArt({
