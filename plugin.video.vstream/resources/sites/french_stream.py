@@ -273,13 +273,13 @@ def showSaisons():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sUrl = siteUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sSaisonThumb = oInputParameterHandler.getValue('sThumb')
 
     # get serie_tag
-    if 'http' not in sUrl:
-        sUrl = URL_MAIN + sUrl
+    if 'http' not in siteUrl:
+        sUrl = URL_MAIN + siteUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = 'data-tagz="(.+?)"'
@@ -293,6 +293,11 @@ def showSaisons():
         content = oRequest.request()
         if content and '"error"' not in content:
             saisonsList = json.loads(content)
+            
+            # si pas de saison, au moins la saison 1
+            if len(saisonsList) == 0:
+                saisonsList.append(json.loads('{"title": "Saison 1","full_url": "%s"}' % siteUrl))
+            
             oOutputParameterHandler = cOutputParameterHandler()
             for saison in saisonsList:
                 sUrl = saison['full_url']
@@ -327,27 +332,25 @@ def showEpisodes():
     
 
     # 1ere méthode
-    sPatternEps = '<div id="episodes-vf-data"'
+    sPatternEps = '<div id="episodes-info-data"'
     aResult= oParser.parse(sHtmlContent, sPatternEps)
     if aResult[0]:
-        sHtmlContent = oParser.abParse(sHtmlContent, sPatternEps, 'episodes-vo-data')
-        aResult= oParser.parse(sHtmlContent, '<div data-ep="(\d+)"(.+?)</div')
+        sHtmlContent = oParser.abParse(sHtmlContent, sPatternEps, '</div></div>')
+#        aResult= oParser.parse(sHtmlContent, '<div data-ep="(\d+)"(.+?)</div')
+        aResult= oParser.parse(sHtmlContent, '<div data-ep="(\d+)" data-title="([^"]+)" data-synopsis="([^"]*)" data-poster="([^"]*)">')
+
         if aResult[0]:
-            numEps = []
             oOutputParameterHandler = cOutputParameterHandler()
-            for numEp, links in aResult[1]:
-                if 'http' not in links:
-                    continue
-                if numEp in numEps:
-                    continue
-                numEps.append(numEp)
-                sTitle = sMovieTitle + ' Episode ' + numEp
-                sDisplayTitle = sTitle
+            for episode in aResult[1]:
+                numEp = episode[0]
+                sDisplayTitle = sTitle = '%s Episode %s' % (sMovieTitle, numEp)
+                sDesc = episode[2]
+                sThumb = episode[3]
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + numEp)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodeLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
     
         oGui.setEndOfDirectory()
         return
@@ -382,12 +385,12 @@ def showEpisodes():
                     oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + sEpisode)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodeLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
-def showSerieLinks():
+def showEpisodeLinks():
     oGui = cGui()
     oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -405,15 +408,15 @@ def showSerieLinks():
     sPatternEps = '<div id="episodes-vf-data"'
     if sPatternEps in sHtmlContent:
         sPatternLink = 'data-(.+?)="([^"]+)'
-        for sLang, patternLang in [('VF', sPatternEps), ('VOSTFR', 'episodes-vostfr-data')]:
-            sContentLang = oParser.abParse(sHtmlContent, patternLang, '</div> *</div>')
-            aResult= oParser.parse(sContentLang, '<div data-ep="(\d+)"(.+?)</div')
+        for sLang, patternLang in [('VF', sPatternEps), ('VOSTFR', 'episodes-vostfr-data'), ('VO', 'episodes-vo-data')]:
+            sContentLang = oParser.abParse(sHtmlContent, patternLang, '</div></div>')
+            aResult= oParser.parse(sContentLang, '<div data-ep="(\d+)"(.+?)>')
             if aResult[0]:
                 for numEp, links in aResult[1]:
                     if numEp != sEpSearch:
                         continue
                     if 'http' not in links:
-                        continue
+                        break
                     
                     aResultLink = oParser.parse(links, sPatternLink)
                     if aResultLink[0]:
