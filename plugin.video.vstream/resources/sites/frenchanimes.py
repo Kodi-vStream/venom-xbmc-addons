@@ -184,6 +184,7 @@ def showEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -191,28 +192,68 @@ def showEpisodes():
 
     sStart = 'class="eps" style="display: none">'
     sEnd = '/div>'
+
+    # Besoin de garder les saut de ligne
+    sHtmlContent = sHtmlContent.replace('\n', '@')
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    # Pour les liens myvi
+
+    # Pour les liens sans http
     sHtmlContent = sHtmlContent.replace('!//', '!https://').replace(',//', ',https://')
     
-    # Besoin des saut de ligne
-    sHtmlContent = sHtmlContent.replace('\n', '@')
-
-    sPattern = '([0-9]+)!|(https:.+?)[,|<@]'
+    sPattern = '([0-9]+)!|(https:.+?)[,|@]'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    ep = 0
+    if aResult[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            if aEntry[0]:
+                sDisplaytitle = '%s Episode %s' %(sMovieTitle, aEntry[0])
+
+                oOutputParameterHandler.addParameter('siteUrl', '%s|%s' % (sUrl, aEntry[0]))
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodeLinks', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showEpisodeLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl, searchEp = oInputParameterHandler.getValue('siteUrl').split('|')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sStart = 'class="eps" style="display: none">'
+    sEnd = '/div>'
+
+    # Besoin de garder les saut de ligne
+    sHtmlContent = sHtmlContent.replace('\n', '@')
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    # Pour les liens sans http
+    sHtmlContent = sHtmlContent.replace('!//', '!https://').replace(',//', ',https://')
+    
+    sPattern = '([0-9]+)!|(https:.+?)[,|@]'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+        numEp = 0
         for aEntry in aResult[1]:
-
             if aEntry[0]:
-                ep = 'Episode ' + aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + ep + '[/COLOR]')
-            if aEntry[1]:
-                sTitle = sMovieTitle + ' ' + ep
+                if numEp:
+                    break
+                if aEntry[0] != searchEp:
+                    continue
+                numEp = searchEp
+            if numEp and aEntry[1]:
+                sTitle = sMovieTitle + ' ' + numEp
                 sHosterUrl = aEntry[1]
-
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster:
                     oHoster.setDisplayName(sTitle)
