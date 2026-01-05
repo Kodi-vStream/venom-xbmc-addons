@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.fi/"
+            "url": "https://coflix.nexus/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -164,7 +164,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs3.lol/"
+            "url": "https://fs2.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -216,7 +216,7 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
+            "active": "False",
             "url": "https://livetv869.me/"
         },
         "monstream": {
