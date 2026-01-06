@@ -211,7 +211,7 @@
         },
         "les_docus": {
             "label": "Les docus",
-            "active": "True",
+            "active": "False",
             "url": "https://www.les-docus.com/"
         },
         "livetv": {
