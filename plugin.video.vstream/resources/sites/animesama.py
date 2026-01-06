@@ -92,7 +92,7 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'flex divide-x.+?href="([^"]+)".+?src="([^"]+).+?clamp-2">([^<]+)<.+?truncate">([^<]*).+?truncate">([^<]*)'
+    sPattern = 'card-base"> *<a href="([^"]+).+?src="([^"]+)" *alt="([^"]+).+?>Types<.+?value">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -101,7 +101,7 @@ def showSeries(sSearch=''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
-            sType = aEntry[4]
+            sType = aEntry[3]
             
             if 'Film' not in sType and 'Anime' not in sType:
                 continue

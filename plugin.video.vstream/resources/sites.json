@@ -17,7 +17,7 @@
         "animesama": {
             "label": "Anime Sama",
             "active": "True",
-            "url": "https://anime-sama.org/"
+            "url": "https://anime-sama.tv/"
         },
         "animeultime": {
             "label": "Anime Ultime",
@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.foo/"
+            "url": "https://coflix.nexus/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -164,7 +164,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs3.lol/"
+            "url": "https://fs2.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -211,12 +211,12 @@
         },
         "les_docus": {
             "label": "Les docus",
-            "active": "True",
+            "active": "False",
             "url": "https://www.les-docus.com/"
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
+            "active": "False",
             "url": "https://livetv869.me/"
         },
         "monstream": {
@@ -262,7 +262,7 @@
         },
         "pluto_tv": {
             "label": "Pluto TV",
-            "active": "True",
+            "active": "False",
             "url": "https://api.pluto.tv"
         },
         "radio": {
@@ -304,7 +304,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://v8.toonanime.co/"
+            "url": "https://toonanimetv.com/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -315,7 +315,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.art/"
+            "url": "https://top-stream.fit/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -354,7 +354,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.one/"
+            "url": "https://flemmix.bond/"
         },
         "wilifilm": {
             "label": "Wilifilm",
@@ -368,7 +368,7 @@
         },
         "zone_streaming": {
             "label": "Zone Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://www.zone-streaming.fr/"
         }
     }

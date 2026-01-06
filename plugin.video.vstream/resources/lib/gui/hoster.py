@@ -364,8 +364,8 @@ class cHosterGui:
             return self.getHoster('allow_redirects')
 
         # le catptcha ne fonctionne pas
-        # if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
-        #     return self.getHoster('netu')
+        if ('netu' in sHostName) or ('waaw' in sHostName) or ('hqq' in sHostName) or ('doplay' in sHostName) or ('vizplay' in sHostName) or ('netzues' in sHostName):
+            return self.getHoster('netu')
 
         if ('tapepops' in sHostName):
             return self.getHoster('streamtape')

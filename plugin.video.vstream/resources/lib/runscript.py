@@ -44,11 +44,11 @@ class cClear:
             addon('script.module.urlresolver').openSettings()
             return
 
-        elif (env == 'metahandler'):
+        if (env == 'metahandler'):
             addon('script.module.metahandler').openSettings()
             return
 
-        elif (env == 'changelog_old'):
+        if (env == 'changelog_old'):
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
             try:
                 oRequest = urllib2.Request(sUrl)
@@ -65,7 +65,7 @@ class cClear:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
-        elif (env == 'changelog'):
+        if (env == 'changelog'):
 
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
@@ -127,7 +127,7 @@ class cClear:
             del wd
             return
 
-        elif (env == 'soutient'):
+        if (env == 'soutient'):
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
             try:
                 oRequest = urllib2.Request(sUrl)
@@ -144,31 +144,7 @@ class cClear:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
-        elif (env == 'addon'):  # Vider le cache des métadonnées
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
-                # important seul xbmcvfs peux lire le special
-                try:
-                    cached_Cache = VSPath(cached_Cache).decode("utf-8")
-                except AttributeError:
-                    cached_Cache = VSPath(cached_Cache)
-
-                try:
-                    db = sqlite.connect(cached_Cache)
-                    dbcur = db.cursor()
-                    dbcur.execute('DELETE FROM movie')
-                    dbcur.execute('DELETE FROM tvshow')
-                    dbcur.execute('DELETE FROM season')
-                    dbcur.execute('DELETE FROM episode')
-                    db.commit()
-                    dbcur.close()
-                    db.close()
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
-                except:
-                    self.DIALOG.VSerror(self.ADDON.VSlang(30091))
-            return
-
-        elif (env == 'clean'):
+        if (env == 'clean'):
             liste = ['Historiques des recherches', 'Marque-Pages', 'En cours de lecture',
                      'Niveau de lecture', 'Marqués vues', 'Téléchargements']
             ret = self.DIALOG.VSselect(liste, self.ADDON.VSlang(30110))
@@ -209,28 +185,8 @@ class cClear:
                     VSlog("Exception runscript sql_drop: {0}".format(err))
             return
 
-        elif (env == 'xbmc'):
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                path = "special://temp/"
-                try:
-                    xbmcvfs.rmdir(path, True)
-                    self.DIALOG.VSok(self.ADDON.VSlang(30092))
-                except:
-                    self.DIALOG.VSerror(self.ADDON.VSlang(30093))
-            return
-
-        elif (env == 'fi'):
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                path = "special://temp/archive_cache/"
-                try:
-                    xbmcvfs.rmdir(path, True)
-                    self.DIALOG.VSok(self.ADDON.VSlang(30095))
-                except:
-                    self.DIALOG.VSerror(self.ADDON.VSlang(30096))
-            return
-
         # activer toutes les sources
-        elif (env == 'enableSources'):
+        if (env == 'enableSources'):
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 sitesManager = siteManager()
                 sitesManager.enableAll()
@@ -240,7 +196,7 @@ class cClear:
             return
 
         # désactiver toutes les sources
-        elif (env == 'disableSources' or env == 'disableSourcesSilent' ):
+        if (env == 'disableSources' or env == 'disableSourcesSilent' ):
             if env == 'disableSources' and not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 return
             sitesManager = siteManager()
@@ -250,7 +206,7 @@ class cClear:
             return
 
         # aciver/désactiver les sources
-        elif (env == 'search'):
+        if (env == 'search'):
 
             from resources.lib.handler.pluginHandler import cPluginHandler
             valid = '[COLOR green][x][/COLOR]'
@@ -337,36 +293,7 @@ class cClear:
             del wd
             return
 
-        elif (env == 'thumb'):
-
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30098)):
-
-                text = False
-                path = "special://userdata/Thumbnails/"
-                path_DB = "special://userdata/Database"
-                try:
-                    xbmcvfs.rmdir(path, True)
-                    text = 'Clear Thumbnail Folder, Successful[CR]'
-                except:
-                    text = 'Clear Thumbnail Folder, Error[CR]'
-
-                folder, items = xbmcvfs.listdir(path_DB)
-                items.sort()
-                for sItemName in items:
-                    if "extures" in sItemName:
-                        cached_Cache = "/".join([path_DB, sItemName])
-                        try:
-                            xbmcvfs.delete(cached_Cache)
-                            text += 'Clear Thumbnail DB, Successful[CR]'
-                        except:
-                            text += 'Clear Thumbnail DB, Error[CR]'
-
-                if text:
-                    text = "%s (Important relancer Kodi)" % text
-                    self.DIALOG.VSok(text)
-            return
-
-        elif (env == 'sauv'):
+        if (env == 'sauv'):
             select = self.DIALOG.VSselect(['Import', 'Export'])
             DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             if select >= 0:
@@ -389,14 +316,84 @@ class cClear:
 
                 return
 
-        elif (env == 'testpremium'):    # tester un compte premium
+        if (env == 'testpremium'):    # tester un compte premium
             from resources.lib.gui.hoster import cHosterGui
             oHoster = cHosterGui().getHoster("alldebrid")
             oHoster.testPremium()
             return
 
-        else:
-            return
+        if (env == 'addon' or env == 'cleanAll'):  # Vider le cache des métadonnées
+            if env == 'cleanAll' or self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
+                # important seul xbmcvfs peux lire le special
+                try:
+                    cached_Cache = VSPath(cached_Cache).decode("utf-8")
+                except AttributeError:
+                    cached_Cache = VSPath(cached_Cache)
+
+                try:
+                    db = sqlite.connect(cached_Cache)
+                    dbcur = db.cursor()
+                    dbcur.execute('DELETE FROM movie')
+                    dbcur.execute('DELETE FROM tvshow')
+                    dbcur.execute('DELETE FROM saga')
+                    dbcur.execute('DELETE FROM season')
+                    dbcur.execute('DELETE FROM episode')
+                    db.commit()
+                    dbcur.close()
+                    db.close()
+                    if env != 'cleanAll':
+                        self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
+                except:
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30091))
+
+        if (env == 'xbmc' or env == 'cleanAll'):
+            if env == 'cleanAll' or self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                path = "special://temp/"
+                try:
+                    xbmcvfs.rmdir(path, True)
+                    if env != 'cleanAll':
+                        self.DIALOG.VSok(self.ADDON.VSlang(30092))
+                except:
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30093))
+
+        if (env == 'fi' or env == 'cleanAll'):
+            if env == 'cleanAll' or self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                path = "special://temp/archive_cache/"
+                try:
+                    xbmcvfs.rmdir(path, True)
+                    if env != 'cleanAll':
+                        self.DIALOG.VSok(self.ADDON.VSlang(30095))
+                except:
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30096))
+
+        if (env == 'thumb' or env == 'cleanAll'):
+
+            if env == 'cleanAll' or self.DIALOG.VSyesno(self.ADDON.VSlang(30098)):
+
+                text = False
+                path = "special://userdata/Thumbnails/"
+                path_DB = "special://userdata/Database"
+                try:
+                    xbmcvfs.rmdir(path, True)
+                    text = 'Clear Thumbnail Folder, Successful[CR]'
+                except:
+                    text = 'Clear Thumbnail Folder, Error[CR]'
+
+                folder, items = xbmcvfs.listdir(path_DB)
+                items.sort()
+                for sItemName in items:
+                    if "extures" in sItemName:
+                        cached_Cache = "/".join([path_DB, sItemName])
+                        try:
+                            xbmcvfs.delete(cached_Cache)
+                            text += 'Clear Thumbnail DB, Successful[CR]'
+                        except:
+                            text += 'Clear Thumbnail DB, Error[CR]'
+
+                text = "%s [CR][COLOR Red]IMPORTANT[/COLOR] - Redémarrer Kodi" % text
+                if env != 'cleanAll':
+                    self.DIALOG.VSok(text)
 
         return
 

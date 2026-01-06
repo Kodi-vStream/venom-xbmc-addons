@@ -7,7 +7,7 @@ import xbmc
 import xbmcplugin
 import sys
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isNexus, progress, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, window, isNexus, progress, VSlog, siteManager
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -429,18 +429,27 @@ class cGui:
                 else:
                     data['cast'].append((i['name'], i['character'], i['order'], i.get('thumbnail', "")))
 
+        # Fournir la resolution si connue
+        width = None
+        if sRes:
+            if '2160' in sRes:
+                width = 3840
+                height = 2160
+            elif '1080' in sRes:
+                width = 1920
+                height = 1080
+            elif '720' in sRes:
+                width = 1280
+                height = 720
+            elif '480' in sRes:
+                width = 720
+                height = 576
+            
         if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
-            if sRes:
-                if '2160' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 3840, 'height': 2160})
-                elif '1080' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 1920, 'height': 1080})
-                elif '720' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 1280, 'height': 720})
-                elif '480' in sRes:
-                    oListItem.addStreamInfo('video', {'width': 720, 'height': 576})
+            if width:
+                oListItem.addStreamInfo('video', {'width': width, 'height': height})
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
             videoInfoTag.setMediaType(data.get('mediatype', ''))
@@ -450,13 +459,17 @@ class cGui:
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
             # oListItem.setInfo(oGuiElement.getType(), data)
 
+            # ID TMDB, pour les films et les séries 
             tmdbID = oGuiElement.getTmdbId()
-            if tmdbID:
-                videoInfoTag.setUniqueIDs({'tmdb': tmdbID, 'tvshow.tmdb': tmdbID}, None)
-            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
-            # https://alwinesch.github.io/group__python___info_tag_video.html
+            if tmdbID not in (None, '', 0, '0'):
+                try:
+                    tmdb_str = str(tmdbID)  # au format texte
+                    videoInfoTag.setUniqueIDs({'tmdb': tmdb_str, 'tvshow.tmdb': tmdb_str}, 'tmdb')
+                except TypeError:
+                    pass  # En cas de type exotique, on évite de faire planter le thread
 
-            # les infos récupérées par vStream
+            # On RENSEIGNE TOUJOURS les métadonnées, même si un ID TMDb est présent
+            # => le synopsis/local data de vStream/pastebin reste utilisable.
             videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
             videoInfoTag.setPlot(data.get('plot', ""))
             videoInfoTag.setPlotOutline(data.get('tagline', ""))
@@ -476,26 +489,10 @@ class cGui:
             videoInfoTag.setResumePoint(float(data.get('resumetime', 0.0)), float(data.get('totaltime', 0.0)))
             videoInfoTag.setCast(data.get('cast', []))
         
-            if sRes:
-                width = None
-                height = None
-                if '2160' in sRes:
-                    width = 3840
-                    height = 2160
-                elif '1080' in sRes:
-                    width = 1920
-                    height = 1080
-                elif '720' in sRes:
-                    width = 1280
-                    height = 720
-                elif '480' in sRes:
-                    width = 720
-                    height = 576
-                
-                if width:
-                    # [width, height, aspect, duration, codec, stereoMode, language])
-                    videoStreamDetail = xbmc.VideoStreamDetail(width=width, height=height)
-                    videoInfoTag.addVideoStream(videoStreamDetail)
+            if width:
+                # [width, height, aspect, duration, codec, stereoMode, language])
+                videoStreamDetail = xbmc.VideoStreamDetail(width=width, height=height)
+                videoInfoTag.addVideoStream(videoStreamDetail)
 
     
         oListItem.setArt({
@@ -672,8 +669,11 @@ class cGui:
     def setEndOfDirectory(self, forceViewMode=False):
         iHandler = cPluginHandler().getPluginHandle()
 
+        # Notification si aucun élément
         if not self.listing:
-            self.addText('cGui')
+            self.showNofication(self.ADDON.VSlang(30204))
+            xbmcplugin.endOfDirectory(iHandler, succeeded=False, cacheToDisc=False)
+            return
 
         # attendre l'arret des thread utilisés pour récupérer les métadonnées
         total = len(self.thread_listing)
@@ -910,8 +910,14 @@ class cGui:
     def openSettings(self):
         return False
 
-    def showNofication(self, sTitle, iSeconds=0):
-        return False
+    def showNofication(self, sDesc, sTitle='vStream', iSeconds=3):
+        # Pas de notif  lors des recherches globales
+        if window(10101).getProperty('search') == 'true':
+            return
+        oInputParameterHandler = cInputParameterHandler()
+        sSite = oInputParameterHandler.getValue('site')
+        siteName = siteManager().getProperty(sSite, siteManager.LABEL)
+        return dialog().VSinfo(sDesc, siteName, iSeconds)
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         return False

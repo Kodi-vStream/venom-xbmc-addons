@@ -51,8 +51,11 @@ class cPacker():
         def lookup(match):
             """Look up symbols in the synthetic symtab."""
             word = match.group(0)
-            return symtab[int(word)] if radix == 1 else symtab[unbase(word)] or word
-
+            try:
+                return symtab[int(word)] if radix == 1 else symtab[unbase(word)] or word
+            except:
+                return word
+            
         def getstring(c, a=radix):
             foo = chr(c % a + 161)
             if c < a:

@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
+import json
 
 from resources.lib.comaddon import siteManager, isMatrix
 from resources.lib.gui.gui import cGui
@@ -390,22 +391,26 @@ def getHosterIframe(url, referer):
         oRequestHandler.addHeaderEntry('Referer', referer)
 #    oRequestHandler.disableSSL()
     sHtmlContent = str(oRequestHandler.request())
-    # import xbmcvfs
-    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-    # f.write(sHtmlContent)
-    # f.close()
-    
+
 #    cook = oRequestHandler.GetCookies()
 
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    if '.php?id=' in url:
-        return getPkpakiUrl(url, sHtmlContent, referer)
+    sPattern = '(https:\/\/[^\/]+\/server_lookup\?channel_id=)'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        premiumId = url.split('=')[1]
+        valid, url = getPkpakiUrl2(aResult[0] + 'premium' + premiumId, sHtmlContent, referer, premiumId)
+        if valid:
+            return True, url
 
+    if '.php?id=' in url:
+        valid, url = getPkpakiUrl(url, sHtmlContent, referer)
+        if valid:
+            return True, url
     
     referer = oRequestHandler.getRealUrl()
-
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -548,16 +553,30 @@ def getPkpakiUrl(url, sHtmlContent, referer):
     premiumId = url.split('=')[1]
     site = url.split('/')[2]
     url = 'https://%s/server_lookup.php?channel_id=premium%s' % ( site, premiumId)
+    return getPkpakiUrl2(url, sHtmlContent, referer)
     
+def getPkpakiUrl2(url, sHtmlContent, referer, premiumId):
     oRequestHandler = cRequestHandler(url)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
-    response = oRequestHandler.request(jsonDecode=True)
+        
+    sContent = oRequestHandler.request()
+    oRequestHandler.getRealUrl()
+    if not sContent or '404 Not Found' in sContent:
+        return False, False
+
+    try:
+        response = json.loads(sContent)
+    except Exception:
+        return False, False
+        
     if 'server_key' in response:
         serverKey = response['server_key']
         result = re.findall('https://top1\.([^\.]+)', sHtmlContent)
         if result:
-            return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8|Referer=%s' % (serverKey, result[0], serverKey, premiumId, url)
+#                         https://windnew.kiko2.ru/wind/premium122/mono.css
+#            return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8|Referer=%s' % (serverKey, result[0], serverKey, premiumId, url)
+            return True, 'https://%snew.%s.ru/%s/premium%s/mono.m3u8' % (serverKey, result[0], serverKey, premiumId)
     return False, False
 
 def reveal_char_by_char_url(html):

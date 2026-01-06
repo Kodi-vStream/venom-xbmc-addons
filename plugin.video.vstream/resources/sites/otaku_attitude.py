@@ -241,28 +241,29 @@ def showEpisodes():
             # if isMatrix():  # plante sous matrix !!!!!!
                 # sQual = sQual.encode('latin-1').decode()
 
-            # Changemement de formats ...x... -> ....P
+            # Changemement de formats ...px... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
-                sQual = re.sub('(\d+×\d+)px', '[1080P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '1080P', sQual)
             elif '1728×' in sQual:
-                sQual = re.sub('(\d+×\d+)px', '[800P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '800P', sQual)
             elif '1280×' in sQual:
                 # VSlog(sQual)
-                sQual = re.sub('(\d+×\d+)px', '[720P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '720P', sQual)
             elif '1024×' in sQual:
-                sQual = re.sub('(\d+×\d+)px', '[600P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '600P', sQual)
             elif '480×' in sQual:
-                sQual = re.sub('(\d+×\d+)px', '[360P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '360P', sQual)
             else:
-                sQual = re.sub('(\d+×\d+)px', '[480P]', sQual)
+                sQual = re.sub('(\d+×\d+)px', '480P', sQual)
 
             sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle
-            sDisplayTitle = sTitle + ' ' + sQual
+            sDisplayTitle = '%s [%s]' % (sTitle, sQual)
             idEpisode = aEntry[0]
 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sRes', sQual)
             oOutputParameterHandler.addParameter('serieID', serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)

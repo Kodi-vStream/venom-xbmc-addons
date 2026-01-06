@@ -973,7 +973,7 @@ def showSeries(sSearch='', term=''):
 
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-            if int(iPage) > 0:
+            if int(iPage) < result['total_pages']:
                 iNextPage = int(iPage) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
