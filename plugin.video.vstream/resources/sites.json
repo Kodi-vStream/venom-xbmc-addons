@@ -262,7 +262,7 @@
         },
         "pluto_tv": {
             "label": "Pluto TV",
-            "active": "True",
+            "active": "False",
             "url": "https://api.pluto.tv"
         },
         "radio": {
@@ -368,7 +368,7 @@
         },
         "zone_streaming": {
             "label": "Zone Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://www.zone-streaming.fr/"
         }
     }
