@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.7.1 - 06/01/26 ***
+- Correction de plusieurs sources pour retrouver les liens
+
 *** 3.7.0 - 09/12/25 ***
 - FrenchStream : les liens sont de nouveaux accessibles, ajout de nombreux nouveaux liens, et d'un menu "Populaire"
 - CPasMal :  nouvelle source de films et de séries
