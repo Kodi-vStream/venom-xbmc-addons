@@ -726,7 +726,7 @@ msgstr "Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/CO
 
 msgctxt "#30305"
 msgid "[COLOR khaki]Click here to login[/COLOR]"
-msgstr "[COLOR khaki]Cliquez ici, pour vous connecter[/COLOR]"
+msgstr "[COLOR khaki]Cliquez ici pour vous connecter[/COLOR]"
 
 msgctxt "#30306"
 msgid "[COLOR khaki]Hello, %s[/COLOR]"
@@ -1025,8 +1025,8 @@ msgid "Enable/Disable sources"
 msgstr "Activer/Désactiver des sources"
 
 msgctxt "#30421"
-msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
-msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR] Approuver vStream, puis seulement ensuite cliquez OUI"
+msgid "Go to [COLOR teal]%s[/COLOR][CR] Valid vStream, only then click YES"
+msgstr "Rendez vous sur [COLOR teal]%s[/COLOR][CR] Approuver vStream, puis seulement ensuite cliquez OUI"
 
 msgctxt "#30422"
 msgid "Enable log records"
