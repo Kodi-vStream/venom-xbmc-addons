@@ -10,6 +10,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.7.3 - 14/01/26 ***
+- La dépendance QRcode devient optionnelle
+
 *** 3.7.2 - 09/01/26 ***
 - Reprise de la dépendance QRcode
 
