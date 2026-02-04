@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.bz/"
+            "url": "https://coflix.ninja/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -83,7 +83,7 @@
         },
         "darkiworld": {
             "label": "darkiworld",
-            "active": "True",
+            "active": "False",
             "url": "https://darkiworld15.com/"
         },
         "debrid_link": {
@@ -164,7 +164,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs7.lol/"
+            "url": "https://fs9.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -189,7 +189,7 @@
         },
         "ianime": {
             "label": "Ianime",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://www.ianimes.one/"
         },
@@ -315,7 +315,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.sbs/"
+            "url": "https://top-stream.store/"
         },
         "vfilms": {
             "label": "VFilms",
