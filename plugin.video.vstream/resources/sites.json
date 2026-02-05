@@ -313,7 +313,7 @@
         },
         "topstream": {
             "label": "top-stream",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://top-stream.store/"
         },
@@ -354,7 +354,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.irish/"
+            "url": "https://flemmix.info/"
         },
         "wilifilm": {
             "label": "Wilifilm",
