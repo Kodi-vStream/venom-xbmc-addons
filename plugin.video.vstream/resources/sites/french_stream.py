@@ -328,10 +328,40 @@ def showEpisodes():
     if aResult[0]:
         sDesc = aResult[1][0].strip()
 
-    numEpisodes = []
-    
-
     # 1ere méthode
+    sPattern = 'data-news-id="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        numEpisodes = []
+        sAPIUrl = '%sep-data.php?id=%s' % (URL_MAIN, aResult[1][0])
+        oRequestHandler = cRequestHandler(sAPIUrl)
+        sHtmlContent = oRequestHandler.request()
+        episodeList = json.loads(sHtmlContent)
+        oOutputParameterHandler = cOutputParameterHandler()
+        for sLang in episodeList:
+            if 'info' in sLang:
+                continue
+            for sEpisode in episodeList[sLang]:
+                if sEpisode in numEpisodes:
+                    continue
+                found = False   # on garde les numéros d'épisodes qui ont au moins un lien, quelque soit la langue
+                sHosterList = episodeList[sLang][sEpisode]
+                for sHosterName in sHosterList:
+                    if sHosterList[sHosterName]:
+                        numEpisodes.append(sEpisode)
+                        found = True
+                        break
+                if found:
+                    sTitle = sMovieTitle + ' Episode ' + sEpisode
+                    sDisplayTitle = sTitle
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl + "|" + sEpisode)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodeLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.setEndOfDirectory()
+        return
+            
+    # 2eme méthode
     sPatternEps = '<div id="episodes-info-data"'
     aResult= oParser.parse(sHtmlContent, sPatternEps)
     if aResult[0]:
@@ -355,10 +385,11 @@ def showEpisodes():
         oGui.setEndOfDirectory()
         return
     
-    # 2eme méthode
+    # 3eme méthode
     sPatternEps = 'var episodesData = ({.+?);'
     aResultTab = oParser.parse(sHtmlContent, sPatternEps)
     if aResultTab[0]:
+        numEpisodes = []
         # formattage en JSON
         content = '{' + aResultTab[1][0].replace(' ', '') + '}'
         content = aResultTab[1][0].replace(' ', '')
@@ -387,7 +418,7 @@ def showEpisodes():
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodeLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showEpisodeLinks():
@@ -405,6 +436,48 @@ def showEpisodeLinks():
     sHtmlContent = oRequestHandler.request()
 
     # 1ere méthode
+    sPattern = 'data-news-id="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        sUrl = '%sep-data.php?id=%s' % (URL_MAIN, aResult[1][0])
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        episodeList = json.loads(sHtmlContent)
+        oOutputParameterHandler = cOutputParameterHandler()
+        for sLang in episodeList:
+            if 'info' in sLang:
+                continue
+            for sEpisode in episodeList[sLang]:
+                if sEpisode != sEpSearch:
+                    continue
+                sHosterList = episodeList[sLang][sEpisode]
+                for sHosterName in sHosterList:
+                    oHoster = oHosterGui.checkHoster(sHosterName)
+                    if oHoster:
+                        sHosterUrl = sHosterList[sHosterName]
+                        
+                        if 'uptostream' in sHosterUrl:
+                            continue
+                        
+                        if sHosterUrl:
+                            if 'Player.php' in sHosterUrl:
+                                sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), sHosterName) 
+                                oOutputParameterHandler = cOutputParameterHandler()
+                                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                                oOutputParameterHandler.addParameter('sLang', sLang)
+                                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+                            else:
+                                sTitle = '%s (%s)' % (sMovieTitle, sLang.upper())
+                                oHoster.setDisplayName(sTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                break
+        oGui.setEndOfDirectory()
+        return
+
+    # 2eme méthode
     sPatternEps = '<div id="episodes-vf-data"'
     if sPatternEps in sHtmlContent:
         sPatternLink = 'data-(.+?)="([^"]+)'
@@ -450,7 +523,7 @@ def showEpisodeLinks():
         oGui.setEndOfDirectory()
         return
 
-    # 2eme méthode
+    # 3eme méthode
     sPatternList = 'var episodesData = ({.+?);'
     aResultTab = oParser.parse(sHtmlContent, sPatternList)
     if aResultTab[0]:
@@ -494,6 +567,7 @@ def showEpisodeLinks():
 
 def showMovieLinks():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -502,13 +576,64 @@ def showMovieLinks():
 
     oParser = cParser()
 
+    # premiere méthode
+    sPattern = 'data-newsid="(\d+)"'
+    # data-newsid="15124374"
+    # data-title="F- la Saint-Valentin"
+    # data-fulllink="/films/15124374-f-la-saint-valentin.html"
+    aResultId = oParser.parse(sHtmlContent, sPattern)
+    if aResultId[0]:
+        urlAPI = '%sengine/ajax/film_api.php?id=%s' % (URL_MAIN, aResultId[1][0])
+        jsonContent = cRequestHandler(urlAPI).request()
+        hostersLink = json.loads(jsonContent)['players']
+        
+        for hosterName, hosterLinks in hostersLink.items():
+            # hoster FSVID, non géré 
+            if 'premium' in hosterName:
+                #hosterName = aEntry[0].replace('premium', 'fsvid')
+                continue    # hoster fsvid à revoir
+
+            oHoster = oHosterGui.checkHoster(hosterName)
+            if not oHoster :
+                continue
+
+            links = [] # filtre des urls en double
+            for sLang, sHosterUrl in hosterLinks.items():
+            
+                if sHosterUrl in links:
+                    continue
+                links.append(sHosterUrl)
+                    
+                sDisplayTitleLang =  sMovieTitle
+                if sLang and 'default' not in sLang:
+                    sDisplayTitleLang +=  ' [%s]' % sLang.upper()
+                
+                if "flixeo" in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+
+                if 'Player.php' in sHosterUrl:
+                    sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % oHoster.getDisplayName() 
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitleLang, sThumb, '', oOutputParameterHandler)
+                else:
+                    oHoster.setDisplayName(sDisplayTitleLang)
+                    oHoster.setFileName(sMovieTitle)
+                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+        oGui.setEndOfDirectory()
+        return
+
     sHtmlContent = oParser.abParse(sHtmlContent, '<div id="film-data"', 'div>')
     sPattern = 'data-([^=]+)="(https[^"]+)'
     aResultHoster = oParser.parse(sHtmlContent, sPattern)
     
-    # premiere méthode
+    # deuxieme méthode
     if aResultHoster[0]:
-        oHosterGui = cHosterGui()
         links = [] # filtre des urls en double
         for aEntry in aResultHoster[1]:
             hosterName = aEntry[0]
@@ -556,7 +681,7 @@ def showMovieLinks():
         oGui.setEndOfDirectory()
         return
 
-    # deuxieme méthode
+    # troisieme méthode
     sHtmlContent = oParser.abParse(sHtmlContent, 'playerUrls = {', '};')
     sPattern = '"([^"]+)": {([^}]+)'
     aResultHoster = oParser.parse(sHtmlContent, sPattern)
@@ -568,7 +693,7 @@ def showMovieLinks():
                 #hosterName = aEntry[0].replace('Premium', 'fsvid')
                 continue    # hoster fsvid à revoir
 
-            oHoster = cHosterGui().checkHoster(hosterName)
+            oHoster = oHosterGui.checkHoster(hosterName)
             if oHoster :
                 links = aEntry[1]
                 sPattern = '([^"]+)": "([^"]+)"'
@@ -600,7 +725,7 @@ def showMovieLinks():
                         else:
                             oHoster.setDisplayName(sDisplayTitleLang)
                             oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -628,6 +753,6 @@ def showHosters():
             if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, realUrl, sThumb)
 
     oGui.setEndOfDirectory()
