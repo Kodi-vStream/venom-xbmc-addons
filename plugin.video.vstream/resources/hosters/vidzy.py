@@ -30,7 +30,7 @@ class cHoster(iHoster):
                 sPattern = '{src:\s*"([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if aResult[0]:
-                    api_call = aResult[1][0]
+                    api_call = aResult[1][0] + '|Referer=' + self._url
             except:
                 # unpack manuel en cas d'erreur
                 sPattern = 'div\|data\|(\d+)\|(\d+).+?contextMenu\|(\d+)\|(\d+)\|([^\|]+)\|mp4\|.+?sp\|([^\|]+)\|(.+?)\|m3u8\|master\|([^\|]+)\|([^\|]+)'
