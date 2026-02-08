@@ -17,7 +17,7 @@ class cRequestHandler:
     REQUEST_TYPE_DELETE = 3
     SITE_IDENTIFIER = "dnspython"
 
-    def __init__(self, sUrl):
+    def __init__(self, sUrl, forceDNS = False):
         self.__sUrl = sUrl
         self.__sRealUrl = ''
         self.__cType = 0
@@ -33,7 +33,7 @@ class cRequestHandler:
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
         self.BUG_SSL = False
-        self.__enableDNS = False
+        self.__enableDNS = forceDNS
         self.s = Session()
         self.redirects = True
         self.verify = True
