@@ -257,7 +257,6 @@ class cTMDb:
                 qr.save(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
                 retArg = oSolver.get()
-                DIALOG = dialog()
                 if retArg == "N":
                     return False
 
