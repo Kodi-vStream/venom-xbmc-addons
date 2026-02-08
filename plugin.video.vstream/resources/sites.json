@@ -235,6 +235,11 @@
             "active": "True",
             "url": "https://v1.messitv.net/"
         },
+        "netu": {
+            "label": "Hoster NETU",
+            "active": "True",
+            "url": "https://waaw.to/"
+        },
         "o1streaming": {
             "label": "O1 streaming",
             "active": "False",
