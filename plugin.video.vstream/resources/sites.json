@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.nexus/"
+            "url": "https://coflix.ninja/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -84,7 +84,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld15.com/"
+            "url": "https://darkiworld2026.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -164,7 +164,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs2.lol/"
+            "url": "https://fs9.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -189,7 +189,7 @@
         },
         "ianime": {
             "label": "Ianime",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://www.ianimes.one/"
         },
@@ -216,8 +216,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "False",
-            "url": "https://livetv869.me/"
+            "active": "True",
+            "url": "https://livetv872.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -234,6 +234,11 @@
             "label": "NeymarTV",
             "active": "True",
             "url": "https://v1.messitv.net/"
+        },
+        "netu": {
+            "label": "Hoster NETU",
+            "active": "True",
+            "url": "https://waaw.to/"
         },
         "o1streaming": {
             "label": "O1 streaming",
@@ -313,9 +318,9 @@
         },
         "topstream": {
             "label": "top-stream",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
-            "url": "https://top-stream.sbs/"
+            "url": "https://top-stream.store/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -354,7 +359,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.art/"
+            "url": "https://flemmix.info/"
         },
         "wilifilm": {
             "label": "Wilifilm",

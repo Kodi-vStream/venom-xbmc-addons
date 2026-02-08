@@ -326,6 +326,8 @@ def showEpisodes():
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -333,34 +335,35 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
     
     # zone publicitaire !
-    # zonePub = oParser.abParse(sHtmlContent, '<div class="container">', '<style>')
-    # zonePub = zonePub.replace('\\', '')
-    # sPattern = '/(embed/\d+)'
-    # aResult = oParser.parse(zonePub, sPattern)
-    # if not aResult[0]:
-    #     # page sans pub
-    #     sPattern = '<iframe id="video-iframe".+?src="([^"]+)"'
-    #     aResult = oParser.parse(sHtmlContent, sPattern)
+    zonePub = oParser.abParse(sHtmlContent, '<div class="container">', '<style>')
+    zonePub = zonePub.replace('\\', '')
+    sPattern = '/(embed/\d+)'
+    aResult = oParser.parse(zonePub, sPattern)
+    if not aResult[0]:
+        # page sans pub
+        sPattern = '<iframe id="video-iframe".+?src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-    # if aResult[0]:
-    #     url = aResult[1][0]
-    #     if not 'http' in url:
-    #         url = URL_MAIN + url
-    #     oRequestHandler = cRequestHandler(url)
-    #     sHtmlContent = oRequestHandler.request()
-    #     aResult = oParser.parse(sHtmlContent, '<source src="([^"]+)"')
+    if aResult[0]:
+        url = aResult[1][0]
+        if not 'http' in url:
+            url = URL_MAIN + url
+        oRequestHandler = cRequestHandler(url)
+        sHtmlContent = oRequestHandler.request()
+        aResult = oParser.parse(sHtmlContent, 'Url = decodeHtmlEntities\(`([^`]+)')
 
-    sPattern = 'download\.php\?url=([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    if not aResult[0]:
+        sPattern = 'download\.php\?url=([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
     if aResult[0]:
         oHosterGui = cHosterGui()
         for sHosterUrl in aResult[1]:
             oHoster = oHosterGui.checkHoster(sHosterUrl)
             if oHoster:
+                sHosterUrl += '|Referer=%s' % url
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -10,7 +10,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode, Quote
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSlog, siteManager
 
 import codecs
 
@@ -42,7 +42,10 @@ class cHoster(iHoster):
         return host
 
     def setUrl(self, url):
-        host = self.__getHost(url)
+        if not url.startswith('http'):
+            host = siteManager().getUrlMain(self._pluginIdentifier)
+        else:
+            host = self.__getHost(url)
 
         if '&autoplay=' in url:
             url=url.split('&')[:-1][0]

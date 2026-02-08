@@ -66,4 +66,15 @@ class cHoster(iHoster):
                 if aResult[0]:
                     return True, aResult[1][0] # + '|User-Agent=' + UA
 
+        # 2eme méthode
+        else:
+            url2 = self._url.replace('/e/', '/api/videos/') + '/embed/details'
+            oRequest = cRequestHandler(url2)
+            sHtmlContent2 = oRequest.request()
+            sPattern = '"embed_frame_url":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent2, sPattern)
+            if aResult[0]:
+                return True, aResult[1][0] # + '|User-Agent=' + UA
+  
+
         return False, False

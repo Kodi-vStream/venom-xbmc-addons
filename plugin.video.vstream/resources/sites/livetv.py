@@ -53,7 +53,7 @@ def showLive():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, forceDNS=True)
     oRequestHandler.disableSSL()
     sHtmlContent = oRequestHandler.request()
 
@@ -105,7 +105,7 @@ def showGenres():  # affiche les catégories qui ont des lives'
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
     sPattern = r'<a class="main" href="([^"]+)"><b>([^<]+)</b>.+?\s*</td>\s*<td width=.+?>\s*<a class="small" href=".+?"><b>([^<]+)</b></a>'
     oParser = cParser()
@@ -146,7 +146,7 @@ def showMovies():  # affiche les matchs en direct depuis la section showMovie
     oInputParameterHandler = cInputParameterHandler()
     sUrl2 = oInputParameterHandler.getValue('siteUrl2')
 
-    oRequestHandler = cRequestHandler(sUrl2)
+    oRequestHandler = cRequestHandler(sUrl2, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = r'<a class="live" href="([^"]+)">([^<]+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^<]+)\s*<br>\s*([^<]+)</span>'
@@ -219,7 +219,7 @@ def showMovies3():  # affiche les videos disponible du live
     oInputParameterHandler = cInputParameterHandler()
     sUrl3 = oInputParameterHandler.getValue('siteUrl3')
 
-    oRequestHandler = cRequestHandler(sUrl3)
+    oRequestHandler = cRequestHandler(sUrl3, forceDNS=True)
     sHtmlContent = oRequestHandler.request()
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
 
@@ -268,7 +268,7 @@ def showHosters():  # affiche les videos disponible du live
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, forceDNS=True)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()

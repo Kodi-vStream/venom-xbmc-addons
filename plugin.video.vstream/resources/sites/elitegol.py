@@ -299,7 +299,7 @@ def getHosterIframe(url, referer):
     if not url.startswith('http'):
         url = URL_MAIN + url
 
-    oRequestHandler = cRequestHandler(url)
+    oRequestHandler = cRequestHandler(url, forceDNS = True)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
