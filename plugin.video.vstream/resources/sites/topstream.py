@@ -19,15 +19,14 @@ SITE_DESC = 'Le meilleur du divertissement en streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = ('movies?type=movie', 'showMenuMovies')
-MOVIE_NEWS = ('filmstreaming/', 'showMovies')
+MOVIE_NEWS = ('trending?type=movie&sort=release_date', 'showMovies')
 MOVIE_GENRES = ('movies?type=movie&genre=%s&sort=created_at', 'showGenres')
-MOVIE_NEWS = ('filmstreaming/', 'showMovies')
 MOVIE_VIEWS = ('trending?type=movie&sort=like_count', 'showMovies')
 MOVIE_ANNEES = ('movies?type=movie&sort=release_date&release=%d', 'showMovieYears')
 
 
 SERIE_SERIES = ('type=tv', 'showMenuTvShows')
-SERIE_NEWS = ('seriestreaming/', 'showMovies')
+SERIE_NEWS = ('trending?type=tv&sort=release_date', 'showMovies')
 SERIE_VIEWS = ('trending?type=tv&sort=like_count', 'showMovies')
 SERIE_GENRES = ('tv-shows?type=tv&genre=%s&sort=created_at', 'showSeriesGenres')
 SERIE_ANNEES = ('tv-shows?type=tv&sort=release_date&release=%d', 'showMovies')
@@ -65,6 +64,9 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search-films.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
 
@@ -83,6 +85,9 @@ def showMenuTvShows():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search-series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
@@ -139,9 +144,9 @@ def showSeriesGenres():
 
 #japanime 15 
 
-    liste = [['Action', '1'], ['Comédie', '6'],
+    liste = [['Action', '1'], ['Animation', '5'], ['Comédie', '6'],
              ['Crime', '3'], ['Documentaire', '7'], ['Drame', '8'], ['Familial', '9'],
-             ['Mystère', '2'] ]
+             ['Mystère', '2'], ['Télé-réalité', '19'] ]
 
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -362,11 +367,14 @@ def showHosters():
         oHosterGui = cHosterGui()
         for sHosterUrl in aResult[1]:
             oHoster = oHosterGui.checkHoster(sHosterUrl)
-            if oHoster:
-                sHosterUrl += '|Referer=%s' % url
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            # pas de hoster connu, on tente en lien direct
+            if not oHoster:
+                oHoster = oHosterGui.getHoster('lien_direct')
+            sHosterUrl += '|Referer=%s' % url
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
