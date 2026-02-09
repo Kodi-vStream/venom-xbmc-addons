@@ -10,8 +10,12 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.8.1 - 09/02/26 ***
+- TopStream - Retour des liens, ajout des nouveautés
+
 *** 3.8.0 - 08/02/26 ***
 - DNS automatique pour les sources sportives
+- FrenchStream - Retour des liens
 
 *** 3.7.3 - 14/01/26 ***
 - La dépendance QRcode devient optionnelle
