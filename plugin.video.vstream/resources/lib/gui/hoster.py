@@ -255,8 +255,8 @@ class cHosterGui:
         if ('guccihide' in sHostName) or ('streamhide' in sHostName) or ('wishonly' in sHostName):
             return self.getHoster('streamhide')
 
-        # if ('youtube' in sHostName) or ('youtu.be' in sHostName):
-        #     return self.getHoster('youtube')
+        #if ('youtube' in sHostName) or ('youtu.be' in sHostName):
+        #    return self.getHoster('youtube')
 
         if ('oneupload' in sHostName) or ('tipfly' in sHostName):
             return self.getHoster('oneupload')
@@ -369,6 +369,9 @@ class cHosterGui:
 
         if ('tapepops' in sHostName):
             return self.getHoster('streamtape')
+        
+        if ('lulustream' in sHostName):
+            return self.getHoster('lulustream')
 
 
         # frenchvid et clone
