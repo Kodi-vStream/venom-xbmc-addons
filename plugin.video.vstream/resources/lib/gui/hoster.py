@@ -237,7 +237,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
-                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
+                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream']
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -255,8 +255,8 @@ class cHosterGui:
         if ('guccihide' in sHostName) or ('streamhide' in sHostName) or ('wishonly' in sHostName):
             return self.getHoster('streamhide')
 
-        # if ('youtube' in sHostName) or ('youtu.be' in sHostName):
-        #     return self.getHoster('youtube')
+        #if ('youtube' in sHostName) or ('youtu.be' in sHostName):
+        #    return self.getHoster('youtube')
 
         if ('oneupload' in sHostName) or ('tipfly' in sHostName):
             return self.getHoster('oneupload')
