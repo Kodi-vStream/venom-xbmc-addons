@@ -237,7 +237,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
-                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock']
+                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream']
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -369,9 +369,6 @@ class cHosterGui:
 
         if ('tapepops' in sHostName):
             return self.getHoster('streamtape')
-        
-        if ('lulustream' in sHostName):
-            return self.getHoster('lulustream')
 
 
         # frenchvid et clone
