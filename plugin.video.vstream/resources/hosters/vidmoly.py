@@ -25,7 +25,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Sec-Fetch-Dest', "iframe")
         sHtmlContent = oRequest.request()
 
-        sPattern = 'sources: *\[{file:"([^"]+)'
+        sPattern = "sources: *\\[ *\\{ *file: *'([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
