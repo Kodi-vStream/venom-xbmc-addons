@@ -196,7 +196,8 @@ def showMovies(sSearch=''):
             sNumPage = re.search('/page/([0-9]+)', next_page).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
     
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent, current_page=1, bSearch=False):
