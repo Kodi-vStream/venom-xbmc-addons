@@ -279,10 +279,8 @@ class cHosterGui:
         if ('vcstream' in sHostName):
             return self.getHoster('vidcloud')
 
-        if ('livestream' in sHostName):
-            return self.getHoster('lien_direct')
-
-        if ('mustardshock' in sHostName):
+        # Hosts utilisant lien_direct
+        if any(x in sHostName for x in ['livestream', 'mustardshock', 'daisukianime']):
             return self.getHoster('lien_direct')
 
         # vidtodo et clone
