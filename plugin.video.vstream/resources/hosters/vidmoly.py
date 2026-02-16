@@ -18,6 +18,16 @@ class cHoster(iHoster):
         oParser = cParser()
         
         self._url = self._url.replace('vidmoly.to', 'vidmoly.net')
+        
+        if '/w/' in self._url:
+            oRequest = cRequestHandler(self._url)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequest.request()
+            
+            sPattern = 'iframe src="//([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                self._url = 'https://' + aResult[1][0]
 
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
