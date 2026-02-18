@@ -187,8 +187,15 @@ def showHosters():
         sPattern = 'window.location.href = "([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sHosterUrl = aResult[1][0].strip()
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            sRedirectUrl = aResult[1][0].strip()
+            # Relancer le processus avec la nouvelle URL pour passer par le bon traitement
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sRedirectUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sMovieTitle, sThumb, '', oOutputParameterHandler)
+            oGui.setEndOfDirectory()
+            return
 
     elif 'dood.forum-tv.org' in sUrl:
         showDoodHosters(sMovieTitle, sUrl)
@@ -196,9 +203,49 @@ def showHosters():
     elif 'forum-tv' in sUrl:
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
 
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-        cookie = oRequestHandler.GetCookies()
+        try:
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
+            sHtmlContent = oRequestHandler.request()
+            cookie = oRequestHandler.GetCookies()
+            
+            # Nouveau système: URL encodée en base64 dans des variables JS
+            if 'Lien Sécurisé' in sHtmlContent or 'f_e614ca' in sHtmlContent:
+                import base64
+                
+                # Extraire les variables base64
+                sPattern = 'var (\w+) = "([A-Za-z0-9+/=]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                
+                if aResult[0] and len(aResult[1]) >= 3:
+                    decoded_parts = []
+                    for var_name, b64_str in aResult[1][:3]:
+                        try:
+                            decoded = base64.b64decode(b64_str).decode('utf-8')
+                            decoded_parts.append(decoded)
+                        except:
+                            pass
+                    
+                    if decoded_parts:
+                        # Concaténer et inverser
+                        combined = ''.join(decoded_parts)
+                        final_url = combined[::-1]  # Inverser la chaîne
+                        
+                        oHoster = cHosterGui().checkHoster(final_url)
+                        if oHoster:
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, final_url, sThumb)
+                        else:
+                            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Hoster non supporté[/COLOR]')
+                        oGui.setEndOfDirectory()
+                        return
+        except Exception as e:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Erreur lors du chargement[/COLOR]')
+            oGui.setEndOfDirectory()
+            return
 
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -238,7 +285,7 @@ def showHosters():
                 sHosterUrl = aResult[1][0]
                 oHoster = None
                 
-                if 'replay.forum-tv.org' in sHosterUrl: 
+                if 'replay.forum-tv.org' in sHosterUrl:
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     sHtmlContent = oRequestHandler.request()
                     sPattern = 'iframe.+?src="([^"]+)'
@@ -288,4 +335,4 @@ def showDoodHosters(sMovieTitle, sUrl):
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, '', sMovieTitle, oOutputParameterHandler)
 
-    
+    oGui.setEndOfDirectory()
