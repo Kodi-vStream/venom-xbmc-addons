@@ -14,7 +14,9 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         oParser = cParser()
         oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('Referer', 'https://lecteurvideo.com/')
         sHtmlContent = oRequest.request()
+
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
