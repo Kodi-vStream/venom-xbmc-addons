@@ -114,7 +114,7 @@
         "dulourd": {
             "label": "DuLourd",
             "active": "True",
-            "url": "https://www.dulourd.boo/"
+            "url": "https://www.dulourd.cash/"
         },
         "elitegol": {
             "label": "Elitegol",
@@ -320,7 +320,7 @@
             "label": "top-stream",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://top-stream.space/"
+            "url": "https://top-stream.plus/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -359,7 +359,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.info/"
+            "url": "https://flemmix.surf/"
         },
         "wilifilm": {
             "label": "Wilifilm",
