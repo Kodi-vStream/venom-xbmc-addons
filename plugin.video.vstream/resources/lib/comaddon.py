@@ -105,16 +105,11 @@ class dialog:
             return list_url[ret]
         return ''
 
-    def VSinfo(self, desc, title='vStream', iseconds=0, sound=False):
-        if (iseconds == 0):
-            iseconds = 1000
-        else:
-            iseconds = iseconds * 1000
-
+    def VSinfo(self, desc, title='vStream', iseconds=1, sound=False):
         if (addon().getSetting('Block_Noti_sound') == 'true'):
             sound = True
 
-        return self.DIALOG.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds, sound)
+        return self.DIALOG.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds*1000, sound)
 
     def VSerror(self, e):
         return self.DIALOG.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
@@ -547,8 +542,7 @@ class siteManager:
     def setProperty(self, sourceName, propName, value):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
-            oldValue = sourceData[propName]
-            if oldValue != value:
+            if propName not in sourceData or sourceData[propName] != value:
                 sourceData[propName] = str(value)
                 self.save()
 
