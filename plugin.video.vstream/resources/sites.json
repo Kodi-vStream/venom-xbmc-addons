@@ -59,7 +59,7 @@
         "cloudproxy": {
             "label": "Proxy cloudflare",
             "active": "True",
-            "url": "https://corsproxy.io/?url="
+            "url": "https://corsproxy.io/?key=webdemo1&url="
         },
         "coflix": {
             "label": "Coflix",
