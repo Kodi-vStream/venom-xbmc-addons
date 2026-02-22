@@ -11,7 +11,7 @@ from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'direct_stream'
 SITE_NAME = 'Direct-StreamFR'
-SITE_DESC = 'Chaines TV en directs'
+SITE_DESC = 'Chaines TV en direct'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
