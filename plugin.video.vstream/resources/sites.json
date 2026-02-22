@@ -96,6 +96,11 @@
             "active": "True",
             "url": "https://play.frembed.sbs/"
         },
+        "witv": {
+            "label": "wiTV",
+            "active": "True",
+            "url": "https://witv.team/"
+        },
         "dnspython": {
             "label": "DNS Python",
             "active": "True",
