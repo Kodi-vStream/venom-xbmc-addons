@@ -5,6 +5,7 @@ import re
 import time
 import unicodedata
 import xbmc
+import json
 
 from resources.lib.comaddon import addon, dialog, addonManager, VSlog
 from resources.lib.db import cDb
@@ -1435,44 +1436,44 @@ class cTrakt:
         for a in sPost:
             oRequestHandler.addJSONEntry(a, sPost[a])
         
-        jsonDecode = requestType in [cRequestHandler.REQUEST_TYPE_POST, cRequestHandler.REQUEST_TYPE_GET]
-        sHtmlContent = oRequestHandler.request(jsonDecode = jsonDecode)
+        sHtmlContent = oRequestHandler.request()
 
         sText = "Aucune action réalisée"
-        
-        if sHtmlContent == '':
-            sText = ''
-            
-        try:
-            # point de reprise
-            if sHtmlContent['action'] == 'pause':
-                sText = 'Progression enregistrée'
-        except:
-            pass
+        if sHtmlContent != '':
+            jsonDecode = requestType in [cRequestHandler.REQUEST_TYPE_POST, cRequestHandler.REQUEST_TYPE_GET]
+            if jsonDecode:
+                sHtmlContent = json.loads(sHtmlContent)
 
-        try:
-            if sHtmlContent['added']['movies'] > 0 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
-                sText = 'Ajouté avec succès'
-        except:
-            pass
-
-        try:
-            if sHtmlContent['updated']['movies'] > 0 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
-                sText = 'Mise à jour avec succès'
-        except:
-            pass
-
-        try:
-            if sHtmlContent['deleted']['movies'] > 0 or sHtmlContent['deleted']['episodes'] > 0:
-                sText = 'Supprimé avec succès'
-        except:
-            pass
-
-        try:
-            if sHtmlContent['existing']['movies'] > 0 or sHtmlContent['existing']['episodes'] > 0 or sHtmlContent['existing']['seasons'] > 0 or sHtmlContent['existing']['shows'] > 0:
-                sText = 'Entrée déjà présente'
-        except:
-            pass
+            try:
+                # point de reprise
+                if sHtmlContent['action'] == 'pause':
+                    sText = 'Progression enregistrée'
+            except:
+                pass
+    
+            try:
+                if sHtmlContent['added']['movies'] > 0 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
+                    sText = 'Ajouté avec succès'
+            except:
+                pass
+    
+            try:
+                if sHtmlContent['updated']['movies'] > 0 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
+                    sText = 'Mise à jour avec succès'
+            except:
+                pass
+    
+            try:
+                if sHtmlContent['deleted']['movies'] > 0 or sHtmlContent['deleted']['episodes'] > 0:
+                    sText = 'Supprimé avec succès'
+            except:
+                pass
+    
+            try:
+                if sHtmlContent['existing']['movies'] > 0 or sHtmlContent['existing']['episodes'] > 0 or sHtmlContent['existing']['seasons'] > 0 or sHtmlContent['existing']['shows'] > 0:
+                    sText = 'Entrée déjà présente'
+            except:
+                pass
 
 
         bReload = oInputParameterHandler.exist('sReload')

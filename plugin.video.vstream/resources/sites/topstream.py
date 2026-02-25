@@ -366,7 +366,10 @@ def showHosters():
     if aResult[0]:
         oHosterGui = cHosterGui()
         for sHosterUrl in aResult[1]:
-            oHoster = oHosterGui.checkHoster(sHosterUrl)
+
+            # NON, sinon ne passe pas les comptes premium
+            #oHoster = oHosterGui.checkHoster(sHosterUrl)
+            oHoster = None
 
             # pas de hoster connu, on tente en lien direct
             if not oHoster:
