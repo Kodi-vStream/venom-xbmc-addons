@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.9.0 - 25/02/2026 ***
+- WiTV - Ajout de cette source de chaines sportives
+- gofile : support de l'hébergeur
+
 *** 3.8.1 - 09/02/26 ***
 - TopStream - Retour des liens, ajout des nouveautés
 
