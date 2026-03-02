@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.observer/"
+            "url": "https://coflix.space/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -169,7 +169,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs12.lol/"
+            "url": "https://fs19.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -364,7 +364,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.surf/"
+            "url": "https://flemmix.rent/"
         },
         "wilifilm": {
             "label": "Wilifilm",
