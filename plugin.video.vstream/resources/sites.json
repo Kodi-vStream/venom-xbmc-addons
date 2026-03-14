@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.space/"
+            "url": "https://coflix.rodeo/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -364,7 +364,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.rent/"
+            "url": "https://flemmix.best/"
         },
         "wilifilm": {
             "label": "Wilifilm",
