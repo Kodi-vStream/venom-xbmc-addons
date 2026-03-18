@@ -10,12 +10,18 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.9.1 - 18/03/2026 ***
+- TMDB : Recupération des landscapes et utilisation du titre des saisons
+- TMDB : Manque la date des films avec certains habillages 
+- AnimeSama : Récupération des liens
+- LiveTV : Mise à jour des modifications du site
+
 *** 3.9.0 - 25/02/2026 ***
-- WiTV - Ajout de cette source de chaines sportives
+- WiTV : Ajout de cette source de chaines sportives
 - gofile : support de l'hébergeur
 
 *** 3.8.1 - 09/02/26 ***
-- TopStream - Retour des liens, ajout des nouveautés
+- TopStream : Retour des liens, ajout des nouveautés
 
 *** 3.8.0 - 08/02/26 ***
 - DNS automatique pour les sources sportives
