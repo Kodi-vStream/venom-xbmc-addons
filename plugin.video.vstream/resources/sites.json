@@ -93,7 +93,7 @@
         },
         "direct_stream": {
             "label": "direct-streamfr",
-            "active": "True",
+            "active": "False",
             "url": "https://play.frembed.sbs/"
         },
         "witv": {
