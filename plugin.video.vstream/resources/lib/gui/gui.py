@@ -528,6 +528,7 @@ class cGui:
             videoInfoTag.setPlot(data.get('plot', ""))
             videoInfoTag.setPlotOutline(data.get('tagline', ""))
             videoInfoTag.setYear(int(data.get('year', 0)))
+            videoInfoTag.setPremiered(data.get('premiered', ''))
             videoInfoTag.setRating(float(data.get('rating', 0.0)))
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
