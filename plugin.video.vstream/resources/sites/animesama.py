@@ -106,6 +106,9 @@ def showSeries(sSearch=''):
             if 'Film' not in sType and 'Anime' not in sType:
                 continue
 
+            if not sUrl2.startswith("http"):
+              sUrl2  = URL_MAIN[:-1] + sUrl2
+
             # Filtre de recherche
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):

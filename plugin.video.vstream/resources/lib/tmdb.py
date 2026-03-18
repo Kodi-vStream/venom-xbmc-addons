@@ -133,6 +133,7 @@ class cTMDb:
                      "poster_path TEXT, "\
                      "trailer TEXT, "\
                      "backdrop_path TEXT, "\
+                     "landscape_path TEXT, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
         try:
@@ -148,6 +149,7 @@ class cTMDb:
                      "genre TEXT, "\
                      "poster_path TEXT, "\
                      "backdrop_path TEXT, "\
+                     "landscape_path TEXT, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
         try:
@@ -177,6 +179,7 @@ class cTMDb:
                      "poster_path TEXT, "\
                      "trailer TEXT, "\
                      "backdrop_path TEXT, "\
+                     "landscape_path TEXT, "\
                      "nbseasons INTEGER, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
@@ -191,6 +194,7 @@ class cTMDb:
                      "season INTEGER, "\
                      "year INTEGER, "\
                      "premiered TEXT, "\
+                     "season_title TEXT, " \
                      "poster_path TEXT, "\
                      "plot TEXT, "\
                      "episode INTEGER, "\
@@ -502,13 +506,13 @@ class cTMDb:
         return meta
 
     # Get the basic movie information for a specific movie id.
-    def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits,release_dates'):
+    def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits,release_dates,images'):
         result = self._call('movie/' + str(movie_id), append_to_response)
         result['tmdb_id'] = movie_id
         return result  # obj(**self._call('movie/' + str(movie_id), append_to_response))
 
     # Get the primary information about a TV series by id.
-    def search_tvshow_id(self, show_id, append_to_response='append_to_response=external_ids,videos,credits,release_dates'):
+    def search_tvshow_id(self, show_id, append_to_response='append_to_response=external_ids,videos,credits,release_dates,images'):
         result = self._call('tv/' + str(show_id), append_to_response)
         result['tmdb_id'] = show_id
         return result
@@ -746,11 +750,47 @@ class cTMDb:
             except:
                 pass
 
-        if _meta['poster_path']:
+        # Images
+        # Sécurise le préfixe (évite de préfixer deux fois quand ça vient du cache)
+        if _meta.get('poster_path') and str(_meta['poster_path']).startswith('/'):
             _meta['poster_path'] = self.poster + _meta['poster_path']
 
-        if _meta['backdrop_path']:
+        if _meta.get('backdrop_path') and str(_meta['backdrop_path']).startswith('/'):
             _meta['backdrop_path'] = self.fanart + _meta['backdrop_path']
+
+        # LANDSCAPE = backdrop "avec texte" si dispo dans la langue demandée (fallback EN puis sans langue)
+        # FANART = backdrop sans langue en priorité (souvent sans texte)
+        _meta.setdefault('landscape_path', '')
+        try:
+            images = meta.get('images') if isinstance(meta, dict) else None
+            backdrops = images.get('backdrops', []) if images else []
+            if backdrops:
+                primary = (self.lang or 'fr-FR').split('-')[0].lower()
+                # landscape : fr -> en -> null
+                landscape_fp = self._select_backdrop_by_lang(backdrops, [primary, 'en', None])
+                landscape_url = self._build_backdrop_url(landscape_fp)
+                if landscape_url:
+                    _meta['landscape_path'] = landscape_url
+
+                # fanart : null -> fr -> en (si jamais)
+                if not _meta.get('backdrop_path'):
+                    fanart_fp = self._select_backdrop_by_lang(backdrops, [None, primary, 'en'])
+                    fanart_url = self._build_backdrop_url(fanart_fp)
+                    if fanart_url:
+                        _meta['backdrop_path'] = fanart_url
+
+            # Si on n'a pas de landscape, on fallback sur fanart (au moins le skin a quelque chose)
+            if not _meta.get('landscape_path'):
+                _meta['landscape_path'] = _meta.get('backdrop_path', '') or ''
+        except Exception:
+            # Fallback silencieux
+            if not _meta.get('landscape_path'):
+                _meta['landscape_path'] = _meta.get('backdrop_path', '') or ''
+
+        # Si la valeur vient du cache et est déjà une URL, on ne touche pas.
+        if _meta.get('landscape_path') and str(_meta['landscape_path']).startswith('/'):
+            _meta['landscape_path'] = self.fanart + _meta['landscape_path']
+
         return _meta
 
     def _clean_title(self, title):
@@ -796,8 +836,21 @@ class cTMDb:
                     sql_select = sql_select + ' AND tvshow.year = %s' % year
 
         elif media_type == 'season' and season:
-            sql_select = 'SELECT *, season.poster_path, season.premiered, ' \
-                             'season.year, season.plot FROM season LEFT JOIN tvshow ON season.tmdb_id = tvshow.tmdb_id'
+            sql_select = (
+                "SELECT "
+                "tvshow.backdrop_path, "
+                "tvshow.landscape_path, "
+                "CASE WHEN season.poster_path IS NULL OR season.poster_path = '' "
+                "THEN tvshow.poster_path ELSE season.poster_path END AS poster_path, "
+                "season.season_title AS title, "
+                "season.tmdb_id, "
+                "season.season, "
+                "season.year, "
+                "season.premiered, "
+                "season.plot, "
+                "season.episode "
+                "FROM season LEFT JOIN tvshow ON season.tmdb_id = tvshow.tmdb_id"
+            )
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
@@ -808,10 +861,28 @@ class cTMDb:
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
-            sql_select = 'SELECT tvshow.backdrop_path, season.poster_path, episode.title, episode.tmdb_id, episode.poster_path as poster_thumb, episode.premiered, '\
-                'episode.guest_stars, episode.year, episode.plot, episode.tagline, '\
-                'episode.director, episode.writer, episode.rating, episode.votes '\
-                'FROM episode LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id LEFT JOIN season ON episode.tmdb_id = season.tmdb_id'
+            sql_select = (
+                "SELECT "
+                "tvshow.backdrop_path, "
+                "tvshow.landscape_path, "
+                "season.poster_path, "
+                "episode.title, "
+                "episode.tmdb_id, "
+                "episode.poster_path AS poster_thumb, "
+                "episode.premiered, "
+                "episode.guest_stars, "
+                "episode.year, "
+                "episode.plot, "
+                "episode.tagline, "
+                "episode.director, "
+                "episode.writer, "
+                "episode.rating, "
+                "episode.votes "
+                "FROM episode "
+                "LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id "
+                "LEFT JOIN season ON episode.tmdb_id = season.tmdb_id AND episode.season = season.season"
+            )
+
             if tmdb_id:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
@@ -888,9 +959,9 @@ class cTMDb:
 
         try:
             sql = 'INSERT or IGNORE INTO movie (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
-                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path) ' \
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', '')))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
@@ -898,7 +969,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', '')))
             else:
                 VSlog('SQL ERROR INSERT into table movie')
             pass
@@ -916,9 +987,9 @@ class cTMDb:
         # sauvegarde tvshow dans la BDD
         try:
             sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, crew, writer, director, rating, votes, duration, ' \
-                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path, nbseasons) ' \
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', ''), meta['nbseasons']))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -926,7 +997,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', ''), meta['nbseasons']))
             else:
                 VSlog('SQL ERROR INSERT into table tvshow')
             pass
@@ -965,10 +1036,12 @@ class cTMDb:
         else:
             fanart = ""
 
+        season_title = meta.get('title') or meta.get('name') or ''
+
         try:
-            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, plot, episode) VALUES '\
-                  '(?, ?, ?, ?, ?, ?, ?)'
-            self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
+            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, season_title, poster_path, plot, episode) VALUES ' \
+                  '(?, ?, ?, ?, ?, ?, ?, ?)'
+            self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, season_title, fanart, plot, meta.get('episode_count', 0)))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -977,7 +1050,7 @@ class cTMDb:
 
                 # Deuxieme tentative
                 try:
-                    self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
+                    self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, season_title, fanart, plot, meta.get('episode_count', 0)))
                 except Exception as e:
                     VSlog(str(e))
             else:
@@ -1110,6 +1183,17 @@ class cTMDb:
         # Mise en forme des metas si trouvé
         if meta and 'tmdb_id' in meta:
             meta = self._format(meta, name, media_type)
+            # Fallback POSTER SAISON:
+            # Si la saison n'a pas de poster, on reprend celui de la série (quand dispo en cache).
+            if meta.get('media_type') == 'season' and not meta.get('poster_path'):
+                try:
+                    show_id = meta.get('tmdb_id')
+                    if show_id:
+                        show_meta = self._cache_search('tvshow', name, tmdb_id=str(show_id))
+                        if show_meta and show_meta.get('poster_path'):
+                            meta['poster_path'] = show_meta.get('poster_path')
+                except:
+                    pass
             # sauvegarde dans un cache
             if not cleanTitle:
                 cleanTitle = self._clean_title(name)
@@ -1165,11 +1249,73 @@ class cTMDb:
         data = json.loads(response)
         return data    
 
+
+    def _tmdb_image_langs(self):
+        """Retourne une valeur compatible TMDb pour include_image_language.
+        Ex: 'fr,en,null' (fallback EN puis images sans langue).
+        """
+        try:
+            primary = (self.lang or 'fr-FR').split('-')[0].lower()
+        except Exception:
+            primary = 'fr'
+        if not primary:
+            primary = 'fr'
+        # Toujours fallback EN puis null (images sans langue)
+        if primary == 'en':
+            return 'en,null'
+        return '%s,en,null' % primary
+
+    def _select_backdrop_by_lang(self, backdrops, preferred_langs):
+        """Choisit un backdrop selon iso_639_1 dans l'ordre preferred_langs.
+        preferred_langs peut contenir None (pour 'null' TMDb).
+        """
+        if not backdrops:
+            return ''
+        # Index par langue
+        by_lang = {}
+        for b in backdrops:
+            lang = b.get('iso_639_1', None)
+            by_lang.setdefault(lang, []).append(b)
+
+        for lang in preferred_langs:
+            if lang in by_lang and by_lang[lang]:
+                fp = by_lang[lang][0].get('file_path')
+                if fp:
+                    return fp
+
+        # Sinon, n'importe quoi
+        fp = backdrops[0].get('file_path')
+        return fp or ''
+
+    def _build_backdrop_url(self, file_path):
+        if not file_path:
+            return ''
+        # file_path TMDb commence par /....
+        if str(file_path).startswith('http'):
+            return file_path
+        if not str(file_path).startswith('/'):
+            file_path = '/' + str(file_path)
+        return self.fanart + file_path
+
     def _call(self, action, append_to_response='', API_VERSION = 3):
         from resources.lib.handler.requestHandler import cRequestHandler
         url = '%s%s?language=%s&api_key=%s' % (self.URL % API_VERSION, action, self.lang, self.api_key)
         if append_to_response:
             url += '&%s' % append_to_response
+
+        # IMPORTANT: images localisées (backdrops avec texte, etc.)
+        # On ajoute include_image_language uniquement quand on appelle des images (append_to_response=...images...)
+        try:
+            wants_images = False
+            if isinstance(append_to_response, str) and ('append_to_response=' in append_to_response) and ('images' in append_to_response):
+                wants_images = True
+            if isinstance(action, str) and action.endswith('/images'):
+                wants_images = True
+
+            if wants_images and 'include_image_language=' not in url:
+                url += '&include_image_language=%s' % self._tmdb_image_langs()
+        except Exception:
+            pass
 
         oRequestHandler = cRequestHandler(url)
         data = oRequestHandler.request(jsonDecode=True)

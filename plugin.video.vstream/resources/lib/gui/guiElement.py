@@ -35,6 +35,7 @@ class cGuiElement:
         self.__sTitle = ''
         # contient le titre propre
         self.__sCleanTitle = ''
+        self.__bTitleTmdb = False
         # titre considéré Vu
         self.__sTitleWatched = ''
         self.__ResumeTime = 0   # Durée déjà lue de la vidéo
@@ -356,6 +357,9 @@ class cGuiElement:
     def getTitleWatched(self):
         return self.__sTitleWatched
 
+    def setTitleTMDB(self, isTmdb):
+        self.__bTitleTmdb = isTmdb
+
     def setDescription(self, sDescription):
         # Py3
         if isMatrix():
@@ -653,6 +657,8 @@ class cGuiElement:
         return
 
     def getItemValues(self):
+
+        sCat = self.getCat()
         self.addItemValues('title', self.getTitle())
 
         # https://kodi.wiki/view/InfoLabels
@@ -698,6 +704,18 @@ class cGuiElement:
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
 
+            # Pour les saisons, on utilise le titre TMDb
+            if self.__bTitleTmdb:
+                sRealTitle = self.getItemValue('title')
+                if sRealTitle:
+                    if sCat == 4:
+                        sSeasonTitle = sRealTitle.lower() 
+                        if 'saison' not in sSeasonTitle and 'season' not in sSeasonTitle:
+                            sRealTitle = '[COLOR %s]S%s[/COLOR] - %s' % (self.sDecoColor, self.getSeason(), sRealTitle)
+                    
+                self.setRawTitle(sRealTitle)
+
+
         # tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
@@ -727,7 +745,6 @@ class cGuiElement:
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        sCat = self.getCat()
         try:
             if sCat and sCat in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
                 if self.getWatched():

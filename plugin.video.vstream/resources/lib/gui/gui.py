@@ -57,18 +57,40 @@ class cGui:
         oInputParameterHandler = None
         if Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
-            sCat = oInputParameterHandler.getValue('sCat')
-            if sCat:
-                sCat = int(sCat)
-                oGuiElement.setCat(sCat)
 
-            sMeta = oInputParameterHandler.getValue('sMeta')
-            if sMeta:
-                sMeta = int(sMeta)
-                oGuiElement.setMeta(sMeta)
+            sCat_in = oInputParameterHandler.getValue('sCat')
+            if sCat_in:
+                try:
+                    sCat_in = int(sCat_in)
+                    oGuiElement.setCat(sCat_in)
+                    sCat = sCat_in
+                except:
+                    pass
+
+            sMeta_in = oInputParameterHandler.getValue('sMeta')
+            if sMeta_in:
+                try:
+                    sMeta_in = int(sMeta_in)
+                    oGuiElement.setMeta(sMeta_in)
+                    sMeta = sMeta_in
+                except:
+                    pass
         else:
             oOutputParameterHandler.addParameter('sMeta', sMeta)
             oGuiElement.setMeta(sMeta)
+
+        # pour les saisons, on garde le titre TMDB si on vient de la série
+        # on arrive directement sur des saisons avec certaines sources, ou par la fonction "poursuivre la lecture"
+        if sCat == 4:
+            oInputParameterHandler = cInputParameterHandler()
+            sCatFrom = oInputParameterHandler.getValue('sCat')
+            if sCatFrom:
+                try:
+                    sCatFrom = int(sCatFrom)
+                    if sCatFrom == 2: #Série
+                        oGuiElement.setTitleTMDB(True)
+                except:
+                    pass
 
         # a faire après avoir déterminé la cat et le meta
         oGuiElement.setTitle(sLabel)
@@ -82,7 +104,11 @@ class cGui:
                 if not sMeta:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
-                    sMeta = int(oInputParameterHandler.getValue('sMeta'))
+                    try:
+                        sMeta = int(oInputParameterHandler.getValue('sMeta'))
+                    except:
+                        sMeta = 0
+
                 if 0 < sMeta < 7:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
@@ -108,9 +134,37 @@ class cGui:
         else:
             oGuiElement.setFileName(sLabel)
 
-        # si pas d'info fourni en spécifique, récupéré celle de la navigation précédente
-        if sCat and not sThumbnail and not sTmdbId:
-            oGuiElement.getInfoLabel()
+        # les épisodes ont quasi toujours un thumb (still) => getInfoLabel jamais appelé
+        # => fanart/backdrop de série ne descend pas sur le dossier épisodes.
+        # pour les episodes, on appelle getInfoLabel même si thumb existe,
+        # mais on restaure le thumb/poster d'épisode après.
+        try:
+            sCat_i = int(sCat) if sCat is not None else None
+        except:
+            sCat_i = None
+
+        if sCat:
+            # Cas général inchangé
+            if not sThumbnail and not sTmdbId:
+                oGuiElement.getInfoLabel()
+
+            # Cas EPISODE: on force la meta pour récupérer fanart/backdrop (série),
+            # tout en conservant le thumb d'épisode.
+            elif sCat_i == 8 and window(10101).getProperty('search') != 'true':
+                old_thumb = oGuiElement.getThumbnail()
+                old_poster = oGuiElement.getPoster()
+
+                oGuiElement.getInfoLabel()
+
+                # On restaure le visuel d'épisode (thumb/still) si ça a été écrasé
+                if old_thumb:
+                    oGuiElement.setThumbnail(old_thumb)
+                if old_poster:
+                    oGuiElement.setPoster(old_poster)
+                else:
+                    # si poster non défini mais thumb oui, on garde une cohérence
+                    if old_thumb:
+                        oGuiElement.setPoster(old_thumb)
 
         try:
             return self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -474,6 +528,7 @@ class cGui:
             videoInfoTag.setPlot(data.get('plot', ""))
             videoInfoTag.setPlotOutline(data.get('tagline', ""))
             videoInfoTag.setYear(int(data.get('year', 0)))
+            videoInfoTag.setPremiered(data.get('premiered', ''))
             videoInfoTag.setRating(float(data.get('rating', 0.0)))
             videoInfoTag.setMpaa(data.get('mpaa', ""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
@@ -499,7 +554,11 @@ class cGui:
                           'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
-                          'fanart': oGuiElement.getFanart()})
+                          # FANART = backdrop (idéalement sans texte)
+                          'fanart': oGuiElement.getFanart(),
+                          # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
+                          'landscape': oGuiElement.getItemValue('landscape_path')
+                          })
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
