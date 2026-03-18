@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-
+import time
 
 SITE_IDENTIFIER = 'witv'
 SITE_NAME = 'witv'
@@ -95,12 +95,29 @@ def showLink():
             oRequestHandler = cRequestHandler(sHosterUrl)
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
             sHtmlContent = oRequestHandler.request()
-            sHosterUrl = oRequestHandler.getRealUrl()
+            sHosterUrl2 = oRequestHandler.getRealUrl()
+            
+            # 2eme tentative
+            if sHosterUrl2 == sHosterUrl:
+                time.sleep(2)
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+                sHtmlContent = oRequestHandler.request()
+                sHosterUrl2 = oRequestHandler.getRealUrl()
     
-            oHoster = oHosterGui.getHoster('lien_direct')
-            oHoster.setDisplayName(sTitle)
-            oHoster.setFileName(sTitle)
-            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
+                # 3eme tentative
+                if sHosterUrl2 == sHosterUrl:
+                    time.sleep(2)
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+                    sHtmlContent = oRequestHandler.request()
+                    sHosterUrl2 = oRequestHandler.getRealUrl()
+    
+            if sHosterUrl2 != sHosterUrl:
+                oHoster = oHosterGui.getHoster('lien_direct')
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    
     oGui.setEndOfDirectory()
 
