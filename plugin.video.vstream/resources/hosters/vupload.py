@@ -15,11 +15,6 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
-        
-        # fh = open('c:\\test.txt', "w")
-        # fh.write(sHtmlContent)
-        # fh.close
-        
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
 
         oParser = cParser()

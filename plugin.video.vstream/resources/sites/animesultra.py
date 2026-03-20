@@ -18,11 +18,13 @@ try:
 except NameError:
     xrange = range
 
+
 SITE_IDENTIFIER = 'animesultra'
 SITE_NAME = 'Animes Ultra'
 SITE_DESC = 'Regarder gratuitement vos animes VF/VOSTFR préférés'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN + 'dernier-episodes/', 'showMovies')
@@ -105,18 +107,37 @@ def showYears():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-
-
-    if sSearch:
+    oInputParameterHandler = cInputParameterHandler()
+    
+    if not sSearch:
+        sSearch = oInputParameterHandler.getValue('sSearch') or ''
+    
+    bSearch = bool(sSearch)
+    
+    current_page = 1
+    if bSearch:
+        sPage = oInputParameterHandler.getValue('sPage')
+        if sPage and sPage.isdigit():
+            current_page = int(sPage)
+    
+    if bSearch:
         sUrl = URL_SEARCH[0]
         oUtil = cUtil()
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
         sSearchText = oUtil.CleanName(sSearch)
-
-        query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search', '1'))
+        
+        query_args = [('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search', '1')]
+        if current_page > 1:
+            query_args.append(('search_start', str(current_page)))
+            result_from = (current_page - 1) * 12 + 1
+            query_args.append(('result_from', str(result_from)))
+        else:
+            query_args.append(('search_start', '0'))
+            query_args.append(('result_from', '1'))
+        
         data = urlEncode(query_args)
-
+        
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addParametersLine(data)
@@ -126,22 +147,18 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Content-Length', str(len(data)))
         sHtmlContent = oRequestHandler.request()
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-
+    
     if "/films/" in sUrl:
         sPattern = '<article class="short__story.+?href="([^"]+).+?data-src="([^"]+)" alt="([^"]+).+?pg">([^<]+).+?text">([^<]+)'
     else:
-        sPattern = '<div class="film-detail">.+?img data-src="([^"]+).+?alt="([^"]+).+?href="([^"]+)'
-
+        sPattern = r'<div class="flw-item">[\s\S]*?<img data-src="([^"]*)"[^>]*alt="([^"]*)"[\s\S]*?<div class="film-detail">[\s\S]*?<a href="([^"]+)"'
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-
+    
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -149,6 +166,7 @@ def showMovies(sSearch=''):
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+            
             if "/films/" in sUrl:
                 sTitle = aEntry[2]
                 sQual = aEntry[3]
@@ -157,39 +175,54 @@ def showMovies(sSearch=''):
             else:
                 sLang = aEntry[1].split(" ")[-1]
                 sTitle = aEntry[1].replace(" VF", "").replace(" VOSTFR", "")
-
-            if sSearch:
-                if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
-
-            sDisplayTitle = ('%s (%s)') % (sTitle,  sLang.upper())
-
+            
+            sDisplayTitle = ('%s (%s)') % (sTitle, sLang.upper())
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            
             oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-    if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if sNextPage:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+    
+    next_page = __checkForNextPage(sHtmlContent, current_page, bSearch)
+    if next_page:
+        oOutputParameterHandler = cOutputParameterHandler()
+        if bSearch:
+            oOutputParameterHandler.addParameter('sSearch', sSearch)
+            oOutputParameterHandler.addParameter('sPage', str(next_page))
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(next_page), oOutputParameterHandler)
+        else:
+            oOutputParameterHandler.addParameter('siteUrl', next_page)
+            sNumPage = re.search('/page/([0-9]+)', next_page).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
-
+    
+    if not sSearch:
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent):
+def __checkForNextPage(sHtmlContent, current_page=1, bSearch=False):
+    """
+    Retourne la pagination selon le mode:
+    - bSearch=True: retourne le numéro de page suivant (int) depuis onclick="list_submit(N)"
+    - bSearch=False: retourne l'URL de la page suivante (str) depuis href=".../page/N/"
+    """
     oParser = cParser()
-    sPattern = '<a title="next" class="page-link" href="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0]:
-        return aResult[1][0]
-
-    return False
+    if bSearch:
+        sPattern = r'onclick="javascript:list_submit\((\d+)\)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            pages = [int(x) for x in aResult[1] if x.isdigit()]
+            pages.sort()
+            for p in pages:
+                if p > current_page:
+                    return p
+        return False
+    else:
+        sPattern = r'<a\s+(?=[^>]*?title\s*=\s*["\']next["\'])(?=[^>]*?class\s*=\s*["\']page-link["\'])[^>]*?href\s*=\s*["\']([^"\']+)["\']'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            return aResult[1][0]
+        return False
 
 
 def ShowSxE():
@@ -236,16 +269,18 @@ def seriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sID = oInputParameterHandler.getValue('id')
 
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = 'data-class="(.+?) ".+?data-server-id="(.+?)"'
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+
     oRequestHandler = cRequestHandler(URL_MAIN + 'engine/ajax/full-story.php?newsId=' + sID)
     sHtmlContent = oRequestHandler.request(jsonDecode=True)['html']
+
 
     if aResult[0]:
         for aEntry in aResult[1]:

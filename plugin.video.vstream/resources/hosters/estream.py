@@ -16,6 +16,7 @@ class cHoster(iHoster):
         api_call = False
 
         oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('Referer', 'https://lecteurvideo.com/')
         sHtmlContent = oRequest.request()
 
         # type1

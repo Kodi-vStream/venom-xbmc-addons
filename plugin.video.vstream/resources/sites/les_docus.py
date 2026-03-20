@@ -143,7 +143,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'post-header"><a href="([^"]+)" title="([^"]+).+?src="(https[^"]+)".+?<p *style.+?>([^<]+)</p>'
+    sPattern = 'post-header"> *<a href="([^"]+)" title="([^"]+).+?src="(https[^"]+)".+?<p>([^<]+)<\/p>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -205,7 +205,7 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent1, sPattern)
 
-    if not (aResult[0] is True):
+    if not aResult[0]:
         sPattern = 'data-video_id="(.+?)"'
         aResult = oParser.parse(sHtmlContent1, sPattern)
         if aResult[0]:

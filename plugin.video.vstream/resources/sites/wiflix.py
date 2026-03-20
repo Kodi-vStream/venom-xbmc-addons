@@ -154,9 +154,12 @@ def showMovies(sSearch=''):
         pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
-        # oRequest.setRequestType(1)
+        oRequest.request()
+        cookie = oRequest.GetCookies()
+        oRequest.addHeaderEntry('Cookie', cookie)
+        oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
+        oRequest.addHeaderEntry('Referer', URL_SEARCH[0])
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -286,7 +289,7 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace('- Saison ', 'S').replace(' wiflix', '').replace(' flemmix', '')
+            sTitle = aEntry[1].replace('- Saison ', 'S').replace('wiflix', '').replace('flemmix', '').strip()
             
             # Filtre de recherche
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):

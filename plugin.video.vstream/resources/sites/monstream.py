@@ -24,15 +24,15 @@ key_search_series = '#searchsomeseries'
 key_search_reality = '#searchsomereality'
 
 # Pour les Films
-MOVIE_NEWS = (URL_MAIN + 'zeus-films/', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'zeus-films/', 'showGenres')
-MOVIE_ANNEES = (URL_MAIN + 'zeus-films/annee/', 'showMovieYears')
+MOVIE_NEWS = (URL_MAIN + 'stream-films/', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + 'stream-films/', 'showGenres')
+MOVIE_ANNEES = (URL_MAIN + 'stream-films/annee/', 'showMovieYears')
 
 # Pour les Series
-SERIE_NEWS = (URL_MAIN + 'zeus-series/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'zeus-series/', 'showSeriesGenres')
-SERIE_VOSTFR = (URL_MAIN + 'zeus-series/series-vostfr/', 'showMovies')
-SERIE_ANNEES = (URL_MAIN + 'zeus-series/annee/', 'showSerieYears')
+SERIE_NEWS = (URL_MAIN + 'stream-series/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'stream-series/', 'showSeriesGenres')
+SERIE_VOSTFR = (URL_MAIN + 'stream-series/series-vostfr/', 'showMovies')
+SERIE_ANNEES = (URL_MAIN + 'stream-series/annee/', 'showSerieYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')

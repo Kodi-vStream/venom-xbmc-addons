@@ -30,11 +30,15 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 # chaines dans l'ordre d'affichage
 channels = {
     20: ['Ligue 1+', 'https://www.lensois.com/wp-content/uploads/2025/07/ligue-1-1.jpg'],
+    21: ['Ligue 1+ CH2', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2025/07/ligue-1-plus-2.png'],
+    22: ['Ligue 1+ CH3', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2025/07/ligue-1plus-3-box-internet-300x95.png'],
+    39: ['Ligue 1+ CH4', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2025/07/ligue-1plus-4-box-internet-300x106.png'],
+    40: ['Ligue 1+ CH5', 'https://www.monpetitforfait.com/comparateur-box-internet/wp-content/uploads/2025/07/ligue-1-plus-5.png'],
     1: ['bein Sports 1', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_1_Australia.png'],
 #    20: ['DAZN1', 'https://cdn.sincroguia.tv/uploads/images/e/q/k/xdazn1.jpg.pagespeed.ic.oaUemASdvr.jpg'],
-    21: ['DAZN2', 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg'],
-    22: ['DAZN3', 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg'],
-    40: ['DAZN4', 'https://cdn.sincroguia.tv/uploads/images/m/w/t/xdazn4.jpg.pagespeed.ic.eFrCKmRmJ6.jpg'],
+    # 21: ['DAZN2', 'https://cdn.sincroguia.tv/uploads/images/g/8/t/xdazn2.jpg.pagespeed.ic.SKK2xVfOfw.jpg'],
+    # 22: ['DAZN3', 'https://cdn.sincroguia.tv/uploads/images/7/9/t/xdazn3.jpg.pagespeed.ic.BXBiZkQLdS.jpg'],
+    # 40: ['DAZN4', 'https://cdn.sincroguia.tv/uploads/images/m/w/t/xdazn4.jpg.pagespeed.ic.eFrCKmRmJ6.jpg'],
     # 20: ['prime video ligue 2', 'https://i.imgur.com/PvpkxgG.png'],
     11: ['Canal+', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
     12: ['Canal+ Foot', 'https://upload.wikimedia.org/wikipedia/fr/3/3b/C%2B_Foot.png'],
@@ -47,9 +51,9 @@ channels = {
     18: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
     19: ['L\'equipe', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png'],
     23: ['Automoto', 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg'],
-    32: ['Canal+ Live 1', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-1-fr.png'],
-    34: ['Canal+ Live 2', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-2-fr.png'],
-    35: ['Canal+ Live 3', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-3-fr.png'],
+    31: ['Canal+ Live 1', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-1-fr.png'],
+    32: ['Canal+ Live 2', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-2-fr.png'],
+    33: ['Canal+ Live 3', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-3-fr.png'],
     2: ['bein Sports 2', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png'],
     3: ['bein Sports 3', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png'],
     4: ['bein Sports MAX 4', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_4.png'],
@@ -118,7 +122,7 @@ def showGenres():
 def showTV():
     oGui = cGui()
 
-    chaines = [20, 11, 12, 13, 14, 17, 18, 15, 16, 19, 23, 32, 34, 35, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    chaines = [20, 21, 22, 39, 40, 11, 12, 13, 14, 17, 18, 15, 16, 19, 23, 31, 32, 33, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     
     # if 'sport' in sUrl:
     # chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
@@ -295,7 +299,7 @@ def getHosterIframe(url, referer):
     if not url.startswith('http'):
         url = URL_MAIN + url
 
-    oRequestHandler = cRequestHandler(url)
+    oRequestHandler = cRequestHandler(url, forceDNS = True)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())

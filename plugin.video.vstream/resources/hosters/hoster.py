@@ -53,6 +53,7 @@ class iHoster(object):
         return self._res
 
     def setUrl(self, url):
+        url = url.strip()
         if not url.startswith('http'):
             url = ('https://' + url).replace('////', '//')
         self._url = str(url)

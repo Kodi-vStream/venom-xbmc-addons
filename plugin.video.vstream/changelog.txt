@@ -10,6 +10,55 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.9.1 - 18/03/2026 ***
+- TMDB : Recupération des landscapes et utilisation du titre des saisons
+- TMDB : Manque la date des films avec certains habillages 
+- AnimeSama : Récupération des liens
+- LiveTV : Mise à jour des modifications du site
+
+*** 3.9.0 - 25/02/2026 ***
+- WiTV : Ajout de cette source de chaines sportives
+- gofile : support de l'hébergeur
+
+*** 3.8.1 - 09/02/26 ***
+- TopStream : Retour des liens, ajout des nouveautés
+
+*** 3.8.0 - 08/02/26 ***
+- DNS automatique pour les sources sportives
+- FrenchStream - Retour des liens
+
+*** 3.7.3 - 14/01/26 ***
+- La dépendance QRcode devient optionnelle
+
+*** 3.7.2 - 09/01/26 ***
+- Reprise de la dépendance QRcode
+
+*** 3.7.1 - 06/01/26 ***
+- Correction de plusieurs sources pour retrouver les liens
+
+*** 3.7.0 - 09/12/25 ***
+- FrenchStream : les liens sont de nouveaux accessibles, ajout de nombreux nouveaux liens, et d'un menu "Populaire"
+- CPasMal :  nouvelle source de films et de séries
+- coflix : liens de nouveaux accessibles
+- Kepliz : liens proposés lors d'une recherche globale
+- VIDZY : Support de ce nouvel hébergeur
+- Cloudflare : plus de blocage. vStream contourne la protection Cloudflare
+- EliteGol : Retour des chaines sportives
+- Recherche d'acteurs : certaines recherches ne fonctionnaient pas
+- Radio : meilleure qualité audio pour plusieurs radios, passage en hifi/AAC
+- TMDBHelper : gestion des Player et ajout d'informations contextuelles
+- Ergonomie : version plus propre de toutes les icones
+
+*** 3.6.3 - 29/10/25 ***
+- EliteGol : Ajout des chaines Ligue1+
+
+*** 3.6.2 - 06/10/25 ***
+- AnimeSama : retour des liens
+- liens : meilleure détection de plusieurs liens
+
+*** 3.6.1 - 22/09/25 ***
+- liens : meilleure détection de plusieurs liens
+
 *** 3.6.0 - 02/09/25 ***
 - Pastebin : Meilleurs propositions prenant en compte les différents codes
 - Séries en cours de lecture : Correction des séries en double

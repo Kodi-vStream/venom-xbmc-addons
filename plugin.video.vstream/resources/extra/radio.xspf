@@ -261,61 +261,91 @@
 			<identifier>Blues</identifier>
 		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fipelectro-midfi.mp3</location>
+			<location>https://icecast.radiofrance.fr/fipelectro-hifi.aac</location>
 			<title>FIP Electro</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/b0/49/103524/1/c175.png</image>
 			<identifier>Electronic</identifier>
 		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fipgroove-midfi.mp3?ID=pd569ib97j</location>
+			<location>https://icecast.radiofrance.fr/fipgroove-hifi.aac</location>
 			<title>FIP Groove</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/a4/5d/38217/2/c175.png</image>
 			<identifier>Groove</identifier>
 		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fipjazz-midfi.mp3?ID=pd569ib97j</location>
+			<location>https://icecast.radiofrance.fr/fiphiphop-hifi.aac</location>
+			<title>FIP Hip-Hop</title>
+			<image></image>
+			<identifier>Hip-Hop</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipjazz-hifi.aac</location>
 			<title>FIP Jazz</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/36/24/38216/2/c175.png</image>
 			<identifier>Jazz</identifier>
 		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fipworld-midfi.mp3?ID=pd569ib97j</location>
+			<location>https://icecast.radiofrance.fr/fipmetal-hifi.aac</location>
+			<title>FIP Metal</title>
+			<image></image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipworld-hifi.aac</location>
 			<title>FIP Monde</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/91/7c/38218/2/c175.png</image>
 			<identifier>Lounge</identifier>
 		</track>
+        <track>
+			<location>https://icecast.radiofrance.fr/fipnouveautes-hifi.aac</location>
+			<title>FIP Nouveauté</title>
+			<image></image>
+			<identifier>Lounge</identifier>
+		</track>
+        <track>
+			<location>https://icecast.radiofrance.fr/fippop-hifi.aac</location>
+			<title>FIP Pop</title>
+			<image></image>
+			<identifier>Pop</identifier>
+		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fipreggae-midfi.mp3?ID=pd569ib97j</location>
+			<location>https://icecast.radiofrance.fr/fipreggae-hifi.aac</location>
 			<title>FIP Reggae</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/6f/78/103525/1/c175.png</image>
 			<identifier>Reggae</identifier>
 		</track>
 		<track>
-			<location>https://icecast.radiofrance.fr/fiprock-midfi.mp3?ID=pd569ib97j</location>
+			<location>https://icecast.radiofrance.fr/fiprock-hifi.aac</location>
 			<title>FIP Rock</title>
 			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/e7/e8/38215/2/c175.png</image>
 			<identifier>Rock</identifier>
 		</track>
 		<track>
-			<location>http://icecast.radiofrance.fr/fb1071-midfi.mp3</location>
+			<location>https://icecast.radiofrance.fr/fipsacrefrancais-hifi.aac</location>
+			<title>FIP Sacré français !</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/e7/e8/38215/2/c175.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://icecast.radiofrance.fr/fb1071-hifi.aac</location>
 			<title>France Bleu</title>
 			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/9/98/France_Bleu_logo_2015.svg/1200px-France_Bleu_logo_2015.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://icecast.radiofrance.fr/franceculture-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/franceculture-hifi.aac</location>
 			<title>France Culture</title>
 			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/c/c9/France_Culture_-_2008.svg/1200px-France_Culture_-_2008.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://icecast.radiofrance.fr/franceinfo-midfi.mp3</location>
-			<title>France Info</title>
+			<location>http://icecast.radiofrance.fr/franceinfo-hifi.aac</location>
+			<title>franceinfo</title>
 			<image>https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Franceinfo.svg/510px-Franceinfo.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://icecast.radiofrance.fr/franceinter-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/franceinter-hifi.aac</location>
 			<title>France Inter</title>
 			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/3/39/France_Inter_logo.svg/1200px-France_Inter_logo.svg.png</image>
 			<identifier>News</identifier>
@@ -509,7 +539,7 @@
 		</track>
 		<track>
 			<location>http://direct.mouv.fr/live/mouv-midfi.mp3</location>
-			<title>Mouv</title>
+			<title>Mouv'</title>
 			<image>https://i3.radionomy.com/radios/200/e90dfa5c-105a-456a-b69b-cf903a07a96d.jpg</image>
 			<identifier>Hip-hop</identifier>
 		</track>

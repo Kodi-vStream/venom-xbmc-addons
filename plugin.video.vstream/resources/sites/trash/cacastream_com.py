@@ -1,15 +1,12 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
 from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
-from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata,htmlentitydefs
 import time

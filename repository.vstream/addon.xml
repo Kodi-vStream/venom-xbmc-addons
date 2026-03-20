@@ -17,5 +17,9 @@
         <summary lang="en">vStream Repository</summary>
         <description lang="en">Download and install vStream</description>
         <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
     </extension>
 </addon>

@@ -35,6 +35,7 @@ class cGuiElement:
         self.__sTitle = ''
         # contient le titre propre
         self.__sCleanTitle = ''
+        self.__bTitleTmdb = False
         # titre considéré Vu
         self.__sTitleWatched = ''
         self.__ResumeTime = 0   # Durée déjà lue de la vidéo
@@ -140,8 +141,16 @@ class cGuiElement:
     def getSeason(self):
         return self.__Season
 
+    def setSeason(self, season):
+        self.__Season = season
+        self.addItemValues('season', self.__Season)
+
     def getEpisode(self):
         return self.__Episode
+
+    def setEpisode(self, episode):
+        self.__Episode = episode
+        self.addItemValues('episode', self.__Episode)
 
     def setTotalTime(self, data):
         self.__TotalTime = data
@@ -192,8 +201,7 @@ class cGuiElement:
         return self.__sFunctionName
 
     def TraiteTitre(self, sTitle):
-        bMatrix = isMatrix()
-
+        # bMatrix = isMatrix()
         # conversion unicode ne fonctionne pas avec les accents
         # try:
         #     if not bMatrix:
@@ -210,7 +218,7 @@ class cGuiElement:
         """ Début du nettoyage du titre """
         # vire doubles espaces et double points
         sTitle = re.sub(' +', ' ', sTitle)
-        sTitle = re.sub('\.+', '.', sTitle)
+        # sTitle = re.sub('\.+', '.', sTitle)
 
         # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
@@ -278,10 +286,10 @@ class cGuiElement:
     
             if sa:
                 self.__Season = sa
-                self.addItemValues('Season', self.__Season)
+                self.addItemValues('season', self.__Season)
             if ep:
                 self.__Episode = ep
-                self.addItemValues('Episode', self.__Episode)
+                self.addItemValues('episode', self.__Episode)
                 if not self.__Season:
                     self.__Season = '1'   # forcer pour les séries sans saison
 
@@ -348,6 +356,9 @@ class cGuiElement:
 
     def getTitleWatched(self):
         return self.__sTitleWatched
+
+    def setTitleTMDB(self, isTmdb):
+        self.__bTitleTmdb = isTmdb
 
     def setDescription(self, sDescription):
         # Py3
@@ -458,6 +469,10 @@ class cGuiElement:
                 'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
                 'plot': xbmc.getInfoLabel('ListItem.plot'),
                 'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+                # 'thumbnail': xbmc.getInfoLabel('ListItem.thumb'),
+                # 'icon': xbmc.getInfoLabel('ListItem.Art(icon)'),
+                # 'poster': xbmc.getInfoLabel('ListItem.Art(poster)'),
+                # 'videoinfo': xbmc.getInfoLabel('ListItem.getVideoInfoTag()'),
                 'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
                 'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
                 # 'season': xbmc.getInfoLabel('ListItem.season'),
@@ -486,6 +501,12 @@ class cGuiElement:
                 self.__sThumbnail = url
             if not self.__sPoster:
                 self.__sPoster = url
+#        if 'poster' in meta and meta['poster']:
+#            url = meta.pop('poster')
+#            if not self.__sPoster:
+#                self.__sPoster = url
+#            if not self.__sThumbnail:
+#                self.__sThumbnail = url
 
         # Completer au besoin
         for key, value in meta.items():
@@ -636,6 +657,8 @@ class cGuiElement:
         return
 
     def getItemValues(self):
+
+        sCat = self.getCat()
         self.addItemValues('title', self.getTitle())
 
         # https://kodi.wiki/view/InfoLabels
@@ -681,6 +704,18 @@ class cGuiElement:
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
 
+            # Pour les saisons, on utilise le titre TMDb
+            if self.__bTitleTmdb:
+                sRealTitle = self.getItemValue('title')
+                if sRealTitle:
+                    if sCat == 4:
+                        sSeasonTitle = sRealTitle.lower() 
+                        if 'saison' not in sSeasonTitle and 'season' not in sSeasonTitle:
+                            sRealTitle = '[COLOR %s]S%s[/COLOR] - %s' % (self.sDecoColor, self.getSeason(), sRealTitle)
+                    
+                self.setRawTitle(sRealTitle)
+
+
         # tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
@@ -710,7 +745,6 @@ class cGuiElement:
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        sCat = self.getCat()
         try:
             if sCat and sCat in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
                 if self.getWatched():

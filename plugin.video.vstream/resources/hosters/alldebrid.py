@@ -17,6 +17,12 @@ class cHoster(iHoster):
     def setDisplayName(self, displayName):
         self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + "/" + self.getRealHost() + '[/COLOR]'
 
+    def isDownloadable(self):
+        token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
+        if token_Alldebrid and len(token_Alldebrid)>15: # il faut un token valide
+            return True
+        return False
+
     def _getMediaLinkForGuest(self):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
         if token_Alldebrid:
@@ -29,21 +35,24 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(sUrl_Bypass)
         try:
-            sHtmlContent = oRequest.request()
-            sHtmlContent = json.loads(sHtmlContent)
+            reponse = oRequest.request()
+            reponse = json.loads(reponse)
         except:
-            VSlog('Hoster Alldebrid - json.loads : ' + sHtmlContent)
+            VSlog('Hoster Alldebrid - json.loads : ' + reponse)
+            return False, False
 #        sHtmlContent = json.loads(oRequest.request())
 
-        if 'error' in sHtmlContent:
-            if sHtmlContent['error']['code'] in ('LINK_HOST_NOT_SUPPORTED', 'LINK_DOWN'):
+        if 'error' in reponse:
+            if reponse['error']['code'] in ('LINK_HOST_NOT_SUPPORTED', 'LINK_DOWN'):
                 # si alldebrid ne prend pas en charge ce type de lien, on retourne le lien pour utiliser un autre hoster
                 return False, self._url
-            else:
-                VSlog('Hoster Alldebrid - Error: ' + sHtmlContent["error"]['code'])
-                return False, self._url   # quelque soit l'erreur, on retourne le lien pour utiliser un autre hoster
+            elif reponse['error']['code'] == 'TIME_OUT':
+                from resources.lib.comaddon import dialog
+                dialog().VSinfo(reponse['error']['message'])
+            VSlog('Hoster Alldebrid - Error: ' + reponse['error']['code'])
+            return False, self._url   # quelque soit l'erreur, on retourne le lien pour utiliser un autre hoster
 
-        api_call = HostURL = sHtmlContent["data"]["link"]
+        api_call = HostURL = reponse["data"]["link"]
         try:
             mediaDisplay = HostURL.split('/')
             VSlog('Hoster Alldebrid - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))

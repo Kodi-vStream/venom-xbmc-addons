@@ -57,7 +57,7 @@ class cHoster(iHoster):
                 for i in s:
                     if i == 'file' or i == 'source':
                         file = s[i]
-                #VSlog(file)
+                        break
 
                 api_call = file + '|User-Agent=' + UA # + '&Referer=' + url
 

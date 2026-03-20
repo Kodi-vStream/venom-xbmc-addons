@@ -75,6 +75,7 @@ class cParser:
         # usage2 oParser.abParse(sHtmlContent, 'start', 'end', 6)
         # ex youtube.py
 
+        sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         startIdx = sHtmlContent.find(start)
         if startIdx == -1:  # rien trouvé, on prend depuis le début
             startIdx = 0

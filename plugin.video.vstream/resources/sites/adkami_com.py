@@ -440,6 +440,7 @@ def showHosters():
 
     sPattern = '<div class="video-iframe.+?url="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if not aResult[0]:
         sPattern = 'class="video-video">.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -457,9 +458,10 @@ def showHosters():
 
     for aEntry in aResult[1]:
 
-        sUrl = aEntry.replace('+', 'plus')
-        if 'youtube' in sUrl and 'hl=fr' not in sUrl:
-            sUrl = decodex(sUrl)
+        if 'youtube' in aEntry and 'hl=fr' not in aEntry:
+            sUrl = decodex(aEntry)
+        else:
+            sUrl = aEntry.replace('+', 'plus')
 
         if sUrl.startswith('//'):
             sUrl = 'https:' + sUrl
@@ -491,14 +493,22 @@ def decodex(x):
         a = 0
 
         px = chain(e)
-        for y in list(px):
+        for i, y in enumerate(list(px)):
             if isMatrix():
-                t += chr(int(175 ^ y) - ord(r[a]))
+                char_code = int(175 ^ y) - ord(r[a])
             else:
-                t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
-            a = 0 if a > len(r) - 2 else a + 1
+                char_code = int(175 ^ ord(y[0])) - ord(r[a])
+
+            if char_code < 0:
+                char_code = char_code + 256
+
+            if 0 <= char_code <= 255:
+                t += chr(char_code)
+            else:
+                return ''
+
+            a = 0 if a >= len(r) - 1 else a + 1
+
         return t
     except:
         return ''
-
-    return ''

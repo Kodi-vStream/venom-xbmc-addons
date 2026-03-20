@@ -16,6 +16,18 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         api_call = ''
         oParser = cParser()
+        
+        self._url = self._url.replace('vidmoly.to', 'vidmoly.net')
+        
+        if '/w/' in self._url:
+            oRequest = cRequestHandler(self._url)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequest.request()
+            
+            sPattern = 'iframe src="//([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                self._url = 'https://' + aResult[1][0]
 
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -23,7 +35,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Sec-Fetch-Dest', "iframe")
         sHtmlContent = oRequest.request()
 
-        sPattern = 'sources: *\[{file:"([^"]+)'
+        sPattern = "sources: *\\[ *\\{ *file: *'([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
