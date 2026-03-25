@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -179,6 +179,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
     sPattern = '<span style="list-style-type:none;".+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)</i>|)'
+    sPattern = '<a class="film-card" href="([^"]+)">\s*<img class="film-card-img" src="([^"]+)" alt="([^"]+)".+?"trend-card-date">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -187,21 +188,22 @@ def showMovies(sSearch=''):
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
-            sTitle = aEntry[1].strip()
-            sYear = aEntry[2]
-            sQual = aEntry[4]
+            sUrl2 = URL_HOST[:-1] + aEntry[0]
+            sTitle = aEntry[2]
+            sYear = aEntry[3]
+            sThumb = aEntry[1]
+
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue    # Filtre de recherche
 
-            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sQual', sQual)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -229,31 +231,31 @@ def showHosters():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     # sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     # sYear = oInputParameterHandler.getValue('sYear')
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace('<br/>', '')  # traitement de sDesc
+    # sHtmlContent = sHtmlContent.replace('<br/>', '')  # traitement de sDesc
 
-    # Recuperation info film, com et image
-    sThumb = ''
+    # Recuperation info film, commentaires
     sDesc = ''
-    sPattern = '<img src="([^"]+).+?<p.+?>([^<]+)</p>'
+    sPattern = 'id="film-synopsis-text">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        sThumb = aResult[1][0][0]
-        sDesc = aResult[1][0][1]
+        sDesc = aResult[1][0]
 
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+
         sLink = aResult[1][0]
+
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
 
