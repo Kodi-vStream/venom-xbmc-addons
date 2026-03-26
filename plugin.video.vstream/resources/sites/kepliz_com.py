@@ -22,16 +22,17 @@ SITE_DESC = 'Films en streaming'
 URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_HOST = dans sites.json
 URL_MAIN = 'URL_MAIN'
+PATH_SITE = 'c/kambad/'
 
 # pour l'addon
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_VIEWS = (URL_MAIN + 'c/poblom/29/0', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + PATH_SITE + '29/0', 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 DOC_DOCS = (True, 'showMenuDivers')
-DOC_NEWS = (URL_MAIN + 'c/poblom/26/0', 'showMovies')
-SHOW_SHOWS = (URL_MAIN + 'c/poblom/3/0', 'showMovies')
+DOC_NEWS = (URL_MAIN + PATH_SITE + '26/0', 'showMovies')
+SHOW_SHOWS = (URL_MAIN + PATH_SITE + '3/0', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -130,7 +131,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, iGenre in liste:
-        sUrl = URL_MAIN + 'c/poblom/%d/0' % iGenre
+        sUrl = URL_MAIN + PATH_SITE + '%d/0' % iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
@@ -169,16 +170,17 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+
         if sUrl == URL_MAIN:  # page d'accueil
             sABPattern = '<div class="column1"'
         else:
             sABPattern = '<div class="column20"'
+
         sUrl = sUrl.replace(URL_MAIN, sMainUrl)
         oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
-    sPattern = '<span style="list-style-type:none;".+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)</i>|)'
     sPattern = '<a class="film-card" href="([^"]+)">\s*<img class="film-card-img" src="([^"]+)" alt="([^"]+)".+?"trend-card-date">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -206,24 +208,17 @@ def showMovies(sSearch=''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = sUrl.split('/')[-1]
+        sNextPage = str(int(sNextPage) + 1)
+
         if sNextPage:
+            sUrlPage = '/'.join(sUrl.split('/')[:-1]) + '/' + sNextPage
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_HOST[:-1] + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sUrlPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
-
-def __checkForNextPage(sHtmlContent):
-    sPattern = 'a><a style="position: relative;top: 3px;margin-right: 6px;" href="([^"]+)'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        return aResult[1][0]
-
-    return False
-
 
 def showHosters():
     from urllib.parse import urlparse
