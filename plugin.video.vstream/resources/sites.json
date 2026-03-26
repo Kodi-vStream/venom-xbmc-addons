@@ -28,7 +28,7 @@
             "label": "Animes Ultra",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://animesultra.org/"
+            "url": "https://ww.animesultra.org/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -123,7 +123,7 @@
         },
         "elitegol": {
             "label": "Elitegol",
-            "active": "True",
+            "active": "False",
             "url": "https://bolaloca.my/",
             "url_link": "player/%d"
         },
@@ -169,7 +169,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs19.lol/"
+            "url": "https://fs14.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -237,7 +237,7 @@
         },
         "neymartv": {
             "label": "NeymarTV",
-            "active": "True",
+            "active": "False",
             "url": "https://v1.messitv.net/"
         },
         "netu": {
@@ -323,9 +323,9 @@
         },
         "topstream": {
             "label": "top-stream",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
-            "url": "https://top-stream.plus/"
+            "url": "https://top-stream.wiki/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -364,7 +364,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.best/"
+            "url": "https://flemmix.golf/"
         },
         "wilifilm": {
             "label": "Wilifilm",
