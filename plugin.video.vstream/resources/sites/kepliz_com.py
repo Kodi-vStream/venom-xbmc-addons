@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+from resources.lib import util
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -17,17 +18,14 @@ SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
 
-# Source compatible avec les clones : toblek, bofiaz, nimvon
-# mais pas compatible avec les clones, qui ont une redirection directe : sajbo, trozam, radego
 URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
-# URL_HOST = dans sites.json
+
 URL_MAIN = 'URL_MAIN'
-PATH_SITE = 'c/kambad/'
+PATH_SITE = 'c/%s/' % util.urlHostName(URL_MAIN)
 
 # pour l'addon
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_VIEWS = (URL_MAIN + PATH_SITE + '29/0', 'showMovies')
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 DOC_DOCS = (True, 'showMenuDivers')
@@ -50,9 +48,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'A l\'affiche', 'boxoffice.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
 
@@ -74,9 +69,6 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'A l\'affiche', 'boxoffice.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
@@ -114,7 +106,6 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['A l\'affiche', 29])
     liste.append(['Action', 1])
     liste.append(['Animation', 2])
     liste.append(['Aventure', 4])
