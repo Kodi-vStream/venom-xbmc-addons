@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.rodeo/"
+            "url": "https://coflix.wales/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -84,7 +84,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld2026.com/"
+            "url": "https://darkiworld16.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -123,7 +123,7 @@
         },
         "elitegol": {
             "label": "Elitegol",
-            "active": "False",
+            "active": "True",
             "url": "https://bolaloca.my/",
             "url_link": "player/%d"
         },
@@ -169,7 +169,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs14.lol/"
+            "url": "https://fs18.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -313,7 +313,7 @@
         },
         "toonanime": {
             "label": "Toonanime",
-            "active": "True",
+            "active": "False",
             "url": "https://toonanimetv.com/"
         },
         "topimdb": {
