@@ -18,10 +18,9 @@ SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
 
-URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
-
 URL_MAIN = 'URL_MAIN'
-PATH_SITE = 'c/%s/' % util.urlHostName(URL_MAIN)
+URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
+PATH_SITE = 'c/%s/' % util.urlHostName(URL_HOST).split('.')[0]
 
 # pour l'addon
 MOVIE_MOVIE = (True, 'showMenuMovies')
