@@ -25,7 +25,7 @@ SPORT_SPORTS = (True, 'load')
 #SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('lecteur/', 'showTV')
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
 # chaines dans l'ordre d'affichage
 channels = {
@@ -280,6 +280,7 @@ def showHoster():
     sHosterUrl = getHosterIframe(sUrl, sUrl)
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
+        sHosterUrl += '&User-Agent=' + UA
         oHoster = oHosterGui.checkHoster(sHosterUrl)
         if oHoster:
             oHoster.setDisplayName(sMovieTitle)
@@ -302,7 +303,9 @@ def getHosterIframe(url, referer):
     oRequestHandler = cRequestHandler(url, forceDNS = True)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = str(oRequestHandler.request())
+
     if not sHtmlContent or sHtmlContent == 'False':
         return False
 
@@ -364,7 +367,7 @@ def getUrl(sHtmlContent, referer):
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return sHosterUrl + '|referer=' + referer
 
-    sPattern = r';var.+?src=["\']([^"\']+)["\']'
+    sPattern = r'var.+?src *= *["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         for url in aResult:
