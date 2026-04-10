@@ -96,11 +96,6 @@
             "active": "False",
             "url": "https://play.frembed.sbs/"
         },
-        "witv": {
-            "label": "wiTV",
-            "active": "True",
-            "url": "https://witv.team/"
-        },
         "dnspython": {
             "label": "DNS Python",
             "active": "True",
@@ -371,7 +366,12 @@
             "active": "False",
             "url": "https://wilifilm.info/"
         },
-        "youtitou_com": {
+         "witv": {
+            "label": "wiTV",
+            "active": "True",
+            "url": "https://witv.team/"
+        },
+       "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
             "active": "True",
             "url": "https://youtitou.com/"

@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.util import Quote
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
@@ -201,8 +201,6 @@ def showHosters():
         showDoodHosters(sMovieTitle, sUrl)
 
     elif 'forum-tv' in sUrl:
-        dialog().VSinfo('Décodage en cours', "Patientez", 5)
-
         try:
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
