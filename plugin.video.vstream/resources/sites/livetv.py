@@ -243,7 +243,9 @@ def showMovies3():  # affiche les videos disponible du live
                 pass
 
             sUrl4 = aEntry[1]
-            if sUrl4.startswith('/'):
+            if sUrl4.startswith('//'):
+                sUrl4 = 'https:' + sUrl4
+            elif sUrl4.startswith('/'):
                 sUrl4 = URL_MAIN + sUrl4
             elif not (sUrl4.startswith("http")):
                 sUrl4 = "https:" + sUrl4

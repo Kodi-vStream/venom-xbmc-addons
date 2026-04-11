@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+from resources.lib import util
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog, addon
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -17,21 +18,18 @@ SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
 
-# Source compatible avec les clones : toblek, bofiaz, nimvon
-# mais pas compatible avec les clones, qui ont une redirection directe : sajbo, trozam, radego
-URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
-# URL_HOST = dans sites.json
 URL_MAIN = 'URL_MAIN'
+URL_HOST = siteManager().getUrlMain(SITE_IDENTIFIER)
+PATH_SITE = 'c/%s/' % util.urlHostName(URL_HOST).split('.')[0]
 
 # pour l'addon
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_VIEWS = (URL_MAIN + 'c/poblom/29/0', 'showMovies')
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + PATH_SITE + '29/0', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 DOC_DOCS = (True, 'showMenuDivers')
-DOC_NEWS = (URL_MAIN + 'c/poblom/26/0', 'showMovies')
-SHOW_SHOWS = (URL_MAIN + 'c/poblom/3/0', 'showMovies')
+DOC_NEWS = (URL_MAIN + PATH_SITE + '26/0', 'showMovies')
+SHOW_SHOWS = (URL_MAIN + PATH_SITE + '3/0', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -47,10 +45,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'A l\'affiche', 'boxoffice.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], addon().VSlang(30102), 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
@@ -73,9 +68,6 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'A l\'affiche', 'boxoffice.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
@@ -113,7 +105,6 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['A l\'affiche', 29])
     liste.append(['Action', 1])
     liste.append(['Animation', 2])
     liste.append(['Aventure', 4])
@@ -130,7 +121,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, iGenre in liste:
-        sUrl = URL_MAIN + 'c/poblom/%d/0' % iGenre
+        sUrl = URL_MAIN + PATH_SITE + '%d/0' % iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addGenre(SITE_IDENTIFIER, 'showMovies', sTitle, oOutputParameterHandler)
 
@@ -169,16 +160,18 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+
         if sUrl == URL_MAIN:  # page d'accueil
             sABPattern = '<div class="column1"'
         else:
             sABPattern = '<div class="column20"'
+
         sUrl = sUrl.replace(URL_MAIN, sMainUrl)
         oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
-    sPattern = '<span style="list-style-type:none;".+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)</i>|)'
+    sPattern = '<a class="film-card" href="([^"]+)">\s*<img class="film-card-img" src="([^"]+)" alt="([^"]+)".+?"trend-card-date">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -187,41 +180,35 @@ def showMovies(sSearch=''):
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
-            sTitle = aEntry[1].strip()
-            sYear = aEntry[2]
-            sQual = aEntry[4]
+            sUrl2 = URL_HOST[:-1] + aEntry[0]
+            sTitle = aEntry[2]
+            sYear = aEntry[3]
+            sThumb = aEntry[1]
+
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue    # Filtre de recherche
 
-            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sQual', sQual)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = sUrl.split('/')[-1]
+        sNextPage = str(int(sNextPage) + 1)
+
         if sNextPage:
+            sUrlPage = '/'.join(sUrl.split('/')[:-1]) + '/' + sNextPage
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_HOST[:-1] + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sUrlPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
-
-def __checkForNextPage(sHtmlContent):
-    sPattern = 'a><a style="position: relative;top: 3px;margin-right: 6px;" href="([^"]+)'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        return aResult[1][0]
-
-    return False
-
 
 def showHosters():
     from urllib.parse import urlparse
@@ -229,31 +216,31 @@ def showHosters():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     # sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     # sYear = oInputParameterHandler.getValue('sYear')
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace('<br/>', '')  # traitement de sDesc
+    # sHtmlContent = sHtmlContent.replace('<br/>', '')  # traitement de sDesc
 
-    # Recuperation info film, com et image
-    sThumb = ''
+    # Recuperation info film, commentaires
     sDesc = ''
-    sPattern = '<img src="([^"]+).+?<p.+?>([^<]+)</p>'
+    sPattern = 'id="film-synopsis-text">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        sThumb = aResult[1][0][0]
-        sDesc = aResult[1][0][1]
+        sDesc = aResult[1][0]
 
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+
         sLink = aResult[1][0]
+
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
 
