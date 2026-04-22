@@ -192,16 +192,24 @@ def showMovies(sSearch=''):
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
 
-        sUrl = URL_MAIN + 'index.php?story=' + sSearch + '&do=search&subaction=search'
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
+        sUrl = URL_MAIN + 'engine/ajax/search.php'
+        oRequest = cRequestHandler(sUrl)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParameters('query', sSearch)
+        sHtmlContent = oRequest.request()
+        sPattern = "href='([^']+).+?src='([^']+)' alt='([^']+)'"
+        
+#        sUrl = URL_MAIN + 'index.php?story=' + sSearch + '&do=search&subaction=search'
+#        oRequestHandler = cRequestHandler(sUrl)
+#        sHtmlContent = oRequestHandler.request()
     else:
         if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl:
             bSearchSerie = True
         oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
         sHtmlContent = oRequestHandler.request()
-                    
-    sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]+)'
+        sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]+)'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     seriesTitle = []
