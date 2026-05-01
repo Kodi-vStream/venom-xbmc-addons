@@ -626,6 +626,13 @@ class cGuiElement:
                 self.__sThumbnail = url
 #                self.__sPoster = url
 
+        if 'logo_path' in meta:
+                    url = meta.pop('logo_path')
+                    if url:
+                        self.addItemProperties('clearlogo_image', url)
+                        self.addItemValues('clearlogo', url)
+                        self.addItemValues('tvshow.clearlogo', url)
+
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 

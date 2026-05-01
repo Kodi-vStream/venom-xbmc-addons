@@ -134,6 +134,7 @@ class cTMDb:
                      "trailer TEXT, "\
                      "backdrop_path TEXT, "\
                      "landscape_path TEXT, "\
+                     "logo_path TEXT, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
         try:
@@ -150,6 +151,7 @@ class cTMDb:
                      "poster_path TEXT, "\
                      "backdrop_path TEXT, "\
                      "landscape_path TEXT, "\
+                     "logo_path TEXT, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
         try:
@@ -180,6 +182,7 @@ class cTMDb:
                      "trailer TEXT, "\
                      "backdrop_path TEXT, "\
                      "landscape_path TEXT, "\
+                     "logo_path TEXT, "\
                      "nbseasons INTEGER, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
@@ -761,11 +764,14 @@ class cTMDb:
         # LANDSCAPE = backdrop "avec texte" si dispo dans la langue demandée (fallback EN puis sans langue)
         # FANART = backdrop sans langue en priorité (souvent sans texte)
         _meta.setdefault('landscape_path', '')
+        _meta.setdefault('logo_path', '')
         try:
             images = meta.get('images') if isinstance(meta, dict) else None
+            primary = (self.lang or 'fr-FR').split('-')[0].lower()
+            
             backdrops = images.get('backdrops', []) if images else []
             if backdrops:
-                primary = (self.lang or 'fr-FR').split('-')[0].lower()
+
                 # landscape : fr -> en -> null
                 landscape_fp = self._select_backdrop_by_lang(backdrops, [primary, 'en', None])
                 landscape_url = self._build_backdrop_url(landscape_fp)
@@ -778,6 +784,13 @@ class cTMDb:
                     fanart_url = self._build_backdrop_url(fanart_fp)
                     if fanart_url:
                         _meta['backdrop_path'] = fanart_url
+                        
+            logos = images.get('logos', []) if images else []
+            if logos:
+                logo_fp = self._select_backdrop_by_lang(logos, [primary, 'en', None])
+                logo_url = self._build_backdrop_url(logo_fp)
+                if logo_url:
+                    _meta['logo_path'] = logo_url
 
             # Si on n'a pas de landscape, on fallback sur fanart (au moins le skin a quelque chose)
             if not _meta.get('landscape_path'):
@@ -790,6 +803,8 @@ class cTMDb:
         # Si la valeur vient du cache et est déjà une URL, on ne touche pas.
         if _meta.get('landscape_path') and str(_meta['landscape_path']).startswith('/'):
             _meta['landscape_path'] = self.fanart + _meta['landscape_path']
+        if _meta.get('logo_path') and str(_meta['logo_path']).startswith('/'):
+            _meta['logo_path'] = self.fanart + _meta['logo_path']
 
         return _meta
 
@@ -959,9 +974,9 @@ class cTMDb:
 
         try:
             sql = 'INSERT or IGNORE INTO movie (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
-                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', '')))
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path, logo_path) ' \
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', ''), meta.get('logo_path', '')))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
@@ -987,9 +1002,9 @@ class cTMDb:
         # sauvegarde tvshow dans la BDD
         try:
             sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, crew, writer, director, rating, votes, duration, ' \
-                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path, nbseasons) ' \
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, landscape_path, nbseasons, logo_path) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', ''), meta['nbseasons']))
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta.get('landscape_path', ''), meta['nbseasons'],  meta.get('logo_path', '')))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):

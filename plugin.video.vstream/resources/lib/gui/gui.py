@@ -557,7 +557,9 @@ class cGui:
                           # FANART = backdrop (idéalement sans texte)
                           'fanart': oGuiElement.getFanart(),
                           # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
-                          'landscape': oGuiElement.getItemValue('landscape_path')
+                          'landscape': oGuiElement.getItemValue('landscape_path'),
+                          'clearlogo': oGuiElement.getItemValue('clearlogo'),
+                          'tvshow.clearlogo': oGuiElement.getItemValue('tvshow.clearlogo')
                           })
 
         aProperties = oGuiElement.getItemProperties()
