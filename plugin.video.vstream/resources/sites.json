@@ -226,6 +226,11 @@
             "cloudflare": "True",
             "url": "https://monstream.archi/"
         },
+        "movix": {
+            "label": "movix",
+            "active": "True",
+            "url": "https://movix.bet/"
+        },
         "mysteriam": {
             "label": "MySteriam",
             "active": "True",
