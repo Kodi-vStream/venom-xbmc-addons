@@ -345,8 +345,8 @@ class cHosterGui:
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
 
-        # if ('flixeo' in sHostName):
-        #     return self.getHoster('allow_redirects')
+        if ('kokoflix' in sHostName):
+            return self.getHoster('allow_redirects')
 
         if ('bigwarp' in sHostName):
             return self.getHoster('flix555')
