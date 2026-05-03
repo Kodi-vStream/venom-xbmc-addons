@@ -21,12 +21,12 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 MOVIE_NEWS = ('films/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VIEWS = ('films/top-film/', 'showMovies')
-MOVIE_VOSTFR = ('xfsearch/version-film/VOSTFR/', 'showMovies')
+#MOVIE_VOSTFR = ('xfsearch/version-film/VOSTFR/', 'showMovies')
 
 SERIE_NEWS = ('s-tv/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VIEWS = ('s-tv/sries-du-moment/', 'showMovies')
-SERIE_VOSTFRS = ('s-tv/s-vostfr/', 'showMovies')
+#SERIE_VOSTFRS = ('s-tv/s-vostfr/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
@@ -73,8 +73,9 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    # sans interet, toutes les films sont pratiquement proposées aussi en VOSTFR
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -96,8 +97,9 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    # sans interet, toutes les séries sont pratiquement proposées aussi en VOSTFR
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -204,7 +206,7 @@ def showMovies(sSearch=''):
 #        oRequestHandler = cRequestHandler(sUrl)
 #        sHtmlContent = oRequestHandler.request()
     else:
-        if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl:
+        if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl:
             bSearchSerie = True
         oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -269,7 +271,7 @@ def __checkForNextPage(sHtmlContent):
     if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
-        result = re.search('/([0-9]+)/', sNextPage)
+        result = re.search('cstart=(\d+)', sNextPage)
         sNumberNext = result.group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
@@ -290,7 +292,7 @@ def showSaisons():
         sUrl = URL_MAIN + siteUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'data-tagz="(.+?)"'
+    sPattern = 'class="sd-tagz"><a href=.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         serieTag = aResult[1][0]
@@ -305,6 +307,8 @@ def showSaisons():
             # si pas de saison, au moins la saison 1
             if len(saisonsList) == 0:
                 saisonsList.append(json.loads('{"title": "Saison 1","full_url": "%s"}' % siteUrl))
+            else: # trie des saisons
+                saisonsList = sorted(saisonsList, key=lambda saison: int(saison['title'].split(' ')[-1]))
             
             oOutputParameterHandler = cOutputParameterHandler()
             for saison in saisonsList:
@@ -341,7 +345,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         numEpisodes = []
-        sAPIUrl = '%sep-data.php?id=%s' % (URL_MAIN, aResult[1][0])
+        sAPIUrl = '%sengine/ajax/sx.php?p=%s' % (URL_MAIN, aResult[1][0])
         oRequestHandler = cRequestHandler(sAPIUrl)
         sHtmlContent = oRequestHandler.request()
         episodeList = json.loads(sHtmlContent)
@@ -447,7 +451,7 @@ def showEpisodeLinks():
     sPattern = 'data-news-id="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sUrl = '%sep-data.php?id=%s' % (URL_MAIN, aResult[1][0])
+        sUrl = '%sengine/ajax/sx.php?p=%s' % (URL_MAIN, aResult[1][0])
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         episodeList = json.loads(sHtmlContent)
@@ -622,7 +626,7 @@ def showMovieLinks():
                     sHosterUrl = oRequestHandler.getRealUrl()
 
                 if 'Player.php' in sHosterUrl:
-                    sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % oHoster.getDisplayName() 
+                    sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % oHoster.getPluginIdentifier() 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
