@@ -35,7 +35,7 @@ class CaptchaWindow(xbmcgui.WindowDialog):
 
     def create_temp_image(self):
         
-        filePath = 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw'
+        filePath = 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.png'
         downloaded_image = xbmcvfs.File(filePath, 'wb')
         downloaded_image.write(self.orig_image.read())
         downloaded_image.close()
@@ -117,7 +117,7 @@ class CaptchaWindow(xbmcgui.WindowDialog):
 
         captcha_image = xbmcgui.ControlImage(
             #self.frame_x, self.frame_y, self.width, self.height, self.temp_file.name
-            self.frame_x, self.frame_y, self.width, self.height, 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw'
+            self.frame_x, self.frame_y, self.width, self.height, 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.png'
         )
         self.addControl(captcha_image)
 
