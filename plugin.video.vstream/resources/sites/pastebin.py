@@ -2432,7 +2432,7 @@ def showMovies(sSearch=''):
                 bValid = False
                 for res in listRes:
                     res = str(res).upper().replace('FULLHD', '1080P') \
-                        .replace('HDR', '').replace('HD', '720P').replace('2160P', '4K') \
+                        .replace('HD', '720P').replace('2160P', '4K') \
                         .replace('WEB', '720P').replace('SDR', '') \
                         .replace('DVD', '').replace('DV', 'DOLBY VISION')
                     if sRes in res:
@@ -2856,7 +2856,7 @@ def getHosterList(siteUrl):
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
                         resMovie = listResMovie[idxResMovie].upper() \
-                                    .replace('HDR', '').replace('SDR', '') \
+                                    .replace('SDR', '') \
                                     .replace('FULLHD', '1080P').replace('HD', '720P') \
                                     .replace('2160P', '4K').replace('WEB', '720P') \
                                     .replace('DVD', '').replace('DV', 'DOLBY VISION')
