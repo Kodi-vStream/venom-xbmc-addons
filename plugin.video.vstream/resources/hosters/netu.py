@@ -118,9 +118,21 @@ class cHoster(iHoster):
             _json = oRequestHandler.request(jsonDecode=True)
 
             if _json['success'] == True:
+                # A surveiller, en ce moment le format est du png, mais je les suspecte de changer.
                 hash_image = _json['hash_image']
-                image = _json['image'].replace('data:image/jpeg;base64,', '')
-                image = b64decode(image + "==")
+                image = _json['image'].replace('data:image/png;base64,', '')
+                image = image.replace('\/','/')
+                
+                #VSlog("Longueur data 64 avant: " + str(len(image)))
+                l = 4 - (len(image) % 4)
+                if l == 4:
+                    l = 0
+                image = image + '=' * l
+                
+                #VSlog("Longueur data 64 : apres" + str(len(image)))
+                #VSlog(image)
+                
+                image = b64decode(image)
                 
             window = captcha_window.CaptchaWindow(image, 400, 400)
             window.doModal()
