@@ -19,20 +19,34 @@ SITE_DESC = 'Films & séries'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_NEWS = ('films/', 'showMovies')
-MOVIE_GENRES = (True, 'showMovieGenres')
+MOVIE_GENRES = ('films/', 'showMovieGenres')
 MOVIE_VIEWS = ('films/top-film/', 'showMovies')
-#MOVIE_VOSTFR = ('xfsearch/version-film/VOSTFR/', 'showMovies')
+MOVIE_THEMES = ('films/', 'showMovieThemes')
 
 SERIE_NEWS = ('s-tv/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
+SERIE_DIFFUSEURS = ('s-tv/', 'showSerieDiffuseurs')
 SERIE_VIEWS = ('s-tv/sries-du-moment/', 'showMovies')
-#SERIE_VOSTFRS = ('s-tv/s-vostfr/', 'showMovies')
+SERIE_THEMES = ('s-tv/', 'showMovieThemes')
+
+DOC_DOCS = (True, 'showMenuDocs')
+DOC_NEWS = (True, 'showMenuDocs')
+DOC_FILMS = ('films/documentaires/', 'showMovies')
+DOC_SERIES = ('documentaire-serie-/', 'showMovies')
+
+DRAMA_DRAMAS = ('k-drama-/', 'showMovies')
+DRAMA_NEWS = ('k-drama-/', 'showMovies')
+
+REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_NEWS = ('streaming-tv-realits/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
 URL_SEARCH = ('index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
+URL_SEARCH_DRAMAS = (key_search_series, 'showMovies')
+URL_SEARCH_MISC = (key_search_movies, 'showMovies')  # Documentaires
 
 # recherche utilisée quand on utilise directement la source
 MY_SEARCH_MOVIES = (True, 'showSearchMovie')
@@ -52,6 +66,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -73,9 +90,8 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
-    # sans interet, toutes les films sont pratiquement proposées aussi en VOSTFR
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_THEMES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_THEMES[1], 'Thèmes', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -97,9 +113,23 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
-    # sans interet, toutes les séries sont pratiquement proposées aussi en VOSTFR
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_DIFFUSEURS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_DIFFUSEURS[1], addons.VSlang(30467), 'diffuseur.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_THEMES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_THEMES[1], 'Thèmes', 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuDocs():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_FILMS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_FILMS[1], 'Films documentaires', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DOC_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_SERIES[1], 'Séries documentaires', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,7 +138,7 @@ def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        sUrl = key_search_series + sSearchText
+        sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -118,7 +148,7 @@ def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText:
-        sUrl = key_search_movies + sSearchText
+        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -153,6 +183,28 @@ def showMovieGenres():
     oGui.setEndOfDirectory()
 
 
+def showMovieThemes():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    oRequest = cRequestHandler(URL_MAIN + sUrl)
+    sHtmlContent = oRequest.request()
+    if 's-tv/' in sUrl:
+        sHtmlContent = oParser.abParse(sHtmlContent, 'Par Theme</div>', '</div>')
+    else:
+        sHtmlContent = oParser.abParse(sHtmlContent, 'Par Thème</div>', '</div>')
+    listeTheme = oParser.parse(sHtmlContent, 'href="([^"]+).+?</i> *([^<]+)<')
+    if listeTheme[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        themes = sorted(listeTheme[1], key = lambda theme:theme[1]) 
+        for theme in themes:
+            oOutputParameterHandler.addParameter('siteUrl', theme[0])
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', theme[1], 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showSerieGenres():
     oGui = cGui()
 
@@ -172,6 +224,26 @@ def showSerieGenres():
     oGui.setEndOfDirectory()
 
 
+def showSerieDiffuseurs():
+    oGui = cGui()
+    liste = [['Amazon Prime', 1024, 's-tv/serie-amazon-prime-videos'],
+             ['Apple TV', 2552, 's-tv/series-apple-tv/'],
+             ['Disney+', 2739, 's-tv/series-disney-plus/'],
+             ['Netflix', 213, 's-tv/netflix-series-']]
+
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for networkName, networkId, sUrlDiff in liste:
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sUrlDiff)
+        oOutputParameterHandler.addParameter('sTmdbId', networkId)  # Utilisé par TMDB
+        oGui.addNetwork(SITE_IDENTIFIER, 'showMovies', networkName, 'diffuseur.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -185,28 +257,24 @@ def showMovies(sSearch=''):
         sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
+#        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
-            sSearch = sSearch.replace(key_search_movies, '')
+#            sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
-            sSearch = sSearch.replace(key_search_series, '')
+#            sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
 
         sUrl = URL_MAIN + 'engine/ajax/search.php'
         oRequest = cRequestHandler(sUrl)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequest.addParameters('query', sSearch)
+        oRequest.addParameters('query', sSearchText)
         sHtmlContent = oRequest.request()
         sPattern = "href='([^']+).+?src='([^']+)' alt='([^']+)'"
-        
-#        sUrl = URL_MAIN + 'index.php?story=' + sSearch + '&do=search&subaction=search'
-#        oRequestHandler = cRequestHandler(sUrl)
-#        sHtmlContent = oRequestHandler.request()
     else:
-        if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl:
+        if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or '-tv-' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl or 'xx89' in sUrl:
             bSearchSerie = True
         oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -243,16 +311,16 @@ def showMovies(sSearch=''):
 
             if bSearchSerie:
                 sTitle = sTitle.split('- Saison')[0]
-                if sTitle in seriesTitle:
+                sUniqueTitle = oUtil.CleanName(sTitle)
+                if sUniqueTitle in seriesTitle:
                     continue        # une seule fois la série, on choisi la saison ensuite
 
-                seriesTitle.append(sTitle)
+                seriesTitle.append(sUniqueTitle)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
-
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -306,14 +374,14 @@ def showSaisons():
             
             # si pas de saison, au moins la saison 1
             if len(saisonsList) == 0:
-                saisonsList.append(json.loads('{"title": "Saison 1","full_url": "%s"}' % siteUrl))
+                saisonsList.append(json.loads('{"title": "%s Saison 1","full_url": "%s"}' % (sMovieTitle, siteUrl)))
             else: # trie des saisons
                 saisonsList = sorted(saisonsList, key=lambda saison: int(saison['title'].split(' ')[-1]))
             
             oOutputParameterHandler = cOutputParameterHandler()
             for saison in saisonsList:
                 sUrl = saison['full_url']
-                sDisplayTitle = '%s %s' %(sMovieTitle, saison['title'])
+                sDisplayTitle = saison['title']
                 sThumb = saison.get('affiche', sSaisonThumb)
     
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
