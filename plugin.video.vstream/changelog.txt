@@ -10,6 +10,14 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 3.9.2 - 11/04/2026 ***
+- Kepliz : retours des liens
+- LiveTV : retour des liens
+- WiTV : retour des liens
+- EliteGol : retour des liens
+- Pastebin : Les nouveautés 2026 dans le menu Nouveautés
+- Vidmoly : Décodage de nouveaux liens
+
 *** 3.9.1 - 18/03/2026 ***
 - TMDB : Recupération des landscapes et utilisation du titre des saisons
 - TMDB : Manque la date des films avec certains habillages 

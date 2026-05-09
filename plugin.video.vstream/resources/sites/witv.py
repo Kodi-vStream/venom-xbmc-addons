@@ -82,36 +82,40 @@ def showLink():
 
     if aResult[0]:
         sHosterUrl = aResult[1][0]
-        if 'http' not in sHosterUrl:
+        if sHosterUrl[0] == '/':
             sHosterUrl = URL_MAIN[0:-1] + sHosterUrl
         
         oRequestHandler = cRequestHandler(sHosterUrl)
         sHtmlContent = oRequestHandler.request()
+
         aResult = oParser.parse(sHtmlContent, 'streamUrl = "([^"]+)')
         if aResult[0]:
             sHosterUrl = aResult[1][0]
+            sHosterUrl2 = None
 
-            # redirection de lien
             oRequestHandler = cRequestHandler(sHosterUrl)
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
             sHtmlContent = oRequestHandler.request()
-            sHosterUrl2 = oRequestHandler.getRealUrl()
             
-            # 2eme tentative
-            if sHosterUrl2 == sHosterUrl:
-                time.sleep(2)
-                oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-                sHtmlContent = oRequestHandler.request()
+            # redirection de lien
+            if sHtmlContent[0] != '#':
                 sHosterUrl2 = oRequestHandler.getRealUrl()
-    
-                # 3eme tentative
+                
+                # 2eme tentative
                 if sHosterUrl2 == sHosterUrl:
                     time.sleep(2)
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
                     sHtmlContent = oRequestHandler.request()
                     sHosterUrl2 = oRequestHandler.getRealUrl()
+        
+                    # 3eme tentative
+                    if sHosterUrl2 == sHosterUrl:
+                        time.sleep(2)
+                        oRequestHandler = cRequestHandler(sHosterUrl)
+                        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+                        sHtmlContent = oRequestHandler.request()
+                        sHosterUrl2 = oRequestHandler.getRealUrl()
     
             if sHosterUrl2 != sHosterUrl:
                 oHoster = oHosterGui.getHoster('lien_direct')

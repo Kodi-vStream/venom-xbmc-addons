@@ -26,7 +26,8 @@ MOVIE_VIEWS = ('trending-movies?type=movie', 'showMovies')
 MOVIE_GENRES = ('movies?order=popularity:desc&filters=%s?type=movie', 'showMovieGenres')
 
 SERIE_SERIES = (True, 'showMenuTvShows')
-SERIE_NEWS = ('series?order=popularity:desc?type=series', 'showMovies')
+SERIE_NEWS = ('series?order=created_at:desc?type=series', 'showMovies')
+SERIE_VIEWS = ('series?order=trending:desc?type=series', 'showMovies')
 SERIE_GENRES = ('series?order=popularity:desc&filters=%s?type=series', 'showTvGenres')
 
 ANIM_ANIMS = (True, 'showMenuAnimes')
@@ -86,6 +87,9 @@ def showMenuTvShows():
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
@@ -451,7 +455,13 @@ def showEpisodes():
     for episode in episodes:
         if not 'primary_video' in episode:
             continue
-        sUrl2 = episode['primary_video']['lien']
+        links = episode.get('primary_video', None)
+        if not links:
+            continue
+        sUrl2 = links.get('lien', None)
+        if not sUrl2:
+            continue
+        taille = links['taille']
         iSeason = episode['season_number']
         iEp = episode['episode_number']
         sDisplayTitle = '%s S%dE%d' % (sMovieTitle, iSeason, iEp)
@@ -459,6 +469,11 @@ def showEpisodes():
         sDesc = episode['description']
         if not sDesc :
             sDesc = episode['name']
+            
+        taille = int(taille) / 1024/1024
+        if taille:
+            sDesc = '(%d Mo) %s' % (taille, sDesc)
+        
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
@@ -544,16 +559,19 @@ def showMovieHoster():
 
 def showSerieHoster():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    mediaInfo = oInputParameterHandler.getValue('sDesc')
 
-    oHoster = cHosterGui().checkHoster(sUrl)
+    oHoster = oHosterGui.checkHoster(sUrl)
     if oHoster:
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
-        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+        oHoster.setMediaInfo(mediaInfo)
+        oHosterGui.showHoster(oGui, oHoster, sUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

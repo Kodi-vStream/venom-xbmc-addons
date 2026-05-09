@@ -36,6 +36,8 @@ class cGui:
 
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler=cOutputParameterHandler(), sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
+        globalSearch = window(10101).getProperty('search')
+
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
             cGui.CONTENT = Type
@@ -82,15 +84,17 @@ class cGui:
         # pour les saisons, on garde le titre TMDB si on vient de la série
         # on arrive directement sur des saisons avec certaines sources, ou par la fonction "poursuivre la lecture"
         if sCat == 4:
-            oInputParameterHandler = cInputParameterHandler()
-            sCatFrom = oInputParameterHandler.getValue('sCat')
-            if sCatFrom:
-                try:
-                    sCatFrom = int(sCatFrom)
-                    if sCatFrom == 2: #Série
-                        oGuiElement.setTitleTMDB(True)
-                except:
-                    pass
+            # pas pendant la recherche globale
+            if not globalSearch:
+                oInputParameterHandler = cInputParameterHandler()
+                sCatFrom = oInputParameterHandler.getValue('sCat')
+                if sCatFrom:
+                    try:
+                        sCatFrom = int(sCatFrom)
+                        if sCatFrom == 2: #Série
+                            oGuiElement.setTitleTMDB(True)
+                    except:
+                        pass
 
         # a faire après avoir déterminé la cat et le meta
         oGuiElement.setTitle(sLabel)
@@ -100,7 +104,7 @@ class cGui:
         sTmdbId = oOutputParameterHandler.getValue('sTmdbId')
         if sCat and not sTmdbId:
             # pas pendant la recherche globale
-            if window(10101).getProperty('search') != 'true':
+            if not globalSearch:
                 if not sMeta:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
@@ -150,7 +154,7 @@ class cGui:
 
             # Cas EPISODE: on force la meta pour récupérer fanart/backdrop (série),
             # tout en conservant le thumb d'épisode.
-            elif sCat_i == 8 and window(10101).getProperty('search') != 'true':
+            elif sCat_i == 8 and not globalSearch:
                 old_thumb = oGuiElement.getThumbnail()
                 old_poster = oGuiElement.getPoster()
 

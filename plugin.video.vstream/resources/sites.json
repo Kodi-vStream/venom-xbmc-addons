@@ -28,7 +28,7 @@
             "label": "Animes Ultra",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://animesultra.org/"
+            "url": "https://ww.animesultra.org/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.rodeo/"
+            "url": "https://coflix.date/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -73,6 +73,7 @@
         },
         "cpasmieux": {
             "label": "Cpasmieux",
+            "cloudflare": "True",
             "active": "True",
             "url": "https://www.cpasmieux.is/"
         },
@@ -84,7 +85,7 @@
         "darkiworld": {
             "label": "darkiworld",
             "active": "True",
-            "url": "https://darkiworld2026.com/"
+            "url": "https://hydracker.com/"
         },
         "debrid_link": {
             "label": "Debrid Link",
@@ -95,11 +96,6 @@
             "label": "direct-streamfr",
             "active": "False",
             "url": "https://play.frembed.sbs/"
-        },
-        "witv": {
-            "label": "wiTV",
-            "active": "True",
-            "url": "https://witv.team/"
         },
         "dnspython": {
             "label": "DNS Python",
@@ -169,7 +165,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs19.lol/"
+            "url": "https://fs03.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -222,7 +218,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv873.me/"
+            "url": "https://livetv882.me/"
         },
         "livetv_b": {
             "label": "Live TV BIS",
@@ -235,6 +231,11 @@
             "cloudflare": "True",
             "url": "https://monstream.archi/"
         },
+        "movix": {
+            "label": "movix",
+            "active": "True",
+            "url": "https://movix.bet/"
+        },
         "mysteriam": {
             "label": "MySteriam",
             "active": "True",
@@ -242,7 +243,7 @@
         },
         "neymartv": {
             "label": "NeymarTV",
-            "active": "True",
+            "active": "False",
             "url": "https://v1.messitv.net/"
         },
         "netu": {
@@ -318,7 +319,7 @@
         },
         "toonanime": {
             "label": "Toonanime",
-            "active": "True",
+            "active": "False",
             "url": "https://toonanimetv.com/"
         },
         "topimdb": {
@@ -328,9 +329,9 @@
         },
         "topstream": {
             "label": "top-stream",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
-            "url": "https://top-stream.plus/"
+            "url": "https://top-stream.wiki/"
         },
         "vfilms": {
             "label": "VFilms",
@@ -369,12 +370,17 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.best/"
+            "url": "https://flemmix.prof/"
         },
         "wilifilm": {
             "label": "Wilifilm",
             "active": "False",
             "url": "https://wilifilm.info/"
+        },
+        "witv": {
+            "label": "wiTV",
+            "active": "True",
+            "url": "https://witv.team/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
