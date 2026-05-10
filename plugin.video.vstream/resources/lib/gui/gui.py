@@ -117,7 +117,8 @@ class cGui:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
                     sTmdbId = oInputParameterHandler.getValue('sTmdbId')
-                    if sTmdbId:
+                    sMetaParent = oInputParameterHandler.getValue('sMeta')
+                    if sMetaParent and sMetaParent != '8' and sTmdbId:  # Ne pas prendre l'id si on vient d'un diffuseur 
                         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
