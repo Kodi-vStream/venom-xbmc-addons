@@ -301,6 +301,12 @@
             "active": "True",
             "url": "http://www.sky-animes.com/"
         },
+        "sportplus": {
+            "label": "sportplus",
+            "active": "True",
+            "url": "https://fr.sportplus.live/",
+            "url_API": "https://apisplus.live/"
+        },
         "streamizseries": {
             "label": "Streamiz S\u00e9ries",
             "active": "False",
