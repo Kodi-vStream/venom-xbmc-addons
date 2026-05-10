@@ -130,7 +130,7 @@ def showMenuDivers():
     # oGui.addDir(SITE_IDENTIFIER, DOC_SPECTACLE[1], 'Spectacles', 'spectacle.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_REALITY[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_REALITY[1], 'Télé-Réalité', 'genres/Tele-Realite.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_REALITY[1], 'Télé-Réalité', 'genres/Tele_Realite.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
