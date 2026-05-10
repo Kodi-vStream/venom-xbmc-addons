@@ -490,7 +490,7 @@ def showMovieLinks():
     sDesc = 'JustStream'
 
     if aResult[0]:
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
+        sDesc = aResult[1][0]
     sStart = '<ul class="player-list">'
     sEnd = '<div class="full-ser-keywords">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
