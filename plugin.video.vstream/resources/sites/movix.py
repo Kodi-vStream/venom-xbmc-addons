@@ -31,10 +31,15 @@ SERIE_NEWS = ('tv-shows?type=tv&sort=created_at', 'showSeries')
 SERIE_VIEWS = ('trending?type=tv', 'showSeries')
 SERIE_GENRES = ('tv-shows?type=tv&genre=%s', 'showSeriesGenres')
 
+REPLAYTV_REPLAYTV = ('tv-shows?type=tv&genre=27', 'showSeries')
+REPLAYTV_NEWS = ('tv-shows?type=tv&genre=27', 'showSeries')
+
 URL_SEARCH = ('search/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
 URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showSeries')
+URL_SEARCH_MISC = (URL_SEARCH_MOVIES[0], 'showMovies')  # Documentaires
 
 
 def load():
@@ -88,7 +93,7 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], addons.VSlang(30102), 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
