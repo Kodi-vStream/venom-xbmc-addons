@@ -37,7 +37,7 @@ DOC_SERIES = ('documentaire-serie-/', 'showMovies')
 DRAMA_DRAMAS = ('k-drama-/', 'showMovies')
 DRAMA_NEWS = ('k-drama-/', 'showMovies')
 
-REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_REPLAYTV = ('streaming-tv-realits/', 'showMovies')
 REPLAYTV_NEWS = ('streaming-tv-realits/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
@@ -47,6 +47,7 @@ URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 URL_SEARCH_DRAMAS = (key_search_series, 'showMovies')
 URL_SEARCH_MISC = (key_search_movies, 'showMovies')  # Documentaires
+URL_SEARCH_REPLAY = (key_search_series, 'showMovies')
 
 # recherche utilisée quand on utilise directement la source
 MY_SEARCH_MOVIES = (True, 'showSearchMovie')
@@ -126,10 +127,10 @@ def showMenuDocs():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_FILMS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_FILMS[1], 'Films documentaires', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_FILMS[1], 'Films documentaires', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_SERIES[1], 'Séries documentaires', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_SERIES[1], 'Séries documentaires', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -246,6 +247,7 @@ def showSerieDiffuseurs():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oUtil = cUtil()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -253,7 +255,6 @@ def showMovies(sSearch=''):
     bSearchMovie = False
     bSearchSerie = False
     if sSearch:
-        oUtil = cUtil()
         sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
