@@ -555,15 +555,25 @@ class cGui:
                 videoInfoTag.addVideoStream(videoStreamDetail)
 
     
-        oListItem.setArt({
-                          'poster': oGuiElement.getPoster(),
-                          'thumb': oGuiElement.getThumbnail(),
-                          'icon': oGuiElement.getIcon(),
-                          # FANART = backdrop (idéalement sans texte)
-                          'fanart': oGuiElement.getFanart(),
-                          # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
-                          'landscape': oGuiElement.getItemValue('landscape_path')
-                          })
+        art = {
+               'poster': oGuiElement.getPoster(),
+               'thumb': oGuiElement.getThumbnail(),
+               'icon': oGuiElement.getIcon(),
+               # FANART = backdrop (idéalement sans texte)
+               'fanart': oGuiElement.getFanart(),
+               # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
+               'landscape': oGuiElement.getItemValue('landscape_path')
+              }
+
+        clearlogo_url = oGuiElement.getItemValue('clearlogo') or oGuiElement.getItemValue('tvshow.clearlogo') or oGuiElement.getItemValue('logo_path')
+        if clearlogo_url:
+            meta_type = oGuiElement.getMeta()
+            if meta_type in (1, 3):
+                art['clearlogo'] = clearlogo_url
+            if meta_type in (2, 4, 5, 6):
+                art['tvshow.clearlogo'] = clearlogo_url
+
+        oListItem.setArt(art)
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
