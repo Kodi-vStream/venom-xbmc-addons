@@ -26,7 +26,7 @@ SERIE_SERIES = ('series-streaming/', 'showMenuTvShows')
 SERIE_NEWS = ('series-streaming/', 'showMovies')
 SERIE_GENRES = (SERIE_SERIES[0] , 'showSerieGenres')
 
-URL_SEARCH = (False, 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=%s&cat=Film', 'showMovies')
 URL_SEARCH_SERIES = ('index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=%s&cat=Serie', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
