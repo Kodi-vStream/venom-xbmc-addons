@@ -5,6 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib import util
+from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0'
 
@@ -12,6 +13,13 @@ class cHoster(iHoster):
 
     def __init__(self):
         iHoster.__init__(self, 'vidmoly', 'VidMoly')
+
+    def __getIdFromUrl(self):
+        id = self._url.split('/')[-1]
+        id = id.split(".")[0]
+        id =id.replace("embed-","")
+
+        return id
 
     def _getMediaLinkForGuest(self):
         api_call = ''
@@ -40,7 +48,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', self._url)
-        oRequest.addHeaderEntry('Sec-Fetch-Dest', "iframe")
+        oRequest.addHeaderEntry('Cookie', "cf_turnstile_demo_pass_" + self.__getIdFromUrl() + "=1")
         sHtmlContent = oRequest.request()
 
         sPattern = "sources: *\\[ *\\{ *file: *'([^']+)'"
