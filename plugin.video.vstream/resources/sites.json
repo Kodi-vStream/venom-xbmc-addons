@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.date/"
+            "url": "https://coflix.dance/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -218,7 +218,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv885.me/"
+            "url": "https://livetv886.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -371,7 +371,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.casa/"
+            "url": "https://flemmix.win/"
         },
         "wilifilm": {
             "label": "Wilifilm",
