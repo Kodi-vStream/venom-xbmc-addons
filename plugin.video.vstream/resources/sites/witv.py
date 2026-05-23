@@ -18,15 +18,18 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = (True, 'load')
 SPORT_TV = ('chaines-live/sport/', 'showTV')
-# TV_DOCS = ('chaines-live/documentaire/', 'showTV')
 
+#DOC_DOCS = (True, 'load')
+DOC_TV = ('chaines-live/documentaire/', 'showTV')
+    
 def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines sportives', 'tv.png', oOutputParameterHandler)
-    # oOutputParameterHandler.addParameter('siteUrl', TV_DOCS[0])
-    # oGui.addDir(SITE_IDENTIFIER, TV_DOCS[1], 'Documentaires', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', DOC_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'tv.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
