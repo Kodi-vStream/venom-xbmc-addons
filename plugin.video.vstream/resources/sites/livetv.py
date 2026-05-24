@@ -149,7 +149,7 @@ def showMovies():  # affiche les matchs en direct depuis la section showMovie
     oRequestHandler = cRequestHandler(sUrl2, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = r'<a class="live" href="([^"]+)">([^<]+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^<]+)\s*<br>\s*([^<]+)</span>'
+    sPattern = r'<a class="live" href="([^"]+)">((?:[^<]|<br\s*/?>)+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^<]+)\s*<br>\s*([^<]+)</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
