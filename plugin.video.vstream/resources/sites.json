@@ -64,7 +64,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.dance/"
+            "url": "https://coflix.cymru/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -218,7 +218,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv886.me/"
+            "url": "https://livetv897.me/"
         },
         "monstream": {
             "label": "Mon Stream",
