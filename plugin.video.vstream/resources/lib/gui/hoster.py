@@ -402,7 +402,7 @@ class cHosterGui:
                 if 'content="VOE">' in html or re.search(r'voe', html, re.I):
                     # Reconstruit l'URL pour voe
                     sHosterUrl2 = 'https://voe.com/%s' % (fullURL.split('/e/', 1)[1])
-                elif 'filemoon' in html or 'filmoon' in html:
+                elif 'filemoon' in html or 'filmoon' in html or 'Byse' in html:
                     sHosterUrl2 = 'https://filemoon.com/%s' % (fullURL.split('/e/', 1)[1])
                 elif 'vidhide' in html:
                     sHosterUrl2 = 'https://earnvids.com/%s' % (fullURL.split('/v/', 1)[1])
