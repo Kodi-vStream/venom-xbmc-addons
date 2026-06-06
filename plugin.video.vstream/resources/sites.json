@@ -220,6 +220,12 @@
             "active": "True",
             "url": "https://livetv897.me/"
         },
+        "livewatch": {
+            "label": "livewatch",
+            "active": "True",
+            "url": "https://livewatch.top/",
+            "url_api": "https://livewatch.top/api/"
+        },
         "monstream": {
             "label": "Mon Stream",
             "active": "False",

@@ -10,6 +10,15 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+
+*** 4.0.0 - //2026 ***
+- Movix : Nouvelle source de films et de séries
+- Sport+ : Nouvelle source de sports en direct
+- FrenchStream : Retour des liens et nouveaux menus
+- CloudFlare : Utilisation de CloudScrapper pour passer les protections 
+- Liens Dood : fonctionne de nouveau
+- Liens Kokoflix : support de ce type de liens
+
 *** 3.9.2 - 11/04/2026 ***
 - Kepliz : retours des liens
 - LiveTV : retour des liens
