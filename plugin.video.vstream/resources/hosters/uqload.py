@@ -4,7 +4,6 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
 from resources.lib.packer import cPacker
 
 UA = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
@@ -25,7 +24,7 @@ class cHoster(iHoster):
         sPattern1 = 'sources.+?"([^"]+mp4)"'
 
         aResult = oParser.parse(sHtmlContent, sPattern1)
-        if aResult[0] is True:
+        if aResult[0]:
             api_call = aResult[1][0]
         else:
             sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
