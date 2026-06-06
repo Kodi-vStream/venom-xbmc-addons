@@ -5,7 +5,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib import util
-from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0'
 
@@ -18,7 +17,6 @@ class cHoster(iHoster):
         id = self._url.split('/')[-1]
         id = id.split(".")[0]
         id =id.replace("embed-","")
-
         return id
 
     def _getMediaLinkForGuest(self):
