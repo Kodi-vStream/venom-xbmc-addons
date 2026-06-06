@@ -73,6 +73,7 @@
         },
         "cpasmieux": {
             "label": "Cpasmieux",
+            "cloudflare": "True",
             "active": "True",
             "url": "https://www.cpasmieux.is/"
         },
@@ -164,7 +165,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs18.lol/"
+            "url": "https://fs13.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -217,7 +218,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv873.me/"
+            "url": "https://livetv875.me/"
         },
         "monstream": {
             "label": "Mon Stream",
@@ -366,12 +367,12 @@
             "active": "False",
             "url": "https://wilifilm.info/"
         },
-         "witv": {
+        "witv": {
             "label": "wiTV",
             "active": "True",
             "url": "https://witv.team/"
         },
-       "youtitou_com": {
+        "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
             "active": "True",
             "url": "https://youtitou.com/"
