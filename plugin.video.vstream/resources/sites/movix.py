@@ -260,11 +260,7 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sThumb =  aEntry[1]
             sTitle = aEntry[2]
-#            sLang = aEntry[3]
-#            sQual = aEntry[4]
             sYear = aEntry[3]
-#            if sYear in sTitle:  # double affichage de l'année
-#                sTitle = re.sub('\(' + sYear + '\)', '', sTitle)
 
             # Filtre de recherche
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -322,16 +318,12 @@ def showSeries(sSearch=''):
             if not 'TV' in sType:
                 continue
             
-#            if sThumb.startswith('/'):
-#                sThumb = URL_MAIN[:-1] + aEntry[0]
-
             sTitle = aEntry[2]
             
             # Filtre de recherche
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
                 continue
             
-            sDisplayTitle = sTitle
             sUrl2 = aEntry[0]
             sYear = aEntry[3]
             sTitle = re.sub('\(' + sYear + '\)', '', sTitle)            
@@ -339,7 +331,6 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear) 
-#            oGui.addSeason(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
             
     if not sSearch:
@@ -362,7 +353,6 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = URL_MAIN + oInputParameterHandler.getValue('sThumb')
     sYear = oInputParameterHandler.getValue('sYear')
-    sDesc = ''
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -374,12 +364,10 @@ def showSaisons():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
             sSaison = aEntry[1].strip()
-            #sDesc = aEntry[0].strip()
             sTitle = sDisplayTitle = sMovieTitle + ' ' + sSaison
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -392,8 +380,6 @@ def showEpisodes():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sYear = oInputParameterHandler.getValue('sYear')    
-    sDesc = oInputParameterHandler.getValue('sDesc')
-    sDesc = ''
         
     sUrl = ('%sepisode/%s/%s-1') % (URL_MAIN, sUrl.split('/')[-1], sMovieTitle.split(' ')[-1])
     # url title
@@ -410,9 +396,8 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle.split(' ')[0])
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -427,21 +412,25 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = 'version":"([^"]+)".+?link":"([^"]+)"'
-#    sPattern = "loadVideo\('([^']+)"
 
     sHtmlContent = oParser.abParse(sHtmlContent, 'currentVersionVideos() {', '];')
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        for aEntry in aResult[1]:
-#            sQual = aEntry[0]
-            sLang = aEntry[0]            
-            sHosterUrl = aEntry[1]          
-            sDisplayTitle = '%s  (%s)' % (sMovieTitle,  sLang)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        links = {}
+        for sLang, sHosterUrl in aResult[1]:
+            link = links.get(sLang, [])
+            link.append(sHosterUrl)
+            links[sLang] = link
+
+        for sLang in sorted(links):
+            hosters = links.get(sLang)
+            for sHosterUrl in hosters:
+                sDisplayTitle = '%s  (%s)' % (sMovieTitle,  sLang)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if oHoster:
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
