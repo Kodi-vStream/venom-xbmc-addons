@@ -16,7 +16,7 @@ SITE_DESC = 'Chaines TV en direct'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 
-SPORT_SPORTS = (True, 'load')
+SPORT_SPORTS = ('chaines-live/sport/', 'showTV')
 SPORT_TV = ('chaines-live/sport/', 'showTV')
 
 #DOC_DOCS = (True, 'load')
