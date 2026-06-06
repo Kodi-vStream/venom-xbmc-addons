@@ -17,6 +17,9 @@ from resources.lib.util import QuotePlus, cUtil
 #from resources.lib.util import , Unquote
 
 
+URL_ICON_DEFAULT = 'https://placehold.co/900x270/12052b/00FFD1.png?font=montserrat&text='
+
+
 class cGui:
 
     SITE_NAME = 'cGui'
@@ -240,8 +243,13 @@ class cGui:
         sIcon = sIcon.replace(' & ', '_').replace(' ', '_').replace("'", '_').replace("-", '_')
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
-    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=cOutputParameterHandler(), sDesc=""):
-        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
+    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=cOutputParameterHandler(), sDesc = ''):
+        sDesc = sLabel if not sDesc else ''
+        sThumb = ''
+        # générer une icone par défaut
+        if not sIcon:
+            sIcon = sThumb = URL_ICON_DEFAULT + sLabel
+        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumb, sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
