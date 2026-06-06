@@ -324,26 +324,13 @@ class cClear:
 
         if (env == 'addon' or env == 'cleanAll'):  # Vider le cache des métadonnées
             if env == 'cleanAll' or self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
-                # important seul xbmcvfs peux lire le special
+                from resources.lib.tmdb import cTMDb
                 try:
-                    cached_Cache = VSPath(cached_Cache).decode("utf-8")
-                except AttributeError:
-                    cached_Cache = VSPath(cached_Cache)
-
-                try:
-                    db = sqlite.connect(cached_Cache)
-                    dbcur = db.cursor()
-                    dbcur.execute('DELETE FROM movie')
-                    dbcur.execute('DELETE FROM tvshow')
-                    dbcur.execute('DELETE FROM saga')
-                    dbcur.execute('DELETE FROM season')
-                    dbcur.execute('DELETE FROM episode')
-                    db.commit()
-                    dbcur.close()
-                    db.close()
-                    if env != 'cleanAll':
-                        self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
+                    if cTMDb.purge_cache(log=False):
+                        if env != 'cleanAll':
+                            self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
+                    else:
+                        self.DIALOG.VSerror(self.ADDON.VSlang(30091))
                 except:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30091))
 

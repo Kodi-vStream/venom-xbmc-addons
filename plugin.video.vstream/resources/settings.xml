@@ -50,6 +50,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
 
         <setting id="tmdb_session" type="text" label="" default="" visible="false"/>
         <setting id="tmdb_account" type="text" label="" default="" visible="false"/>
+        <setting id="tmdb_cache_schema" type="text" label="" default="0" visible="false"/>
     </category>
 
     <!-- Sources -->
