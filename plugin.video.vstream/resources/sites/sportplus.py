@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import time
+import datetime
 
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
@@ -81,7 +82,6 @@ def showLive():
         sDate = item['start']
         sDisplayTitle = sTitle
         if sDate:
-            import datetime
             # Parse avec timezone
             dt = datetime.datetime(*(time.strptime(sDate[:19], '%Y-%m-%dT%H:%M:%S')[0:6]))
             # Timezone France
