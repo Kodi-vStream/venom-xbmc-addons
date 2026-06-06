@@ -23,7 +23,7 @@ HEURE_HIVER = False
 
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
-SITE_DESC = 'Chaines TV en directs'
+SITE_DESC = 'Chaines TV en direct'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 SPORT_SPORTS = (True, 'load')
