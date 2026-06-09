@@ -235,10 +235,10 @@ class cHosterGui:
                             'giga', 'vidbom', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo', 'turbovid',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
-                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly',
+                            'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly', 'vidsonic',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
-                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream', 
-                            'daisukianime', 'xtremestream', 'gofile']
+                            'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream',
+                            'daisukianime', 'xtremestream', 'gofile'] 
 
 # désactivé 'uptostream', 'uptobox'
 
@@ -267,10 +267,22 @@ class cHosterGui:
 
         if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
+            
+        if ('vidara' in sHostName):
+            return self.getHoster('vidara')
 
-        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName) or ('earnvids' in sHostName):
-            return self.getHoster('filelions')
+        if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName) or ('earnvids' in sHostName) or ('minochinos' in sHostName):
+            return self.getHoster('filelions')        
+            
+        if ('lulustream' in sHostName) or ('luluvid' in sHostName) or ('luluvdo' in sHostName) or ('lulu.st' in sHostName) or ('streamhihi' in sHostName):
+            return self.getHoster('lulustream')         
 
+        if ('savefiles' in sHostName) or ('streamhls' in sHostName):
+            return self.getHoster('savefiles')      
+            
+        if ('swish' in sHostName) or ('hanerix' in sHostName) or ('hgcloud' in sHostName):
+            return self.getHoster('swish')
+        
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
 
