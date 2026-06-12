@@ -61,7 +61,6 @@ class cHoster(iHoster):
                     api_call = aResult[1][0]
 
         if api_call:
-            write_debug("-> api_call final envoyé à Kodi : " + str(api_call))
             headers = {
                 'User-Agent': UA,
                 'Referer': self._url,
