@@ -23,12 +23,6 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'savefiles', 'SaveFiles')
 
     def _getMediaLinkForGuest(self):
-        log_file = None
-        try:
-            import __main__
-            log_file = getattr(__main__, 'LINKFILE', None)
-        except:
-            pass
 
         match = re.search(r'/(?:e|v)/([0-9a-zA-Z]+)', self._url)
         if not match:
