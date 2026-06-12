@@ -31,30 +31,28 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         cookies = oRequest.GetCookies()
-        write_debug("->  Cockies sauvegarde avec succes : " + str(cookies))
+
         sPattern = 'sources:\\s*\\[\\{file:\\s*["\']([^"\']+\\.m3u8[^"\']*)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if not aResult[0] is True:
             sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            write_debug("-> HTML sauvegarde avec succes : " + str(sHtmlContent))
+
             if aResult[0] is True:
                 sHtmlContent2 = cPacker().unpack(aResult[1][0])
-                write_debug("-> sHtmlContent2 sauvegarder avec succes")
                 
                 sPattern = '"hls2":"([^"]+)"'
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 
                 if not aResult[0] is True:
-                    write_debug("-> hls2 absent, bascule sur le plan B (hls4)...")
                     sPattern = '"hls4":"([^"]+)"'
                     aResult = oParser.parse(sHtmlContent2, sPattern)
                     
                     if aResult[0] is True:
                         api_call_raw = aResult[1][0]
                         api_call = sOrigin + api_call_raw
-                        write_debug("-> Réserve hls4 reconstruite avec succès : " + str(api_call))
+
                     else:
                         api_call = None
                 else:
