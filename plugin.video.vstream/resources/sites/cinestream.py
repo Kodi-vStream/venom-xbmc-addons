@@ -31,6 +31,9 @@ URL_SEARCH = ('search?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+DOC_DOCS = ('films/Documentaire/1', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')  # Documentaires
+
 
 def load():
     oGui = cGui()
