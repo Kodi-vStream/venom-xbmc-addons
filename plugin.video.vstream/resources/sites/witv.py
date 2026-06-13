@@ -7,6 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import time
 
 SITE_IDENTIFIER = 'witv'
@@ -36,6 +37,7 @@ def load():
 def showTV():
     oGui = cGui()
     oParser = cParser()
+    oUtil = cUtil()
 
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -44,7 +46,7 @@ def showTV():
     sHtmlContent = oRequestHandler.request()
     
     # url title thumb
-    sPattern = 'Live<\/span>    <a href="([^"]+).+?class="ann-short_price">([^<]+).+?src="([^"]+)'
+    sPattern = 'Live<\/span>    <a href="([^"]+).+?class="ann-short_price">([^<]+).+?src="([^"]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -58,7 +60,10 @@ def showTV():
         for aEntry in result:
             sUrl = aEntry[0]
             sTitle = aEntry[1].split('-')[0].strip()
-            sThumb = URL_MAIN + aEntry[2]
+            if aEntry[2]:
+                sThumb = URL_MAIN + aEntry[2]
+            else:
+                sThumb = oUtil.getIconDefault(sTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
