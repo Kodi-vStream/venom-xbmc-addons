@@ -37,7 +37,12 @@ class iHoster(object):
     def getDisplayName(self):
         if self._mediaInfo:
             return '%s - [I][%s][/I] ' % (self._displayName, self._mediaInfo)
-        return self._displayName + ' [COLOR ' + self.color + ']' + self._defaultDisplayName + '[/COLOR]'
+        
+        if self.__sRealHost != self._pluginIdentifier:
+            displayName = '%s [COLOR %s]%s/%s[/COLOR]' % (self._displayName, self.color, self._defaultDisplayName, self.__sRealHost)
+        else:
+            displayName = '%s [COLOR %s]%s[/COLOR]' % (self._displayName, self.color, self._defaultDisplayName)
+        return displayName
 
     def setDisplayName(self, displayName):
         self._displayName = displayName
