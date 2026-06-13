@@ -17,9 +17,6 @@ from resources.lib.util import QuotePlus, cUtil
 #from resources.lib.util import , Unquote
 
 
-URL_ICON_DEFAULT = 'https://placehold.co/900x270/12052b/00FFD1.png?font=montserrat&text='
-
-
 class cGui:
 
     SITE_NAME = 'cGui'
@@ -28,6 +25,7 @@ class cGui:
     thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
+    oUtil = cUtil()
     displaySeason = ADDON.getSetting('display_season_title')
 
     # Gérer les résultats de la recherche
@@ -239,7 +237,7 @@ class cGui:
         return self.addNewDir('sets', sId, sFunction, sLabel, 'no-image.png', sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
 
     def addGenre(self, sId, sFunction, sLabel, oOutputParameterHandler='', sDesc=""):
-        sIcon = 'genres/%s.png' % str(cUtil().formatUTF8(sLabel))
+        sIcon = 'genres/%s.png' % str(self.oUtil.formatUTF8(sLabel))
         sIcon = sIcon.replace(' & ', '_').replace(' ', '_').replace("'", '_').replace("-", '_')
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
@@ -248,7 +246,7 @@ class cGui:
         sThumb = ''
         # générer une icone par défaut
         if not sIcon:
-            sIcon = sThumb = URL_ICON_DEFAULT + sLabel
+            sIcon = sThumb = self.oUtil.getIconDefault(sLabel)
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumb, sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
@@ -849,7 +847,7 @@ class cGui:
             sCleanTitle = oInputParameterHandler.getValue('sFileName') 
         else:
             sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
-            # sCleanTitle = cUtil().titleWatched(sCleanTitle)
+            # sCleanTitle = oUtil.titleWatched(sCleanTitle)
             
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
@@ -1030,3 +1028,4 @@ class cGui:
         cGui.searchResultsSemaphore.acquire()
         cGui.searchResults = {}
         cGui.searchResultsSemaphore.release()
+
