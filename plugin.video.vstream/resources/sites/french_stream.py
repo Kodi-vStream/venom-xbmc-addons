@@ -16,8 +16,6 @@ SITE_IDENTIFIER = 'french_stream'
 SITE_NAME = 'French Stream'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-
 MOVIE_NEWS = ('films/', 'showMovies')
 MOVIE_GENRES = ('films/', 'showMovieGenres')
 MOVIE_VIEWS = ('films/top-film/', 'showMovies')
@@ -57,6 +55,22 @@ MY_SEARCH_SERIES = (True, 'showSearchSerie')
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIES = (True, 'showMenuTvShows')
 
+def getUrlMain():
+    siteInfo = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'site_info')
+    if siteInfo:
+        oRequestHandler = cRequestHandler(siteInfo)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = 'a href="([^"]+)" class="url-display"'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sUrl = aResult[1][0]
+            if not sUrl.endswith('/'):
+                sUrl = sUrl + '/'
+            return sUrl
+    
+    return siteManager().getUrlMain(SITE_IDENTIFIER)
+    
 
 def load():
     oGui = cGui()
@@ -189,6 +203,7 @@ def showMovieThemes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    URL_MAIN = getUrlMain()
     oRequest = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequest.request()
     if 's-tv/' in sUrl:
@@ -249,6 +264,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oUtil = cUtil()
     oParser = cParser()
+    URL_MAIN = getUrlMain()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -363,7 +379,7 @@ def showSaisons():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sSaisonThumb = oInputParameterHandler.getValue('sThumb')
 
-    # get serie_tag
+    URL_MAIN = getUrlMain()
     if 'http' not in siteUrl:
         sUrl = URL_MAIN + siteUrl
     oRequestHandler = cRequestHandler(sUrl)
@@ -403,6 +419,7 @@ def showSaisons():
 def showEpisodes():
     oGui = cGui()
     oParser = cParser()
+    URL_MAIN = getUrlMain()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -527,6 +544,7 @@ def showEpisodeLinks():
     sPattern = 'data-news-id="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
+        URL_MAIN = getUrlMain()
         sUrl = '%sengine/ajax/sx.php?p=%s' % (URL_MAIN, aResult[1][0])
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -656,6 +674,7 @@ def showEpisodeLinks():
 def showMovieLinks():
     oGui = cGui()
     oHosterGui = cHosterGui()
+    URL_MAIN = getUrlMain()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
