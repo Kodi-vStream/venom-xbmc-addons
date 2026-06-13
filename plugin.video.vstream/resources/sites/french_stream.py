@@ -273,7 +273,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParameters('query', sSearchText)
         sHtmlContent = oRequest.request()
-        sPattern = "href='([^']+).+?src='([^']+)' alt='([^']+)'"
+        sPattern = "href='([^']+).+?src='([^']+).+?title *'>([^<]+)"
     else:
         if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or '-tv-' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl or 'xx89' in sUrl:
             bSearchSerie = True
@@ -293,7 +293,13 @@ def showMovies(sSearch=''):
             sThumb = aEntry[1].replace('/red.php?src=', '').replace('&.webp', '')
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[2].replace('Saisn', 'Saison')
+            sTitle = aEntry[2].replace('Saisn', 'Saison').replace('\\', '')
+            
+            sYear = None
+            hasYear = re.search('\((\d{4})\)', sTitle)
+            if hasYear:
+                sYear = hasYear.group(1)
+                sTitle = sTitle.replace('(%s)' % sYear, '')
 
             if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
                 if '- Saison' in sTitle:
@@ -309,6 +315,7 @@ def showMovies(sSearch=''):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if bSearchSerie:
                 sTitle = sTitle.split('- Saison')[0]
