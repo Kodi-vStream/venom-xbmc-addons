@@ -276,6 +276,7 @@ class cRequestHandler:
                 if 'Forbidden' not in sContent:# and 'Just a moment' not in sContent :
                 # si on peut lire Forbidden c'est que la page est accessible mais pas le contenu
                     
+                    urlHost = self.__sRealUrl
                     if self.__sUrl != self.__sRealUrl: # On tente sur l'adresse réelle
                         self.__sUrl = self.__sRealUrl
                         return self.__callRequest(jsonDecode, paramGet)
@@ -287,9 +288,18 @@ class cRequestHandler:
                             browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False},
                             delay=4
                         )
-                         
-                    self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
-                    sContent = self.oResponse.content.decode('utf-8')
+                        self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
+                        sContent = self.oResponse.content.decode('utf-8')
+                    else: # déjà tenté par cloudScraper = boucle = test si passé par cloudproxy ?
+                        from resources.lib.comaddon import siteManager
+                        sitesManager = siteManager()
+                        if sitesManager.isActive('cloudproxy'):
+                            cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
+                            if not cloudProxyUrl or cloudProxyUrl not in self.__sUrl:
+                                self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
+                                sContent = self.oResponse.content.decode('utf-8')
+                            else:
+                                urlHost = 'https://' + urlHost.split('%2F')[2]
 
                     # toujours non résolu
                     if self.oResponse.status_code not in [200, 204, 302]:
@@ -325,9 +335,9 @@ class cRequestHandler:
                 
                                         sContent = response['solution']['response']
                             except:
-                                dialog().VSerror("%s (%s)" % ("Page protegee malgré FlareSolverr", urlHostName(self.__sRealUrl)))
+                                dialog().VSerror("%s (%s)" % ("Page protegee malgré FlareSolverr", urlHostName(urlHost)))
                         else:
-                            dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sRealUrl)))
+                            dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare", urlHostName(urlHost)))
 
             if self.oResponse is not None and not sContent:
                 # Ignorer ces codes retours

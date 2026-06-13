@@ -121,3 +121,12 @@ class CaptchaReportError(CaptchaException):
     """
     Raise an error for captcha provider unable to report bad solve.
     """
+
+# ------------------------------------------------------------------------------- #
+
+
+class AbortedException(CloudflareException):
+    """
+    Raise an exception for aborted request.
+    """
+    pass
