@@ -165,15 +165,21 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
 
-        pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37&sortby=title&resorder=asc'
 
-        oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
+        # requete sur la home pour obtenir le cookie
+        oRequest = cRequestHandler(URL_MAIN)
+        oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.request()
         cookie = oRequest.GetCookies()
+        cookie += ';h_check=25'
+
+        oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
+        pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37&sortby=title&resorder=asc'
+
         oRequest.addHeaderEntry('Cookie', cookie)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_SEARCH[0])
+        oRequest.addHeaderEntry('Referer', URL_MAIN + URL_SEARCH[0])
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -181,6 +187,17 @@ def showMovies(sSearch=''):
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
 
+        sHtmlContent = oParser.abParse(sHtmlContent, '</script></form>')
+        sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
+        sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if not aResult[0]:
+            pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=0&catlist[]=1&catlist[]=37&sortby=title&resorder=asc'
+            oRequest.addParametersLine(pdata)
+            sHtmlContent = oRequest.request()
+            sHtmlContent = oParser.abParse(sHtmlContent, '</script></form>')
+            aResult = oParser.parse(sHtmlContent, sPattern)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -189,9 +206,9 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-    sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
+        sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
