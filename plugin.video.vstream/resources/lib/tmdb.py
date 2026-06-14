@@ -1388,6 +1388,11 @@ class cTMDb:
             if not b.get('file_path'):
                 continue
             lang = b.get('iso_639_1', None)
+            if not lang:
+                continue
+            country = b.get('iso_3166_1', None)
+            if lang == 'fr' and country != 'FR':    # de préference FR de France
+                continue
             by_lang.setdefault(lang, []).append(b)
 
         for lang in preferred_langs:
