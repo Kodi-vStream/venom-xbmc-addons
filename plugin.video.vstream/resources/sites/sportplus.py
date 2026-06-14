@@ -129,7 +129,6 @@ def showMovies():
         sDate = item['start']
         sDisplayTitle = sTitle
         if sDate:
-            import datetime 
             # Parse avec timezone
             dt = datetime.datetime(*(time.strptime(sDate[:19], '%Y-%m-%dT%H:%M:%S')[0:6]))
             # Timezone France
