@@ -147,7 +147,7 @@ def showMovies():
                 sDisplayTitle += ' [COLOR yellow][%s][/COLOR]' % tournament.replace('-', ' ').upper()
 
         if taglive:
-            sDisplayTitle += ' [COLOR red][En cours][/COLOR]'
+            sDisplayTitle += ' [COLOR green][En cours][/COLOR]'
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
