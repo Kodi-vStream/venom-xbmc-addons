@@ -300,10 +300,10 @@ def showSeries(sSearch=''):
         siteUrl = sUrl = oInputParameterHandler.getValue('siteUrl')
         sPage = oInputParameterHandler.getValue('sPage')
         if sPage:
-            if 'tv-shows' in siteUrl:
-                sUrl += '?page=' + sPage
-            else:
+            if '?' in siteUrl:
                 sUrl += '&page=' + sPage
+            else:
+                sUrl += '?page=' + sPage
                 
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -362,15 +362,24 @@ def showSaisons():
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1][::-1]:
+#        for aEntry in aResult[1][::-1]:
+        for aEntry in sorted(aResult[1], key=lambda saison: saison[0]):
             sSaison = aEntry[1].strip()
             sTitle = sDisplayTitle = sMovieTitle + ' ' + sSaison
+            if 'saison' not in sSaison and 'season' not in sSaison:
+                hasNum = re.search('(\d+)', sSaison)
+                if hasNum:
+                    numSaison = hasNum.group(1)
+                else:
+                    numSaison = 1
+                sTitle = sDisplayTitle = '%s Saison %s' % (sMovieTitle, numSaison)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showEpisodes():
     oGui = cGui()
