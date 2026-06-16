@@ -92,7 +92,7 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'card-base"> *<a href="([^"]+).+?src="([^"]+)" *alt="([^"]+).+?>Types<.+?value">([^<]+)'
+    sPattern = 'card-base"> *<a href="([^"]+).+?src="([^"]+)" *alt="([^"]+).+?info-value">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -107,7 +107,7 @@ def showSeries(sSearch=''):
                 continue
 
             if not sUrl2.startswith("http"):
-              sUrl2  = URL_MAIN[:-1] + sUrl2
+                sUrl2  = URL_MAIN[:-1] + sUrl2
 
             # Filtre de recherche
             if sSearch:
