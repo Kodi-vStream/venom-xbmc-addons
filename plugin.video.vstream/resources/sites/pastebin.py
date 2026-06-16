@@ -257,21 +257,22 @@ class PasteCache:
 
 
 class PasteContent:
-    PASTE = 0       # Id du paste
-    CAT = -1        # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
-    TMDB = -1       # (optionnel) - Id TMDB
-    TITLE = -1      # Titre du film / épisodes
-    SAISON = -1     # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
-    GROUPES = -1    # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
-    YEAR = -1       # (optionnel) - Année
-    GENRES = -1     # (optionnel) - Liste des genres
-    RES = -1        # (optionnel) - Résolution (720p, 1080p, 4K, ...)
-    DIRECTOR = -1   # (optionnel) - Réalisateur au format id : nom
-    CAST = -1       # (optionnel) - Acteurs au format id : nom
-    NETWORK = -1    # (optionnel) - Diffuseur au format id : nom
+    PASTE = 'PASTE'       # Id du paste
+    CAT = ''        # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
+    TMDB = ''       # (optionnel) - Id TMDB
+    TITLE = ''      # Titre du film / épisodes
+    SAISON = ''     # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
+    GROUPES = ''    # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
+    YEAR = ''       # (optionnel) - Année
+    GENRES = ''     # (optionnel) - Liste des genres
+    RES = ''        # (optionnel) - Résolution (720p, 1080p, 4K, ...)
+    DIRECTOR = ''   # (optionnel) - Réalisateur au format id : nom
+    CAST = ''       # (optionnel) - Acteurs au format id : nom
+    SIZE = ''       # (optionnel) - Acteurs au format id : nom
+    NETWORK = ''    # (optionnel) - Diffuseur au format id : nom
 #    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'
     movies = False  # Liste des liens, avec épisodes pour les séries
-    URLS = -1       # Liste des liens, avec épisodes pour les séries
+    URLS = ''       # Liste des liens, avec épisodes pour les séries
     chiffrer = None
     cache = None
     keyUpto = None
@@ -400,7 +401,7 @@ class PasteContent:
             self._getCache().save(pasteBin, lines, self.movies)
 
         # Calcul des index de chaque champ
-        self.PASTE = 0
+#        self.PASTE = 0
         hebergeur = None
         for champ in entete:
             champ = champ.strip()
@@ -413,22 +414,40 @@ class PasteContent:
                 else:
                     hebergeur = None
             if champ in dir(self):
-                setattr(self, champ, self.PASTE)
-            self.PASTE += 1
+                setattr(self, champ, champ)
+#                setattr(self, champ, self.PASTE)
+ #           self.PASTE += 1
 
         # On vérifie le type de média s'il est demandé
         sMediaPaste = 'film'     # par défaut si non défini
-        if self.CAT >= 0:
-            sMediaPaste = lines[1].split(";")[self.CAT]
-        if sMedia and len(lines) > 1:
-            if sMedia != sMediaPaste:
-                return []
+        isFilm = None
 
-        isFilm = sMediaPaste in ('film', 'divers')
         links = []
         for k in lines[1:]:
-            line = k.split(";")
-            line.append(pasteBin)
+            
+            # Map<k, v> permet de melanger des pastes hétérogènes
+            line = {}
+            values = k.split(";")
+            idx = 0
+            for champ in entete:
+                value = values[idx].strip()
+                if value and len(value.replace('[', '').replace(']', ''))>0:
+                    champ = champ.split("=")[0].strip()
+                    line[champ] = values[idx].strip()
+                idx +=1
+            line[self.PASTE] = pasteBin
+
+            if isFilm is None:
+                isFilm = True # car 'film' par défaut
+                if self.CAT:
+                    sMediaPaste = line[self.CAT]
+                if sMedia and sMedia != sMediaPaste:
+                    return []
+                isFilm = sMediaPaste in ('film', 'divers')
+            
+            
+            # line = k.split(";")
+            # line.append(pasteBin)
 
             # remettre l'hebergeur en prefixe du lien
             if hebergeur:
@@ -440,8 +459,8 @@ class PasteContent:
                     else:
                         line[self.URLS] = hebergeur + link
                 else:    # series/ anime, plusieurs liens
-                    link = link.replace(":'", ": '" + hebergeur) # format en ligne
-                    line[self.URLS] = link.replace(": '", ": '" + hebergeur)  # format du cache
+                    link = link.replace(":'", ": '") # format du cache
+                    line[self.URLS] = link.replace(": '", ": '" + hebergeur)
 
             links.append(line)
 
@@ -464,7 +483,7 @@ class PasteContent:
                 return
     
             # Récupérer les métadonnées des derniers contenus
-            if self.TMDB == -1 or self.CAT == -1:
+            if not self.TMDB or not self.CAT:
                 return
     
             from resources.lib.tmdb import cTMDb
@@ -483,7 +502,7 @@ class PasteContent:
                 if numItem == nbMeta:
                     break
     
-                tmdbID = movie[self.TMDB]
+                tmdbID = movie.get(self.TMDB, None)
                 if not tmdbID or tmdbID in tmdbIDs:
                     numItem -= 1
                     continue
@@ -497,7 +516,7 @@ class PasteContent:
     
                 progress_.VSupdate(progress_, total, text=sTitle)
     
-                sType = movie[self.CAT].replace('film', 'movie').replace('serie', 'tvshow')
+                sType = 'movie' if not self.CAT else movie.get(self.CAT, 'movie').replace('film', 'movie').replace('serie', 'tvshow')
                 args = (sType, sTitle)
                 kwargs = {'tmdb_id': tmdbID}
                 meta = TMDb.get_meta(*args, **kwargs)
@@ -908,54 +927,55 @@ def getPasteBin(pbContent, pasteBin):
 
     # Calculer les menus
     for movie in movies:
-        if pbContent.CAT == -1 or 'film' in movie[pbContent.CAT]:
+        catMovie = movie.get(pbContent.CAT, 'film') if pbContent.CAT else 'film'
+        if catMovie == 'film':
             containList.add('containFilms')
-            if pbContent.GENRES >= 0 and len(movie[pbContent.GENRES].strip()) > 2:
+            if movie.get(pbContent.GENRES, None):
                 containList.add('containFilmGenres')
-            if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.GROUPES, None):
                 containList.add('containFilmGroupes')
-            if pbContent.YEAR >= 0 and len(movie[pbContent.YEAR].strip()) > 1:
+            if movie.get(pbContent.YEAR, None):
                 containList.add('containFilmYear')
-            if not noResList and pbContent.RES >= 0 and len(movie[pbContent.RES].replace('[', '').replace(']', '').replace(',', '').strip()) > 0:
+            if not noResList and movie.get(pbContent.RES, None):
                 containList.add('containFilmRes')
-            if pbContent.DIRECTOR >= 0 and len(movie[pbContent.DIRECTOR].replace('[', '').replace(']', '').replace(',', '').strip()) > 0:
+            if movie.get(pbContent.DIRECTOR, None):
                 containList.add('containFilmReal')
-            if pbContent.CAST >= 0 and len(movie[pbContent.CAST].replace('[', '').replace(']', '').replace(',', '').strip()) > 0:
+            if movie.get(pbContent.CAST, None):
                 containList.add('containFilmCast')
-            if pbContent.SAISON >= 0 and len(movie[pbContent.SAISON].strip()) > 0:
+            if movie.get(pbContent.SAISON, None):
                 containList.add('containFilmSaga')
-            if pbContent.NETWORK >= 0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.NETWORK, None):
                 containList.add('containFilmNetwork')
 
-        elif 'serie' in movie[pbContent.CAT]:
+        elif catMovie == 'serie':
             containList.add('containSeries')
-            if pbContent.GENRES >= 0 and len(movie[pbContent.GENRES].strip()) > 2:
+            if movie.get(pbContent.GENRES, None):
                 containList.add('containSerieGenres')
-            if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.GROUPES, None):
                 containList.add('containSerieGroupes')
-            if pbContent.NETWORK >=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.NETWORK, None):
                 containList.add('containSerieNetwork')
-            if pbContent.YEAR >= 0 and len(movie[pbContent.YEAR].strip()) > 1:
+            if movie.get(pbContent.YEAR, None):
                 containList.add('containSerieYear')
 
-        elif 'anime' in movie[pbContent.CAT]:
+        elif catMovie == 'anime':
             containList.add('containAnimes')
-            if pbContent.GENRES >= 0 and len(movie[pbContent.GENRES].strip()) > 2:
+            if movie.get(pbContent.GENRES, None):
                 containList.add('containAnimeGenres')
-            if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.GROUPES, None):
                 containList.add('containAnimeGroupes')
-            if pbContent.NETWORK >=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.NETWORK, None):
                 containList.add('containAnimeNetwork')
-            if pbContent.YEAR >= 0 and len(movie[pbContent.YEAR].strip()) > 1:
+            if movie.get(pbContent.YEAR, None):
                 containList.add('containAnimeYear')
 
-        elif 'divers' in movie[pbContent.CAT]:
+        elif catMovie == 'divers':
             containList.add('containDivers')
-            if pbContent.GENRES >= 0 and len(movie[pbContent.GENRES].strip()) > 2:
+            if movie.get(pbContent.GENRES, None):
                 containList.add('containDiversGenres')
-            if pbContent.YEAR >= 0 and len(movie[pbContent.YEAR].strip()) > 1:
+            if movie.get(pbContent.YEAR, None):
                 containList.add('containDiversYear')
-            if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
+            if movie.get(pbContent.GROUPES, None):
                 containList.add('containDiversGroupes')
     return containList
 
@@ -1335,8 +1355,8 @@ def showTMDB(paramTerm = ''):
 
         # filmographie triée par date
         if sType == 'person':
-            if pbContent.YEAR >= 0:
-                movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
+            if pbContent.YEAR:
+                movies = sorted(movies, key=lambda line: line.get(pbContent.YEAR, '0'), reverse=True)
 
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1344,9 +1364,9 @@ def showTMDB(paramTerm = ''):
         for movie in movies:
             # l'ID TMDB
             sTmdbId = None
-            if pbContent.TMDB == -1:
+            if not pbContent.TMDB:
                 continue
-            sTmdbId = movie[pbContent.TMDB].strip()
+            sTmdbId = movie.get(pbContent.TMDB, None)
             if not sTmdbId:
                 continue
 
@@ -1612,10 +1632,10 @@ def showGenres():
 
         for movie in movies:
             try:
-                if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                     continue
 
-                genre = movie[pbContent.GENRES].strip()
+                genre = movie.get(pbContent.GENRES, None)
                 if not genre or genre == '':
                     genre = "['" + UNCLASSIFIED_GENRE + "']"
                 elif "''" in genre:
@@ -1672,11 +1692,11 @@ def showNetwork():
         progress_.VSupdate(progress_, maxProgress)
 
         for movie in movies:
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                 continue
 
-            networks = movie[pbContent.NETWORK].strip()
-            if networks != '' and networks != '[]':
+            networks = movie.get(pbContent.NETWORK, None)
+            if networks:
                 networks = eval(networks)
                 for networkId in networks:
                     if ':' in networkId:
@@ -1724,11 +1744,11 @@ def showRealisateur():
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                 continue
 
-            reals = movie[pbContent.DIRECTOR].strip()
-            if reals != '':
+            reals = movie.get(pbContent.DIRECTOR, None)
+            if reals:
                 reals = eval(reals)
                 if reals:
                     for real in reals:
@@ -1787,11 +1807,11 @@ def showCast():
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                 continue
 
-            acteurs = movie[pbContent.CAST].strip()
-            if acteurs != '':
+            acteurs = movie.get(pbContent.CAST, None)
+            if acteurs:
                 acteurs = eval(acteurs)
                 if acteurs:
                     for acteur in acteurs:
@@ -1870,9 +1890,9 @@ def showGroupes():
 
         for movie in movies:
             try:
-                if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                     continue
-                groupe = movie[pbContent.GROUPES].strip().replace("''", '')
+                groupe = movie.get(pbContent.GROUPES, '').replace("''", '')
                 if groupe:
                     groupe = eval(groupe)
                     if groupe:
@@ -1921,7 +1941,7 @@ def showGroupeDetails():
             movies = pbContent.getLines(pasteBin, sMedia)
             for movie in movies:
                 try:
-                    groupe = movie[pbContent.GROUPES].strip().replace("''", '')
+                    groupe = movie.get(pbContent.GROUPES, '').replace("''", '')
                     if groupe:
                         groupe = eval(groupe)
                         if groupe:
@@ -1962,11 +1982,11 @@ def showSaga():
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                 continue
 
-            saga = movie[pbContent.SAISON].strip()
-            if saga != '':
+            saga = movie.get(pbContent.SAISON, None)
+            if saga:
                 sTmdbId = name = saga
                 idName = saga.split(':', 1)
                 if len(idName) > 1:
@@ -2054,10 +2074,10 @@ def showYears():
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for line in movies:
-            if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in line.get(pbContent.CAT, 'film'):
                 continue
 
-            year = line[pbContent.YEAR].strip()
+            year = line.get(pbContent.YEAR, None)
             if not year:
                 year = UNCLASSIFIED
             years.add(year)
@@ -2228,7 +2248,7 @@ def showMovies(sSearch=''):
         while k < lenMovies:
             if i < pasteMaxLen[j]:
                 # Filtrage par média (film/série)
-                if pbContent.CAT >=0 and sMedia in movies[i][pbContent.CAT]:
+                if pbContent.CAT and sMedia in movies[i].get(pbContent.CAT, 'film'):
                     if bNews and not sRes:
                         movieName = movies[i][pbContent.TITLE]
                         if movieName not in listName:  # trie des séries en doublons (à cause des saisons)
@@ -2251,7 +2271,7 @@ def showMovies(sSearch=''):
     # Classement par ID TMDB, pseudo-classement par sortie pour la même année
     if sYear or sGenre:
         try:
-            movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
+            movies = sorted(movies, key=lambda line: int(line.get(pbContent.TMDB, 0)) if line.get(pbContent.TMDB, None) else 0, reverse=True)
         except Exception as e:
             raise
             
@@ -2260,12 +2280,12 @@ def showMovies(sSearch=''):
         movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
 
     # Recherche par saga => trie par années
-    if sSaga and pbContent.YEAR >= 0:
-        movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
+    if sSaga and pbContent.YEAR:
+        movies = sorted(movies, key=lambda line: line.get(pbContent.YEAR, '0'))
 
     # Dans un dossier => trie par années inversées (du plus récent)
     if sGroupe or sDirector or sCast:
-        movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
+        movies = sorted(movies, key=lambda line: line.get(pbContent.YEAR, '0'), reverse=True)
 
     # Gestion de la pagination
     numPage = int(numPage)
@@ -2304,12 +2324,12 @@ def showMovies(sSearch=''):
         numItem += 1
 
         # Filtrage par média (film/série), "film" par défaut si pas précisé
-        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+        if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
             continue
 
         # Filtrage par liste
-        if sGroupe and pbContent.GROUPES >= 0:
-            groupes = movie[pbContent.GROUPES].strip()
+        if sGroupe and pbContent.GROUPES:
+            groupes = movie.get(pbContent.GROUPES, None)
             if not groupes or groupes == '[]':
                 continue
             # groupes = eval(groupes)
@@ -2318,12 +2338,12 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par saga
-        if sSaga and sSaga != movie[pbContent.SAISON].strip():
+        if sSaga and sSaga != movie.get(pbContent.SAISON, None):
             continue
 
         # Filtrage par genre
-        if sGenre and pbContent.GENRES >= 0:
-            genres = movie[pbContent.GENRES].strip()
+        if sGenre and pbContent.GENRES:
+            genres = movie.get(pbContent.GENRES, None)
             if not genres or genres == '' or "''" in genres:
                 if sGenre != UNCLASSIFIED_GENRE:
                     continue
@@ -2334,8 +2354,8 @@ def showMovies(sSearch=''):
                     continue
 
         # Filtrage par réalisateur
-        if sDirector and pbContent.DIRECTOR >= 0:
-            listDirector = movie[pbContent.DIRECTOR].strip()
+        if sDirector and pbContent.DIRECTOR:
+            listDirector = movie.get(pbContent.DIRECTOR, None)
             if not listDirector:
                 continue
             listDirector = eval(listDirector)
@@ -2343,8 +2363,8 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par acteur
-        if sCast and pbContent.CAST >= 0:
-            listCast = movie[pbContent.CAST].strip()
+        if sCast and pbContent.CAST:
+            listCast = movie.get(pbContent.CAST, None)
             if not listCast:
                 continue
             listCast = eval(listCast)
@@ -2352,8 +2372,8 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par diffuseur
-        if sNetwork and pbContent.NETWORK >= 0:
-            listNetwork = movie[pbContent.NETWORK].strip()
+        if sNetwork and pbContent.NETWORK:
+            listNetwork = movie.get(pbContent.NETWORK, None)
             if not listNetwork:
                 continue
             # listNetwork = eval(listNetwork)
@@ -2361,12 +2381,12 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par titre
-        sTitle = movie[pbContent.TITLE].strip()
+        sTitle = movie[pbContent.TITLE]
 
         # recherche par id TMDB
         sTmdbId = None
-        if pbContent.TMDB >= 0:
-            sTmdbId = movie[pbContent.TMDB].strip()
+        if pbContent.TMDB:
+            sTmdbId = movie.get(pbContent.TMDB, None)
         if searchIdTMDB:
             if not sTmdbId or searchIdTMDB != sTmdbId:
                 continue
@@ -2400,8 +2420,8 @@ def showMovies(sSearch=''):
 
         # Filtrage par années
         movieYear = ''
-        if pbContent.YEAR >= 0:
-            movieYear = movie[pbContent.YEAR].strip()
+        if pbContent.YEAR:
+            movieYear = movie.get(pbContent.YEAR, None)
             # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
         if sYear:
             if sYear == UNCLASSIFIED:
@@ -2414,8 +2434,8 @@ def showMovies(sSearch=''):
         listRes = None
 
         if 'film' in sMedia:
-            if pbContent.RES >= 0:
-                res = movie[pbContent.RES].strip().upper()
+            if pbContent.RES:
+                res = movie.get(pbContent.RES, '').upper()
                 listRes = []
                 if '[' in res:
                     listRes.extend(eval(res))
@@ -2432,7 +2452,7 @@ def showMovies(sSearch=''):
                 bValid = False
                 for res in listRes:
                     res = str(res).upper().replace('FULLHD', '1080P') \
-                        .replace('HDR', '').replace('HD', '720P').replace('2160P', '4K') \
+                        .replace('HD', '720P').replace('2160P', '4K') \
                         .replace('WEB', '720P').replace('SDR', '') \
                         .replace('DVD', '').replace('DV', 'DOLBY VISION')
                     if sRes in res:
@@ -2526,13 +2546,13 @@ def showSerieSaisons():
         # Recherche les saisons de la série
         for serie in moviesBin:
 
-            if pbContent.CAT >= 0 and sMedia not in serie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in serie.get(pbContent.CAT, 'film'):
                 continue
 
             # Recherche par id
             found = False
-            if idTMDB and pbContent.TMDB >= 0:
-                sMovieID = serie[pbContent.TMDB].strip()
+            if idTMDB and pbContent.TMDB:
+                sMovieID = serie.get(pbContent.TMDB, None)
                 if sMovieID:
                     if sMovieID != idTMDB:
                         continue
@@ -2540,16 +2560,16 @@ def showSerieSaisons():
 
             # Sinon, recherche par titre/année
             if not found:
-                if searchYear and pbContent.YEAR >= 0:
-                    sYear = serie[pbContent.YEAR].strip()
+                if searchYear and pbContent.YEAR:
+                    sYear = serie.get(pbContent.YEAR, None)
                     if sYear and sYear != searchYear:
                         continue
 
-                sTitle = serie[pbContent.TITLE].strip()
+                sTitle = serie[pbContent.TITLE]
                 if sTitle != searchTitle:
                     continue
 
-            numSaison = serie[pbContent.SAISON].strip()
+            numSaison = serie.get(pbContent.SAISON, '01')
             
             if numSaison.isdigit():
                 numSaison = '%02d' % int(numSaison)
@@ -2562,13 +2582,14 @@ def showSerieSaisons():
 
             # Résolutions disponible pour la saison
             listRes = saisons[numSaison]
-            if pbContent.RES >= 0:
-                res = serie[pbContent.RES].strip()
-                if '[' in res:
-                    for r in eval(res):
-                        listRes.add(r)
-                else:
-                    listRes.add(res)
+            if pbContent.RES:
+                res = serie.get(pbContent.RES, None)
+                if res:
+                    if '[' in res:
+                        for r in eval(res):
+                            listRes.add(r)
+                    else:
+                        listRes.add(res)
 
 
     # Proposer les différentes saisons
@@ -2636,7 +2657,7 @@ def showEpisodesLinks(siteUrl=''):
         sDisplayTitle = searchTitle + ' - ' + episode
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', searchTitle)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -2662,7 +2683,7 @@ def showHosters(searchUrl=''):
     sorted(listRes.keys(), key=trie_res)
     for res in sorted(listRes.keys(), key=trie_res):
         for sUrl, lang in listRes[res]:
-            link, paste, movies = sUrl.split('|')
+            link, size, paste, movies = sUrl.split('|')
 
             # éviter les doublons (même lien dans plusieurs pastes)
             if link in uniqueLinks:
@@ -2678,7 +2699,7 @@ def showHosters(searchUrl=''):
                                    .replace('720p', 'HD')
                                    .replace('2160p', '4K')
                                    .replace('WEB', 'HD'))
-                sDisplayName += ' [%s]' % sDisplayRes
+                #sDisplayName += ' [%s]' % sDisplayRes
 
             if lang:
                 sDisplayName += ' (%s)' % lang
@@ -2690,12 +2711,21 @@ def showHosters(searchUrl=''):
                     oHoster.setDisplayName(sDisplayName)
                     oHoster.setFileName(sTitle)
                     oHoster.setRes(sDisplayRes)
+                    mediaInfo = ''
+                    if sDisplayRes:
+                        mediaInfo += '%s' % sDisplayRes
+                    if size:
+                        if sDisplayRes:
+                            mediaInfo += ' - ' 
+                        mediaInfo += '%s Go' % size
+                    oHoster.setMediaInfo(mediaInfo)
                     oHosterGui.showHoster(oGui, oHoster, link, sThumb)
             else:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sRes', sDisplayRes)
+                oOutputParameterHandler.addParameter('sSize', "350Mo")
                 oGui.addLink(SITE_IDENTIFIER, 'showHoster',
                              sDisplayName,
                              sThumb or 'host.png', '', oOutputParameterHandler)
@@ -2773,13 +2803,13 @@ def getHosterList(siteUrl):
         for movie in moviesBin:
 
             # Filtrer par catégorie
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+            if pbContent.CAT and sMedia not in movie.get(pbContent.CAT, 'film'):
                 continue
 
             # Recherche par id
             found = False
-            if idTMDB and pbContent.TMDB >= 0:
-                sMovieID = movie[pbContent.TMDB].strip()
+            if idTMDB and pbContent.TMDB:
+                sMovieID = movie.get(pbContent.TMDB, None)
                 if sMovieID:
                     if sMovieID != idTMDB:
                         continue
@@ -2788,19 +2818,19 @@ def getHosterList(siteUrl):
             # sinon, recherche par titre/année
             if not found:
                 # Filtrage par années
-                if searchYear and pbContent.YEAR >= 0:
-                    sYear = movie[pbContent.YEAR].strip()
+                if searchYear and pbContent.YEAR:
+                    sYear = movie.get(pbContent.YEAR, None)
                     if sYear and sYear != searchYear:
                         continue
 
                 # Filtrage par titre
-                sTitle = movie[pbContent.TITLE].strip()
+                sTitle = movie[pbContent.TITLE]
                 if sTitle != searchTitle:
                     continue
 
             # Filtrage par saison
-            if searchSaison and pbContent.SAISON >= 0:
-                sSaisons = movie[pbContent.SAISON].strip()
+            if searchSaison and pbContent.SAISON:
+                sSaisons = movie.get(pbContent.SAISON, None)
                 if sSaisons:
                     if sSaisons.isdigit():
                         sSaisons = int(sSaisons)
@@ -2843,20 +2873,25 @@ def getHosterList(siteUrl):
 
             if len(listLinks) > 0:
                 listResMovie = []
+                listSizeMovie = []
                 idxResMovie = 0
-                if pbContent.RES == -1:
-                    res = ''
-                else:
-                    res = movie[pbContent.RES].strip().upper()
+                res = movie.get(pbContent.RES, '').upper()
                 if '[' in res:
                     listResMovie.extend(eval(res))
                 else:
                     listResMovie.append(res)
 
+                size = movie.get(pbContent.SIZE, '')
+                if '[' in size:
+                    listSizeMovie.extend(eval(size))
+                else:
+                    listSizeMovie.append(size)
+
                 for link in listLinks:
+                    # resolution
                     if idxResMovie < len(listResMovie):
                         resMovie = listResMovie[idxResMovie].upper() \
-                                    .replace('HDR', '').replace('SDR', '') \
+                                    .replace('SDR', '') \
                                     .replace('FULLHD', '1080P').replace('HD', '720P') \
                                     .replace('2160P', '4K').replace('WEB', '720P') \
                                     .replace('DVD', '').replace('DV', 'DOLBY VISION')
@@ -2864,6 +2899,13 @@ def getHosterList(siteUrl):
                             resMovie = 'SD'
                     else:
                         resMovie = ''
+
+                    # taille
+                    if idxResMovie < len(listSizeMovie):
+                        size = listSizeMovie[idxResMovie]
+                    else:
+                        size = ''
+
                     idxResMovie += 1
 
                     # On vérifie la résolution attendue si pas uptostream
@@ -2871,7 +2913,7 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    resolvedLinks = [(link + '|' + movie[pbContent.PASTE] + '|' + ('TRUE' if pbContent.movies else 'FALSE'), "ori", "ori")]
+                    resolvedLinks = [(link + '|' + size + '|' + movie[pbContent.PASTE] + '|' + ('TRUE' if pbContent.movies else 'FALSE'), "ori", "ori")]
 #                    resolvedLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     
                     for url, res, lang in resolvedLinks:
@@ -3157,9 +3199,9 @@ def addPasteID():
         pbContentOld = PasteContent()
         pbContentOld.getLines(IDs.pop())
 
-        if not pbContentNew.isFormat(pbContentOld):
-            dialog().VSok(addons.VSlang(30022))
-            return
+        # if not pbContentNew.isFormat(pbContentOld):
+        #     dialog().VSok(addons.VSlang(30022))
+        #     return
 
     # ok, on ajoute le paste
     addons.setSetting(settingID, pasteID)
@@ -3290,12 +3332,13 @@ def getNbMedia():
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin)
         for movie in moviesBin:
-            videoId = movie[pbContent.TMDB] if movie[pbContent.TMDB] else movie[pbContent.TITLE]
-            if 'film' in movie[pbContent.CAT]:
+            videoId = movie.get(pbContent.TMDB, movie[pbContent.TITLE])
+            catMovie = movie.get(pbContent.CAT, 'film') if pbContent.CAT else 'film'
+            if 'film' in catMovie:
                 idFilms.add(videoId)
-            elif 'serie' in movie[pbContent.CAT]:
+            elif 'serie' in catMovie:
                 idSeries.add(videoId)
-            elif 'anime' in movie[pbContent.CAT]:
+            elif 'anime' in catMovie:
                 idAnimes.add(videoId)
             else:
                 idDivers.add(videoId)

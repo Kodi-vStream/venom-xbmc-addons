@@ -26,7 +26,8 @@ MOVIE_VIEWS = ('trending-movies?type=movie', 'showMovies')
 MOVIE_GENRES = ('movies?order=popularity:desc&filters=%s?type=movie', 'showMovieGenres')
 
 SERIE_SERIES = (True, 'showMenuTvShows')
-SERIE_NEWS = ('series?order=popularity:desc?type=series', 'showMovies')
+SERIE_NEWS = ('series?order=created_at:desc?type=series', 'showMovies')
+SERIE_VIEWS = ('series?order=trending:desc?type=series', 'showMovies')
 SERIE_GENRES = ('series?order=popularity:desc&filters=%s?type=series', 'showTvGenres')
 
 ANIM_ANIMS = (True, 'showMenuAnimes')
@@ -39,11 +40,14 @@ DOC_SERIE = ('docs?filters=W3sia2V5IjoiZ2VucmVzIiwidmFsdWUiOls2XSwib3BlcmF0b3IiO
 DOC_SPECTACLE = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzYsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3Nn1d&order=popularity:desc?type=movie', 'showMovies')
 DOC_REALITY = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3OH1d&order=popularity:desc?type=serie', 'showMovies')
 
+REPLAYTV_REPLAYTV = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3OH1d&order=popularity:desc?type=serie', 'showMovies')
+REPLAYTV_NEWS = ('docs?filters=W3sia2V5IjoiY2F0ZWdvcnkiLCJ2YWx1ZSI6NzgsIm9wZXJhdG9yIjoiPSIsInZhbHVlS2V5Ijo3OH1d&order=popularity:desc?type=serie', 'showMovies')
 
 URL_SEARCH = ('search/', 'showSearch')
 #URL_SEARCH_MOVIES = ('search/%s?type=movie', 'showMovies')
 URL_SEARCH_SERIES = ('search/%s?type=series', 'showMovies')
 URL_SEARCH_ANIMS = ('search/%s?type=animes', 'showMovies')
+URL_SEARCH_REPLAY = ('search/%s?type=series', 'showMovies')
 URL_SEARCH_MISC = ('search/%s?type=doc', 'showMovies')
 
 
@@ -87,6 +91,9 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
 
@@ -126,7 +133,7 @@ def showMenuDivers():
     # oGui.addDir(SITE_IDENTIFIER, DOC_SPECTACLE[1], 'Spectacles', 'spectacle.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_REALITY[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_REALITY[1], 'Télé-Réalité', 'genres/Tele-Realite.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_REALITY[1], 'Télé-Réalité', 'genres/Tele_Realite.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -451,7 +458,14 @@ def showEpisodes():
     for episode in episodes:
         if not 'primary_video' in episode:
             continue
-        sUrl2 = episode['primary_video']['lien']
+        links = episode.get('primary_video', None)
+        if not links:
+            continue
+        sUrl2 = links.get('lien', None)
+        if not sUrl2:
+#            sUrl2 = 'https://darkibox.com/embed-%s.html' % links.get('id') 
+            continue
+        taille = links['taille']
         iSeason = episode['season_number']
         iEp = episode['episode_number']
         sDisplayTitle = '%s S%dE%d' % (sMovieTitle, iSeason, iEp)
@@ -459,6 +473,11 @@ def showEpisodes():
         sDesc = episode['description']
         if not sDesc :
             sDesc = episode['name']
+            
+        taille = int(taille) / 1024/1024
+        if taille:
+            sDesc = '(%d Mo) %s' % (taille, sDesc)
+        
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
@@ -544,16 +563,19 @@ def showMovieHoster():
 
 def showSerieHoster():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    mediaInfo = oInputParameterHandler.getValue('sDesc')
 
-    oHoster = cHosterGui().checkHoster(sUrl)
+    oHoster = oHosterGui.checkHoster(sUrl)
     if oHoster:
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
-        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+        oHoster.setMediaInfo(mediaInfo)
+        oHosterGui.showHoster(oGui, oHoster, sUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

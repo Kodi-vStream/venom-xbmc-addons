@@ -14,8 +14,8 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'alldebrid', 'Alldebrid', 'violet')
     
-    def setDisplayName(self, displayName):
-        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + "/" + self.getRealHost() + '[/COLOR]'
+    # def setDisplayName(self, displayName):
+    #     self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + "/" + self.getRealHost() + '[/COLOR]'
 
     def isDownloadable(self):
         token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()

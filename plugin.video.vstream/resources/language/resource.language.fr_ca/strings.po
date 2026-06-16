@@ -532,6 +532,10 @@ msgctxt "#30135"
 msgid "Direct search"
 msgstr "Recherche directe"
 
+msgctxt "#30136"
+msgid "Shows"
+msgstr "Spectacles"
+
 msgctxt "#30137"
 msgid "Music"
 msgstr "Musique"

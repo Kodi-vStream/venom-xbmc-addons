@@ -40,6 +40,7 @@ class cRequestHandler:
         self.json = {}
         self.forceIPV4 = False
         self.oResponse = None
+        self.cloudScraper = None
 
     def statusCode(self):
         return self.oResponse.status_code
@@ -209,6 +210,11 @@ class cRequestHandler:
             self.__sResponseHeader = self.oResponse.headers
             self.__sRealUrl = self.oResponse.url
 
+            # Moved permanently
+            if self.__sUrl != self.__sRealUrl and self.oResponse.status_code in [301]:
+                self.__sUrl = self.__sRealUrl
+                return self.__callRequest(jsonDecode, paramGet)
+            
         except ConnectionError as e:
             errorMsg = str(e)
             # Erreur SSL
@@ -267,43 +273,71 @@ class cRequestHandler:
                             pass
 
             if self.oResponse.status_code in [503, 403]:
-                if 'Forbidden' not in sContent and 'Just a moment' not in sContent :
+                if 'Forbidden' not in sContent:# and 'Just a moment' not in sContent :
                 # si on peut lire Forbidden c'est que la page est accessible mais pas le contenu
                     
-                    # Tenter par un proxy Cloudflare
-                    from resources.lib.comaddon import siteManager
-                    sitesManager = siteManager()
-                    if sitesManager.isActive('cloudproxy'):
-                        cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
-                        if cloudProxyUrl and cloudProxyUrl not in self.__sUrl:
-                            self.__sUrl = cloudProxyUrl + QuotePlus(self.__sUrl)
-                            return self.__callRequest(jsonDecode, False)
+                    urlHost = self.__sRealUrl
+                    if self.__sUrl != self.__sRealUrl: # On tente sur l'adresse réelle
+                        self.__sUrl = self.__sRealUrl
+                        return self.__callRequest(jsonDecode, paramGet)
+
+                    # tenter par CloudScraper
+                    if not self.cloudScraper:
+                        import resources.lib.cloudscraper as cloudscraper
+                        self.cloudScraper = cloudscraper.create_scraper(
+                            browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False},
+                            delay=4
+                        )
+                        self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
+                        sContent = self.oResponse.content.decode('utf-8')
+                    else: # déjà tenté par cloudScraper = boucle = test si passé par cloudproxy ?
+                        from resources.lib.comaddon import siteManager
+                        sitesManager = siteManager()
+                        if sitesManager.isActive('cloudproxy'):
+                            cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
+                            if not cloudProxyUrl or cloudProxyUrl not in self.__sUrl:
+                                self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
+                                sContent = self.oResponse.content.decode('utf-8')
+                            else:
+                                urlHost = 'https://' + urlHost.split('%2F')[2]
+
+                    # toujours non résolu
+                    if self.oResponse.status_code not in [200, 204, 302]:
+                        # Tenter par un proxy Cloudflare
+                        from resources.lib.comaddon import siteManager
+                        sitesManager = siteManager()
+                        if sitesManager.isActive('cloudproxy'):
+                            cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
+                            if cloudProxyUrl and cloudProxyUrl not in self.__sUrl:
+                                self.__sUrl = cloudProxyUrl + QuotePlus(self.__sRealUrl)
+                                self.addHeaderEntry('Referer', cloudProxyUrl)
+                                return self.__callRequest(jsonDecode, False)
     
-                    # Tenter par FlareSolverr
-                    if addon().getSetting('use_flaresolverr') == 'true':
-                        CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
-                        json_response = False
-                        try:
-                            # On fait une requete.
-                            paramJson = {
-                                'cmd': 'request.%s' % method.lower(),
-                                'url': self.__sUrl
-                            }
-                            if 'postData' in self.__aParamaters:
-                                paramJson['postData'] = self.__aParamaters['postData']
-                            
-                            json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
-                            if json_response:
-                                response = json_response.json()
-                                if 'solution' in response:
-                                    if self.__sUrl != response['solution']['url']:
-                                        self.__sRealUrl = response['solution']['url']
-            
-                                    sContent = response['solution']['response']
-                        except:
-                            dialog().VSerror("%s (%s)" % ("Page protegee malgré FlareSolverr", urlHostName(self.__sRealUrl)))
-                    else:
-                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sRealUrl)))
+                        # Tenter par FlareSolverr
+                        if addon().getSetting('use_flaresolverr') == 'true':
+                            CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
+                            json_response = False
+                            try:
+                                # On fait une requete.
+                                paramJson = {
+                                    'cmd': 'request.%s' % method.lower(),
+                                    'url': self.__sUrl
+                                }
+                                if 'postData' in self.__aParamaters:
+                                    paramJson['postData'] = self.__aParamaters['postData']
+                                
+                                json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
+                                if json_response:
+                                    response = json_response.json()
+                                    if 'solution' in response:
+                                        if self.__sUrl != response['solution']['url']:
+                                            self.__sRealUrl = response['solution']['url']
+                
+                                        sContent = response['solution']['response']
+                            except:
+                                dialog().VSerror("%s (%s)" % ("Page protegee malgré FlareSolverr", urlHostName(urlHost)))
+                        else:
+                            dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare", urlHostName(urlHost)))
 
             if self.oResponse is not None and not sContent:
                 # Ignorer ces codes retours

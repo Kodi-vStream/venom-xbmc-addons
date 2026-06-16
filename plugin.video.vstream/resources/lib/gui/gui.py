@@ -25,6 +25,7 @@ class cGui:
     thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
+    oUtil = cUtil()
     displaySeason = ADDON.getSetting('display_season_title')
 
     # Gérer les résultats de la recherche
@@ -36,6 +37,8 @@ class cGui:
 
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler=cOutputParameterHandler(), sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
+        globalSearch = window(10101).getProperty('search')
+
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
             cGui.CONTENT = Type
@@ -82,15 +85,17 @@ class cGui:
         # pour les saisons, on garde le titre TMDB si on vient de la série
         # on arrive directement sur des saisons avec certaines sources, ou par la fonction "poursuivre la lecture"
         if sCat == 4:
-            oInputParameterHandler = cInputParameterHandler()
-            sCatFrom = oInputParameterHandler.getValue('sCat')
-            if sCatFrom:
-                try:
-                    sCatFrom = int(sCatFrom)
-                    if sCatFrom == 2: #Série
-                        oGuiElement.setTitleTMDB(True)
-                except:
-                    pass
+            # pas pendant la recherche globale
+            if not globalSearch:
+                oInputParameterHandler = cInputParameterHandler()
+                sCatFrom = oInputParameterHandler.getValue('sCat')
+                if sCatFrom:
+                    try:
+                        sCatFrom = int(sCatFrom)
+                        if sCatFrom == 2: #Série
+                            oGuiElement.setTitleTMDB(True)
+                    except:
+                        pass
 
         # a faire après avoir déterminé la cat et le meta
         oGuiElement.setTitle(sLabel)
@@ -100,7 +105,7 @@ class cGui:
         sTmdbId = oOutputParameterHandler.getValue('sTmdbId')
         if sCat and not sTmdbId:
             # pas pendant la recherche globale
-            if window(10101).getProperty('search') != 'true':
+            if not globalSearch:
                 if not sMeta:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
@@ -113,7 +118,8 @@ class cGui:
                     if not oInputParameterHandler:
                         oInputParameterHandler = cInputParameterHandler()
                     sTmdbId = oInputParameterHandler.getValue('sTmdbId')
-                    if sTmdbId:
+                    sMetaParent = oInputParameterHandler.getValue('sMeta')
+                    if sMetaParent and sMetaParent != '8' and sTmdbId:  # Ne pas prendre l'id si on vient d'un diffuseur 
                         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
@@ -150,7 +156,7 @@ class cGui:
 
             # Cas EPISODE: on force la meta pour récupérer fanart/backdrop (série),
             # tout en conservant le thumb d'épisode.
-            elif sCat_i == 8 and window(10101).getProperty('search') != 'true':
+            elif sCat_i == 8 and not globalSearch:
                 old_thumb = oGuiElement.getThumbnail()
                 old_poster = oGuiElement.getPoster()
 
@@ -231,12 +237,17 @@ class cGui:
         return self.addNewDir('sets', sId, sFunction, sLabel, 'no-image.png', sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
 
     def addGenre(self, sId, sFunction, sLabel, oOutputParameterHandler='', sDesc=""):
-        sIcon = 'genres/%s.png' % str(cUtil().formatUTF8(sLabel))
+        sIcon = 'genres/%s.png' % str(self.oUtil.formatUTF8(sLabel))
         sIcon = sIcon.replace(' & ', '_').replace(' ', '_').replace("'", '_').replace("-", '_')
         return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
-    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=cOutputParameterHandler(), sDesc=""):
-        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
+    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=cOutputParameterHandler(), sDesc = ''):
+        sDesc = sLabel if not sDesc else ''
+        sThumb = ''
+        # générer une icone par défaut
+        if not sIcon:
+            sIcon = sThumb = self.oUtil.getIconDefault(sLabel)
+        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumb, sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -550,15 +561,25 @@ class cGui:
                 videoInfoTag.addVideoStream(videoStreamDetail)
 
     
-        oListItem.setArt({
-                          'poster': oGuiElement.getPoster(),
-                          'thumb': oGuiElement.getThumbnail(),
-                          'icon': oGuiElement.getIcon(),
-                          # FANART = backdrop (idéalement sans texte)
-                          'fanart': oGuiElement.getFanart(),
-                          # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
-                          'landscape': oGuiElement.getItemValue('landscape_path')
-                          })
+        art = {
+               'poster': oGuiElement.getPoster(),
+               'thumb': oGuiElement.getThumbnail(),
+               'icon': oGuiElement.getIcon(),
+               # FANART = backdrop (idéalement sans texte)
+               'fanart': oGuiElement.getFanart(),
+               # LANDSCAPE = backdrop "avec texte" (langue TMDb, fallback EN)
+               'landscape': oGuiElement.getItemValue('landscape_path')
+              }
+
+        clearlogo_url = oGuiElement.getItemValue('clearlogo') or oGuiElement.getItemValue('tvshow.clearlogo') or oGuiElement.getItemValue('logo_path')
+        if clearlogo_url:
+            meta_type = oGuiElement.getMeta()
+            if meta_type in (1, 3):
+                art['clearlogo'] = clearlogo_url
+            if meta_type in (2, 4, 5, 6):
+                art['tvshow.clearlogo'] = clearlogo_url
+
+        oListItem.setArt(art)
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
@@ -826,7 +847,7 @@ class cGui:
             sCleanTitle = oInputParameterHandler.getValue('sFileName') 
         else:
             sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
-            # sCleanTitle = cUtil().titleWatched(sCleanTitle)
+            # sCleanTitle = oUtil.titleWatched(sCleanTitle)
             
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
@@ -1007,3 +1028,4 @@ class cGui:
         cGui.searchResultsSemaphore.acquire()
         cGui.searchResults = {}
         cGui.searchResultsSemaphore.release()
+

@@ -25,6 +25,10 @@ PATH_SITE = 'c/%s/' % util.urlHostName(URL_HOST).split('.')[0]
 # pour l'addon
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_VIEWS = (URL_MAIN + PATH_SITE + '29/0', 'showMovies')
+MOVIE_LAST = (URL_MAIN, 'showMovies')
+MOVIE_LAST_ID = 'Movies Last'
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NEWS_ID = 'Movies News'
 MOVIE_GENRES = (True, 'showGenres')
 
 DOC_DOCS = (True, 'showMenuDivers')
@@ -39,41 +43,58 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
+    addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', addons.VSlang(30076), 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], addon().VSlang(30102), 'popular.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LAST[0])
+    oOutputParameterHandler.addParameter('sMovieTitle', MOVIE_LAST_ID)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LAST[1], addons.VSlang(30101), 'boxoffice.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oOutputParameterHandler.addParameter('sMovieTitle', MOVIE_NEWS_ID)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], addons.VSlang(30134), 'news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SHOW_SHOWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SHOW_SHOWS[1], 'Spectacles', 'spectacle.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SHOW_SHOWS[1], addons.VSlang(30136), 'spectacle.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMenuMovies():
     oGui = cGui()
+    addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', addons.VSlang(30076), 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'A l\'affiche', 'boxoffice.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LAST[0])
+    oOutputParameterHandler.addParameter('sMovieTitle', MOVIE_LAST_ID)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LAST[1], addons.VSlang(30101), 'boxoffice.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oOutputParameterHandler.addParameter('sMovieTitle', MOVIE_NEWS_ID)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], addons.VSlang(30134), 'news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Par genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], addons.VSlang(30105), 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
+    
 
 def showMenuDivers():
     oGui = cGui()
@@ -131,6 +152,7 @@ def showGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
 
     # L'url change tres souvent donc faut la retrouver
     oRequestHandler = cRequestHandler(URL_HOST)
@@ -148,6 +170,7 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearch = sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch[:20]  # limite de caractere sinon bug de la recherche
+        sSearch = sSearch.replace(' ', '%') # recherche multi-mots
 
         siteName = sMainUrl.split('/')[2].split('.')[0]
         sUrl = sMainUrl + 'home/{0!s}'.format(siteName)
@@ -158,7 +181,6 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Cookie', 'g=true')
         sABPattern = '<div class="column24"'
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         if sUrl == URL_MAIN:  # page d'accueil
@@ -169,19 +191,29 @@ def showMovies(sSearch=''):
         sUrl = sUrl.replace(URL_MAIN, sMainUrl)
         oRequestHandler = cRequestHandler(sUrl)
 
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
-    sPattern = '<a class="film-card" href="([^"]+)">\s*<img class="film-card-img" src="([^"]+)" alt="([^"]+)".+?"trend-card-date">([^<>]+)<'
+    hasPages = True
+    if sTitle == MOVIE_LAST_ID:
+        hasPages = False
+        sPattern = '-card" href="([^"]+)".+?-card-img" src="([^"]+)" alt="([^"]+)".+?film-card-new-badge">.+?"trend-card-date">([^<>]+)<'
+    elif sTitle == MOVIE_NEWS_ID:
+        hasPages = False
+        sPattern = '<a class="trend-card" href="([^"]+)">.+?<img class="trend-card-img" src="([^"]+)" alt="([^"]+)".+?class="trend-card-overlay"></div>        <div class="trend-card-info">.+?trend-card-date">([^<>]+)<'
+    else:
+        sPattern = '<a class="film-card" href="([^"]+)">\s*<img class="film-card-img" src="([^"]+)" alt="([^"]+)".+?"trend-card-date">([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-
-    else:
+    if aResult[0]:
+        titles = [] # permet de filtrer les doublons
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = URL_HOST[:-1] + aEntry[0]
             sTitle = aEntry[2]
+            if sTitle in titles:
+                continue
+            titles.append(sTitle)
+            sUrl2 = URL_HOST[:-1] + aEntry[0]
             sYear = aEntry[3]
             sThumb = aEntry[1]
 
@@ -198,17 +230,18 @@ def showMovies(sSearch=''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
-        sNextPage = sUrl.split('/')[-1]
-        sNextPage = str(int(sNextPage) + 1)
-
-        if sNextPage:
-            sUrlPage = '/'.join(sUrl.split('/')[:-1]) + '/' + sNextPage
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrlPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
+        if hasPages:
+            sNextPage = sUrl.split('/')[-1]
+            sNextPage = str(int(sNextPage) + 1)
+            if sNextPage:
+                sUrlPage = '/'.join(sUrl.split('/')[:-1]) + '/' + sNextPage
+    
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrlPage)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def showHosters():
     from urllib.parse import urlparse

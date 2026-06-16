@@ -7,6 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import time
 
 SITE_IDENTIFIER = 'witv'
@@ -16,23 +17,27 @@ SITE_DESC = 'Chaines TV en direct'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 
-SPORT_SPORTS = (True, 'load')
+SPORT_SPORTS = ('chaines-live/sport/', 'showTV')
 SPORT_TV = ('chaines-live/sport/', 'showTV')
-# TV_DOCS = ('chaines-live/documentaire/', 'showTV')
 
+#DOC_DOCS = (True, 'load')
+DOC_TV = ('chaines-live/documentaire/', 'showTV')
+    
 def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines sportives', 'tv.png', oOutputParameterHandler)
-    # oOutputParameterHandler.addParameter('siteUrl', TV_DOCS[0])
-    # oGui.addDir(SITE_IDENTIFIER, TV_DOCS[1], 'Documentaires', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', DOC_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'tv.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
 def showTV():
     oGui = cGui()
     oParser = cParser()
+    oUtil = cUtil()
 
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -41,7 +46,7 @@ def showTV():
     sHtmlContent = oRequestHandler.request()
     
     # url title thumb
-    sPattern = 'Live<\/span>    <a href="([^"]+).+?class="ann-short_price">([^<]+).+?src="([^"]+)'
+    sPattern = 'Live<\/span>    <a href="([^"]+).+?class="ann-short_price">([^<]+).+?src="([^"]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -55,7 +60,10 @@ def showTV():
         for aEntry in result:
             sUrl = aEntry[0]
             sTitle = aEntry[1].split('-')[0].strip()
-            sThumb = URL_MAIN + aEntry[2]
+            if aEntry[2]:
+                sThumb = URL_MAIN + aEntry[2]
+            else:
+                sThumb = oUtil.getIconDefault(sTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

@@ -4,6 +4,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import urlEncode
+from resources.lib.packer import cPacker
+#from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
 
@@ -30,6 +32,16 @@ class cHoster(iHoster):
 
         sPattern = 'sources:\\s*\\[\\{file:\\s*["\']([^"\']+\\.m3u8[^"\']*)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if not aResult[0] is True:
+            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if aResult[0] is True:
+                sHtmlContent2 = cPacker().unpack(aResult[1][0])
+
+                sPattern = 'sources:\\s*\\[\\{file:\\s*["\']([^"\']+\\.m3u8[^"\']*)["\']'
+                aResult = oParser.parse(sHtmlContent2, sPattern)
 
         if aResult[0]:
             api_call = aResult[1][0].replace('&', '&')

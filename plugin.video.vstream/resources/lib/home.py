@@ -437,9 +437,11 @@ class cHome:
     def showDirect(self):
         oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png')
+        oOutputParameterHandler.addParameter('siteUrl', 'DOC_TV')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
 #        oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
-        oGui.addDir('radio', 'load', self.addons.VSlang(30203), 'radio.png', oOutputParameterHandler)
+        oGui.addDir('radio', 'load', self.addons.VSlang(30203), 'radio.png')
         oGui.setEndOfDirectory()
 
     def showMenuTV(self):

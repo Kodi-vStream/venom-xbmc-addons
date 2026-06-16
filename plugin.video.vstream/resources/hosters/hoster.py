@@ -35,10 +35,17 @@ class iHoster(object):
         return self._fileName
 
     def getDisplayName(self):
-        return self._displayName
+        if self._mediaInfo:
+            return '%s - [I][%s][/I] ' % (self._displayName, self._mediaInfo)
+        
+        if self.__sRealHost != self._pluginIdentifier:
+            displayName = '%s [COLOR %s]%s/%s[/COLOR]' % (self._displayName, self.color, self._defaultDisplayName, self.__sRealHost)
+        else:
+            displayName = '%s [COLOR %s]%s[/COLOR]' % (self._displayName, self.color, self._defaultDisplayName)
+        return displayName
 
     def setDisplayName(self, displayName):
-        self._displayName = displayName + ' [COLOR ' + self.color + ']' + self._defaultDisplayName + '[/COLOR]'
+        self._displayName = displayName
 
     def setMediaFile(self, mediaFile):
         self._mediaFile = mediaFile

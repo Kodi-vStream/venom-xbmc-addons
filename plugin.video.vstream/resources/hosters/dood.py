@@ -38,18 +38,16 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
         urlDownload = oRequestHandler.getRealUrl()
-        if urlDownload != self._url:
-            self._url = urlDownload
-            sHtmlContent = cRequestHandler(self._url).request()
 
         # redirection
         sPattern = '<iframe class="embed-responsive-item" src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if aResult[0]:
             self._url = aResult[1][0]
             return self._getMediaLinkForGuest()
         
-        sPattern = 'return a\s*\+\s*"(\?token=[^"&]+)["&]'
+        sPattern = 'return a\s*\+\s*"(\?token=[^"&]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if not aResult[0]:
@@ -57,21 +55,14 @@ class cHoster(iHoster):
 
         possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         fin_url = ''.join(random.choice(possible) for _ in range(10))
+        fin_url += aResult[1][0] + "&expiry=" + str(int(1000*time.time()))
 
-        d = aResult[1][0]
-
-        fin_url = fin_url + d + str(int(1000*time.time()))
-
-        sPattern = "\$\.get\('(\/pass_md5[^']+)"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        url2 = 'https://' + urlDownload.split('/')[2] + aResult[1][0]
-
+        aResult = oParser.parse(sHtmlContent, "(\/pass_md5[^']+)")
+        url2 = 'https://' + urlDownload.split('/')[2] + aResult[1][0].replace('\\', '')
         oRequestHandler = cRequestHandler(url2)
         oRequestHandler.addHeaderEntry('Referer', urlDownload)
         sHtmlContent = oRequestHandler.request()
-
         api_call = sHtmlContent + fin_url
-
         if api_call:
             api_call = api_call + '|Referer=' + urlDownload
             return True, api_call
