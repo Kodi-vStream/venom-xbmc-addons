@@ -69,7 +69,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.cymru/"
+            "url": "https://coflix.band/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -89,7 +89,7 @@
         },
         "darkiworld": {
             "label": "darkiworld",
-            "active": "True",
+            "active": "False",
             "url": "https://hydracker.com/"
         },
         "debrid_link": {
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs21.lol/"
+            "url": "https://fs15.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -190,7 +190,7 @@
         },
         "gum_gum_streaming_com": {
             "label": "Gum-Gum-Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://gum-gum-streaming.com/"
         },
         "ianime": {
@@ -244,7 +244,7 @@
         },
         "mysteriam": {
             "label": "MySteriam",
-            "active": "True",
+            "active": "False",
             "url": "https://www.inmysteriam.fr/"
         },
         "neymartv": {
