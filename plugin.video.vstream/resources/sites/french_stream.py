@@ -206,6 +206,15 @@ def showMovieThemes():
     URL_MAIN = getUrlMain()
     oRequest = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequest.request()
+
+    # un cookie est necessaire ?
+    sPattern = 'document.cookie="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        cookie = aResult[1][0]
+        oRequest.addHeaderEntry('Cookie', cookie)
+        sHtmlContent = oRequest.request()
+    
     if 's-tv/' in sUrl:
         sHtmlContent = oParser.abParse(sHtmlContent, 'Par Theme</div>', '</div>')
     else:
@@ -289,12 +298,35 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParameters('query', sSearchText)
         sHtmlContent = oRequest.request()
+
+        # un cookie est necessaire ?
+        sPattern = 'document.cookie="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            cookie = aResult[1][0]
+            oRequest.addHeaderEntry('Cookie', cookie)
+            sHtmlContent = oRequest.request()
+            
         sPattern = "href='([^']+).+?src='([^']+).+?title *'>([^<]+)"
     else:
-        if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or '-tv-' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl or 'xx89' in sUrl:
-            bSearchSerie = True
+        for serieIN in ['-serie', 'serie-', '=series', '-drama', 's-tv', '-tv-', 's-vost', 'sries-', 'xx89']:
+            if serieIN in sUrl:
+                bSearchSerie = True
+                break
+        # if '-serie' in sUrl or 'serie-' in sUrl or '-drama' in sUrl or 's-tv' in sUrl or '-tv-' in sUrl or 's-vost' in sUrl or 'sries-' in sUrl or 'xx89' in sUrl:
+        #     bSearchSerie = True
         oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
+        
+        # un cookie est necessaire ?
+        sPattern = 'document.cookie="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            cookie = aResult[1][0]
+            oRequestHandler.addHeaderEntry('Cookie', cookie)
+            sHtmlContent = oRequestHandler.request()
+        
         sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]+)'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -310,6 +342,7 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2].replace('Saisn', 'Saison').replace('\\', '')
+            sTitle = oUtil.unescape(sTitle)
             
             sYear = None
             hasYear = re.search('\((\d{4})\)', sTitle)
@@ -374,6 +407,7 @@ def __checkForNextPage(sHtmlContent):
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
+    oUtil = cUtil()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = siteUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -384,6 +418,16 @@ def showSaisons():
         sUrl = URL_MAIN + siteUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    # un cookie est necessaire ?
+    sPattern = 'document.cookie="([^"]+)"'
+    cookie = ''
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        cookie = aResult[1][0]
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+        sHtmlContent = oRequestHandler.request()
+    
     sPattern = 'class="sd-tagz"><a href=.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -391,6 +435,7 @@ def showSaisons():
         oRequest = cRequestHandler(URL_MAIN + 'engine/ajax/get_seasons.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addHeaderEntry('Cookie', cookie)
         oRequest.addParameters('serie_tag', serieTag)
         content = oRequest.request()
         if content and '"error"' not in content:
@@ -400,12 +445,13 @@ def showSaisons():
             if len(saisonsList) == 0:
                 saisonsList.append(json.loads('{"title": "%s Saison 1","full_url": "%s"}' % (sMovieTitle, siteUrl)))
             else: # trie des saisons
-                saisonsList = sorted(saisonsList, key=lambda saison: int(saison['title'].split(' ')[-1]))
-            
+                saisonsList = sorted(saisonsList, key=trieSaison)
+
             oOutputParameterHandler = cOutputParameterHandler()
             for saison in saisonsList:
                 sUrl = saison['full_url']
                 sDisplayTitle = saison['title']
+                sDisplayTitle = oUtil.unescape(sDisplayTitle)
                 sThumb = saison.get('affiche', sSaisonThumb)
     
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -414,6 +460,12 @@ def showSaisons():
                 oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+def trieSaison(item):
+    m = re.search(r'aison (\d+)', item['title'])
+    if m:
+        return int(m.group(1))
+    return 0
 
 
 def showEpisodes():
@@ -427,6 +479,15 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    # un cookie est necessaire ?
+    cookie = ''
+    sPattern = 'document.cookie="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        cookie = aResult[1][0]
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+        sHtmlContent = oRequestHandler.request()
+    
     sPattern = '<div class="fdesc" *> *<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = ''
@@ -440,6 +501,7 @@ def showEpisodes():
         numEpisodes = []
         sAPIUrl = '%sengine/ajax/sx.php?p=%s' % (URL_MAIN, aResult[1][0])
         oRequestHandler = cRequestHandler(sAPIUrl)
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
         sHtmlContent = oRequestHandler.request()
         episodeList = json.loads(sHtmlContent)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -540,6 +602,15 @@ def showEpisodeLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    # un cookie est necessaire ?
+    cookie = ''
+    sPattern = 'document.cookie="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        cookie = aResult[1][0]
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+        sHtmlContent = oRequestHandler.request()
+
     # 1ere méthode
     sPattern = 'data-news-id="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -547,6 +618,7 @@ def showEpisodeLinks():
         URL_MAIN = getUrlMain()
         sUrl = '%sengine/ajax/sx.php?p=%s' % (URL_MAIN, aResult[1][0])
         oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
         sHtmlContent = oRequestHandler.request()
         episodeList = json.loads(sHtmlContent)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -674,12 +746,24 @@ def showEpisodeLinks():
 def showMovieLinks():
     oGui = cGui()
     oHosterGui = cHosterGui()
+    oParser = cParser()
+
     URL_MAIN = getUrlMain()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sHtmlContent = cRequestHandler(sUrl).request()
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    # un cookie est necessaire ?
+    cookie = ''
+    sPattern = 'document.cookie="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        cookie = aResult[1][0]
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+        sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
 
@@ -691,9 +775,10 @@ def showMovieLinks():
     aResultId = oParser.parse(sHtmlContent, sPattern)
     if aResultId[0]:
         urlAPI = '%sengine/ajax/film_api.php?id=%s' % (URL_MAIN, aResultId[1][0])
-        jsonContent = cRequestHandler(urlAPI).request()
-        hostersLink = json.loads(jsonContent)['players']
-        
+        oRequestHandler = cRequestHandler(urlAPI)
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+        jsonContent = oRequestHandler.request()
+        hostersLink = json.loads(jsonContent).get('players', [])
         for hosterName, hosterLinks in hostersLink.items():
             # hoster FSVID, non géré 
             if 'premium' in hosterName:

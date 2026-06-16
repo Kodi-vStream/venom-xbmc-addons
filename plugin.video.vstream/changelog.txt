@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.0.1 - 16/06/2026 ***
+- FrenchStream : Accès aux liens
+- LiveWatch : Accès aux liens
+- AnimeSama : Correction blocage
 
 *** 4.0.0 - 16/06/2026 ***
 - Movix : Nouvelle source de films et de séries
