@@ -260,13 +260,14 @@ def showHoster():
     sUrl = URL_API + sUrl
     oRequestHandler = cRequestHandler(sUrl)
     links = oRequestHandler.request(jsonDecode=True)
-    sHosterUrl = URL_MAIN + links['proxy_url']
-    oHoster = oHosterGui.checkHoster(sHosterUrl)
-    if oHoster:
-        sDisplayTitle = sMovieTitle
-        oHoster.setDisplayName(sDisplayTitle)
-        oHoster.setFileName(sMovieTitle)
-        oHoster.setMediaInfo(sDesc)
-        oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    if 'proxy_url' in links:
+        sHosterUrl = URL_MAIN[:-1] + links['proxy_url']
+        oHoster = oHosterGui.getHoster('lien_direct')
+        if oHoster:
+            sDisplayTitle = sMovieTitle
+            oHoster.setDisplayName(sDisplayTitle)
+            oHoster.setFileName(sMovieTitle)
+            oHoster.setMediaInfo(sDesc)
+            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
