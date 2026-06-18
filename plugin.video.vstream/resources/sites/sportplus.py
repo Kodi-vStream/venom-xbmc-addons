@@ -10,6 +10,8 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.util import cUtil
+import json
 
 
 SITE_IDENTIFIER = 'sportplus'
@@ -41,13 +43,17 @@ def load():
 
 def showGenres():
     oGui = cGui()
+    oUtil = cUtil()
+    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_API + oInputParameterHandler.getValue('siteUrl')
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request(jsonDecode=True)
+    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = oUtil.formatUTF8(sHtmlContent)
+    genres = json.loads(sHtmlContent)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for genre in sorted(sHtmlContent, key=lambda genre: genre['name']):
+    for genre in sorted(genres, key=lambda genre: genre['name']):
         if 'type' in genre:
             continue
         sUrl = genre['alias']
@@ -124,7 +130,7 @@ def showMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     for item in sHtmlContent['items']:
         taglive = item['status'] == 'live'
-        sTitle = item['name']
+        sTitle = item['name'].replace(u'—', u'-')
         sUrl = 'id=%s&sport_id=%s' % (item['id'], sportId)
         sDate = item['start']
         sDisplayTitle = sTitle

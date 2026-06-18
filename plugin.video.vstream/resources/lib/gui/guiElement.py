@@ -342,7 +342,7 @@ class cGuiElement:
                 pass
         else:
             try:
-                sTitle = str(sTitle.strip().decode('utf-8'))
+                sTitle = str(sTitle.decode('utf-8'))
             except:
                 pass
 
