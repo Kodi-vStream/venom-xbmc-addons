@@ -82,7 +82,7 @@ def showLive():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for item in sHtmlContent['items']:
-        sTitle = item['name']
+        sTitle = item['name'].replace(u'—', u'-')
         sportId = item['sport_id']
         sUrl = 'id=%s&sport_id=%s' % (item['id'], sportId)
         sDate = item['start']
