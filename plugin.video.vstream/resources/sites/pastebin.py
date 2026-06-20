@@ -401,7 +401,6 @@ class PasteContent:
             self._getCache().save(pasteBin, lines, self.movies)
 
         # Calcul des index de chaque champ
-#        self.PASTE = 0
         hebergeur = None
         for champ in entete:
             champ = champ.strip()
@@ -415,11 +414,8 @@ class PasteContent:
                     hebergeur = None
             if champ in dir(self):
                 setattr(self, champ, champ)
-#                setattr(self, champ, self.PASTE)
- #           self.PASTE += 1
 
         # On vérifie le type de média s'il est demandé
-        sMediaPaste = 'film'     # par défaut si non défini
         isFilm = None
 
         links = []
@@ -433,22 +429,17 @@ class PasteContent:
                 value = values[idx].strip()
                 if value and len(value.replace('[', '').replace(']', ''))>0:
                     champ = champ.split("=")[0].strip()
-                    line[champ] = values[idx].strip()
+                    line[champ] = value
                 idx +=1
             line[self.PASTE] = pasteBin
 
             if isFilm is None:
                 isFilm = True # car 'film' par défaut
-                if self.CAT:
-                    sMediaPaste = line[self.CAT]
+                sMediaPaste = line.get(self.CAT, 'film')
                 if sMedia and sMedia != sMediaPaste:
                     return []
                 isFilm = sMediaPaste in ('film', 'divers')
             
-            
-            # line = k.split(";")
-            # line.append(pasteBin)
-
             # remettre l'hebergeur en prefixe du lien
             if hebergeur:
                 link = line[self.URLS]
@@ -2390,12 +2381,6 @@ def showMovies(sSearch=''):
         if searchIdTMDB:
             if not sTmdbId or searchIdTMDB != sTmdbId:
                 continue
-
-                # Filtre des doublons
-                # if sTmdbId in movieIds:
-                #     continue
-#                movieIds.add(sTmdbId)
-#        if not sTmdbId:
 
         # Filtre des doublons par le nom+id pour retrouver des films sous un nom différent et les homonymes
         key = sTitle.lower()
