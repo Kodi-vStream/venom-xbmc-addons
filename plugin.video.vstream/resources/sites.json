@@ -223,7 +223,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv899.me/"
+            "url": "https://livetv901.me/"
         },
         "livewatch": {
             "label": "livewatch",
@@ -382,7 +382,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.city/"
+            "url": "https://flemmix.cafe/"
         },
         "wilifilm": {
             "label": "Wilifilm",
