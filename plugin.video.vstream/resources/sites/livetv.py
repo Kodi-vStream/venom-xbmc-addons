@@ -1083,6 +1083,8 @@ def showHosters():  # affiche les videos disponible du live
 
             urlApi = 'https://api.livesports24.online/gethost'
             sHtmlContent2 = ''
+            host = False
+            channel = False
             try:
                 channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
@@ -1110,8 +1112,8 @@ def showHosters():  # affiche les videos disponible du live
                 aResult = re.findall(sPattern1, sHtmlContent2)
                 if aResult:
                     host = aResult[0]
-
-            sHosterUrl = 'https://' + host + '/' + channel + '.m3u8'
+            if host and channel : 
+                sHosterUrl = 'https://' + host + '/' + channel + '.m3u8'
 
         if 'sportgol7' in url:
             oRequestHandler = cRequestHandler(url)
@@ -1409,7 +1411,7 @@ def getUrl(sHtmlContent, url):
         except:
             pass
 
-    sPattern = r'.atob\("(.+?)"'
+    sPattern = r".atob\(['\"](.+?)['\"]\)"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         bMatrix = isMatrix()
