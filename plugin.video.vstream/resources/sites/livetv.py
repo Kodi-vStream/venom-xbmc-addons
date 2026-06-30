@@ -149,7 +149,7 @@ def showMovies():  # affiche les matchs en direct depuis la section showMovie
     oRequestHandler = cRequestHandler(sUrl2, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = r'<a class="live" href="([^"]+)">([^<]+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^<]+)\s*<br>\s*([^<]+)</span>'
+    sPattern = r'<a class="live" href="([^"]+)">((?:[^<]|<br\s*/?>)+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^<]+)\s*<br>\s*([^<]+)</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -1083,6 +1083,8 @@ def showHosters():  # affiche les videos disponible du live
 
             urlApi = 'https://api.livesports24.online/gethost'
             sHtmlContent2 = ''
+            host = False
+            channel = False
             try:
                 channel = url.split('/')[4]
                 oRequestHandler = cRequestHandler(urlApi)
@@ -1111,7 +1113,8 @@ def showHosters():  # affiche les videos disponible du live
                 if aResult:
                     host = aResult[0]
 
-            sHosterUrl = 'https://' + host + '/' + channel + '.m3u8'
+            if host and channel :
+                sHosterUrl = 'https://' + host + '/' + channel + '.m3u8'
 
         if 'sportgol7' in url:
             oRequestHandler = cRequestHandler(url)
@@ -1409,7 +1412,7 @@ def getUrl(sHtmlContent, url):
         except:
             pass
 
-    sPattern = r'.atob\("(.+?)"'
+    sPattern = r".atob\(['\"](.+?)['\"]\)"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         bMatrix = isMatrix()
