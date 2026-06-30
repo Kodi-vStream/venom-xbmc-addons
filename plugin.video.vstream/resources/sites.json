@@ -69,7 +69,7 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.band/"
+            "url": "https://coflix.trade/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -138,7 +138,7 @@
             "label": "Filmoflix",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wishflix.icu/"
+            "url": "https://filmoflix.fitness/"
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs15.lol/"
+            "url": "https://fs24.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -392,7 +392,7 @@
         "witv": {
             "label": "wiTV",
             "active": "True",
-            "url": "https://witv.team/"
+            "url": "https://witv.football/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
