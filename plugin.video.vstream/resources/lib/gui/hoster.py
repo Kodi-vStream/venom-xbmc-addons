@@ -268,7 +268,7 @@ class cHosterGui:
         if ('vidguard' in sHostName) or ('fertoto' in sHostName) or ('vgembed' in sHostName) or ('vgfplay' in sHostName) or ('jetload' in sHostName):
             return self.getHoster('vidguard')
             
-        if ('vidara' in sHostName):
+        if ('vidara' in sHostName) or ('vidarax' in sHostName) or ('vidaarax' in sHostName) or ('streamix' in sHostName) or ('stmix' in sHostName):
             return self.getHoster('vidara')
 
         if ('filelions' in sHostName) or ('shoooot' in sHostName) or ('vidhide' in sHostName) or ('nejma' in sHostName) or ('earnvids' in sHostName) or ('minochinos' in sHostName):
