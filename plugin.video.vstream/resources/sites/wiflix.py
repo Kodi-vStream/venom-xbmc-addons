@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -161,15 +161,16 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     URL_MAIN = getUrlMain()
+
     if sSearch:
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
-
 
         # requete sur la home pour obtenir le cookie
         oRequest = cRequestHandler(URL_MAIN)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.request()
+
         cookie = oRequest.GetCookies()
         cookie += ';h_check=25'
 
@@ -189,7 +190,8 @@ def showMovies(sSearch=''):
 
         sHtmlContent = oParser.abParse(sHtmlContent, '</script></form>')
         sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-        sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        #sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        sPattern += 'ml-desc"> (?:([0-9]+)| ).+?Synopsis:.+?ml-desc">(.*?)<\/div'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if not aResult[0]:
@@ -207,7 +209,8 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
         sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-        sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        #sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
+        sPattern += 'ml-desc"> (?:([0-9]+)| ).+?Synopsis:.+?ml-desc">(.*?)<\/div'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -295,17 +298,28 @@ def showSeries(sSearch=''):
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
         sUrl = sSearch.replace(' ', '+')
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_search=1&catlist[]=31&catlist[]=35&sortby=title&resorder=asc'
+        # requete sur la home pour obtenir le cookie
+        oRequest = cRequestHandler(URL_MAIN)
+        oRequest.addHeaderEntry('Referer', URL_MAIN)
+        oRequest.request()
+
+        cookie = oRequest.GetCookies()
+        cookie += ';h_check=25'
 
         oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
-        # oRequest.setRequestType(1)
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_search=1&catlist[]=31&catlist[]=35&sortby=title&resorder=asc'
+
+        oRequest.addHeaderEntry('Cookie', cookie)
+        oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
+        oRequest.addHeaderEntry('Referer', URL_MAIN + URL_SEARCH[0])
+        oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/json')
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
+
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -313,6 +327,10 @@ def showSeries(sSearch=''):
             sUrl = URL_MAIN + sUrl
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+
+    #fh = open('d:\\test.txt', "w", encoding='utf-8')
+    #fh.write(sHtmlContent)
+    #fh.close   
 
     sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
