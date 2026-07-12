@@ -68,7 +68,7 @@
         },
         "coflix": {
             "label": "Coflix",
-            "active": "True",
+            "active": "False",
             "url": "https://coflix.trade/"
         },
         "cpasmal": {
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs24.lol/"
+            "url": "https://fs20.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -223,7 +223,7 @@
         "livetv": {
             "label": "Live TV",
             "active": "True",
-            "url": "https://livetv901.me/"
+            "url": "https://livetv902.me/"
         },
         "livewatch": {
             "label": "livewatch",
@@ -382,7 +382,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.fast/"
+            "url": "https://flemmix.garden/"
         },
         "wilifilm": {
             "label": "Wilifilm",
