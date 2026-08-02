@@ -42,7 +42,7 @@
         },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
-            "active": "True",
+            "active": "False",
             "url": "https://buzzmonclick.io/category/replay-tv/"
         },
         "channelstream": {
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs20.lol/"
+            "url": "https://fs16.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -222,7 +222,7 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
+            "active": "False",
             "url": "https://livetv902.me/"
         },
         "livewatch": {
@@ -382,7 +382,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.garden/"
+            "url": "https://flemmix.men/"
         },
         "wilifilm": {
             "label": "Wilifilm",

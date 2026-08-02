@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.comaddon import siteManager, VSlog
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -190,7 +190,6 @@ def showMovies(sSearch=''):
 
         sHtmlContent = oParser.abParse(sHtmlContent, '</script></form>')
         sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-        #sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
         sPattern += 'ml-desc"> (?:([0-9]+)| ).+?Synopsis:.+?ml-desc">(.*?)<\/div'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -209,7 +208,6 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
         sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-        #sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
         sPattern += 'ml-desc"> (?:([0-9]+)| ).+?Synopsis:.+?ml-desc">(.*?)<\/div'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -327,10 +325,6 @@ def showSeries(sSearch=''):
             sUrl = URL_MAIN + sUrl
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-
-    #fh = open('d:\\test.txt', "w", encoding='utf-8')
-    #fh.write(sHtmlContent)
-    #fh.close   
 
     sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
