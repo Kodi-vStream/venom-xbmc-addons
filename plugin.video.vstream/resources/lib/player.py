@@ -131,17 +131,31 @@ class cPlayer(xbmc.Player):
                 VSlog("Can't load subtitle:" + str(self.Subtitles_file))
 
         player_conf = self.ADDON.getSetting('playerPlay')
-        # Si lien dash, methode prioritaire
-        mpd = splitext(urlHostName(sUrl))[-1] in [".mpd", ".m3u8"]
+
+        # Si lien dash, methode inputstream.adaptive en priorité
+        mpd = ".mpd" in sUrl or ".m3u8" in sUrl
         mpd |= '&ct=6&' in sUrl     # mpd venant de ok.ru, n'a pas d'extension
         if mpd:
             if isKrypton() == True:
+                if '|' in sUrl:
+                    item.setPath(sUrl.split('|')[0])
+                    headers_sUrl = sUrl.split('|')[-1:][0]
+                    if 'user-agent' in headers_sUrl.lower():
+                        headers_urlencode = headers_sUrl
+                    else:
+                        headers_urlencode = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A&' + headers_sUrl
+                else:
+                    headers_urlencode = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A'
+
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream', 'inputstream.adaptive')
                 if '.m3u8' in sUrl:
                     item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                 else:
                     item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                item.setProperty('inputstream.adaptive.stream_headers', headers_urlencode)
+                item.setProperty("inputstream.adaptive.manifest_headers", headers_urlencode)
+                item.setProperty("inputstream.adaptive.common_headers", headers_urlencode)
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
                 VSlog('Player use inputstream addon')
             else:
