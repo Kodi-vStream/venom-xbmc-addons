@@ -294,7 +294,7 @@ class cTrakt:
         # liste.append([self.ADDON.VSlang(30125), URL_API + 'sync/playback/episodes?type=episodes'])
         
         # visionnage en cours
-        oOutputParameterHandler.addParameter('siteUrl', 'sync/watched/shows?type=show')
+        oOutputParameterHandler.addParameter('siteUrl', 'sync/watched/shows?extended=progress')
         oOutputParameterHandler.addParameter('sCat', '2')
         oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30125), 'vod.png', oOutputParameterHandler)
 #            liste.append([self.ADDON.VSlang(30125), URL_API + 'sync/watched/shows?type=show'])
@@ -584,14 +584,17 @@ class cTrakt:
         if '/users/' in sUrl or '/sync/' in sUrl or '/my/' in sUrl or '/recommendations/' in sUrl:
             self.refreshToken() # renouveller le token si nécessaire
             oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
-        sHtmlContent = oRequestHandler.request(jsonDecode=True)
-        sHeaders = oRequestHandler.getResponseHeader()
+        sHtmlContent = oRequestHandler.request()
+        if not sHtmlContent.startswith('['):
+            sHtmlContent = ''
+        else:
+            sHtmlContent = json.loads(sHtmlContent)
 
         # tri inverse pour certaines listes
         if 'sync/collection/movies' in sUrl:
             sHtmlContent = sHtmlContent[::-1] 
 
-
+        sHeaders = oRequestHandler.getResponseHeader()
         if 'X-Pagination-Page' in sHeaders:
             sPage = sHeaders['X-Pagination-Page']
         iPage = int(sPage)
@@ -941,8 +944,8 @@ class cTrakt:
 
 
             # indicateur VU sur les saisons
-            for saisonWtached in saisonsWatched[::-1]:
-                self.setSaisonWatched(saisonWtached)
+            for saisonWatched in saisonsWatched[::-1]:
+                self.setSaisonWatched(saisonWatched)
 
 
             if iPage < iMaxPage:
@@ -1442,7 +1445,10 @@ class cTrakt:
         if sHtmlContent != '':
             jsonDecode = requestType in [cRequestHandler.REQUEST_TYPE_POST, cRequestHandler.REQUEST_TYPE_GET]
             if jsonDecode:
-                sHtmlContent = json.loads(sHtmlContent)
+                try:
+                    sHtmlContent = json.loads(sHtmlContent)
+                except:
+                    pass
 
             try:
                 # point de reprise
