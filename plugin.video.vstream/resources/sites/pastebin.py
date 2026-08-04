@@ -2841,14 +2841,14 @@ def getHosterList(siteUrl):
             # Séries
             elif isinstance(links, dict):
                 if searchEpisode:
-                        for numEpisode, link in links.items():
-                            numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
-                            if numEpisode.isdigit():
-                                numEpisode = int(numEpisode)    # enlever les 0 devant
-                            
-                            if numEpisode == searchEpisode:
-                                listLinks.append(link)  # TODO utiliser expend si liste de liens ?
-                                break
+                    for numEpisode, link in links.items():
+                        numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
+                        if numEpisode.isdigit():
+                            numEpisode = int(numEpisode)    # enlever les 0 devant
+                        
+                        if numEpisode == searchEpisode:
+                            listLinks.append(link)  # TODO utiliser expend si liste de liens ?
+                            break
                 else:
                     listEpisodes.append(links)
 
