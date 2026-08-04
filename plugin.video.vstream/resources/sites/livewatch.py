@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
-import time
-import datetime
+# import time
+# import datetime
 
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
@@ -20,7 +20,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_API = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_api')
 
 SPORT_SPORTS = ('sport', 'showGenresTV')
-SPORT_GENRES = ('/api/sports', 'showGenres')
+#SPORT_GENRES = ('/api/sports', 'showGenres')
 #SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('sport', 'showGenresTV')
 DOC_TV = ('doc', 'showGenresTV')

@@ -42,7 +42,7 @@
         },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
-            "active": "True",
+            "active": "False",
             "url": "https://buzzmonclick.io/category/replay-tv/"
         },
         "channelstream": {
@@ -68,8 +68,8 @@
         },
         "coflix": {
             "label": "Coflix",
-            "active": "True",
-            "url": "https://coflix.band/"
+            "active": "False",
+            "url": "https://coflix.trade/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -138,7 +138,7 @@
             "label": "Filmoflix",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wishflix.icu/"
+            "url": "https://filmoflix.fitness/"
         },
         "filmsetvideos": {
             "label": "filmsetvideos",
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs15.lol/"
+            "url": "https://fs16.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -222,8 +222,8 @@
         },
         "livetv": {
             "label": "Live TV",
-            "active": "True",
-            "url": "https://livetv899.me/"
+            "active": "False",
+            "url": "https://livetv902.me/"
         },
         "livewatch": {
             "label": "livewatch",
@@ -382,7 +382,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.city/"
+            "url": "https://flemmix.men/"
         },
         "wilifilm": {
             "label": "Wilifilm",
@@ -392,7 +392,7 @@
         "witv": {
             "label": "wiTV",
             "active": "True",
-            "url": "https://witv.team/"
+            "url": "https://witv.football/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",

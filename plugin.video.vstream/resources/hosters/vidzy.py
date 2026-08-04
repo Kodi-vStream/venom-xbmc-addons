@@ -32,6 +32,9 @@ class cHoster(iHoster):
                 if aResult[0]:
                     api_call = aResult[1][0] + '|Referer=' + self._url
             except:
+                pass
+            
+            if not api_call:
                 # unpack manuel en cas d'erreur
                 sPattern = 'div\|data\|(\d+)\|(\d+).+?contextMenu\|(\d+)\|(\d+)\|([^\|]+)\|mp4\|.+?sp\|([^\|]+)\|(.+?)\|m3u8\|master\|([^\|]+)\|([^\|]+)'
                 aResult = oParser.parse(pack, sPattern)
