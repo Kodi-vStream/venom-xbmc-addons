@@ -2841,14 +2841,14 @@ def getHosterList(siteUrl):
             # Séries
             elif isinstance(links, dict):
                 if searchEpisode:
-                    for numEpisode, link in links.items():
-                        numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
-                        if numEpisode.isdigit():
-                            numEpisode = int(numEpisode)    # enlever les 0 devant
-                        
-                        if numEpisode == searchEpisode:
-                            listLinks.append(link)  # TODO utiliser expend si liste de liens ?
-                            break
+                        for numEpisode, link in links.items():
+                            numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
+                            if numEpisode.isdigit():
+                                numEpisode = int(numEpisode)    # enlever les 0 devant
+                            
+                            if numEpisode == searchEpisode:
+                                listLinks.append(link)  # TODO utiliser expend si liste de liens ?
+                                break
                 else:
                     listEpisodes.append(links)
 
@@ -2872,6 +2872,7 @@ def getHosterList(siteUrl):
                 else:
                     listSizeMovie.append(size)
 
+                lastResMovie = ''
                 for link in listLinks:
                     # resolution
                     if idxResMovie < len(listResMovie):
@@ -2882,8 +2883,9 @@ def getHosterList(siteUrl):
                                     .replace('DVD', '').replace('DV', 'DOLBY VISION')
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
+                        lastResMovie = resMovie
                     else:
-                        resMovie = ''
+                        resMovie = lastResMovie
 
                     # taille
                     if idxResMovie < len(listSizeMovie):
