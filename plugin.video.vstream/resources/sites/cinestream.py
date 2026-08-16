@@ -134,7 +134,7 @@ def showMovies(sSearch=''):
         return
 
     # 3. PARSING
-    sPattern = '<article.*?href="([^"]+)".*?_next/image\?url=([^&"]+).*?<span[^>]*>([^<]+)</span>.*?<span[^>]*>([^<]+)</span>'
+    sPattern = '<article.*?href="([^"]+)".*?<img.*?src="([^"]+)".*?<span[^>]*font-bold[^>]*>([^<]+)</span>.*?<span[^>]*muted-foreground[^>]*>([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     posterWidth = addon().getSetting('poster_tmdb')
 
@@ -145,7 +145,7 @@ def showMovies(sSearch=''):
             sRawTitle = aEntry[2]
             sYear = aEntry[3]
             
-            sTitleReal = oUtil.unescape(sRawTitle.replace("Affiche du film ", "").split(" en streaming")[0]).strip()
+            sTitleReal = oUtil.unescape(sRawTitle).strip()
             
             if sTitleReal.lower() in ['truefrench', 'vf', 'vostfr', 'hdlight', 'bluray']:
                 continue
@@ -158,7 +158,7 @@ def showMovies(sSearch=''):
 
             # mettre la taille de l'affiche selon le parametre défini dans vStream/Affichage                
             sThumb = Unquote(sRawThumb)
-            sThumb = re.sub('/w\d+/', '/%s/' % posterWidth, sThumb)
+            sThumb = re.sub(r'/w\d+/', '/%s/' % posterWidth, sThumb)
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlMovie)
