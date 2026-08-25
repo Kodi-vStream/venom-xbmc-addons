@@ -290,7 +290,7 @@ def showSerieLinks():
     sHtmlContent = oRequestHandler.request()
     cook = oRequestHandler.GetCookies()
 
-    sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
+    sPattern = 'fx-row" onclick="getxfield\(this, \'(\d+)\', \'(.+?)\', \'(.+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
