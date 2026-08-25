@@ -60,14 +60,15 @@ def getUrlMain():
     if siteInfo:
         oRequestHandler = cRequestHandler(siteInfo)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'a href="([^"]+)" class="url-display"'
+        sPattern = 'clapperboard.+?a href="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sUrl = aResult[1][0]
-            if not sUrl.endswith('/'):
-                sUrl = sUrl + '/'
-            return sUrl
+            if sUrl.startswith('https'):
+                if not sUrl.endswith('/'):
+                    sUrl += '/'
+                return sUrl
     
     return siteManager().getUrlMain(SITE_IDENTIFIER)
     
