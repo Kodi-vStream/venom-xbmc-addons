@@ -255,7 +255,7 @@ def showMovies(sSearch=''):
 
         for aEntry in aResult[1]:
             sType = aEntry[4]
-            if not 'Movie' in sType:
+            if sType not in ('Film', 'Movie'):
                 continue
             sUrl2 = aEntry[0]
             sThumb =  aEntry[1]

@@ -846,12 +846,12 @@ def showSeriesNetworks():
 # Dernieres séries selon la date de sortie
 def showSeriesNews():
     # Exclure les séries d'Asie/Inde
-    term = 'with_original_language=en|fr&sort_by=first_air_date.desc&'
+    term = 'with_original_language=en|fr&sort_by=first_air_date.desc&vote_count.gte=10'
     showSeries(term=term)
 
 # Séries populaires
 def showSeriesViews():
-    term = 'with_original_language=en|fr&'
+    term = 'with_original_language=en|fr&first_air_date.gte=2025-01-01'
     showSeries(term=term)
 
 # TOP séries, selon la note / votes 
@@ -914,7 +914,7 @@ def showSeries(sSearch='', term=''):
             
             # exclure les séries à venir, [0 .. 5]
             #['Returning Series', 'Planned', 'In Production', 'Ended', 'Canceled', 'Pilot']
-            term += '&with_status=3|4'
+            term += '&with_status=0|2|3'
             
             if oInputParameterHandler.exist('session_id'):
                 term += '&session_id=' + oInputParameterHandler.getValue('session_id')

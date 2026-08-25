@@ -274,13 +274,13 @@ class cHome:
         oGui.addDir(SITE_TMDB, 'showSeriesNews', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
         # Populaires TMDB
-        # oOutputParameterHandler.addParameter('siteUrl', 'discover/tv')
-        # oGui.addDir(SITE_TMDB, 'showSeriesViews', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'discover/tv')
+        oGui.addDir(SITE_TMDB, 'showSeriesViews', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
 
         # Populaires trakt
-        oOutputParameterHandler.addParameter('siteUrl', 'shows/trending')
-        oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'shows/trending')
+        # oOutputParameterHandler.addParameter('sCat', '2')
+        # oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
 
     
         # Par diffuseurs

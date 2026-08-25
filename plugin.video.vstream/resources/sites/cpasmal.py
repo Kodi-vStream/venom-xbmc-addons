@@ -309,7 +309,7 @@ def showMovieLinks():
     cook = oRequestHandler.GetCookies()
 
     oParser = cParser()
-    sPattern = 'fx-row" onclick="getxfield\(\'(\d+)\', \'(.+?)\', \'(.+?)\''
+    sPattern = 'fx-row" onclick="getxfield\(this, \'(\d+)\', \'(.+?)\', \'(.+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
