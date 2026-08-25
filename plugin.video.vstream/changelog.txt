@@ -10,6 +10,12 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.1.1 - 26/08/2026 ***
+- Séries : Meilleures propositions de séries Populaires et Nouveautés
+- DuLourd : Retour des liens
+- FrenchStream : Retour des liens
+- Movix : Retour des liens
+
 *** 4.1.0 - 04/08/2026 ***
 - Lecture vidéo : utiliser inputstream.adaptive plus souvent
 - TMDB : Meilleure qualité des posters
