@@ -215,14 +215,22 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
         oGui.addDir(SITE_TMDB, 'showMoviesNews', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
+        # Box office TMDB
+        oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
+        oGui.addDir(SITE_TMDB, 'showMoviesBoxOffice', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
+        
         # Populaires
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
-        oGui.addDir(SITE_TMDB, 'showMovies', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+        oGui.addDir(SITE_TMDB, 'showMoviesPopular', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
         
-        # Box office
-        oOutputParameterHandler.addParameter('siteUrl', 'movies/boxoffice')
-        oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
+        # Top films TMDB
+        oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
+        oGui.addDir(SITE_TMDB, 'showMoviesTop', addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
+
+        # Box office TRAKT
+        # oOutputParameterHandler.addParameter('siteUrl', 'movies/boxoffice')
+        # oOutputParameterHandler.addParameter('sCat', '1')
+        # oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
         
         # Genres
         oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
@@ -232,14 +240,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
         oGui.addDir(SITE_TMDB, 'showMoviesYears', self.addons.VSlang(30106), 'annees.png', oOutputParameterHandler)
 
-        # # Top films TMDB
-        # oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
-        # oGui.addDir(SITE_TMDB, 'showMoviesTop', addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
-
         # Top films TRAKT
-        oOutputParameterHandler.addParameter('siteUrl', 'movies/popular')
-        oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_TRAKT, 'getTrakt', self.addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'movies/popular')
+        # oOutputParameterHandler.addParameter('sCat', '1')
+        # oGui.addDir(SITE_TRAKT, 'getTrakt', self.addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
 
 
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')

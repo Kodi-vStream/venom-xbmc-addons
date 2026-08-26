@@ -602,13 +602,30 @@ def showFolderList():
     oGui.setEndOfDirectory()
 
 
-# Dernieres séries selon la date de sortie
+# Dernieres selon la date de sortie
 def showMoviesNews():
     term = 'sort_by=primary_release_date.desc&'
 #    term += 'primary_release_date.lte=2024-10-11&'
 #    term += 'with_runtime.gte=65&'
     term += 'without_genres=99&'
     term += 'vote_count.gte=10'
+    showMovies(term=term)
+
+# Box office
+def showMoviesBoxOffice():
+    term = 'sort_by=primary_release_date.desc&'
+    term += 'with_release_type=3&'
+    term += 'region=FR&'
+    term += 'without_genres=99&'
+    term += 'vote_count.gte=100'
+    showMovies(term=term)
+
+# Populaires 
+def showMoviesPopular():
+    term = 'sort_by=popularity.desc&'
+    term += 'with_release_type=3&'
+    term += 'without_genres=99&'
+    term += 'vote_count.gte=1000'
     showMovies(term=term)
 
 # TOP séries, selon la note / votes 
@@ -638,6 +655,8 @@ def showMovies(sSearch='', term=''):
         if oInputParameterHandler.exist('term'):
             term = oInputParameterHandler.getValue('term')
         else:
+            if term:
+                term += '&'
             term += 'with_original_language=en|fr'
     
             # exclure les films à venir
