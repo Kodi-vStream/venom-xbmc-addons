@@ -429,6 +429,7 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
                 metaBM['site'] = sSite
                 metaBM['fav'] = sFav
                 metaBM['cat'] = sCat
+                metaBM['tmdbId'] = self.meta.get('tmdb_id', '')
                 metaBM['icon'] = self.meta['poster_path']
                 metaBM['fanart'] = self.meta['backdrop_path']
                 try:

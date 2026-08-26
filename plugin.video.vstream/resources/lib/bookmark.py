@@ -119,6 +119,11 @@ class cFav:
             except:
                 title = data['title']
 
+            try:
+                tmdb_id = data['tmdb_id']
+            except:
+                tmdb_id = ''
+
             thumbnail = data['icon']
 
             try:
@@ -145,6 +150,7 @@ class cFav:
                 oOutputParameterHandler.addParameter('siteUrl', siteurl)
                 oOutputParameterHandler.addParameter('sMovieTitle', title)
                 oOutputParameterHandler.addParameter('searchtext', title)
+                oOutputParameterHandler.addParameter('sTmdbId', tmdb_id)
                 oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
                 # Dans ajouter source c'est bien sThumb donc...
                 oOutputParameterHandler.addParameter('sThumb', thumbnail)
@@ -160,6 +166,7 @@ class cFav:
                 oGuiElement.setFunction(function)
                 oGuiElement.setTitle(title)
                 oGuiElement.setFileName(title)
+                oGuiElement.setTmdbId(tmdb_id)
                 oGuiElement.setIcon("mark.png")
                 if (cat  == '1'):           # Films
                     oGuiElement.setMeta(1)
@@ -233,6 +240,7 @@ class cFav:
         sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
         sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+        sIdTmdb = oInputParameterHandler.getValue('sTmdbId') if oInputParameterHandler.exist('sTmdbId') else xbmc.getInfoLabel('ListItem.Property(TmdbId)')
 
         if sTitle == '':
             self.DIALOG.VSinfo('Error', 'Probleme sur le titre')
@@ -243,7 +251,7 @@ class cFav:
         meta['site'] = sSite
         meta['fav'] = sFav
         meta['cat'] = sCat
-
+        meta['tmdbId'] = sIdTmdb
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
