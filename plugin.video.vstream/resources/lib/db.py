@@ -321,7 +321,7 @@ class cDb(object):
                     VSlog('SQL ERROR %s' % sql_select)
             return False
 
-    def get_catWatched(self, cat):
+    def get_catWatched(self, cat, limit):
         
         sql_select = "SELECT tmdb_id, * FROM watched"
 
@@ -329,6 +329,9 @@ class cDb(object):
             sql_select += " where cat = '%s'" % cat
 
         sql_select += " order by addon_id DESC"
+        
+        if limit:
+            sql_select += " limit %s" % limit
 
         try:
             self.dbcur.execute(sql_select)
