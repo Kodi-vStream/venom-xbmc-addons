@@ -166,7 +166,7 @@ def showMovies():  # affiche les matchs en direct depuis la section showMovie
             sUrl3 = URL_MAIN + aEntry[0]
 
             if 'live.gif' in aEntry[2]:
-                taglive = ' [COLOR limegreen] Online[/COLOR]'
+                taglive = ' [COLOR limegreen]- EN COURS[/COLOR]'
 
             sDate = aEntry[3]
             sQual = aEntry[4]
@@ -203,8 +203,9 @@ def showMovies():  # affiche les matchs en direct depuis la section showMovie
                 except Exception as e:
                     pass
 
-            sTitle2 = ('%s - %s [COLOR yellow]%s[/COLOR]') % (sDate, sTitle2, sQual)
-            sDisplayTitle = sTitle2 + taglive
+            sDisplayTitle = sTitle2 = ('%s - %s [COLOR yellow]%s[/COLOR]') % (sDate, sTitle2, sQual)
+            if taglive:
+                sDisplayTitle += taglive
 
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
