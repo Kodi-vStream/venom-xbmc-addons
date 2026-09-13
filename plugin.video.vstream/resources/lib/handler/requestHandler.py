@@ -286,19 +286,19 @@ class cRequestHandler:
                         import resources.lib.cloudscraper as cloudscraper
                         self.cloudScraper = cloudscraper.create_scraper(
                             browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False},
-                            delay=4
+                            delay=10
                         )
                         self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
                         sContent = self.oResponse.content.decode('utf-8')
-                    else: # déjà tenté par cloudScraper = boucle = test si passé par cloudproxy ?
+                    else: # déjà tenté par cloudScraper = boucle avec cette fois l'adresse cloudproxy
+                        self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
+                        sContent = self.oResponse.content.decode('utf-8')
+                        
                         from resources.lib.comaddon import siteManager
                         sitesManager = siteManager()
                         if sitesManager.isActive('cloudproxy'):
                             cloudProxyUrl = sitesManager.getUrlMain('cloudproxy')
-                            if not cloudProxyUrl or cloudProxyUrl not in self.__sUrl:
-                                self.oResponse = self.cloudScraper.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=10)
-                                sContent = self.oResponse.content.decode('utf-8')
-                            else:
+                            if cloudProxyUrl and cloudProxyUrl in self.__sUrl:
                                 urlHost = 'https://' + urlHost.split('%2F')[2]
 
                     # toujours non résolu
