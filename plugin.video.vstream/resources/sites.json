@@ -28,7 +28,7 @@
             "label": "Animes Ultra",
             "active": "True",
             "cloudflare": "False",
-            "url": "https://ww.animesultra.org/"
+            "url": "https://v2.animesultra.org/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs16.lol/"
+            "url": "https://fs27.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -291,6 +291,13 @@
             "label": "Radio",
             "active": "True",
             "url": ""
+        },
+        "rdlive": {
+            "label": "RD Live",
+            "active": "True",
+            "url": "https://rdaily.live/",
+			"url_flashcore": "https://1.newsoccers.one/2/x/feed/",
+			"url_link": "https://netanjahu.hls.st/t/%s/index.m3u8|Referer=https://iplayer.is/"
         },
         "seefrench": {
             "label": "SeeFrench",
