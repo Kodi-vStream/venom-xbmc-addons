@@ -178,6 +178,12 @@ class cHosterGui:
         if any(x in sHosterUrl for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
             return self.getHoster('lien_direct')
 
+        # SeekStreaming par la forme : http(s)://<host>/#<id> (# juste après le
+        # premier /). Rotation-proof, avant le debrideur (qui ne sait pas résoudre).
+        rest = fullURL.split('://', 1)[-1]
+        if '/' in rest and rest.split('/', 1)[1].startswith('#'):
+            return self.getHoster('seekstreaming')
+
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
         sHosterUrl = sHosterUrl.split('?')[0]
@@ -278,8 +284,14 @@ class cHosterGui:
             return self.getHoster('lulustream')         
 
         if ('savefiles' in sHostName) or ('streamhls' in sHostName):
-            return self.getHoster('savefiles')      
-            
+            return self.getHoster('savefiles')
+
+        # SeekStreaming / Embed4me family (rotating base domains). Used by 1jour1film.
+        # New base domains appear over time - add them here as they rotate.
+        if any(x in sHostName for x in ('p2pstream', 'ezplayer', 'uns.bio', 'rpmlive', 'embed4me', 'embedseek',
+                                        'seekplayer', 'seekplays', 'seeks.cloud', 'servicecatalog', 'technicalcatalog')):
+            return self.getHoster('seekstreaming')
+
         if ('swish' in sHostName) or ('hanerix' in sHostName) or ('hgcloud' in sHostName):
             return self.getHoster('swish')
         
