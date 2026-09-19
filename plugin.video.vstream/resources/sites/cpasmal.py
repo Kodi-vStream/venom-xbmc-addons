@@ -273,7 +273,7 @@ def showEpisodes():
     sHtmlContent = oParser.abParse(sHtmlContent, 'class="seasons"', 'class="seasons"')
 
     # url numEp
-    sPattern = 'href="([^"]+)"> <div class="fsa-ep">([^<]+)<'
+    sPattern = 'href="([^"]+)"> *<div class="fsa-ep">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -355,7 +355,7 @@ def showSerieLinks():
     cook = oRequestHandler.GetCookies()
 
     oParser = cParser()
-    sPattern = 'fx-row" onclick="playEpisode\(this, \'(\d+)\', \'(.+?)\'\)'
+    sPattern = 'getxfield\(this, \'(\d+)\', \'(.+?)\', \'(.+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -363,6 +363,7 @@ def showSerieLinks():
         for aEntry in aResult[1]:
             videoId = aEntry[0]
             xfield = aEntry[1]
+            token = aEntry[2]
             hosterName = sLang = sDesc = ''
             if ('_') in xfield:
                 hosterName, sLang = xfield.strip().split('_')
@@ -372,9 +373,9 @@ def showSerieLinks():
             if not oHoster:
                 continue
             
-            
-            postData = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
-            sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
+            postData = 'id=%s&xfield=%s&token=%s' % (videoId, xfield, token)
+#            sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
+            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?'
             
             # sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?'
             # postData = 'id=%s&xfield=%s' % (videoId, xfield)
@@ -400,10 +401,25 @@ def showHosters():
     cook = oInputParameterHandler.getValue('cook')
     postdata = oInputParameterHandler.getValue('postdata')
 
+
+    '''
+    type: 'POST',
+    url: dle_root + 'engine/ajax/controller.php?mod=getxfield',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    data: {id: id, xfield: xfield, type: type, page_token: xfPageToken, g_recaptcha_response: token, user_hash: dle_login_hash},
+    success: function(data) {
+    sUrl = URL_MAIN + 'engine/ajax/controller.php?mod=getxfield'
+    '''
+#    postData = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
+         
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
     oRequest.addHeaderEntry('Referer', referer)
+    oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequest.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequest.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
     oRequest.addHeaderEntry('Cookie', cook)
     oRequest.addParametersLine(postdata)
     sHtmlContent = oRequest.request()
