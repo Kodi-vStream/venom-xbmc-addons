@@ -441,10 +441,13 @@ class cHome:
     def showDirect(self):
         oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
+        # vavoo direct
+        oOutputParameterHandler.addParameter('siteUrl', 'TV')
+        oGui.addDir('vavoo', 'showMenuLiveTV', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
+#        oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
         oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png')
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_TV')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
-#        oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
         oGui.addDir('radio', 'load', self.addons.VSlang(30203), 'radio.png')
         oGui.setEndOfDirectory()
 
@@ -457,11 +460,11 @@ class cHome:
         # oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_TV')
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30332), 'host.png', oOutputParameterHandler)
         # SINON accès direct à la seule source
-        oOutputParameterHandler.addParameter('siteUrl', 'TV')
-        oGui.addDir('freebox', 'showWeb', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_CINE')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30200), self.addons.VSlang(30133)), 'films.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'TV')
+        # oGui.addDir('freebox', 'showWeb', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
+        #
+        # oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_CINE')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30200), self.addons.VSlang(30133)), 'films.png', oOutputParameterHandler)
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30138), self.addons.VSlang(30113)), 'host.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'TV_TV')
