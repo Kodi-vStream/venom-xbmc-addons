@@ -822,7 +822,7 @@ msgid "Calendar"
 msgstr ""
 
 msgctxt "#30332"
-msgid "TV (Official)"
+msgid "TV channels"
 msgstr ""
 
 msgctxt "#30333"

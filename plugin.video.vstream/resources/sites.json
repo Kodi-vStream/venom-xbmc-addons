@@ -26,7 +26,7 @@
         },
         "animesultra": {
             "label": "Animes Ultra",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
             "url": "https://v2.animesultra.org/"
         },
@@ -73,7 +73,7 @@
         },
         "cpasmal": {
             "label": "CpasMal",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://www.cpasmal.rip/"
         },
@@ -119,7 +119,7 @@
         },
         "dulourd": {
             "label": "DuLourd",
-            "active": "True",
+            "active": "False",
             "url": "https://www.dulourd.cash/"
         },
         "elitegol": {
@@ -240,7 +240,7 @@
         "movix": {
             "label": "movix",
             "active": "True",
-            "url": "https://movix.bet/"
+            "url": "https://movix.zip/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -351,6 +351,11 @@
             "active": "False",
             "cloudflare": "False",
             "url": "https://top-stream.wiki/"
+        },
+        "vavoo": {
+            "label": "vavoo",
+            "active": "True",
+            "url": "https://vavoo.to/"
         },
         "vfilms": {
             "label": "VFilms",
