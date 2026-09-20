@@ -552,12 +552,11 @@ def showLiveTV(sSearch = ''):
                 try:
                     curr = epg_data[0]
                     now_title = curr.get('name') or curr.get('title') or ''
-                    start_ts = curr.get('startTime') or curr.get('start') or curr.get('time')
-                    end_ts = curr.get('endTime') or curr.get('end')
-                    prog_desc = curr.get('description') or curr.get('overview') or ''
-                    
-                    if now_title:
-                        sDesc += '[COLOR white][B]▶ En cours : %s[/B][/COLOR]\n' % now_title
+                    if now_title and 'No Data' not in now_title:
+                        start_ts = curr.get('start') or curr.get('startTime') or curr.get('time')
+                        end_ts = curr.get('stop') or curr.get('endTime') or curr.get('end')
+                        prog_desc = curr.get('description') or curr.get('overview') or ''
+                        sDesc += '[COLOR darkgray]En cours :[/COLOR][CR][B]%s[/B]\n' % now_title
                         if start_ts:
                             try:
                                 s_time = float(start_ts)
@@ -585,7 +584,7 @@ def showLiveTV(sSearch = ''):
                                     end_str = datetime.fromtimestamp(e_time).strftime('%H:%M')
                                     remaining_min = max(0, int((e_time - now_time) / 60))
                                     
-                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white](%s - %s | Reste %s min)[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
+                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR](%s - %s | Reste %s min)[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
                             except Exception:
                                 pass
                                 
@@ -595,18 +594,18 @@ def showLiveTV(sSearch = ''):
                     if len(epg_data) > 1:
                         next_item = epg_data[1]
                         next_title = next_item.get('name') or next_item.get('title') or ''
-                        next_start = next_item.get('startTime') or next_item.get('start') or next_item.get('time')
-                        if next_title:
+                        if next_title and 'No Data' not in next_title:
+                            next_start = next_item.get('start') or next_item.get('startTime') or next_item.get('time')
                             next_time_str = ""
                             if next_start:
                                 try:
                                     ns_time = float(next_start)
                                     if ns_time > 10000000000:
                                         ns_time /= 1000.0
-                                    next_time_str = ' à ' + datetime.fromtimestamp(ns_time).strftime('%H:%M')
+                                    next_time_str = datetime.fromtimestamp(ns_time).strftime('%H:%M')
                                 except Exception:
                                     pass
-                            sDesc += '\n[COLOR grey] À suivre%s : [/COLOR]' % (next_time_str, next_title)
+                            sDesc += '[CR][COLOR grey]A suivre à %s :[/COLOR][CR]%s' % (next_time_str, next_title)
                 except Exception:
                     pass
             
@@ -624,7 +623,6 @@ def showLiveTV(sSearch = ''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrlPlay)
                 oOutputParameterHandler.addParameter('sMovieTitle', raw_title)
-                
                 oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, sDesc, oOutputParameterHandler)
 
         if not sCursor:
