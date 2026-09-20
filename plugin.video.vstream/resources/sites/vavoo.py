@@ -5,7 +5,6 @@ import re
 import json
 import string
 import requests
-import unicodedata
 import uuid
 import time
 from datetime import datetime
@@ -31,6 +30,9 @@ URL_CATALOG = URL_MAIN + 'mediahubmx-catalog.json'
 SPORT_SPORTS = ('sport', 'showGenresTV')
 SPORT_TV = ('sport', 'showGenresTV')
 DOC_TV = ('doc', 'showGenresTV')
+
+KID_KIDS = ('kid', 'showGenresTV')
+KID_TV = ('kid', 'showGenresTV')
 
 TV_TV = (URL_MAIN, 'showMenuLiveTV')
 CHAINE_TV = (URL_MAIN, 'showMenuLiveTV')
@@ -105,6 +107,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'doc')
     oGui.addDir(SITE_IDENTIFIER, 'showGenresTV', 'Chaines (Doc / Reportage)', 'doc.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', 'kid')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenresTV', 'Chaines (Jeunesse)', 'enfants.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', URL_CATALOG)
     oGui.addDir(SITE_IDENTIFIER, 'showCountries', 'Chaines (Par pays)', 'host.png', oOutputParameterHandler)
 
@@ -164,11 +169,12 @@ def showGenresTV():
             ('EQUIPE', 'https://i.imgur.com/t35zhM9.png'),
             ('EQUIDIA', 'https://i.imgur.com/QPpbRcZ.png')
         ]
-    else:               # Documentaires
+    elif 'doc' in sUrl:               # Documentaires
         chaines = [
             ('ANIMAUX', 'https://i.imgur.com/FM9FVAG.png'),
             ('ARTE', 'https://archive.org/download/logostvfr/arte.png'),
             ('CANAL+ DOCS', 'https://archive.org/download/logostvfr/canal-plus-docs.png'),
+            ('CHASSE & PECHE', 'https://archive.org/download/logostvfr/chasse-et-peche.png'),
             ('CRIME DISTRICT', 'https://archive.org/download/logostvfr/crime-district.png'),
             ('DISCOVERY', 'https://archive.org/download/logostvfr/discovery-hd.png'),
             ('FRANCE 5', 'https://archive.org/download/logostvfr/france-5.png'),
@@ -181,6 +187,26 @@ def showGenresTV():
             ('SCIENCE & VIE', 'https://i.imgur.com/9ELsSMI.png'),
             ('TREK', 'https://archive.org/download/logostvfr/trek.png'),
             ('USHUAIA', 'https://i.imgur.com/WjjlqbP.png'),
+        ]
+    else:               # Jeunesse
+        chaines = [
+            ('BABY TV', 'https://archive.org/download/logostvfr/baby-tv-fhd.png'),
+            ('BOING', 'https://archive.org/download/logostvfr/boing.png'),
+            ('CANAL + KIDS', 'https://archive.org/download/logostvfr/canal-plus-kids.png'),
+            ('CANAL J', 'https://archive.org/download/logostvfr/canal-j.png'),
+            ('CARTOON NETWORK', 'https://archive.org/download/logostvfr/cartoon-network.png'),
+            ('CARTOONITO', 'https://alloforfait.fr/wp-content/uploads/2023/02/cartoonito-1.jpg'),
+            ('CINE+ FAMIZ', 'https://archive.org/download/logostvfr/cine-plus-family.png'),
+            ('DISNEY', 'https://upload.wikimedia.org/wikipedia/commons/2/22/Official_Disney.com_Logo.jpg'),
+            ('GAME ONE', 'https://archive.org/download/logostvfr/game-one.png'),
+            ('GONG', 'https://upload.wikimedia.org/wikipedia/commons/d/d7/GONG.png'),
+            ('GULLI', 'https://archive.org/download/logostvfr/gulli.png'),
+            ('J ONE', 'https://archive.org/download/logostvfr/j-one.png'),
+            ('NICK', 'https://archive.org/download/logostvfr/nickelodeon.png'),
+            ('PIWI', 'https://archive.org/download/logostvfr/piwi-plus.png'),
+            ('TELETOON', 'https://archive.org/download/logostvfr/teletoon-plus.png'),
+            ('TIJI', 'https://archive.org/download/logostvfr/tiji.png'),
+            ('TOONAMI', 'https://images.seeklogo.com/logo-png/62/1/toonami-logo-png_seeklogo-629720.png'),
         ]
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -231,7 +257,7 @@ def showAlpha():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', alpha)
-        oGui.addDir(SITE_IDENTIFIER, 'showSearchAlpha', f'Lettre [COLOR coral]{alpha}[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchAlpha', 'Lettre [COLOR coral]%s[/COLOR]' % alpha, 'listes.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -240,7 +266,7 @@ def getLogo(chan_name, group="france"):
         return ""
 
     # 1. Nettoyage initial du nom
-    clean = unicodedata.normalize('NFKD', str(chan_name)).encode('ASCII', 'ignore').decode('utf-8').lower().strip()
+    clean = cUtil().formatUTF8(chan_name).lower()
     clean = re.sub(r'\.[a-z0-9]+\s*$', '', clean)
     clean = clean.replace('+', ' plus ')
     clean = re.sub(r'\b(hevc|rraw|backup|1080p|720p|fr|de|be|sd)\b', '', clean)
@@ -257,7 +283,7 @@ def getLogo(chan_name, group="france"):
 
     # URL Archive sans le c_folder
     mino_url = "https://archive.org/download/logostvfr/"
-    base_url = f"https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/{c_folder}/"
+    base_url = "https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/%s/" % c_folder 
 
     if c_folder == "germany":
         icons_map = {}
@@ -321,16 +347,16 @@ def getLogo(chan_name, group="france"):
 
     for key, filename in icons_map.items():
         if key in clean:
-            return f"{base_url}{filename}-{c_suffix}.png"
+            return '%s%s-%s.png' % (base_url, filename, c_suffix)
 
     normalized = re.sub(r'[^a-z0-9]+', '-', clean).strip('-')
     if not normalized:
         return ""
 
     if any(k in clean for k in ["20", "6ter", "13 eme", "13eme", "ab moteurs", "animaux", "amazon", "action", "arte", "auto", "baby", "bet", "bfm", "boomerang", "boing", "box", "boxoffice", "c", "canal", "canal hd", "canal fhd", "canal decal hd", "cine", "dazn", "eleven", "elevensport", "euronews", "eurosport", "france", "ocs", "multisports", "kombat", "nat", "novelas", "nrj", "m6", "mangas", "mcm", "mdl", "mezzo", "mtv", "melody", "planet", "planete", "polar", "rmc", "tf1", "w9"]):
-        return f"{mino_url}{normalized}.png"
-
-    return f"{base_url}{normalized}-{c_suffix}.png"
+        return "%s%s.png" % (mino_url, normalized)
+    
+    return '%s%s-%s.png' % (base_url, normalized, c_suffix)
 
 
 def showSearchAlpha():
@@ -425,10 +451,12 @@ def showLiveTV(sSearch = ''):
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sSearch = oInputParameterHandler.getValue('sMovieTitle')
-        if sSearch and '!' in sSearch:
-            sSearchTitle = True
-            sSearch = sSearch.replace('!', '')
-        if not sSearch:
+        if sSearch:
+            sSearch = sSearch.replace('&', '')
+            if '!' in sSearch:
+                sSearchTitle = True
+                sSearch = sSearch.replace('!', '')
+        else:
             sSearch = ''
 
     sCursor = oInputParameterHandler.getValue('cursor')
@@ -480,14 +508,14 @@ def showLiveTV(sSearch = ''):
         )
         
         if response.status_code != 200:
-            VSlog(f"[VAVOO] Erreur HTTP {response.status_code}")
+            VSlog('[VAVOO] Erreur HTTP ' % response.status_code)
             oGui.setEndOfDirectory()
             return
 
         data = response.json()
 
     except Exception as e:
-        VSlog(f"[VAVOO] Erreur : {str(e)}")
+        VSlog('[VAVOO] Erreur : '+ str(e))
         oGui.setEndOfDirectory()
         return
 
@@ -529,7 +557,7 @@ def showLiveTV(sSearch = ''):
                     prog_desc = curr.get('description') or curr.get('overview') or ''
                     
                     if now_title:
-                        sDesc += f"[COLOR white][B]▶ En cours : {now_title}[/B][/COLOR]\n"
+                        sDesc += '[COLOR white][B]▶ En cours : %s[/B][/COLOR]\n' % now_title
                         if start_ts:
                             try:
                                 s_time = float(start_ts)
@@ -557,12 +585,12 @@ def showLiveTV(sSearch = ''):
                                     end_str = datetime.fromtimestamp(e_time).strftime('%H:%M')
                                     remaining_min = max(0, int((e_time - now_time) / 60))
                                     
-                                    sDesc += f"[COLOR red]{bar_rouge}[/COLOR][COLOR darkgray]{bar_grise}[/COLOR] [COLOR red]{percent}%[/COLOR] [COLOR white]({start_str} - {end_str} | Reste {remaining_min} min)[/COLOR]\n"
+                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white](%s - %s | Reste %s min)[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
                             except Exception:
                                 pass
                                 
                     if prog_desc:
-                        sDesc += f"[COLOR white]{prog_desc[:300]}[/COLOR]\n"
+                        sDesc += '[COLOR white]%s[/COLOR]\n' % prog_desc[:300]
                 
                     if len(epg_data) > 1:
                         next_item = epg_data[1]
@@ -575,10 +603,10 @@ def showLiveTV(sSearch = ''):
                                     ns_time = float(next_start)
                                     if ns_time > 10000000000:
                                         ns_time /= 1000.0
-                                    next_time_str = f" à {datetime.fromtimestamp(ns_time).strftime('%H:%M')}"
+                                    next_time_str = ' à ' + datetime.fromtimestamp(ns_time).strftime('%H:%M')
                                 except Exception:
                                     pass
-                            sDesc += f"\n[COLOR grey]⏭ À suivre{next_time_str} : {next_title}[/COLOR]"
+                            sDesc += '\n[COLOR grey] À suivre%s : [/COLOR]' % (next_time_str, next_title)
                 except Exception:
                     pass
             
