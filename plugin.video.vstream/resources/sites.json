@@ -215,6 +215,12 @@
             "active": "True",
             "url": "https://kambad.com/"
         },
+        "kzstream": {
+            "label": "kzstream",
+            "active": "True",
+            "url": "https://kzreborn.online/",
+            "url_api": "https://kzreborn.online/api/"
+        },
         "les_docus": {
             "label": "Les docus",
             "active": "False",
@@ -286,6 +292,13 @@
             "label": "Pluto TV",
             "active": "False",
             "url": "https://api.pluto.tv"
+        },
+        "purstream": {
+            "label": "purstream",
+            "active": "True",
+            "site_info": "https://purstream.wiki/",
+            "url_api": "https://api.purstream.ad/api/v1/",
+            "url": "https://purstream.ad/"
         },
         "radio": {
             "label": "Radio",
