@@ -448,6 +448,8 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png')
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_TV')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'KID_TV')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30109), 'enfants.png', oOutputParameterHandler)
         oGui.addDir('radio', 'load', self.addons.VSlang(30203), 'radio.png')
         oGui.setEndOfDirectory()
 
