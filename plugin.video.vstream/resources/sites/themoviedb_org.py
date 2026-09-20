@@ -517,6 +517,7 @@ def showGenreTV():
     term += '&sort_by=first_air_date.desc'
     term += '&with_status=3|4'
     term += '&with_genres=%d'
+    term += '&vote_count.gte=100'
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
