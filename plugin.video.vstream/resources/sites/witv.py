@@ -34,7 +34,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', KID_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, KID_TV[1], 'Chaines enfants', 'enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, KID_TV[1], 'Chaines jeunesse', 'enfants.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 

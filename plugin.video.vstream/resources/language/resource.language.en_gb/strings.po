@@ -429,7 +429,7 @@ msgid "VOSTFR"
 msgstr ""
 
 msgctxt "#30109"
-msgid "Children"
+msgid "Kids"
 msgstr ""
 
 msgctxt "#30110"

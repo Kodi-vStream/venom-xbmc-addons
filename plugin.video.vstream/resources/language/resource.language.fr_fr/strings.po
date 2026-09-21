@@ -429,8 +429,8 @@ msgid "VOSTFR"
 msgstr "VOSTFR"
 
 msgctxt "#30109"
-msgid "Children"
-msgstr "Enfants"
+msgid "Kids"
+msgstr "Jeunesse"
 
 msgctxt "#30110"
 msgid "Database to delete"
