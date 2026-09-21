@@ -192,10 +192,10 @@ def showGenresTV():
         chaines = [
             ('BABY TV', 'https://archive.org/download/logostvfr/baby-tv-fhd.png'),
             ('BOING', 'https://archive.org/download/logostvfr/boing.png'),
+            ('BOOMERANG', 'https://archive.org/download/logostvfr/boomerang.png'),
             ('CANAL + KIDS', 'https://archive.org/download/logostvfr/canal-plus-kids.png'),
             ('CANAL J', 'https://archive.org/download/logostvfr/canal-j.png'),
             ('CARTOON NETWORK', 'https://archive.org/download/logostvfr/cartoon-network.png'),
-            ('CARTOONITO', 'https://alloforfait.fr/wp-content/uploads/2023/02/cartoonito-1.jpg'),
             ('CINE+ FAMIZ', 'https://archive.org/download/logostvfr/cine-plus-family.png'),
             ('DISNEY', 'https://upload.wikimedia.org/wikipedia/commons/2/22/Official_Disney.com_Logo.jpg'),
             ('GAME ONE', 'https://archive.org/download/logostvfr/game-one.png'),
