@@ -24,6 +24,7 @@ SPORT_SPORTS = ('sport', 'showGenresTV')
 #SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('sport', 'showGenresTV')
 DOC_TV = ('doc', 'showGenresTV')
+KID_TV = ('kid', 'showGenresTV')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
@@ -62,6 +63,20 @@ channelsDoc = [
 ]
 
 
+channelsKid = [
+    ('BOING', 'https://archive.org/download/logostvfr/boing.png'),
+    ('BOOMERANG', 'https://archive.org/download/logostvfr/boomerang.png'),
+    ('CANAL JUNIOR', 'https://archive.org/download/logostvfr/canal-j.png'),
+    ('CANAL+ KIDS', 'https://archive.org/download/logostvfr/canal-plus-kids.png'),
+    ('CARTOON NETWORK', 'https://archive.org/download/logostvfr/cartoon-network.png'),
+    ('DISNEY', 'https://upload.wikimedia.org/wikipedia/commons/2/22/Official_Disney.com_Logo.jpg'),
+    ('GULLI', 'https://archive.org/download/logostvfr/gulli.png'),
+    ('NICKELODEON', 'https://archive.org/download/logostvfr/nickelodeon.png'),
+    ('PIWI+', 'https://archive.org/download/logostvfr/piwi-plus.png'),
+    ('TIJI', 'https://archive.org/download/logostvfr/tiji.png'),
+]
+
+
 def load():
     oGui = cGui()
 
@@ -71,6 +86,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', DOC_TV[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'doc.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', KID_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, KID_TV[1], 'Chaines jeunesse', 'enfants.png', oOutputParameterHandler)
 
     # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
@@ -101,12 +119,15 @@ def showGenresTV():
     
     if 'sport' in sUrl:
         chaines = channelsSport
-    else:
+    elif 'doc' in sUrl:
         chaines = channelsDoc
+    else:
+        chaines = channelsKid
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sThumb in chaines:
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
         sDisplayTitle = sTitle.replace('!', '')
         oGui.addLink(SITE_IDENTIFIER, 'showTV', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
@@ -128,6 +149,7 @@ def showTV():
 
     oInputParameterHandler = cInputParameterHandler()
     sGenreTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' ', '')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     #epgs = {}
 
@@ -166,11 +188,13 @@ def showTV():
             sDisplayTitle += ' [%s %s]' % (source.capitalize() if source else '', quality if quality else '')
             
             sHostUrl = 'stream/' + channel['id']
-            sThumb = channel['logo']
+            sLogo = channel['logo']
+            if not sLogo:
+                sLogo = sThumb
             oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sLogo)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, sLogo, sLogo, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

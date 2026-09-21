@@ -286,7 +286,7 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 
-def showSeries(sSearch=''):
+def showSeries(sSearch='', searchTitle = 3):
     oGui = cGui()
     oParser = cParser()
     URL_MAIN = getUrlMain()
@@ -305,7 +305,7 @@ def showSeries(sSearch=''):
         cookie += ';h_check=25'
 
         oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_search=1&catlist[]=31&catlist[]=35&sortby=title&resorder=asc'
+        pdata = 'do=search&subaction=search&story=%s&titleonly=%d&all_word_search=1&catlist[]=31&catlist[]=35&sortby=title&resorder=asc' % (sUrl, searchTitle)
 
         oRequest.addHeaderEntry('Cookie', cookie)
         oRequest.setRequestType(1)
@@ -317,7 +317,6 @@ def showSeries(sSearch=''):
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -328,7 +327,8 @@ def showSeries(sSearch=''):
 
     sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
+    hasResult = False    
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
@@ -343,6 +343,7 @@ def showSeries(sSearch=''):
             if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
                 continue
             
+            hasResult = True    
             sDisplayTitle = sTitle
             sUrl = aEntry[2]
 
@@ -356,6 +357,10 @@ def showSeries(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
+
+    #pas de résultats de recherche d'apres les articles, recherche dans les titres d'articles
+    if sSearch and not hasResult and searchTitle == 3:
+        showSeries(sSearch, searchTitle = 0)
 
     if not sSearch:
         oGui.setEndOfDirectory()

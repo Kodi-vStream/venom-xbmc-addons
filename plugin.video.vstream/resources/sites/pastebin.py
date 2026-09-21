@@ -2592,6 +2592,7 @@ def showSerieSaisons():
         sUrl = siteUrl + '&sSaison=' + sSaison
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas sTitre afin de pouvoir mettre la saison en marque-page
+        oOutputParameterHandler.addParameter('sTmdbId', idTMDB)  # Utilisé par TMDB
         oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -2599,10 +2600,12 @@ def showSerieSaisons():
 
 def showEpisodesLinks(siteUrl=''):
     oGui = cGui()
-
+    idTMDB = None
+    
     if not siteUrl:
         oInputParameterHandler = cInputParameterHandler()
         siteUrl = oInputParameterHandler.getValue('siteUrl')
+        idTMDB = oInputParameterHandler.getValue('sTmdbId')
 
     # Pour supporter les caractères '&' et '+' dans les noms alors qu'ils sont réservés
     sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
@@ -2643,6 +2646,7 @@ def showEpisodesLinks(siteUrl=''):
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', searchTitle)
+        oOutputParameterHandler.addParameter('sTmdbId', idTMDB)  # Utilisé par TMDB
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'no-image.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -2841,14 +2845,14 @@ def getHosterList(siteUrl):
             # Séries
             elif isinstance(links, dict):
                 if searchEpisode:
-                    for numEpisode, link in links.items():
-                        numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
-                        if numEpisode.isdigit():
-                            numEpisode = int(numEpisode)    # enlever les 0 devant
-                        
-                        if numEpisode == searchEpisode:
-                            listLinks.append(link)  # TODO utiliser expend si liste de liens ?
-                            break
+                        for numEpisode, link in links.items():
+                            numEpisode = str(numEpisode).replace('E', '')   # E001 -> 001
+                            if numEpisode.isdigit():
+                                numEpisode = int(numEpisode)    # enlever les 0 devant
+                            
+                            if numEpisode == searchEpisode:
+                                listLinks.append(link)  # TODO utiliser expend si liste de liens ?
+                                break
                 else:
                     listEpisodes.append(links)
 

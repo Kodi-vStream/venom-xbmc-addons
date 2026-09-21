@@ -215,14 +215,22 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
         oGui.addDir(SITE_TMDB, 'showMoviesNews', addons.VSlang(30101), 'news.png', oOutputParameterHandler)
 
+        # Box office TMDB
+        oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
+        oGui.addDir(SITE_TMDB, 'showMoviesBoxOffice', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
+        
         # Populaires
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
-        oGui.addDir(SITE_TMDB, 'showMovies', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
+        oGui.addDir(SITE_TMDB, 'showMoviesPopular', addons.VSlang(30102), 'popular.png', oOutputParameterHandler)
         
-        # Box office
-        oOutputParameterHandler.addParameter('siteUrl', 'movies/boxoffice')
-        oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
+        # Top films TMDB
+        oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
+        oGui.addDir(SITE_TMDB, 'showMoviesTop', addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
+
+        # Box office TRAKT
+        # oOutputParameterHandler.addParameter('siteUrl', 'movies/boxoffice')
+        # oOutputParameterHandler.addParameter('sCat', '1')
+        # oGui.addDir(SITE_TRAKT, 'getTrakt', addons.VSlang(30314), 'boxoffice.png', oOutputParameterHandler)
         
         # Genres
         oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
@@ -232,14 +240,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
         oGui.addDir(SITE_TMDB, 'showMoviesYears', self.addons.VSlang(30106), 'annees.png', oOutputParameterHandler)
 
-        # # Top films TMDB
-        # oOutputParameterHandler.addParameter('siteUrl', 'discover/movie')
-        # oGui.addDir(SITE_TMDB, 'showMoviesTop', addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
-
         # Top films TRAKT
-        oOutputParameterHandler.addParameter('siteUrl', 'movies/popular')
-        oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_TRAKT, 'getTrakt', self.addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'movies/popular')
+        # oOutputParameterHandler.addParameter('sCat', '1')
+        # oGui.addDir(SITE_TRAKT, 'getTrakt', self.addons.VSlang(30104), 'notes.png', oOutputParameterHandler)
 
 
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')
@@ -437,10 +441,15 @@ class cHome:
     def showDirect(self):
         oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
+        # vavoo direct
+        oOutputParameterHandler.addParameter('siteUrl', 'TV')
+        oGui.addDir('vavoo', 'showMenuLiveTV', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
+#        oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
         oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png')
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_TV')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
-#        oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', self.addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'KID_TV')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30109), 'enfants.png', oOutputParameterHandler)
         oGui.addDir('radio', 'load', self.addons.VSlang(30203), 'radio.png')
         oGui.setEndOfDirectory()
 
@@ -453,11 +462,11 @@ class cHome:
         # oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_TV')
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30332), 'host.png', oOutputParameterHandler)
         # SINON accès direct à la seule source
-        oOutputParameterHandler.addParameter('siteUrl', 'TV')
-        oGui.addDir('freebox', 'showWeb', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_CINE')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30200), self.addons.VSlang(30133)), 'films.png', oOutputParameterHandler)
+        # oOutputParameterHandler.addParameter('siteUrl', 'TV')
+        # oGui.addDir('freebox', 'showWeb', self.addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
+        #
+        # oOutputParameterHandler.addParameter('siteUrl', 'CHAINE_CINE')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30200), self.addons.VSlang(30133)), 'films.png', oOutputParameterHandler)
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30138), self.addons.VSlang(30113)), 'host.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'TV_TV')

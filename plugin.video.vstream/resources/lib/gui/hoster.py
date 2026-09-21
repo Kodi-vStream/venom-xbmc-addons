@@ -238,7 +238,7 @@ class cHosterGui:
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly', 'vidsonic',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
                             'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream',
-                            'daisukianime', 'xtremestream', 'gofile'] 
+                            'daisukianime', 'xtremestream', 'gofile', 'firestream', 'vevv']
 
 # désactivé 'uptostream', 'uptobox'
 

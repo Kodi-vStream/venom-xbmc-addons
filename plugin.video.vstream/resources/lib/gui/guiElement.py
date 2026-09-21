@@ -258,7 +258,7 @@ class cGuiElement:
         sa = ep = ''
         
         if self.__sCat in (2, 3, 4, 8, 9):
-            m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+            m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.|:)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
                 sa = m.group(3)
                 ep = m.group(7)

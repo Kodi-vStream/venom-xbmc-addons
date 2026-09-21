@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib import util
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -292,9 +291,8 @@ def showSeries(sSearch=''):
     if sSearch:
         oUtil = cUtil()
         sSearchText = '/'.join(sSearch.split('/')[-1:])
-        sSearchText = oUtil.CleanName(sSearchText)        
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         siteUrl = sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -309,13 +307,14 @@ def showSeries(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     sPattern = 'overflow-hidden">.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?<span>([^<]+)<\/span> *<!--\[if ENDBLOCK\]><!\[endif\]--> *<\/div>.+?ml-auto">([^<>]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             sThumb = aEntry[1]
             sType = aEntry[4]
-            if not 'TV' in sType:
+            if not 'TV' in sType and not 'télé' in sType:
                 continue
             
             sTitle = aEntry[2]
@@ -332,7 +331,24 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear) 
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
-            
+    elif sSearch:   # test si l'url direct de la série existe
+            sUrl2 = URL_MAIN + 'tv-show/' + sSearchText.replace(' ', '-')
+            oRequestHandler = cRequestHandler(sUrl2)
+            sHtmlContent = oRequestHandler.request()
+            sPattern = '"flex-1"> *<h3.+?>([^<]+).+?span>(\d+).+?img src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                aEntry = aResult[1][0]
+                sTitle = aEntry[0]
+                sYear = aEntry[1]
+                sThumb = aEntry[2]
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sYear', sYear)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
+
     if not sSearch:
         if sPage:
             sPage = str(int(sPage)+1)
@@ -363,7 +379,7 @@ def showSaisons():
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 #        for aEntry in aResult[1][::-1]:
-        for aEntry in sorted(aResult[1], key=lambda saison: saison[0]):
+        for aEntry in sorted(aResult[1], key=lambda saison: int(saison[0])):
             sSaison = aEntry[1].strip()
             sTitle = sDisplayTitle = sMovieTitle + ' ' + sSaison
             if 'saison' not in sSaison and 'season' not in sSaison:
@@ -375,6 +391,7 @@ def showSaisons():
                 sTitle = sDisplayTitle = '%s Saison %s' % (sMovieTitle, numSaison)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -403,7 +420,7 @@ def showEpisodes():
             sTitle = sMovieTitle + ' ' + aEntry[1].replace('#', '')
             #sDesc = aEntry[0].strip() 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle.split(' ')[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)

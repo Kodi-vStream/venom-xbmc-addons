@@ -26,9 +26,9 @@
         },
         "animesultra": {
             "label": "Animes Ultra",
-            "active": "True",
+            "active": "False",
             "cloudflare": "False",
-            "url": "https://ww.animesultra.org/"
+            "url": "https://v2.animesultra.org/"
         },
         "bd_streams": {
             "label": "BD STREAMS",
@@ -73,7 +73,7 @@
         },
         "cpasmal": {
             "label": "CpasMal",
-            "active": "True",
+            "active": "False",
             "cloudflare": "True",
             "url": "https://www.cpasmal.rip/"
         },
@@ -119,13 +119,13 @@
         },
         "dulourd": {
             "label": "DuLourd",
-            "active": "True",
+            "active": "False",
             "url": "https://www.dulourd.cash/"
         },
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://bolaloca.my/",
+            "url": "https://zonalive.click/",
             "url_link": "player/%d"
         },
         "extreme_down": {
@@ -170,7 +170,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs16.lol/"
+            "url": "https://fs27.lol/"
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
@@ -215,6 +215,12 @@
             "active": "True",
             "url": "https://kambad.com/"
         },
+        "kzstream": {
+            "label": "kzstream",
+            "active": "True",
+            "url": "https://kzreborn.online/",
+            "url_api": "https://kzreborn.online/api/"
+        },
         "les_docus": {
             "label": "Les docus",
             "active": "False",
@@ -240,7 +246,7 @@
         "movix": {
             "label": "movix",
             "active": "True",
-            "url": "https://movix.bet/"
+            "url": "https://movix.zip/"
         },
         "mysteriam": {
             "label": "MySteriam",
@@ -287,10 +293,24 @@
             "active": "False",
             "url": "https://api.pluto.tv"
         },
-        "radio": {
+        "purstream": {
+            "label": "purstream",
+            "active": "True",
+            "site_info": "https://purstream.wiki/",
+            "url_api": "https://api.purstream.ad/api/v1/",
+            "url": "https://purstream.ad/"
+        },
+		"radio": {
             "label": "Radio",
             "active": "True",
             "url": ""
+        },
+        "rdlive": {
+            "label": "RD Live",
+            "active": "True",
+            "url": "https://rdaily.live/",
+			"url_flashcore": "https://1.newsoccers.one/2/x/feed/",
+			"url_link": "https://netanjahu.hls.st/t/%s/index.m3u8|Referer=https://iplayer.is/"
         },
         "seefrench": {
             "label": "SeeFrench",
@@ -344,6 +364,11 @@
             "active": "False",
             "cloudflare": "False",
             "url": "https://top-stream.wiki/"
+        },
+        "vavoo": {
+            "label": "vavoo",
+            "active": "True",
+            "url": "https://vavoo.to/"
         },
         "vfilms": {
             "label": "VFilms",

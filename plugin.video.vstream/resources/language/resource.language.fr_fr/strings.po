@@ -429,8 +429,8 @@ msgid "VOSTFR"
 msgstr "VOSTFR"
 
 msgctxt "#30109"
-msgid "Children"
-msgstr "Enfants"
+msgid "Kids"
+msgstr "Jeunesse"
 
 msgctxt "#30110"
 msgid "Database to delete"
@@ -825,8 +825,8 @@ msgid "Calendar"
 msgstr "Calendrier des sorties"
 
 msgctxt "#30332"
-msgid "TV (Official)"
-msgstr "Chaines (TNT)"
+msgid "TV channels"
+msgstr "Toutes les chaines"
 
 msgctxt "#30333"
 msgid "Activate Premium"

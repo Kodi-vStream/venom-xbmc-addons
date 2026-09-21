@@ -98,6 +98,7 @@ class cDb(object):
 
         sql_create = "CREATE TABLE IF NOT EXISTS favorite ("\
                      "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "tmdb_id TEXT, "\
                      "title TEXT, "\
                      "siteurl TEXT, "\
                      "site TEXT, "\
@@ -483,14 +484,25 @@ class cDb(object):
             sIcon = meta['icon']
 
         try:
-            ex = 'INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(ex, (title, siteurl, meta['site'], meta['fav'], meta['cat'], sIcon, meta['fanart']))
-
+            ex = 'INSERT INTO favorite (title, tmdb_id, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(ex, (title, meta['tmdbId'], siteurl, meta['site'], meta['fav'], meta['cat'], sIcon, meta['fanart']))
             self.db.commit()
 
             dialog().VSinfo(addon().VSlang(30042), meta['title'], 4)
             VSlog('SQL INSERT favorite Successfully - ' + meta['title'])
         except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
+
+                # ajout de la nouvelle colonne TMDB_id
+                if "tmdb_id" not in [row[1] for row in self.dbcur.execute("PRAGMA table_info(favorite)")]:
+                    self.dbcur.execute("ALTER TABLE favorite ADD COLUMN tmdb_id TEXT")
+                    self.db.commit()
+                    VSlog('add column : tmdbID')
+
+                # Deuxieme tentative
+                self.dbcur.execute(ex, (title, meta['tmdbId'], siteurl, meta['site'], meta['fav'], meta['cat'], sIcon, meta['fanart']))
+                self.db.commit()
+
             if 'UNIQUE constraint failed' in str(e):
                 dialog().VSinfo(addon().VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT : %s' % e)

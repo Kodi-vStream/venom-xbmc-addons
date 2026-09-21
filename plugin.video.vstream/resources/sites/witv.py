@@ -22,15 +22,19 @@ SPORT_TV = ('chaines-live/sport/', 'showTV')
 
 #DOC_DOCS = (True, 'load')
 DOC_TV = ('chaines-live/documentaire/', 'showTV')
+KID_TV = ('chaines-live/enfants/', 'showTV')
     
 def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines sportives', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines sportives', 'sport.png', oOutputParameterHandler)
     
     oOutputParameterHandler.addParameter('siteUrl', DOC_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_TV[1], 'Chaines documentaires', 'doc.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', KID_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, KID_TV[1], 'Chaines jeunesse', 'enfants.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -89,47 +93,60 @@ def showLink():
     aResult = oParser.parse(sHtmlContent, '<iframe src="([^"]+)')
 
     if aResult[0]:
-        sHosterUrl = aResult[1][0]
-        if sHosterUrl[0] == '/':
-            sHosterUrl = URL_MAIN[0:-1] + sHosterUrl
-        
-        oRequestHandler = cRequestHandler(sHosterUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        aResult = oParser.parse(sHtmlContent, 'streamUrl = "([^"]+)')
-        if aResult[0]:
-            sHosterUrl = aResult[1][0]
-            sHosterUrl2 = None
-
-            oRequestHandler = cRequestHandler(sHosterUrl)
-            oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-            sHtmlContent = oRequestHandler.request()
+        for sHosterUrl in aResult[1]:
+            if sHosterUrl[0] == '/':
+                sHosterUrl = URL_MAIN[0:-1] + sHosterUrl
             
-            # redirection de lien
-            if sHtmlContent[0] != '#':
-                sHosterUrl2 = oRequestHandler.getRealUrl()
+            oRequestHandler = cRequestHandler(sHosterUrl)
+            sHtmlContent = oRequestHandler.request()
+    
+            urlM3u = None
+            
+            aResult = oParser.parse(sHtmlContent, 'm3u8Url = "([^"]+)')
+            if aResult[0]:
+                urlM3u = aResult[1][0] + '&_t=' + str(round(time.time() * 1000))
+            else:
+                aResult = oParser.parse(sHtmlContent, 'streamUrl = "([^"]+)')
+                if aResult[0]:
+                    sHosterUrl = aResult[1][0]
+                    sHosterUrl2 = None
+                if not sHosterUrl.startswith('http'):
+                    sHosterUrl = URL_MAIN + sHosterUrl 
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+                sHtmlContent = oRequestHandler.request()
                 
-                # 2eme tentative
-                if sHosterUrl2 == sHosterUrl:
-                    time.sleep(2)
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-                    sHtmlContent = oRequestHandler.request()
+                # redirection de lien
+                if sHtmlContent[0] != '#':
                     sHosterUrl2 = oRequestHandler.getRealUrl()
-        
-                    # 3eme tentative
+                    
+                    # 2eme tentative
                     if sHosterUrl2 == sHosterUrl:
                         time.sleep(2)
                         oRequestHandler = cRequestHandler(sHosterUrl)
                         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
                         sHtmlContent = oRequestHandler.request()
                         sHosterUrl2 = oRequestHandler.getRealUrl()
-    
-            if sHosterUrl2 != sHosterUrl:
+            
+                        # 3eme tentative
+                        if sHosterUrl2 == sHosterUrl:
+                            time.sleep(2)
+                            oRequestHandler = cRequestHandler(sHosterUrl)
+                            oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+                            sHtmlContent = oRequestHandler.request()
+                            sHosterUrl2 = oRequestHandler.getRealUrl()
+        
+                if sHosterUrl2 != sHosterUrl:
+                    urlM3u = sHosterUrl
+            
+            if urlM3u:
+                if not urlM3u.startswith('http'):
+                    urlM3u = URL_MAIN + urlM3u 
                 oHoster = oHosterGui.getHoster('lien_direct')
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, urlM3u, sThumb)
+
     
     oGui.setEndOfDirectory()
 

@@ -10,6 +10,16 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.2.0 - 22/09/2026 ***
+- Vavoo : Intégration de la source VAVOO : chaines en direct
+- KZStream : Nouvelle source de liens sportif
+- RDLive : Nouvelle source de liens sportif
+- EliteGol : Retour des liens des chaines sportives
+- WiTV : Retour des liens des chaines sportives
+- PurStream : Nouvelle source de Films/Séries/Animes
+- Movix : Retour des séries
+- Chaines : Bouquet de chaines Jeunesse
+
 *** 4.1.1 - 26/08/2026 ***
 - Séries : Meilleures propositions de séries Populaires et Nouveautés
 - DuLourd : Retour des liens
