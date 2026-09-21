@@ -20,7 +20,7 @@ from resources.lib.comaddon import VSlog
 
 
 SITE_IDENTIFIER = 'vavoo'
-SITE_NAME = 'Vavoo TV'
+SITE_NAME = 'Vavoo'
 SITE_DESC = 'Chaines TV de vavoo'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
