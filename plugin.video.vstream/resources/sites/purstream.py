@@ -8,7 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import siteManager, addon
 
-# On garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'purstream'
 SITE_NAME = 'purstream'
 SITE_DESC = 'Streaming'
