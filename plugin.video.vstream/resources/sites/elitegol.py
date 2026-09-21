@@ -2,6 +2,8 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 import datetime
+import base64
+import json
 
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import isMatrix, siteManager, VSlog
@@ -47,13 +49,13 @@ channels = {
     # : ['Canal+ décalé', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_257.PNG'],
     15: ['eurosport 1', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg'],
     16: ['eurosport 2', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg'],
-    17: ['RMC Sport 1', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
-    18: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
+    17: ['RMC Sport 1', 'https://archive.org/download/logostvfr/rmc-sport-1.png'],
+    18: ['RMC Sport 2', 'https://archive.org/download/logostvfr/rmc-sport-2.png'],
     19: ['L\'equipe', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png'],
-    23: ['Automoto', 'https://moto-station.com/wp-content/uploads/2021/05/05/Automoto-La-Chaine-logo_0.png.jpg'],
-    31: ['Canal+ Live 1', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-1-fr.png'],
-    32: ['Canal+ Live 2', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-2-fr.png'],
-    33: ['Canal+ Live 3', 'https://www.lyngsat.com/logo/tv/cc/canal-plus-live-3-fr.png'],
+    23: ['Automoto', 'https://dn711502.ca.archive.org/0/items/logostvfr/automoto-la-chaine.png'],
+    31: ['Canal+ Live 1', 'https://archive.org/download/logostvfr/canal-plus-live-1.png'],
+    32: ['Canal+ Live 2', 'https://archive.org/download/logostvfr/canal-plus-live-2.png'],
+    33: ['Canal+ Live 3', 'https://archive.org/download/logostvfr/canal-plus-live-3.png'],
     2: ['bein Sports 2', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_2_Australia.png'],
     3: ['bein Sports 3', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_3_Australia.png'],
     4: ['bein Sports MAX 4', 'https://r2.thesportsdb.com/images/media/channel/logo/BeIn_Sports_Max_4.png'],
@@ -254,7 +256,8 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    allUrls = [(sUrl % a) for a in (2, 4, 3, 1)]
+#    allUrls = [(sUrl % a) for a in (2, 4, 3, 1)]
+    allUrls = [(sUrl % a) for a in (4, 3, 1)]
     numLien = 1
     oOutputParameterHandler = cOutputParameterHandler()
     for sHostUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
@@ -305,12 +308,10 @@ def getHosterIframe(url, referer):
         oRequestHandler.addHeaderEntry('Referer', referer)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = str(oRequestHandler.request())
-
     if not sHtmlContent or sHtmlContent == 'False':
         return False
 
     referer = oRequestHandler.getRealUrl()
-    
     return getUrl(sHtmlContent, referer)
 
 
@@ -342,6 +343,7 @@ def getUrl(sHtmlContent, referer):
                     return code + '|Referer=' + referer
             except Exception as e:
                 pass
+
     
     sPattern = r'<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -366,6 +368,26 @@ def getUrl(sHtmlContent, referer):
         if aResult:
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return sHosterUrl + '|referer=' + referer
+
+
+    sPattern = r"window\._econfig\s*=\s*['\"]([^'\"]+)['\"]"
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        config = decode_econfig(aResult[0])
+        url = config.get("stream_url_nop2p", None)
+        if not url:
+            url = config.get("stream_url", None)
+        if url:
+            return url + '|Referer=' + referer
+
+    
+    sPattern = r'streamUrls = (\[.+?\])'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        links = eval(aResult[0])
+        for url in links:
+            if '.m3u8' in url:
+                return url + '|Referer=' + referer
 
     sPattern = r'var.+?src *= *["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -492,3 +514,34 @@ def reveal_pipe_split(html):
         keywords = result[1].split('|')
         text += re.sub('([0-9a-zA-Z]+)',replaceNumber, mask)
     return text
+
+
+def decode_econfig(encoded):
+    # 1. Premier Base64
+    data = base64.b64decode(encoded).decode("utf-8")
+
+    # 2. Découpage en 4 parties
+    chunk_size = (len(data) + 3) // 4
+    chunks = [
+        data[i * chunk_size:(i + 1) * chunk_size]
+        for i in range(4)
+    ]
+
+    # 3. Suppression du 4e caractère de chaque partie
+    #    puis Base64 individuel
+    order = [2, 0, 3, 1]
+    decoded_chunks = [None] * 4
+    for i in range(4):
+        chunk = chunks[i]
+        chunk = chunk[:3] + chunk[4:]
+        decoded_chunks[order[i]] = base64.b64decode(chunk).decode("utf-8")
+
+    # 4. Concaténation
+    data = "".join(decoded_chunks)
+
+    # 5. Dernier Base64
+    data = base64.b64decode(data).decode("utf-8")
+
+    # 6. JSON
+    return json.loads(data)
+

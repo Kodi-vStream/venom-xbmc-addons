@@ -125,7 +125,7 @@
         "elitegol": {
             "label": "Elitegol",
             "active": "True",
-            "url": "https://bolaloca.my/",
+            "url": "https://zonalive.click/",
             "url_link": "player/%d"
         },
         "extreme_down": {
@@ -300,7 +300,7 @@
             "url_api": "https://api.purstream.ad/api/v1/",
             "url": "https://purstream.ad/"
         },
-        "radio": {
+		"radio": {
             "label": "Radio",
             "active": "True",
             "url": ""
