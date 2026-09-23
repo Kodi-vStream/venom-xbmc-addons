@@ -584,7 +584,7 @@ def showLiveTV(sSearch = ''):
                                     end_str = datetime.fromtimestamp(e_time).strftime('%H:%M')
                                     remaining_min = max(0, int((e_time - now_time) / 60))
                                     
-                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR](%s - %s | Reste %s min)[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
+                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR]%s - %s | Reste %s min[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
                             except Exception:
                                 pass
                                 

@@ -137,27 +137,27 @@ class cPlayer(xbmc.Player):
         mpd |= '&ct=6&' in sUrl     # mpd venant de ok.ru, n'a pas d'extension
         if mpd:
             if isKrypton() == True:
-                if '|' in sUrl:
-                    item.setPath(sUrl.split('|')[0])
-                    headers_sUrl = sUrl.split('|')[-1:][0]
-                    if 'user-agent' not in headers_sUrl.lower():
-                        headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&' + headers_sUrl
-                    if "Accept=" not in headers_sUrl:
-                        headers_sUrl += "&Accept=%2A%2F%2A"
-                else:
-                    headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A'
-
-                addonManager().enableAddon('inputstream.adaptive')
-                item.setProperty('inputstream', 'inputstream.adaptive')
-                if '.m3u8' in sUrl:
-                    item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-                else:
-                    item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-                item.setProperty('inputstream.adaptive.stream_headers', headers_sUrl)
-                item.setProperty("inputstream.adaptive.manifest_headers", headers_sUrl)
-                item.setProperty("inputstream.adaptive.common_headers", headers_sUrl)
+                if addonManager().enableAddon('inputstream.adaptive'):
+                    VSlog('Player use inputstream addon')
+                    if '|' in sUrl:
+                        #item.setPath(sUrl.split('|')[0])
+                        headers_sUrl = sUrl.split('|')[-1:][0]
+                        if 'user-agent' not in headers_sUrl.lower():
+                            headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&' + headers_sUrl
+                        if "Accept=" not in headers_sUrl:
+                            headers_sUrl += "&Accept=%2A%2F%2A"
+                    else:
+                        headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A'
+    
+                    item.setProperty('inputstream', 'inputstream.adaptive')
+                    if '.m3u8' in sUrl:
+                        item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                    else:
+                        item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                    item.setProperty('inputstream.adaptive.stream_headers', headers_sUrl)
+                    item.setProperty("inputstream.adaptive.manifest_headers", headers_sUrl)
+                    item.setProperty("inputstream.adaptive.common_headers", headers_sUrl)
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
-                VSlog('Player use inputstream addon')
             else:
                 dialog().VSerror('Nécessite kodi 17 minimum')
                 return
