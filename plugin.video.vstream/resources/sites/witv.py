@@ -90,23 +90,26 @@ def showLink():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    aResult = oParser.parse(sHtmlContent, '<iframe src="([^"]+)')
+    aResult = oParser.parse(sHtmlContent, '<iframe src="([^"]*)" data-src="([^"]+)')
 
     if aResult[0]:
-        for sHosterUrl in aResult[1]:
-            if sHosterUrl[0] == '/':
+        for links in aResult[1]:
+            sHosterUrl = links[0]
+            if not sHosterUrl:
+                sHosterUrl = links[1]
+            if sHosterUrl.startswith('/'):
                 sHosterUrl = URL_MAIN[0:-1] + sHosterUrl
             
             oRequestHandler = cRequestHandler(sHosterUrl)
             sHtmlContent = oRequestHandler.request()
-    
+
             urlM3u = None
             
             aResult = oParser.parse(sHtmlContent, 'm3u8Url = "([^"]+)')
             if aResult[0]:
                 urlM3u = aResult[1][0] + '&_t=' + str(round(time.time() * 1000))
             else:
-                aResult = oParser.parse(sHtmlContent, 'streamUrl = "([^"]+)')
+                aResult = oParser.parse(sHtmlContent, 'streamUrl *= *"([^"]+)')
                 if aResult[0]:
                     sHosterUrl = aResult[1][0]
                     sHosterUrl2 = None

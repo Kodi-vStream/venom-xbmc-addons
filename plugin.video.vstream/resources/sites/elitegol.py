@@ -256,8 +256,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-#    allUrls = [(sUrl % a) for a in (2, 4, 3, 1)]
-    allUrls = [(sUrl % a) for a in (4, 3, 1)]
+    allUrls = [(sUrl % a) for a in (1, 3, 4)]
     numLien = 1
     oOutputParameterHandler = cOutputParameterHandler()
     for sHostUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
