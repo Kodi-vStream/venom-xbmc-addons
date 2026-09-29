@@ -1,5 +1,11 @@
 {
     "sites": {
+        "_1jour1film": {
+            "label": "1jour1film",
+            "active": "True",
+            "site_info": "https://1jour1film2026.site/go/",
+            "url": "https://1jour1film0726.site/"
+        },
         "_1seriestreaming": {
             "label": "1 SerieStreaming",
             "active": "False",
