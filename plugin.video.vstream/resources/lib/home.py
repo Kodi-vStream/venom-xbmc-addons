@@ -588,6 +588,14 @@ class cHome:
         oSolver.get()
 
 
+    # fenetre de dons utilisable depuis l'accueil    
+    def showDonationHome(self):
+        import xbmc
+        xbmc.executebuiltin('ActivateWindow(%d)' % 10025)
+        self.showDonation()
+        xbmc.executebuiltin('AlarmClock(goHome,ActivateWindow(Home),00:01,silent)')
+
+
     def showHostDirect(self):  # fonction de recherche
         oGui = cGui()
         sUrl = oGui.showKeyBoard(heading=self.addons.VSlang(30045))

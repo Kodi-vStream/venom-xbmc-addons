@@ -144,22 +144,30 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
         okDialog = kwargs.get('okDialog')
+        text = kwargs.get('msg')
+        self.cancelled = False
 
         bg_image = 'special://home/addons/plugin.video.vstream/resources/art/background.png'
-
         self.ctrlBackground = xbmcgui.ControlImage(0, 0, 1280, 720, bg_image)
-        self.cancelled = False
         self.addControl(self.ctrlBackground)
 
-        self.strActionInfo = xbmcgui.ControlTextBox(50, 20, 1180, 400, 'font40', '0xFFE0AAFF')
-        self.strActionInfo.setText(kwargs.get('msg'))
+        self.strActionInfo = xbmcgui.ControlLabel(50, 20, 1180, 400, text, 'font30', '0xFFFFFFFF')
         self.addControl(self.strActionInfo)
 
         self.img = xbmcgui.ControlImage(500, 250, 280, 280, str(self.cptloc))
         self.addControl(self.img)
 
         if okDialog:
-            self.Yesbutton = xbmcgui.ControlButton(640 - 50, 620, 100, 50, 'OK', alignment=2)
+            self.Yesbutton = xbmcgui.ControlButton(
+                590, 620, 100, 50,
+                'OK',
+                alignment=2,
+                font='font13',
+                textColor='0xFF9999CC',
+                disabledColor='0xFFFFFFFF',
+                focusedColor='0xFF5555CC',
+                shadowColor='0xFF000000'
+                )
             self.addControl(self.Yesbutton)
         else:
             self.Yesbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'OK', alignment=2)
