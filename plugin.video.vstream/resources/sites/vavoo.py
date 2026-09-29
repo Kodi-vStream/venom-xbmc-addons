@@ -88,7 +88,7 @@ def getAuthSignature():
                         return sig
             except Exception:
                 pass
-    return ""
+    return ''
 
 
 def load():
@@ -584,12 +584,12 @@ def showLiveTV(sSearch = ''):
                                     end_str = datetime.fromtimestamp(e_time).strftime('%H:%M')
                                     remaining_min = max(0, int((e_time - now_time) / 60))
                                     
-                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR]%s - %s | Reste %s min[/COLOR]\n' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
+                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR]%s - %s | Reste %s min[/COLOR]' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
                             except Exception:
                                 pass
                                 
                     if prog_desc:
-                        sDesc += '[COLOR white]%s[/COLOR]\n' % prog_desc[:300]
+                        sDesc += '[COLOR white]%s[/COLOR]' % prog_desc[:300]
                 
                     if len(epg_data) > 1:
                         next_item = epg_data[1]
@@ -623,10 +623,13 @@ def showLiveTV(sSearch = ''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrlPlay)
                 oOutputParameterHandler.addParameter('sMovieTitle', raw_title)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sThumb', sIcon)
+                
                 oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, sDesc, oOutputParameterHandler)
 
         if not sCursor:
-            next_cursor = data.get('nextCursor', 0)
+            next_cursor = data.get('nextCursor', 0) or data.get('next')
             if next_cursor and int(next_cursor) > 0:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -644,6 +647,7 @@ def playLiveTV():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     
     try:
         signature = getAuthSignature()
@@ -652,7 +656,7 @@ def playLiveTV():
 
     headers = {
         "user-agent": "MediaHubMX/2",
-        "accent": "application/json",
+        "accept": "application/json",
         "content-type": "application/json; charset=utf-8",
         "accept-encoding": "gzip",
         "mediahubmx-signature": signature,
@@ -693,15 +697,16 @@ def playLiveTV():
 
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName("VavooLive")
+                oGuiElement.setDescription(sDesc)
                 oGuiElement.setTitle(sTitle if sTitle else "Live TV")
                 oGuiElement.setMediaUrl(playable_url)
                 if sThumb:
                     oGuiElement.setIcon(sThumb)
+                    oGuiElement.setThumbnail(sThumb)
 
                 oPlayer = cPlayer()
                 oPlayer.clearPlayList()
                 oPlayer.addItemToPlaylist(oGuiElement)
-                
                 oPlayer.startPlayer()
                 return
 
