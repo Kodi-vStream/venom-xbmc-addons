@@ -115,10 +115,9 @@
             "site_info": "https://fstream.info/",
             "url": "https://fs27.lol/"
         },
-        "french_stream_lol": {
-            "label": "French-stream-lol",
-            "active": "False",
-            "cloudflare": "True",
+        "french_stream_clone": {
+            "label": "French-stream (Clone)",
+            "active": "True",
             "url": "https://french-stream.net/"
         },
         "frenchanimes": {
