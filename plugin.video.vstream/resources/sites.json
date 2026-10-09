@@ -113,7 +113,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs27.lol/"
+            "url": "https://fs07.lol/"
         },
         "french_stream_clone": {
             "label": "French-stream (Clone)",
@@ -139,7 +139,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://kambad.com/"
+            "url": "https://vrobak.com/"
         },
         "kzstream": {
             "label": "kzstream",
