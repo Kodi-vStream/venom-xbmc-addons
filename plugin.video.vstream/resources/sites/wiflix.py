@@ -421,18 +421,17 @@ def showHostersEpisode():
     sEnd = '</div>'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-
-    sPattern = "loadVideo\('([^']+)"
+    sPattern = '<a data-v="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-
     if aResult[0]:
+        import base64
+        import codecs
         for aEntry in aResult[1]:
-            sDisplayTitle = sMovieTitle
-            sHosterUrl = aEntry
+            link = base64.b64decode(aEntry)
+            sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster:
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
@@ -449,16 +448,19 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = "loadVideo\('([^']+)"
+    sPattern = '<a data-v="([^"]+)".+?span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+        import base64
+        import codecs
         for aEntry in aResult[1]:
-            sDisplayTitle = sMovieTitle
-            sHosterUrl = aEntry
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            sHoster = aEntry[1]
+            oHoster = cHosterGui().checkHoster(sHoster)
             if oHoster:
-                oHoster.setDisplayName(sDisplayTitle)
+                link = base64.b64decode(aEntry[0])
+                sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
