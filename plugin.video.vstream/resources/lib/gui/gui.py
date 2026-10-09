@@ -898,9 +898,8 @@ class cGui:
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)
                 xbmc.executebuiltin('Container.Update(%s)' % sTest)
             except:
-                return False
+                pass
 
-        return False
 
     def selectPage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
