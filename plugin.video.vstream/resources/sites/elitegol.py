@@ -256,7 +256,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    allUrls = [(sUrl % a) for a in (1, 3, 4)]
+    allUrls = [(sUrl % a) for a in (4, 3, 1, 2)]
     numLien = 1
     oOutputParameterHandler = cOutputParameterHandler()
     for sHostUrl in allUrls:  # on parcourt les liens à l'envers car le premier n'est pas le meilleur
@@ -343,7 +343,6 @@ def getUrl(sHtmlContent, referer):
             except Exception as e:
                 pass
 
-    
     sPattern = r'<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -368,7 +367,6 @@ def getUrl(sHtmlContent, referer):
             sHosterUrl = aResult[0].replace('"', '').replace(',', '').replace('\\', '').replace('////', '//')
             return sHosterUrl + '|referer=' + referer
 
-
     sPattern = r"window\._econfig\s*=\s*['\"]([^'\"]+)['\"]"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -379,8 +377,7 @@ def getUrl(sHtmlContent, referer):
         if url:
             return url + '|Referer=' + referer
 
-    
-    sPattern = r'streamUrls = (\[.+?\])'
+    sPattern = r'streamUrls *= *(\[.+?\])'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         links = eval(aResult[0])
