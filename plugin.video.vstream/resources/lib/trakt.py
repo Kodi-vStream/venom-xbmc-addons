@@ -50,6 +50,11 @@ class cTrakt:
         self.__sType = ''
 
     def getToken(self):
+        # Sécurité : Évite la boucle au démarrage si aucune clé API n'est définie
+        if not API_KEY or API_KEY.strip() == '':
+            self.DIALOG.VSok("Trakt", "Clé API Trakt manquante. Veuillez mettre à jour l'extension.")
+            return False
+            
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -60,7 +65,10 @@ class cTrakt:
         total = len(sHtmlContent)
 
         if (total > 0):
-            sText = (self.ADDON.VSlang(30304)) % (sHtmlContent['verification_url'], sHtmlContent['user_code'])
+            # Récupération sécurisée de l'URL de vérification
+            sVerificationUrl = sHtmlContent.get('verification_url', sHtmlContent.get('verification_url_complete', 'https://trakt.tv/activate'))
+            sUserCode = sHtmlContent.get('user_code', '')
+            sText = (self.ADDON.VSlang(30304)) % (sVerificationUrl, sUserCode)
 
             oDialog = self.DIALOG.VSyesno(sText)
             if (oDialog == 0):
