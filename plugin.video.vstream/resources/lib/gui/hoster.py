@@ -8,7 +8,17 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import dialog, addon, VSlog
 
+def GetIDFromUrl(url):
+    if '/v/' in url:
+        return url.split('/v/', 1)[1]
+    elif '/e/' in url:
+        return url.split('/e/', 1)[1]
+    elif '=' in url:
+        return url.split('=', 1)[0]
 
+    return ''
+
+    
 class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
@@ -236,7 +246,7 @@ class cHosterGui:
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'dustreaming', 'viki', 'flix555', 'onlystream', 'filemoon',
                             'upstream', 'pstream', 'vudeo', 'vidia', 'streamtape', 'vidbem', 'uplea', 'vido', 'vidmoly', 'vidsonic',
-                            'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
+                            'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'smoothpre',
                             'tomacloud', 'videovard', 'viewsb', 'yourvid', 'vf-manga', 'darkibox', 'mustardshock', 'lulustream',
                             'daisukianime', 'xtremestream', 'gofile', 'firestream', 'vevv', 'ansembed']
 
@@ -405,30 +415,43 @@ class cHosterGui:
 
         # Si on a rien trouvé mais que le lien semble valide (ex: /e/ dans l'URL)
         if ("/e/" in fullURL) or ("/v/" in fullURL) or ("?id=" in fullURL) :
+
+            sHosterUrl2 = None
+
             try:
                 from resources.lib.handler.requestHandler import cRequestHandler
+
                 oRequest = cRequestHandler(fullURL)
+                #oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+                #oRequest.addHeaderEntry('Accept', '*/*')
+                #oRequest.addHeaderEntry('Referer', fullURL)
                 html = oRequest.request()
-                sHosterUrl2 = None
+                
+                if not html:
+                    url = oRequest.getRealUrl()
+                    if url:
+                        sHosterUrl2 = url
+
                 import re
+
                 if 'content="VOE">' in html or re.search(r'voe', html, re.I):
                     # Reconstruit l'URL pour voe
                     sHosterUrl2 = 'https://voe.com/%s' % (fullURL.split('/e/', 1)[1])
                 elif 'filemoon' in html or 'filmoon' in html or 'Byse' in html:
-                    sHosterUrl2 = 'https://filemoon.com/%s' % (fullURL.split('/e/', 1)[1])
+                    sHosterUrl2 = 'https://filemoon.com/%s' % (GetIDFromUrl(fullURL))
                 elif 'vidhide' in html:
-                    sHosterUrl2 = 'https://earnvids.com/%s' % (fullURL.split('/v/', 1)[1])
-                elif 'guardstorage' in html:
-                    sHosterUrl2 = 'https://vidguard.com/%s' % (fullURL.split('/e/', 1)[1])
+                    sHosterUrl2 = 'https://earnvids.com/%s' % (GetIDFromUrl(fullURL))
                 elif 'vidara' in html:
-                    sHosterUrl2 = 'https://vidara.to/e/%s' % (fullURL.split('=', 1)[0])
+                    sHosterUrl2 = 'https://vidara.to/e/%s' % (GetIDFromUrl(fullURL))
+                elif 'guardstorage' in html:
+                    sHosterUrl2 = 'https://vidguard.com/%s' % (GetIDFromUrl(fullURL))
                 elif 'Redirecting...' in html:
                     urlMatch = re.search(r"window\.location\.href\s*=\s*'([^']+)", html)
                     if urlMatch:
                         sHosterUrl2 = urlMatch.group(1)
                 elif '.doodcdn' in html:
-                    sHosterUrl2 = 'https://dood.com/%s' % (fullURL.split('/e/', 1)[1])
-                    
+                    sHosterUrl2 = 'https://dood.com/%s' % (GetIDFromUrl(fullURL))
+
                 if sHosterUrl2:
                     return self.checkHoster(sHosterUrl2, debrid, tried_urls, depth+1, max_depth)
             except Exception as e:
@@ -468,7 +491,7 @@ class cHosterGui:
 
         try:
             mediaDisplay = sMediaUrl.split('/')
-            VSlog('Hoster - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
+            VSlog('Hoster - play : ' + sMediaUrl)
         except:
             VSlog('Hoster - play : ' + sMediaUrl)
 
