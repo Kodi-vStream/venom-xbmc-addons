@@ -404,7 +404,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
 
         # Si on a rien trouvé mais que le lien semble valide (ex: /e/ dans l'URL)
-        if ("/e/" in fullURL) or ("/v/" in fullURL):
+        if ("/e/" in fullURL) or ("/v/" in fullURL) or ("?id=" in fullURL) :
             try:
                 from resources.lib.handler.requestHandler import cRequestHandler
                 oRequest = cRequestHandler(fullURL)
@@ -420,6 +420,8 @@ class cHosterGui:
                     sHosterUrl2 = 'https://earnvids.com/%s' % (fullURL.split('/v/', 1)[1])
                 elif 'guardstorage' in html:
                     sHosterUrl2 = 'https://vidguard.com/%s' % (fullURL.split('/e/', 1)[1])
+                elif 'vidara' in html:
+                    sHosterUrl2 = 'https://vidara.to/e/%s' % (fullURL.split('=', 1)[0])
                 elif 'Redirecting...' in html:
                     urlMatch = re.search(r"window\.location\.href\s*=\s*'([^']+)", html)
                     if urlMatch:
