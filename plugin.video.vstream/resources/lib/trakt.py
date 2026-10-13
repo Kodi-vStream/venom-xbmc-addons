@@ -975,6 +975,10 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + maxResult)
                 oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page suivante', oOutputParameterHandler)  
 
+        # Libération immédiate de la mémoire et des fichiers fermés pour éviter les fuites de RAM
+        import gc
+        gc.collect()
+        
         if bNext:
             oGui.setEndOfDirectory()
 
