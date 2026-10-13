@@ -162,7 +162,7 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
                 590, 620, 100, 50,
                 'OK',
                 alignment=2,
-                font='font13',
+                font='font30',
                 textColor='0xFF9999CC',
                 disabledColor='0xFFFFFFFF',
                 focusedColor='0xFF5555CC',

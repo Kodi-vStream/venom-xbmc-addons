@@ -23,16 +23,16 @@ key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
 
 # Pour les Films
-MOVIE_NEWS = (URL_MAIN + 'films-gratos/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films-en-stream/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + key_popular_movies, 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films-gratos/', 'showGenres')
+MOVIE_GENRES = (URL_MAIN + 'films-en-stream/', 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 # Pour les Series
-SERIE_NEWS = (URL_MAIN + 'series-gratos/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series-gratos/', 'showSeriesGenres')
-SERIE_VF = (URL_MAIN + 'series-gratos/series-vf/', 'showMovies')
-SERIE_VOSTFR = (URL_MAIN + 'series-gratos/series-vostfr/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-en-stream/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'series-en-stream/', 'showSeriesGenres')
+SERIE_VF = (URL_MAIN + 'series-en-stream/series-vf/', 'showMovies')
+SERIE_VOSTFR = (URL_MAIN + 'series-en-stream/series-vostfr/', 'showMovies')
 SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')

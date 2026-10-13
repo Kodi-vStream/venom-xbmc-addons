@@ -47,7 +47,7 @@ def showMovies():
             sTitle2 = matche['away']['name']
             if sTitle2:
                 sTitle += ' / ' + sTitle2
-            sUrl = '?action=stream&slug=' + matche['slug']
+            sUrl = '?action=stream&id=' + matche['id']
             sDate = matche['date']
             sTime = matche['time']
             sThumb = matche['compLogo']

@@ -10,6 +10,13 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.2.3 - 13/10/2026 ***
+- Wiflix : Retour des liens
+- LiveWatch : Retour des liens
+- EliteGol : Retour des liens
+- Vidzy : Correction de ce hoster
+- Ensembed : Nouveau hoster
+
 *** 4.2.0 - 22/09/2026 ***
 - Vavoo : Intégration de la source VAVOO : chaines en direct
 - KZStream : Nouvelle source de liens sportif

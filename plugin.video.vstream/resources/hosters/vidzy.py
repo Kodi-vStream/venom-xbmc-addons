@@ -20,15 +20,17 @@ class cHoster(iHoster):
     def __getHost(self,url):
         parts = self._url.split('//', 1)
         host = parts[1].split('/', 1)[0]
-        VSlog(host)
         return host
 
     def _getMediaLinkForGuest(self):
         api_call = ''
+        host = self.__getHost(self._url)
 
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
+        
         sHtmlContent = oRequest.request()
+        
         oParser = cParser()
 
         # essai un unpack
@@ -58,28 +60,35 @@ class cHoster(iHoster):
                         hashCode = '-'.join(hashCode[::-1])
                     
                     api_call = 'https://%s.vidzy.org/%s/%02d/%05d/%s/master.m3u8?t=%s&s=%s&e=%s&f=%s&i=0.0&sp=0' % (p[4], p[8], int(p[3]), int(p[2]), p[7], hashCode, p[0], p[5], p[1])
-                    # https://v4.vidzy.org/hls2/03/00024/hyjs6o5v8hct_n/master.m3u8?t=WCz8e4sUtTyDoLaTT9uHLMql01Z1QnclnTnRXrKI5UI&s=1764809497&e=172800&f=123080&i=0.0&sp=0
 
         # New method ?
         if not api_call:
-            sPattern = 'sources:\s*\[{src:\s*\(function\(s\).+?\}\)\("([^"]+)"\)'
+            sPattern = 'try{\(function\(\){var .="([^"]+).+?if\(BC!==([0-9]+)\)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
-                VSlog(aResult[1])
-                api_call = decode_source(aResult[1][0], self.__getHost(self._url))
-                VSlog(api_call)
+                #VSlog(aResult[1][0][0])
+                #VSlog(aResult[1][0][1])
+
+                api_call = decode_source(aResult[1][0][0], host, int(aResult[1][0][1]))
+                #VSlog(api_call)
 
         if api_call:
-            return True, api_call + '|User-Agent=' + UA + '&referer=' + self._url
+            api_call = api_call + '|User-Agent=' + UA + '&referer=https://' + self.__getHost(self._url)
+            #api_call = api_call + '&Cookie=' + cookies
+            return True, api_call
 
         return False, False
 
 
 #From https://github.com/Gujal00/ResolveURL
-def decode_source(blob, host):
+def decode_source(blob, host, dec):
     # the player keeps the source reversed, xored and base64 encoded, with
     # the xor key seeded from the hostname the page is served from, so the
     # seed has to be taken from the host instead of being hardcoded
+    
+    if len(blob) % 4 != 0:
+        blob += '=' * (-len(blob) % 4)
+        
     seed = 0
     for c in host:
         seed = (seed + ord(c)) & 255
@@ -88,5 +97,5 @@ def decode_source(blob, host):
     source = ''
     for i in range(len(raw)):
         b = raw[i] if isinstance(raw[i], int) else ord(raw[i])
-        source += chr(b ^ ((0x3d + i * 89 + seed) & 255))
+        source += chr(b ^ ((0x3d + i * 89 + seed + dec) & 255))
     return source
