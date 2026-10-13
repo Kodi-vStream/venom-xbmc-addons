@@ -10,6 +10,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from time import sleep
 
 
 SITE_IDENTIFIER = 'livewatch'
@@ -20,7 +21,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_API = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_api')
 
 SPORT_SPORTS = ('sport', 'showGenresTV')
-#SPORT_GENRES = ('/api/sports', 'showGenres')
+#SPORT_GENRES = ('sports/matches', 'showGenres')
 #SPORT_LIVE = ('json.php', 'showMovies')
 SPORT_TV = ('sport', 'showGenresTV')
 DOC_TV = ('doc', 'showGenresTV')
@@ -92,7 +93,7 @@ def load():
 
     # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Par genres', 'genre_sport.png', oOutputParameterHandler)
-    #
+    
     # oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     # oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'En cours', 'replay.png', oOutputParameterHandler)
 
@@ -101,13 +102,20 @@ def load():
 
 def showGenres():
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_API + 'sports')
-    links = oRequestHandler.request(jsonDecode=True)
+    oInputParameterHandler = cInputParameterHandler()
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle in sorted(links['sports']):
-        sDisplayTitle = sTitle.capitalize().replace('-', ' ')
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showSports', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    oRequestHandler = cRequestHandler(URL_API + sUrl)
+    try:
+        links = oRequestHandler.request(jsonDecode=True)
+        for sTitle in sorted(links['sports']):
+            siteUrl = sUrl + '?sport=' + sTitle
+            sDisplayTitle = sTitle.capitalize().replace('-', ' ')
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addDir(SITE_IDENTIFIER, 'showSports', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+    except:
+        pass
 
     oGui.setEndOfDirectory()
 
@@ -201,50 +209,57 @@ def showTV():
 
 def showSports():
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_API + 'sports')
+    oInputParameterHandler = cInputParameterHandler()
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(URL_API + siteUrl)
     links = oRequestHandler.request(jsonDecode=True)
 
-    oInputParameterHandler = cInputParameterHandler()
-    sGenreTitle = oInputParameterHandler.getValue('sMovieTitle')
-
     oOutputParameterHandler = cOutputParameterHandler()
+    
     for sports in links['events']:
-        sSportGenre = sports['sport']
-        if sSportGenre != sGenreTitle:
-            continue
+#        sSportGenre = sports['sport']
+        # if sSportGenre != sGenreTitle:
+        #     continue
 
         sTitle = sports['title']
-        sTitleID = sports['id']
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('siteUrl', sTitleID)
-        oGui.addDir(SITE_IDENTIFIER, 'showLinks', sTitle, 'sport.png', oOutputParameterHandler)
+        isLive = sports['isLive']
+        sDisplayTitle = sTitle
+        if isLive:
+            sDisplayTitle += ' [COLOR limegreen] - EN COURS[/COLOR]'
+        sources = sports['sources']
+        for source in sources:
+            siteUrl = 'sports/streams?source=%s&id=%s' % (source['source'], source['id'])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showLinks', sTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showLinks():
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_API + 'sports')
-    links = oRequestHandler.request(jsonDecode=True)
 
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sTitleId = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    # oRequestHandler = cRequestHandler(URL_API + sUrl)
+    # links = oRequestHandler.request(jsonDecode=True)
+    links = getWithGrant(sUrl)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sports in links['events']:
-        sportId = sports['id']
-        if sTitleId != sportId:
-            continue
-        
-        for source in sports['sources']:
-            sourceName = source['source']
-            hostId = source['id']
-            sHostUrl = 'action=streams&id=%s&source=%s' % (hostId, sourceName)
+    if 'streams' in links:
+        for link in links['streams']:
+            lang = link['language']
+            isHD = link['hd']
+            sHostUrl = link['embedUrl']
+    
             oOutputParameterHandler.addParameter('siteUrl', sHostUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            sDisplayTitle = '%s [%s]' % (sTitle, sourceName)
-            oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
+            sDisplayTitle = '%s [%s] (%s)' % (sTitle, 'HD' if isHD else '', lang)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -280,10 +295,8 @@ def showHoster():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    
-    sUrl = URL_API + sUrl
-    oRequestHandler = cRequestHandler(sUrl)
-    links = oRequestHandler.request(jsonDecode=True)
+
+    links = getWithGrant(sUrl)
     if 'proxy_url' in links:
         sHosterUrl = URL_MAIN[:-1] + links['proxy_url']
         oHoster = oHosterGui.getHoster('lien_direct')
@@ -295,3 +308,38 @@ def showHoster():
             oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
+
+def getWithGrant(sUrl):
+    data = ''
+    oRequestHandler = cRequestHandler(URL_API + 'play/ticket')
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    try:
+        ret = oRequestHandler.request(jsonDecode=True)
+    except:
+        ret=''
+
+    if 'ticket' in ret:
+        sleep(2)
+        oRequestHandler = cRequestHandler(URL_API + 'play/grant')
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addJSONEntry('ticket', ret["ticket"])
+        try:
+            ret = oRequestHandler.request(jsonDecode=True)
+        except:
+            ret=''
+
+        if ret:
+            oRequestHandler = cRequestHandler(URL_API + sUrl)
+            oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('X-Play-Grant', ret["grant"])
+            try:
+                data = oRequestHandler.request(jsonDecode=True)
+            except:
+                pass
+    return data
+
