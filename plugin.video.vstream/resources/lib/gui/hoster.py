@@ -491,7 +491,7 @@ class cHosterGui:
 
         try:
             mediaDisplay = sMediaUrl.split('/')
-            VSlog('Hoster - play : ' + sMediaUrl)
+            VSlog('Hoster - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
         except:
             VSlog('Hoster - play : ' + sMediaUrl)
 
