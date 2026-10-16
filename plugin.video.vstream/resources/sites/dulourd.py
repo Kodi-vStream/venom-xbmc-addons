@@ -293,7 +293,7 @@ def showSerieLinks():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    cook = oRequestHandler.GetCookies()
+#    cook = oRequestHandler.GetCookies()
 
     sPattern = 'fx-row" onclick="getxfield\(this, \'(\d+)\', \'(.+?)\', \'(.+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -326,7 +326,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
-            oOutputParameterHandler.addParameter('cook', cook)
+#            oOutputParameterHandler.addParameter('cook', cook)
             oOutputParameterHandler.addParameter('postdata', postdata)
             oOutputParameterHandler.addParameter('sHost', hosterName)
             oOutputParameterHandler.addParameter('sLang', sLang)
