@@ -8,9 +8,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import urlHostName, cUtil
 
 import re
+import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -35,10 +36,25 @@ FUNCTION_SEARCH = 'showSearch'
 def getUrlMain():
     siteInfo = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'site_info')
     if siteInfo:
+        oParser = cParser()
         oRequestHandler = cRequestHandler(siteInfo)
         sHtmlContent = oRequestHandler.request()
-        sPattern = "location.href='(.+?)'"
-        oParser = cParser()
+
+        sPattern = "location.href *= *atob\(([^\)]+)"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            payload = aResult[1][0]
+            sPattern = '%s *= *"([^\"]+)' % payload
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                import base64
+                sUrl = base64.b64decode(aResult[1][0])
+                sUrl = str(sUrl).strip("b'")
+                if not sUrl.endswith('/'):
+                    sUrl = sUrl + '/'
+                return sUrl
+
+        sPattern = "location.href *= *'(.+?)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sUrl = aResult[1][0]
@@ -417,23 +433,38 @@ def showHostersEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sStart = '<div class="%s"' % sID
-    sEnd = '</div>'
-    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-
-    sPattern = '<a data-v="([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        import base64
-        import codecs
-        for aEntry in aResult[1]:
-            link = base64.b64decode(aEntry)
-            sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sPattern = 'fx_k="([^"]+)'
+    aResult_fx = oParser.parse(sHtmlContent, sPattern)
+    if aResult_fx[0]:
+        fx_k = aResult_fx[1][0]
+        sStart = '<div class="%s"' % sID
+        sEnd = '</div>'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        sPattern = '<a data-v="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    
+        if aResult[0]:
+            baseURL = urlHostName(sUrl)
+            sUrlDecode = 'https://%s/ajax_player.php' % baseURL
+    
+            oRequest = cRequestHandler(sUrlDecode)
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('Referer', sUrl)
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            postdata = 'k=%s&b=1&v=' % fx_k
+            
+            for aEntry in aResult[1]:
+                oRequest.addParametersLine(postdata + aEntry)
+                ret = oRequest.request()
+                if ret.startswith('{'):
+                    ret = json.loads(ret)
+                    sHosterUrl = ret.get('u', '')
+                    if sHosterUrl:
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if oHoster:
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -448,20 +479,37 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a data-v="([^"]+)".+?span>([^<]+)'
+    sPattern = '<a data-v="([^"]+)".+?span data-n="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        import base64
-        import codecs
-        for aEntry in aResult[1]:
-            sHoster = aEntry[1]
-            oHoster = cHosterGui().checkHoster(sHoster)
-            if oHoster:
-                link = base64.b64decode(aEntry[0])
-                sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        sPattern = 'fx_k="([^"]+)'
+        aResult_fx = oParser.parse(sHtmlContent, sPattern)
+        if aResult_fx[0]:
+            fx_k = aResult_fx[1][0]
+            baseURL = urlHostName(sUrl)
+            sUrlDecode = 'https://%s/ajax_player.php' % baseURL
+    
+            oRequest = cRequestHandler(sUrlDecode)
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('Referer', sUrl)
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            postdata = 'k=%s&b=1&v=' % fx_k
+            
+            import base64
+            for aEntry in aResult[1]:
+                sHoster = base64.b64decode(aEntry[1])
+                sHoster = str(sHoster).strip("b'")
+                oHoster = cHosterGui().checkHoster(sHoster)
+                if oHoster:
+                    oRequest.addParametersLine(postdata + aEntry[0])
+                    ret = oRequest.request()
+                    if ret.startswith('{'):
+                        ret = json.loads(ret)
+                        sHosterUrl = ret.get('u', '')
+                        if sHosterUrl:
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
