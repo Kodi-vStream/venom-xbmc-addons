@@ -73,7 +73,7 @@ class cHoster(iHoster):
                 #VSlog(api_call)
 
         if api_call:
-            api_call = api_call + '|User-Agent=' + UA + '&referer=https://' + self.__getHost(self._url)
+            api_call += '|User-Agent=' + UA + '&Referer=https://' + host
             #api_call = api_call + '&Cookie=' + cookies
             return True, api_call
 
