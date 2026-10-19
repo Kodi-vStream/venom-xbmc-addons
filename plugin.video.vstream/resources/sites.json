@@ -42,7 +42,9 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.esq/"
+            "site_info": "https://coflix.domains/",
+            "url": "https://coflix.ac/",
+            "url_api": "https://coflix.ac/wp-json/coflix/v1/"
         },
         "cpasmal": {
             "label": "CpasMal",
