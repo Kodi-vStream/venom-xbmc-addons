@@ -157,8 +157,8 @@
         "livewatch": {
             "label": "livewatch",
             "active": "True",
-            "url": "https://livewatch.top/",
-            "url_api": "https://livewatch.top/api/"
+            "url": "https://livewatch.icu/",
+            "url_api": "https://livewatch.icu/api/"
         },
         "movix": {
             "label": "movix",
