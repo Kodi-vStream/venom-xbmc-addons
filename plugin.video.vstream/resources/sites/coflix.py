@@ -307,7 +307,8 @@ def showEpisodes():
     for episode in episodeSaison:
         numEp = episode['episode_number']
         epID = episode['id']
-        sTitle = episode['name']
+        sDisplayTitle = episode['name']
+        # sTitle = '%s S%dE%d' % (sMovieTitle, saisonSearch, numEp)
         if sTmdbId:
             sUrl = 'resolve?tmdb=%s&type=tv&season=%d&episode=%d&tid=%s' % (sTmdbId, saisonSearch, numEp, epID)
         else:
@@ -315,9 +316,9 @@ def showEpisodes():
         
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showMovieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showMovieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -351,7 +352,7 @@ def showMovieHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
