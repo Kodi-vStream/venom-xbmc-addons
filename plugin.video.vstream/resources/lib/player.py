@@ -46,6 +46,7 @@ class cPlayer(xbmc.Player):
 
         self.sSite = oInputParameterHandler.getValue('siteUrl')
         self.sSource = oInputParameterHandler.getValue('sourceName')
+        self.bUseInputstream = oInputParameterHandler.getValue('bUseInputstream')
         self.sFav = oInputParameterHandler.getValue('sourceFav')
         self.saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         self.nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
@@ -131,8 +132,9 @@ class cPlayer(xbmc.Player):
         player_conf = self.ADDON.getSetting('playerPlay')
 
         # Si lien dash, methode inputstream.adaptive en priorité
-        mpd = ".mpd" in sUrl or ".m3u8" in sUrl
-        mpd |= '&ct=6&' in sUrl     # mpd venant de ok.ru, n'a pas d'extension
+        mpd = self.bUseInputstream
+        mpd = mpd and (".mpd" in sUrl or ".m3u8" in sUrl)
+        mpd = mpd or ('&ct=6&' in sUrl)     # mpd venant de ok.ru, n'a pas d'extension
         if mpd:
             if isKrypton() == True:
                 if addonManager().enableAddon('inputstream.adaptive'):

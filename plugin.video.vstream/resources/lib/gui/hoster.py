@@ -23,7 +23,7 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
 
-    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail='', bGetRedirectUrl=False):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail='', bGetRedirectUrl=False, bUseInputstream = True):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
@@ -96,6 +96,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
+        oOutputParameterHandler.addParameter('bUseInputstream', bUseInputstream)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
         oOutputParameterHandler.addParameter('tvShowTitle', tvShowTitle)
