@@ -284,13 +284,10 @@ def showMovies(sSearch=''):
         sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
-#        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
-#            sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
-        if key_search_series in sSearch:
-#            sSearch = sSearch.replace(key_search_series, '')
+        elif key_search_series in sSearch:
             bSearchSerie = True
 
         sUrl = URL_MAIN + 'engine/ajax/search.php'
@@ -630,28 +627,25 @@ def showEpisodeLinks():
                 if sEpisode != sEpSearch:
                     continue
                 sHosterList = episodeList[sLang][sEpisode]
-                for sHosterName in sHosterList:
-                    oHoster = oHosterGui.checkHoster(sHosterName)
+                for sHosterName, sHosterUrl in sHosterList.items():
+                    if not sHosterUrl or 'uptostream' in sHosterUrl:
+                        continue
+                    if 'Player.php' in sHosterUrl:
+                        sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), sHosterName)
+                        oOutputParameterHandler = cOutputParameterHandler()
+                        oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                        oOutputParameterHandler.addParameter('sThumb', sThumb)
+                        oOutputParameterHandler.addParameter('sLang', sLang)
+                        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                        oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+                        continue
+
+                    oHoster = oHosterGui.checkHoster(sHosterUrl)
                     if oHoster:
-                        sHosterUrl = sHosterList[sHosterName]
-                        
-                        if 'uptostream' in sHosterUrl:
-                            continue
-                        
-                        if sHosterUrl:
-                            if 'Player.php' in sHosterUrl:
-                                sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), sHosterName) 
-                                oOutputParameterHandler = cOutputParameterHandler()
-                                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                                oOutputParameterHandler.addParameter('sLang', sLang)
-                                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
-                            else:
-                                sTitle = '%s (%s)' % (sMovieTitle, sLang.upper())
-                                oHoster.setDisplayName(sTitle)
-                                oHoster.setFileName(sMovieTitle)
-                                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                        sTitle = '%s (%s)' % (sMovieTitle, sLang.upper())
+                        oHoster.setDisplayName(sTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 break
         oGui.setEndOfDirectory()
         return
@@ -674,7 +668,7 @@ def showEpisodeLinks():
                     if aResultLink[0]:
                         oOutputParameterHandler = cOutputParameterHandler()
                         for sHosterName, sHosterUrl in aResultLink[1]:
-                            oHoster = oHosterGui.checkHoster(sHosterName)
+                            oHoster = oHosterGui.checkHoster(sHosterUrl)
                             if oHoster :
                                 sDisplayTitleLang =  sMovieTitle
                                 if sLang:
@@ -721,13 +715,12 @@ def showEpisodeLinks():
                     continue
 
                 sHosterList = episodeList[sLang][sEpisode]
-                for sHosterName in sHosterList:
-                    oHoster = oHosterGui.checkHoster(sHosterName)
-                    if oHoster:
-                        sHosterUrl = sHosterList[sHosterName]
-                        if sHosterUrl:
+                for sHosterUrl in sHosterList.values():
+                    if sHosterUrl:
+                        oHoster = oHosterGui.checkHoster(sHosterUrl)
+                        if oHoster:
                             if 'Player.php' in sHosterUrl:
-                                sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), sHosterName) 
+                                sDisplayTitle = '%s (%s) [COLOR skyblue]%s[/COLOR]' % (sMovieTitle, sLang.upper(), oHoster.getDisplayName()) 
                                 oOutputParameterHandler = cOutputParameterHandler()
                                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -786,11 +779,8 @@ def showMovieLinks():
                 #hosterName = aEntry[0].replace('premium', 'fsvid')
                 continue    # hoster fsvid à revoir
 
-            oHoster = oHosterGui.checkHoster(hosterName)
-            if not oHoster :
-                continue
-
             links = [] # filtre des urls en double
+            oHoster = None
             for sLang, sHosterUrl in hosterLinks.items():
             
                 if sHosterUrl in links:
@@ -800,32 +790,38 @@ def showMovieLinks():
                 sDisplayTitleLang =  sMovieTitle
                 if sLang and 'default' not in sLang:
                     sDisplayTitleLang +=  ' [%s]' % sLang.upper()
-                
-                if "flixeo" in sHosterUrl:
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.request()
-                    sHosterUrl = oRequestHandler.getRealUrl()
 
-                if 'Player.php' in sHosterUrl:
-                    sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % oHoster.getPluginIdentifier() 
+                if 'newPlayer.php' in sHosterUrl:
+                    sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % hosterName 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitleLang, sThumb, '', oOutputParameterHandler)
-                else:
-                    oHoster.setDisplayName(sDisplayTitleLang)
-                    oHoster.setFileName(sMovieTitle)
-                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    continue
+        
+                if "flixeo" in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+
+                if not oHoster :  # déterminer le host avec le premier lien
+                    oHoster = oHosterGui.checkHoster(sHosterUrl)
+                    if not oHoster:
+                        break   # tous les liens sont du même hoster
+
+                oHoster.setDisplayName(sDisplayTitleLang)
+                oHoster.setFileName(sMovieTitle)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         oGui.setEndOfDirectory()
         return
 
+    # deuxieme méthode
+
     sHtmlContent = oParser.abParse(sHtmlContent, '<div id="film-data"', 'div>')
     sPattern = 'data-([^=]+)="(https[^"]+)'
     aResultHoster = oParser.parse(sHtmlContent, sPattern)
-    
-    # deuxieme méthode
     if aResultHoster[0]:
         links = [] # filtre des urls en double
         for aEntry in aResultHoster[1]:
@@ -859,7 +855,7 @@ def showMovieLinks():
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
 
-                if 'Player.php' in sHosterUrl:
+                if 'newPlayer.php' in sHosterUrl:
                     sDisplayTitleLang += ' [COLOR skyblue]%s[/COLOR]' % oHoster.getDisplayName() 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -941,11 +937,14 @@ def showHosters():
         sHtmlContent = oRequestHandler.request()
         realUrl = oRequestHandler.getRealUrl()
         
-        if sHtmlContent and 'ID manquant' not in sHtmlContent and 'Aucun ID' not in sHtmlContent :
-            oHoster = cHosterGui().checkHoster(realUrl)
-            if oHoster:
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, realUrl, sThumb)
+        if sHtmlContent:
+            if 'ID manquant' not in sHtmlContent and 'Aucun ID' not in sHtmlContent:
+                if 'Video unavailable' not in sHtmlContent:
+                    oHosterGui = cHosterGui()
+                    oHoster = oHosterGui.checkHoster(realUrl)
+                    if oHoster:
+                        oHoster.setDisplayName(sTitle)
+                        oHoster.setFileName(sTitle)
+                        oHosterGui.showHoster(oGui, oHoster, realUrl, sThumb)
 
     oGui.setEndOfDirectory()
