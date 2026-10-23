@@ -115,7 +115,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs07.lol/"
+            "url": "https://fs26.lol/"
         },
         "french_stream_clone": {
             "label": "French-stream (Clone)",
@@ -271,7 +271,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.land/"
+            "url": "https://flemmix.studio/"
         },
         "witv": {
             "label": "wiTV",
