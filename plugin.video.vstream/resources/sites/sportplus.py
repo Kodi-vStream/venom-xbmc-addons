@@ -13,6 +13,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.util import cUtil
 import json
 
+from default import HEURE_HIVER
 
 SITE_IDENTIFIER = 'sportplus'
 SITE_NAME = 'Sport +'
@@ -24,8 +25,6 @@ URL_API = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_API')
 SPORT_SPORTS = (True, 'load')
 SPORT_GENRES = ('v3/fr/sidebar.json', 'showGenres')
 SPORT_LIVE = ('v3.1/matches/index?fw=3.1&lang=fr&offset=7200&sport_id=top', 'showLive')  # streaming Actif
-
-HEURE_HIVER = False
 
 
 def load():

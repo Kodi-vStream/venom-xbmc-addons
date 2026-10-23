@@ -17,8 +17,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import Quote, urlHostName
 
 from datetime import datetime, timedelta
-
-HEURE_HIVER = False
+from default import HEURE_HIVER
 
 
 SITE_IDENTIFIER = 'channelstream'
