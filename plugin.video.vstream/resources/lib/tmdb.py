@@ -436,15 +436,18 @@ class cTMDb:
                     movie = meta['results'][0]
 
                 else:
+                    # tri par date de sortie
+                    movies = sorted(meta['results'], key=lambda m: m.get('release_date', '1900'))
+                    
                     # premiere boucle, recherche la correspondance parfaite sur le nom
-                    for searchMovie in meta['results']:
+                    for searchMovie in reversed(movies):
                         if searchMovie['genre_ids'] and 99 not in searchMovie['genre_ids']:
                             if self._clean_title(searchMovie['title']) == self._clean_title(name):
                                 movie = searchMovie
                                 break
                     # sinon, hors documentaire et année proche
                     if not movie:
-                        for searchMovie in meta['results']:
+                        for searchMovie in reversed(movies):
                             if searchMovie['genre_ids'] and 99 not in searchMovie['genre_ids']:
 
                                 # controle supplémentaire sur l'année meme si déjà dans la requete
@@ -457,9 +460,9 @@ class cTMDb:
                                 movie = searchMovie
                                 break
 
-                    # Rien d'interessant, on prend le premier
+                    # Rien d'interessant, on prend le plus recent
                     if not movie:
-                        movie = meta['results'][0]
+                        movie = reversed(movies)[0]
 
                 # recherche de toutes les infos
                 tmdb_id = movie['id']
