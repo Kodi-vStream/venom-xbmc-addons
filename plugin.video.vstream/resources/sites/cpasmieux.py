@@ -321,8 +321,31 @@ def showMovieHosters():
         oHosterGui = cHosterGui()
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[0]
-            sHosterName = aEntry[1]
 
+            # redirection
+            if '.php?' in sHosterUrl:
+                url, params = sHosterUrl.split('?')
+                key, value = re.split('=|:', params)
+                
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.setRequestType(1)
+                oRequestHandler.addParameters(key, value)
+                oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+                sHtmlContent = oRequestHandler.request()
+                realUrl = oRequestHandler.getRealUrl()
+                
+                if sHtmlContent:
+                    if 'ID manquant' not in sHtmlContent and 'Aucun ID' not in sHtmlContent:
+                        if 'Video unavailable' not in sHtmlContent:
+                            oHosterGui = cHosterGui()
+                            oHoster = oHosterGui.checkHoster(realUrl)
+                            if oHoster:
+                                oHoster.setDisplayName(sMovieTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                oHosterGui.showHoster(oGui, oHoster, realUrl, sThumb)
+                continue
+                    
+            sHosterName = aEntry[1]
             oHoster = oHosterGui.checkHoster(sHosterName)
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
