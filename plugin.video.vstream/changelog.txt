@@ -10,6 +10,12 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.2.4 - 25/10/2026 ***
+- Wiflix : Retour des liens
+- Coflix : Retour des liens
+- animesama : Retour des liens
+- purstream : Probleme de son
+
 *** 4.2.3 - 13/10/2026 ***
 - Wiflix : Retour des liens
 - LiveWatch : Retour des liens
