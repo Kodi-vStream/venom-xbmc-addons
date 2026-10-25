@@ -31,8 +31,8 @@
         },
         "cinestream": {
             "label": "cinestream",
-            "active": "True",
-            "url": "https://cinestream.info/"
+            "active": "False",
+            "url": "https://cinestream.studio/"
         },
         "cloudproxy": {
             "label": "Proxy cloudflare",
@@ -141,7 +141,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://vrobak.com/"
+            "url": "https://sedking.com/"
         },
         "kzstream": {
             "label": "kzstream",
@@ -177,7 +177,7 @@
         },
         "otaku_attitude": {
             "label": "Otaku-Attitude",
-            "active": "True",
+            "active": "False",
             "url": "https://www.otaku-attitude.net/"
         },
         "otakufr_com": {
@@ -199,8 +199,8 @@
             "label": "Purstream",
             "active": "True",
             "site_info": "https://purstream.wiki/",
-            "url_api": "https://api.purstream.ad/api/v1/",
-            "url": "https://purstream.ad/"
+            "url_api": "https://api.purstream.sh/api/v1/",
+            "url": "https://purstream.sh/"
         },
         "radio": {
             "label": "Radio",
@@ -276,7 +276,7 @@
         "witv": {
             "label": "wiTV",
             "active": "True",
-            "url": "https://witv.football/"
+            "url": "https://witv.eu/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
