@@ -9,6 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import time
+import re
 
 SITE_IDENTIFIER = 'witv'
 SITE_NAME = 'witv'
@@ -77,6 +78,103 @@ def showTV():
 
 
 def showLink():
+    import json
+
+    oGui = cGui()
+    oParser = cParser()
+    oHosterGui = cHosterGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if 'http' not in sUrl:
+        sUrl = URL_MAIN + sUrl 
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    aResult = oParser.parse(sHtmlContent, 'id="player\d" data-v="([^"]+)')
+
+    import xbmcvfs
+    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    f.write(sHtmlContent)
+    f.close()
+
+    if aResult[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        sUrlDecode = URL_MAIN + 'ajax_player.php'
+        oRequest = cRequestHandler(sUrlDecode)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('Referer', sUrl)
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    
+        html = oParser.abParse(sHtmlContent, '(function(){var _a=', '</script>')
+
+        for dataV in aResult[1]:
+            fx_k, _sl, _mu, _in = getFk(sHtmlContent)
+            fx_s = getFs(fx_k, _sl, _mu, _in, dataV)
+    
+            postdata = 'k=%s&b=1&t=1&s=%s&v=%s' % (fx_k, fx_s, dataV)
+            oRequest.addParametersLine(postdata)
+            ret = oRequest.request()
+            if ret.startswith('{'):
+                ret = json.loads(ret)
+                sHosterUrl = ret.get('u', '')
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oGui.addLink(SITE_IDENTIFIER, 'showHoster', sMovieTitle, sThumb, sMovieTitle, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showHoster():
+    oGui = cGui()
+    oHosterGui = cHosterGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    sUrl = 'https://witv.eu/player/source2/?id=960'
+
+    sUrl += '&t=%d' % int(time.time() * 1000)
+
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = 'data-url="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        for sHosterUrl in aResult[1]:
+            
+            if '.php?' in sHosterUrl:
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
+                sHtmlContent = oRequestHandler.request()
+                sPattern = 'iframe.+?src *= *"([^"]+)'
+                aResult2 = oParser.parse(sHtmlContent, sPattern)
+                if not aResult2[0]:
+                    continue
+                sHosterUrl = aResult2[1][0]
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
+                sHtmlContent = oRequestHandler.request()
+                sPattern = 'streamUrl: *"([^"]+)'
+                aResult3 = oParser.parse(sHtmlContent, sPattern)
+                if aResult3[0]:
+                    sHosterUrl = aResult3[1][0]
+            
+            oHoster = oHosterGui.checkHoster(sHosterUrl)
+            if oHoster:
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+
+def showLink_OLD():
     oGui = cGui()
     oParser = cParser()
     oHosterGui = cHosterGui()
@@ -153,3 +251,36 @@ def showLink():
     
     oGui.setEndOfDirectory()
 
+
+def getFk(html):
+    oParser = cParser()
+    html = oParser.abParse(html, '(function(){var _a=', '</script>')
+
+    match_a = re.search(r'var\s+_a\s*=\s*\[([^\]]+)\]', html)
+    match_m = re.search(r'\b_m\s*=\s*(\d+)', html)
+    match_in = re.search(r'\b_in\s*=\s*(\d+)', html)
+    match_mu = re.search(r'\b_mu\s*=\s*(\d+)', html)
+
+    if not (match_a and match_m and match_in and match_mu):
+        return None, None, None, None
+
+    _a = [int(x.strip()) for x in match_a.group(1).split(',')]
+    _m = int(match_m.group(1))
+    _in = int(match_in.group(1))
+    _mu = int(match_mu.group(1))
+
+    # Décodage
+    _d = ''.join(chr(x ^ _m) for x in _a)
+    _sp = _d.split('|', 1)
+    _k = _sp[0]
+    _sl = _sp[1] if len(_sp) > 1 else ''
+
+    return _k, _sl, _mu, _in
+    
+    
+# Calcul de la signature
+def getFs(_k, _sl, _mu, _in, v):
+    s = v + '|' + _k + '|' + _sl
+    for c in s:
+        _in = ((_in * _mu) + ord(c)) & 0x7fffffff
+    return ('00000000' + format(_in, 'x'))[-8:]
