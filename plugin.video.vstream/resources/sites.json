@@ -31,8 +31,8 @@
         },
         "cinestream": {
             "label": "cinestream",
-            "active": "True",
-            "url": "https://cinestream.info/"
+            "active": "False",
+            "url": "https://cinestream.studio/"
         },
         "cloudproxy": {
             "label": "Proxy cloudflare",
@@ -42,7 +42,9 @@
         "coflix": {
             "label": "Coflix",
             "active": "True",
-            "url": "https://coflix.esq/"
+            "site_info": "https://coflix.domains/",
+            "url": "https://coflix.ac/",
+            "url_api": "https://coflix.ac/wp-json/coflix/v1/"
         },
         "cpasmal": {
             "label": "CpasMal",
@@ -113,7 +115,7 @@
             "label": "French-stream",
             "active": "True",
             "site_info": "https://fstream.info/",
-            "url": "https://fs07.lol/"
+            "url": "https://fs26.lol/"
         },
         "french_stream_clone": {
             "label": "French-stream (Clone)",
@@ -139,7 +141,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "https://vrobak.com/"
+            "url": "https://sedking.com/"
         },
         "kzstream": {
             "label": "kzstream",
@@ -155,8 +157,8 @@
         "livewatch": {
             "label": "livewatch",
             "active": "True",
-            "url": "https://livewatch.top/",
-            "url_api": "https://livewatch.top/api/"
+            "url": "https://livewatch.icu/",
+            "url_api": "https://livewatch.icu/api/"
         },
         "movix": {
             "label": "movix",
@@ -175,7 +177,7 @@
         },
         "otaku_attitude": {
             "label": "Otaku-Attitude",
-            "active": "True",
+            "active": "False",
             "url": "https://www.otaku-attitude.net/"
         },
         "otakufr_com": {
@@ -197,8 +199,8 @@
             "label": "Purstream",
             "active": "True",
             "site_info": "https://purstream.wiki/",
-            "url_api": "https://api.purstream.ad/api/v1/",
-            "url": "https://purstream.ad/"
+            "url_api": "https://api.purstream.sh/api/v1/",
+            "url": "https://purstream.sh/"
         },
         "radio": {
             "label": "Radio",
@@ -269,12 +271,12 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.rip/"
+            "url": "https://flemmix.studio/"
         },
         "witv": {
             "label": "wiTV",
             "active": "True",
-            "url": "https://witv.football/"
+            "url": "https://witv.eu/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",

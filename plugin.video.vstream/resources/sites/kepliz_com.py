@@ -11,7 +11,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import siteManager, addon
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 # On garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
@@ -157,13 +156,10 @@ def showMovies(sSearch=''):
     # L'url change tres souvent donc faut la retrouver
     oRequestHandler = cRequestHandler(URL_HOST)
     data = oRequestHandler.request()
-    aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')  # Compatible avec plusieurs clones
+    aResult = oParser.parse(data, '<a.+?href *= *["\'](/*[0-9a-zA-Z]+)["\']')  # Compatible avec plusieurs clones
     if not aResult[0]:
         return   # Si ca ne marche pas, pas la peine de continuer
-
-    # memorisation pour la suite
     sMainUrl = URL_HOST + aResult[1][0] + '/'
-    # correction de l'url
 
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
     if sSearch:
@@ -252,28 +248,13 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    # sMainUrl = oInputParameterHandler.getValue('sMainUrl')
-    # sYear = oInputParameterHandler.getValue('sYear')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    # sHtmlContent = sHtmlContent.replace('<br/>', '')  # traitement de sDesc
-
-    # Recuperation info film, commentaires
-    sDesc = ''
-    sPattern = 'id="film-synopsis-text">([^<>]+)<'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0]:
-        sDesc = aResult[1][0]
-
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-
         sLink = aResult[1][0]
-
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
 

@@ -279,7 +279,7 @@ class cRequestHandler:
                     urlHost = self.__sRealUrl
                     if self.__sUrl != self.__sRealUrl: # On tente sur l'adresse réelle
                         self.__sUrl = self.__sRealUrl
-                        return self.__callRequest(jsonDecode, paramGet)
+                        return self.__callRequest(jsonDecode, False)
 
                     # tenter par CloudScraper
                     if not self.cloudScraper:

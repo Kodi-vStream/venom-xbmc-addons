@@ -92,15 +92,15 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'card-base"> *<a href="([^"]+).+?src="([^"]+)" *alt="([^"]+).+?info-value">([^<]+)'
+    sPattern = 'as-carte-oeuvre" data-url="([^"]+).+?data-nom="([^"]+)".+?data-img="([^"]+)".+?as-badge as-badge-.+?">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
-            sTitle = aEntry[2]
+            sTitle = aEntry[1]
+            sThumb = aEntry[2]
             sType = aEntry[3]
             
             if 'Film' not in sType and 'Anime' not in sType:
@@ -142,7 +142,9 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showSaison():
+    import re
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -151,7 +153,11 @@ def showSaison():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
+    # retirer les saisons en commentaires
+    aResult = oParser.abParse(sHtmlContent, '<!-- ANIME -->', '</script>')
+    sHtmlContent = re.sub(r'/\*.*?\*/', '', aResult, flags=re.S)
+    sHtmlContent = re.sub(r'<.*?>', '', aResult, flags=re.S)
+
     sPattern = 'panneauAnime\("([^"]+)", "([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDecoColor = addon().getSetting('deco_color')
@@ -173,7 +179,7 @@ def showSaison():
             sDisplayTitle = sSaison + ' ' + sMovieTitle
             sTitle = sMovieTitle
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + '/' + sUrlSaison)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + sUrlSaison)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             if bMovie:
@@ -217,6 +223,7 @@ def addEpisode(sUrl, sMovieTitle):
 
         sUrl += '/' + aResult[1][0]
         oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Referer', sUrl)
         sHtmlContent = oRequestHandler.request()
         
         sPattern = 'var eps\d = (\[.+?\]+)'
@@ -248,6 +255,7 @@ def showHosters():
     sEpisode = oInputParameterHandler.getValue('sEpisode')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()

@@ -8,11 +8,12 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import urlHostName, cUtil
 
 import re
+import json
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36'
 
 SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
@@ -35,10 +36,25 @@ FUNCTION_SEARCH = 'showSearch'
 def getUrlMain():
     siteInfo = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'site_info')
     if siteInfo:
+        oParser = cParser()
         oRequestHandler = cRequestHandler(siteInfo)
         sHtmlContent = oRequestHandler.request()
-        sPattern = "location.href='(.+?)'"
-        oParser = cParser()
+
+        sPattern = "location.href *= *atob\(([^\)]+)"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            payload = aResult[1][0]
+            sPattern = '%s *= *"([^\"]+)' % payload
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                import base64
+                sUrl = base64.b64decode(aResult[1][0])
+                sUrl = str(sUrl).strip("b'")
+                if not sUrl.endswith('/'):
+                    sUrl = sUrl + '/'
+                return sUrl
+
+        sPattern = "location.href *= *'(.+?)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sUrl = aResult[1][0]
@@ -83,6 +99,9 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://film')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Populaires', 'popular.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
@@ -165,21 +184,13 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
 
-        # requete sur la home pour obtenir le cookie
-        oRequest = cRequestHandler(URL_MAIN)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
-        oRequest.request()
-
-        cookie = oRequest.GetCookies()
-        cookie += ';h_check=25'
-
-        oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
+        URI = URL_MAIN + URL_SEARCH[0]
+        oRequest = cRequestHandler(URI)
         pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&catlist[]=1&catlist[]=37&sortby=title&resorder=asc'
 
-        oRequest.addHeaderEntry('Cookie', cookie)
-        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('Cookie', 'h_check=25')
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_MAIN + URL_SEARCH[0])
+        oRequest.addHeaderEntry('Referer', URL_MAIN)# + URL_SEARCH[0])
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -295,24 +306,26 @@ def showSeries(sSearch='', searchTitle = 3):
         sUrl = sSearch.replace(' ', '+')
 
         # requete sur la home pour obtenir le cookie
-        oRequest = cRequestHandler(URL_MAIN)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
-        oRequest.request()
-
-        cookie = oRequest.GetCookies()
-        cookie += ';h_check=25'
+        # oRequest = cRequestHandler(URL_MAIN)
+        # oRequest.addHeaderEntry('Referer', URL_MAIN)
+        # oRequest.request()
+        # cookie = oRequest.GetCookies()
+        # if cookie:
+        #     cookie += ';h_check=25'
 
         oRequest = cRequestHandler(URL_MAIN + URL_SEARCH[0])
         pdata = 'do=search&subaction=search&story=%s&titleonly=%d&all_word_search=1&catlist[]=31&catlist[]=35&sortby=title&resorder=asc' % (sUrl, searchTitle)
 
-        oRequest.addHeaderEntry('Cookie', cookie)
-        oRequest.setRequestType(1)
+        # if cookie:
+        #     oRequest.addHeaderEntry('Cookie', cookie)
+        oRequest.addHeaderEntry('Cookie', 'h_check=25')
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', URL_MAIN + URL_SEARCH[0])
+        oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
     else:
@@ -358,7 +371,8 @@ def showSeries(sSearch='', searchTitle = 3):
 
     #pas de résultats de recherche d'apres les articles, recherche dans les titres d'articles
     if sSearch and not hasResult and searchTitle == 3:
-        showSeries(sSearch, searchTitle = 0)
+        if 'Access denied' not in sHtmlContent:
+            showSeries(sSearch, searchTitle = 0)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -417,23 +431,37 @@ def showHostersEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sStart = '<div class="%s"' % sID
-    sEnd = '</div>'
-    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-
-    sPattern = '<a data-v="([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        import base64
-        import codecs
-        for aEntry in aResult[1]:
-            link = base64.b64decode(aEntry)
-            sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster:
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    fx_k, _sl, _mu, _in = getFk(sHtmlContent)
+    if fx_k:
+        sStart = '<div class="%s"' % sID
+        sEnd = '</div>'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        sPattern = '<a data-v="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    
+        if aResult[0]:
+            oHosterGui = cHosterGui()
+            baseURL = urlHostName(sUrl)
+            sUrlDecode = 'https://%s/ajax_player.php' % baseURL
+            oRequest = cRequestHandler(sUrlDecode)
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('Referer', sUrl)
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            
+            for v in aResult[1]:
+                fx_s = getFs(fx_k, _sl, _mu, _in, v)
+                postdata = 'k=%s&b=1&t=1&s=%s&v=%s' % (fx_k, fx_s, v)
+                oRequest.addParametersLine(postdata)
+                ret = oRequest.request()
+                if ret.startswith('{'):
+                    ret = json.loads(ret)
+                    sHosterUrl = ret.get('u', '')
+                    if sHosterUrl:
+                        oHoster = oHosterGui.checkHoster(sHosterUrl)
+                        if oHoster:
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -448,20 +476,70 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a data-v="([^"]+)".+?span>([^<]+)'
+    sPattern = '<a data-v="([^"]+)".+?span data-n="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        import base64
-        import codecs
-        for aEntry in aResult[1]:
-            sHoster = aEntry[1]
-            oHoster = cHosterGui().checkHoster(sHoster)
-            if oHoster:
-                link = base64.b64decode(aEntry[0])
-                sHosterUrl = codecs.decode(str(link), 'rot13').strip("o'")
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        fx_k, _sl, _mu, _in = getFk(sHtmlContent)
+        if fx_k:
+            import base64
+            oHosterGui = cHosterGui()
+            baseURL = urlHostName(sUrl)
+            sUrlDecode = 'https://%s/ajax_player.php' % baseURL
+            oRequest = cRequestHandler(sUrlDecode)
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('Referer', sUrl)
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            
+            for aEntry in aResult[1]:
+                sHoster = base64.b64decode(aEntry[1])
+                sHoster = str(sHoster).strip("b'")
+                oHoster = oHosterGui.checkHoster(sHoster)
+                if oHoster:
+                    v = aEntry[0]
+                    fx_s = getFs(fx_k, _sl, _mu, _in, v)
+                    postdata = 'k=%s&b=1&t=1&s=%s&v=%s' % (fx_k, fx_s, v)
+                    oRequest.addParametersLine(postdata)
+                    ret = oRequest.request()
+                    if ret.startswith('{'):
+                        ret = json.loads(ret)
+                        sHosterUrl = ret.get('u', '')
+                        if sHosterUrl:
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+def getFk(html):
+#    sHtmlContent = '<script data-cfasync="false">(function(){var _a=[24,73,76,75,16,78,28,75,73,26,30,16,24,24,25,25,84,24,29,30,74,76,25,16,78],_m=40,_in=3020,_mu=435,_d="";for(var i=0;i<_a.length;i++)_d+=String.fromCharCode(_a[i]^_m);var _sp=_d.split("|"),_k=_sp[0],_sl=_sp[1]||"";window._fx_k=_k;var _autoV="",_tr=0,_trTs=0,_ev=["pointerdown","mousedown","touchstart","keydown","click"];for(var j=0;j<_ev.length;j++){window.addEventListener(_ev[j],function(e){if(e&&e.isTrusted){_tr=5;_trTs=Date.now();}},true);}var _bot=false;try{if(navigator.webdriver||window._phantom||window.__nightmare||window.callPhantom||window._selenium||window.__webdriver_evaluate||window.__driver_evaluate||document.__webdriver_script_fn||window.domAutomation||window.domAutomationController)_bot=true;if(/HeadlessChrome|PhantomJS/i.test(navigator.userAgent||""))_bot=true;if(navigator.userAgentData&&navigator.userAgentData.brands){for(var b=0;b<navigator.userAgentData.brands.length;b++){if(/Headless/i.test(navigator.userAgentData.brands[b].brand||""))_bot=true;}}}catch(e){}function _sg(v,k){var s=v+"|"+k+"|"+_sl,h=_in;for(var c=0;c<s.length;c++)h=((h*_mu)+s.charCodeAt(c))&0x7fffffff;if(_bot)h=(h^0x5a5a5a)&0x7fffffff;return("00000000"+h.toString(16)).slice(-8);}var _oOpen=XMLHttpRequest.prototype.open,_oSend=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.open=function(m,u){this._fxP=(typeof u==="string"&&u.indexOf("ajax_player.php")!==-1);return _oOpen.apply(this,arguments);};XMLHttpRequest.prototype.send=function(body){if(this._fxP&&typeof body==="string"&&body.indexOf("v=")!==-1&&body.indexOf("&s=")===-1){var m=body.match(/(?:^|&)v=([^&]+)/);var vVal=m?decodeURIComponent(m[1]):"";var ok=0;if(!_autoV||_autoV===vVal){_autoV=vVal;ok=1;}else if(_tr>0||(Date.now()-_trTs)<1500){if(_tr>0)_tr--;ok=1;}if(_bot)ok=0;if(body.indexOf("&k=&")!==-1)body=body.replace("&k=&","&k="+encodeURIComponent(_k)+"&");body+="&s="+encodeURIComponent(_sg(vVal,_k))+"&t="+ok;return _oSend.call(this,body);}return _oSend.apply(this,arguments);};})();</script>'
+    oParser = cParser()
+    html = oParser.abParse(html, '(function(){var _a=', '</script>')
+    match_a = re.search(r'var\s+_a\s*=\s*\[([^\]]+)\]', html)
+    match_m = re.search(r'\b_m\s*=\s*(\d+)', html)
+    match_in = re.search(r'\b_in\s*=\s*(\d+)', html)
+    match_mu = re.search(r'\b_mu\s*=\s*(\d+)', html)
+
+    if not (match_a and match_m and match_in and match_mu):
+        return None, None, None, None
+
+    _a = [int(x.strip()) for x in match_a.group(1).split(',')]
+    _m = int(match_m.group(1))
+    _in = int(match_in.group(1))
+    _mu = int(match_mu.group(1))
+
+    # Décodage
+    _d = ''.join(chr(x ^ _m) for x in _a)
+    _sp = _d.split('|', 1)
+    _k = _sp[0]
+    _sl = _sp[1] if len(_sp) > 1 else ''
+
+    return _k, _sl, _mu, _in
+
+# Calcul de la signature
+def getFs(_k, _sl, _mu, _in, v):
+    s = v + '|' + _k + '|' + _sl
+    for c in s:
+        _in = ((_in * _mu) + ord(c)) & 0x7fffffff
+    return ('00000000' + format(_in, 'x'))[-8:]

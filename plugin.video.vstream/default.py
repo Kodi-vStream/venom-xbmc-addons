@@ -13,6 +13,8 @@ from resources.lib.search import cSearch
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
 
+# permet d'ajuster l'heure affichée pour la diffusion du direct
+HEURE_HIVER = True
 
 ####################
 #

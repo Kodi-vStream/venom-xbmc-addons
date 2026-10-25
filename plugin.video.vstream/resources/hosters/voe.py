@@ -3,7 +3,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog
-import base64
 
 #From https://github.com/Gujal00/ResolveURL/blob/master/script.module.resolveurl/lib/resolveurl/plugins/voesx.py
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
@@ -58,8 +57,8 @@ class cHoster(iHoster):
                     if i == 'file' or i == 'source':
                         file = s[i]
                         break
-
-                api_call = file + '|User-Agent=' + UA # + '&Referer=' + url
+                if file:
+                    api_call = file + '|User-Agent=' + UA # + '&Referer=' + url
 
         if api_call:
             return True, api_call
