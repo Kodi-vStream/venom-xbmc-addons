@@ -133,15 +133,19 @@ class cPlayer(xbmc.Player):
 
         # Si lien dash, methode inputstream.adaptive en priorité
         mpd = self.bUseInputstream
-        mpd = mpd and (".mpd" in sUrl or ".m3u8" in sUrl)
+        mpd = mpd or (".mpd" in sUrl or ".m3u8" in sUrl)
         mpd = mpd or ('&ct=6&' in sUrl)     # mpd venant de ok.ru, n'a pas d'extension
+#        mpd = False
         if mpd:
             if isKrypton() == True:
                 if addonManager().enableAddon('inputstream.adaptive'):
                     VSlog('Player use inputstream addon')
                     if '|' in sUrl:
                         #item.setPath(sUrl.split('|')[0])
-                        headers_sUrl = sUrl.split('|')[-1:][0]
+                        parts = sUrl.split('|', 1)
+                        sUrl = parts[0]
+                        headers_sUrl = parts[1]
+                        item.setPath(sUrl)
                         if 'user-agent' not in headers_sUrl.lower():
                             headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&' + headers_sUrl
                         if "Accept=" not in headers_sUrl:
@@ -150,7 +154,7 @@ class cPlayer(xbmc.Player):
                         headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A'
     
                     item.setProperty('inputstream', 'inputstream.adaptive')
-                    if '.m3u8' in sUrl:
+                    if self.bUseInputstream or '.m3u8' in sUrl:
                         item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                     else:
                         item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
@@ -179,6 +183,12 @@ class cPlayer(xbmc.Player):
             if self.playBackEventReceived:
                 break
             xbmc.sleep(1000)
+
+        if not self.playBackEventReceived:
+            VSlog('Playback timed out before onAVStarted')
+            self.forcestop = True
+#            dialog().VSerror('Le flux ne demarre pas. Essayez un autre lien.')
+            return False
 
         # active/désactive les sous-titres suivant l'option choisie dans la config
         if self.getAvailableSubtitleStreams():
