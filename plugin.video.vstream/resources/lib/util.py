@@ -15,6 +15,10 @@ import unicodedata
 import re
 import string
 
+# permet d'ajuster l'heure affichée pour la diffusion du direct
+HEURE_HIVER = True
+
+
 
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 class cUtil:

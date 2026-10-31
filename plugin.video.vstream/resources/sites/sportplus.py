@@ -10,10 +10,9 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, HEURE_HIVER
 import json
 
-from default import HEURE_HIVER
 
 SITE_IDENTIFIER = 'sportplus'
 SITE_NAME = 'Sport +'

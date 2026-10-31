@@ -303,15 +303,22 @@ def getHosterIframe(url, referer):
         url = URL_MAIN + url
 
     oRequestHandler = cRequestHandler(url, forceDNS = True)
+    oRequestHandler.setTimeout(5)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
+    oRequestHandler.addHeaderEntry('sec-fetch-site', 'same-origin')
+    oRequestHandler.addHeaderEntry('Cache-Control', 'no-cache')
+    oRequestHandler.addHeaderEntry('Pragma', 'no-cache')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = str(oRequestHandler.request())
     if not sHtmlContent or sHtmlContent == 'False':
         return False
 
     referer = oRequestHandler.getRealUrl()
-    return getUrl(sHtmlContent, referer)
+    url = getUrl(sHtmlContent, referer)
+    if url:
+        url = url.replace('\\/', '/')
+    return url
 
 
 def getUrl(sHtmlContent, referer):
@@ -332,9 +339,10 @@ def getUrl(sHtmlContent, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         import base64
+        bMatrix = isMatrix()
         for code in aResult:
             try:
-                if isMatrix():
+                if bMatrix:
                     code = base64.b64decode(code).decode('ascii')
                 else:
                     code = base64.b64decode(code)
@@ -384,6 +392,13 @@ def getUrl(sHtmlContent, referer):
         for url in links:
             if '.m3u8' in url:
                 return url + '|Referer=' + referer
+
+    sPattern = r'streamUrl: *"([^"]+)'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        url = aResult[0]
+        if '.m3u8' in url:
+            return url + '|Referer=' + referer
 
     sPattern = r'var.+?src *= *["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
