@@ -272,8 +272,11 @@ class cPlayer(xbmc.Player):
                     TRAKT_ID = "script.trakt"
 
                     if self.ADDON.getSetting('use_trakt_addon') == 'true':
-                        traktAddon = xbmcaddon.Addon(TRAKT_ID)
-                        VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
+                        try:
+                            traktAddon = xbmcaddon.Addon(TRAKT_ID)
+                            VALUE_WATCHTIME = int(traktAddon.getSetting("rate_min_view_time")) / 100
+                        except Exception as err:
+                            VSlog("ERROR setWatched_Trakt : {0}".format(err))
 
                     if (pourcent > VALUE_WATCHTIME) or (pourcent == 0.0 and self.currentTime == self.totalTime):                    
 
