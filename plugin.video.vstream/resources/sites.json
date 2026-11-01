@@ -145,7 +145,7 @@
         },
         "kzstream": {
             "label": "kzstream",
-            "active": "True",
+            "active": "False",
             "url": "https://kzreborn.online/",
             "url_api": "https://kzreborn.online/api/"
         },
@@ -231,7 +231,7 @@
         },
         "sportplus": {
             "label": "sportplus",
-            "active": "True",
+            "active": "False",
             "url": "https://fr.sportplus.live/",
             "url_API": "https://apisplus.live/"
         },
