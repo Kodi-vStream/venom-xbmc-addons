@@ -10,6 +10,11 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.2.5 - 01/11/2026 ***
+- La recherche de liens se lance deux fois
+- La coche "lu" ne s'active pas tout le temps 
+- WITV : Retour des liens
+
 *** 4.2.4 - 25/10/2026 ***
 - Wiflix : Retour des liens
 - Coflix : Retour des liens

@@ -14,10 +14,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import Quote, urlHostName
+from resources.lib.util import Quote, urlHostName, HEURE_HIVER
 
 from datetime import datetime, timedelta
-from default import HEURE_HIVER
 
 
 SITE_IDENTIFIER = 'channelstream'

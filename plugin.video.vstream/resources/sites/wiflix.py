@@ -531,7 +531,7 @@ def getFk(html):
 
     # Décodage
     _d = ''.join(chr(x ^ _m) for x in _a)
-    _sp = _d.split('|', 1)
+    _sp = _d.split('|')
     _k = _sp[0]
     _sl = _sp[1] if len(_sp) > 1 else ''
 

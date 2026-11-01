@@ -145,7 +145,7 @@
         },
         "kzstream": {
             "label": "kzstream",
-            "active": "True",
+            "active": "False",
             "url": "https://kzreborn.online/",
             "url_api": "https://kzreborn.online/api/"
         },
@@ -231,7 +231,7 @@
         },
         "sportplus": {
             "label": "sportplus",
-            "active": "True",
+            "active": "False",
             "url": "https://fr.sportplus.live/",
             "url_API": "https://apisplus.live/"
         },
@@ -248,23 +248,18 @@
         "vavoo": {
             "label": "vavoo",
             "active": "True",
-            "url": "https://vavoo.to/"
+            "url": "https://geil.to/"
         },
         "viki_com": {
             "label": "Viki",
             "active": "False",
             "url": "https://www.viki.com/"
         },
-        "vostfree": {
-            "label": "Vostfree",
-            "active": "False",
-            "url": "https://ipv4.vostfree.ws/"
-        },
         "wawacity": {
             "label": "Wawacity",
             "active": "False",
             "cloudflare": "True",
-            "url": "https://www.wawacity.skin/"
+            "url": "https://www.wawacity.wine/"
         },
         "wiflix": {
             "label": "WiFlix",
@@ -282,11 +277,6 @@
             "label": "YouTitou (Anim\u00e9s)",
             "active": "True",
             "url": "https://youtitou.com/"
-        },
-        "zone_streaming": {
-            "label": "Zone Streaming",
-            "active": "False",
-            "url": "https://www.zone-streaming.fr/"
         }
     }
 }
