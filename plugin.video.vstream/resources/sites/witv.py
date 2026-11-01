@@ -239,7 +239,7 @@ def getHosterUrls(sourceUrl):
 
 
     return [streamUrl if '|' in streamUrl else
-            streamUrl + '|' + urlEncode({'Referer': sourceUrl, 'sec-fetch-site': 'same-origin'})
+            streamUrl + '|' + urlEncode({'Referer': URL_MAIN, 'sec-fetch-site': 'same-origin'})
             for streamUrl in hosterUrls]
 
 
@@ -276,7 +276,7 @@ def _resolve_witv_candidate(candidate):
         return None
 
     streamUrl = urljoin(requestUrl, streamPath)
-    playbackHeaders = {'Referer': playerReferer,
+    playbackHeaders = {'Referer': URL_MAIN,
                        'sec-fetch-site': 'same-origin',
                        'User-Agent': PLAYER_USER_AGENT}
     if playerCookies:
