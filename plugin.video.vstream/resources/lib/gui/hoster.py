@@ -23,7 +23,7 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
 
-    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail='', bGetRedirectUrl=False, bUseInputstream = True):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail='', bGetRedirectUrl=False, bUseInputstream = False):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
