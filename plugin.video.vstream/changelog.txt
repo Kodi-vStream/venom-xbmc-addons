@@ -10,6 +10,7 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.2.6 - 02/11/2026 ***
 *** 4.2.5 - 01/11/2026 ***
 - La recherche de liens se lance deux fois
 - La coche "lu" ne s'active pas tout le temps 
