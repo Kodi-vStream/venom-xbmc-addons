@@ -133,7 +133,7 @@ class cPlayer(xbmc.Player):
 
         # Si lien dash, methode inputstream.adaptive en priorité
         mpd = self.bUseInputstream
-        mpd = mpd or (".mpd" in sUrl or ".m3u8" in sUrl)
+        mpd = mpd and (".mpd" in sUrl or ".m3u8" in sUrl)
         mpd = mpd or ('&ct=6&' in sUrl)     # mpd venant de ok.ru, n'a pas d'extension
 #        mpd = False
         if mpd:
@@ -154,7 +154,7 @@ class cPlayer(xbmc.Player):
                         headers_sUrl = 'User-Agent=Mozilla%2F5.0+%28Windows+NT+10.0%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F80.0.3987.163+Safari%2F537.36&Accept=%2A%2F%2A'
     
                     item.setProperty('inputstream', 'inputstream.adaptive')
-                    if self.bUseInputstream or '.m3u8' in sUrl:
+                    if '.m3u8' in sUrl:
                         item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                     else:
                         item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
@@ -178,8 +178,8 @@ class cPlayer(xbmc.Player):
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
             VSlog('Player use setResolvedUrl() method')
 
-        # Attend que le lecteur démarre, avec un max de 20s
-        for _ in range(20):
+        # Attend que le lecteur démarre, avec un max de 15s
+        for _ in range(15):
             if self.playBackEventReceived:
                 break
             xbmc.sleep(1000)
@@ -187,7 +187,6 @@ class cPlayer(xbmc.Player):
         if not self.playBackEventReceived:
             VSlog('Playback timed out before onAVStarted')
             self.forcestop = True
-#            dialog().VSerror('Le flux ne demarre pas. Essayez un autre lien.')
             return False
 
         # active/désactive les sous-titres suivant l'option choisie dans la config

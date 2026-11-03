@@ -165,12 +165,14 @@ def showLink():
 
     oHosterDirect = None
     for linkIndex, streamUrl in enumerate(links):
+        if '.m3u8' not in streamUrl:
+            streamUrl += '&fileext=.m3u8'  # Force l'utilisation de InpuStream
         displayTitle = '%s - Lien %d' % (sMovieTitle, linkIndex + 1)
         if not oHosterDirect:
             oHosterDirect = oHosterGui.getHoster('lien_direct')
         oHosterDirect.setDisplayName(displayTitle)
         oHosterDirect.setFileName(sMovieTitle)
-        oHosterGui.showHoster(oGui, oHosterDirect, streamUrl, sThumb, bUseInputstream=True)
+        oHosterGui.showHoster(oGui, oHosterDirect, streamUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
