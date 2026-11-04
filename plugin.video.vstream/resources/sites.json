@@ -250,6 +250,11 @@
             "active": "True",
             "url": "https://geil.to/"
         },
+        "vidzy": {
+            "label": "Vidzy",
+            "active": "True",
+            "url": "https://vidzy.org/"
+        },
         "viki_com": {
             "label": "Viki",
             "active": "False",
