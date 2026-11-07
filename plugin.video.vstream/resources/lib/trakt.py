@@ -22,8 +22,7 @@ SITE_IDENTIFIER = 'cTrakt'
 SITE_NAME = 'Trakt'
 
 URL_API = 'https://api.trakt.tv/'
-
-API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
+API_KEY = 'cwNb4W4MRHCdkvU_Ebd8q2c9twwNigmud-Yz2xIr7Co'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
@@ -50,11 +49,6 @@ class cTrakt:
         self.__sType = ''
 
     def getToken(self):
-        # Sécurité : Évite la boucle au démarrage si aucune clé API n'est définie
-        if not API_KEY or API_KEY.strip() == '':
-            self.DIALOG.VSok("Trakt", "Clé API Trakt manquante. Veuillez mettre à jour l'extension.")
-            return False
-            
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -65,6 +59,11 @@ class cTrakt:
         total = len(sHtmlContent)
 
         if (total > 0):
+            hasError = sHtmlContent.get('error', '')
+            if hasError:
+                oDialog = self.DIALOG.VSerror(sHtmlContent.get('error_description', hasError))
+                return False
+                
             # Récupération sécurisée de l'URL de vérification
             sVerificationUrl = sHtmlContent.get('verification_url', sHtmlContent.get('verification_url_complete', 'https://trakt.tv/activate'))
             sUserCode = sHtmlContent.get('user_code', '')
@@ -950,7 +949,6 @@ class cTrakt:
                         break
     
 
-
             # indicateur VU sur les saisons
             for saisonWatched in saisonsWatched[::-1]:
                 self.setSaisonWatched(saisonWatched)
@@ -975,10 +973,6 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + maxResult)
                 oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page suivante', oOutputParameterHandler)  
 
-        # Libération immédiate de la mémoire et des fichiers fermés pour éviter les fuites de RAM
-        import gc
-        gc.collect()
-        
         if bNext:
             oGui.setEndOfDirectory()
 
@@ -1436,7 +1430,7 @@ class cTrakt:
                 return
             progress *= 100
             if sSeason:
-                sPost = {'progress':progress, sTraktType[:-1]: {'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}}
+                sPost = {'progress':progress, sTraktType[:-1]: {'ids': {'tmdb': sTMDB}}, 'episode': {'season': int(sSeason), 'number': int(sEpisode)}}
             else:
                 sPost = {'progress':progress, sTraktType[:-1]: {'ids': {'tmdb': sTMDB}}}
 
@@ -1464,31 +1458,35 @@ class cTrakt:
 
             try:
                 # point de reprise
-                if sHtmlContent['action'] == 'pause':
+                if sHtmlContent['action'] in ('scrobble', 'pause'):
                     sText = 'Progression enregistrée'
             except:
                 pass
     
             try:
-                if sHtmlContent['added']['movies'] > 0 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
+                added = sHtmlContent['added']
+                if added.get('movies', 0) > 0 or added.get('shows', 0) > 0 or added.get('episodes', 0) > 0:
                     sText = 'Ajouté avec succès'
             except:
                 pass
     
             try:
-                if sHtmlContent['updated']['movies'] > 0 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
+                updated = sHtmlContent['updated']
+                if updated.get('movies', 0) > 0 or updated.get('shows', 0) > 0 or updated.get('episodes', 0) > 0:
                     sText = 'Mise à jour avec succès'
             except:
                 pass
     
             try:
-                if sHtmlContent['deleted']['movies'] > 0 or sHtmlContent['deleted']['episodes'] > 0:
+                deleted = sHtmlContent['deleted']
+                if deleted.get('movies', 0) > 0 or deleted.get('shows', 0) > 0 or deleted.get('episodes', 0) > 0:
                     sText = 'Supprimé avec succès'
             except:
                 pass
     
             try:
-                if sHtmlContent['existing']['movies'] > 0 or sHtmlContent['existing']['episodes'] > 0 or sHtmlContent['existing']['seasons'] > 0 or sHtmlContent['existing']['shows'] > 0:
+                existing = sHtmlContent['existing']
+                if existing.get('movies', 0) > 0 or existing.get('shows', 0) > 0 or existing.get('seasons', 0) > 0 or existing.get('episodes', 0) > 0:
                     sText = 'Entrée déjà présente'
             except:
                 pass
