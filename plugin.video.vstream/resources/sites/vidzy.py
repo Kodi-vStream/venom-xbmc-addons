@@ -16,6 +16,8 @@ SITE_DESC = 'Hébergeur direct'
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showSeries')
 
+MOVIE_MOVIE = ('movie', 'showMenuFilms')
+SERIE_SERIES = ('tv', 'showMenuTv')
 SEARCH_MOVIE = 'movie/%s'
 SEARCH_SERIE = 'serie/%s/%d'   #  /serie/{tmdb}/{saison}/{episode}
 
@@ -26,6 +28,16 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 def load():
     oGui = cGui()
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche film par ID TMDB', 'search.png')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche série par ID TMDB', 'search.png')
+    oGui.setEndOfDirectory()
+
+def showMenuFilms():
+    oGui = cGui()
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche film par ID TMDB', 'search.png')
+    oGui.setEndOfDirectory()
+
+def showMenuTv():
+    oGui = cGui()
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche série par ID TMDB', 'search.png')
     oGui.setEndOfDirectory()
 
@@ -56,34 +68,24 @@ def showMovies(searchId = None):
     if not searchIdTMDB:
         return
 
-    firstLink = None    # si le lien est en double, on garde le premier
     oOutputParameterHandler = cOutputParameterHandler()
-    for lang in ('fr', 'vostfr'):
-        sUrl = '%s%s/%s' % (URL_MAIN, SEARCH_MOVIE % searchIdTMDB, lang)
-        oRequestHandler = cRequestHandler(sUrl)
-        data = oRequestHandler.request()
-        
-        aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
-        if not aResult[0]:
-            return
-        siteUrl = aResult[1][0]
-        if firstLink and firstLink == siteUrl:
-            continue
-        firstLink = siteUrl
+    sUrl = SEARCH_MOVIE % searchIdTMDB
+    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
+    data = oRequestHandler.request()
+    
+    aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
+    if not aResult[0]:
+        return  # pas d'URL
 
-        aResult = oParser.parse(data, '<title>([^<]+)</title>')
-        if not aResult[0]:
-            return
-        sMovieTitle = aResult[1][0]
-        sDisplayTitle = sMovieTitle 
-        if lang == 'vostfr':
-            sDisplayTitle += ' - [VOSTFR]'
-        
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
-        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
-
+    aResult = oParser.parse(data, '<title>([^<]+)</title>')
+    if not aResult[0]:
+        return
+    sMovieTitle = aResult[1][0]
+    
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+    oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
+    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
 
 
 def showSeries(searchId = None):
@@ -224,14 +226,34 @@ def showHosters():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sHtmlContent = cRequestHandler(sUrl).request()
-    aResult = oParser.parse(sHtmlContent, "fetch\('([^']+)")
-    if aResult[0]:
-        fetchUrl = aResult[1][0] + 'v=p1&cw=159.56&cw2=170.34&wg=1&ca=e55a64e071fadf14&cl=23946&dpr=1&sw=1680&hw=4&ft=%s&rf=%s' % (URL_MAIN, URL_MAIN)
-        data = cRequestHandler(fetchUrl).request(True)
-        gk = data.get('gk', None)
+
+    firstLink = None    # si le lien est en double, on garde le premier
+    gk = None
+    for lang in ('fr', 'vostfr'):
+        sUrl = '%s%s/%s' % (URL_MAIN, siteUrl, lang)
+        oRequestHandler = cRequestHandler(sUrl)
+        data = oRequestHandler.request()
+        aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
+        if not aResult[0]:
+            return
+        sUrl = aResult[1][0]
+        if firstLink and firstLink == sUrl:
+            continue
+        firstLink = sUrl
+        
+        sDisplayTitle = sMovieTitle
+        if lang == 'vostfr':
+            sDisplayTitle += ' - [VOSTFR]'
+
+        sHtmlContent = cRequestHandler(sUrl).request()
+        if not gk:
+            aResult = oParser.parse(sHtmlContent, "fetch\('([^']+)")
+            if aResult[0]:
+                fetchUrl = aResult[1][0] + 'v=p1&cw=159.56&cw2=170.34&wg=1&ca=e55a64e071fadf14&cl=23946&dpr=1&sw=1680&hw=4&ft=%s&rf=%s' % (URL_MAIN, URL_MAIN)
+                data = cRequestHandler(fetchUrl).request(True)
+                gk = data.get('gk', None)
         if gk:
             aResult = oParser.parse(sHtmlContent, 'sources: *\[(.+?)\]')
             if aResult[0]:
@@ -241,7 +263,7 @@ def showHosters():
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if oHoster:
                         sHosterUrl += '&gk=%s' % gk
-                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sMovieTitle)
                         oHosterGui.showHoster(oGui, oHoster, sHosterUrl)
 
