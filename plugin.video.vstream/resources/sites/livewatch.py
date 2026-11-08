@@ -11,6 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from time import sleep
+import json
 
 
 SITE_IDENTIFIER = 'livewatch'
@@ -152,8 +153,13 @@ def channelSort(channel):
 
 def showTV():
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_API + 'channels?country=France') # &limit=0&category=Sport
-    links = oRequestHandler.request(jsonDecode=True)
+    oRequestHandler = cRequestHandler(URL_API + 'channels?country=France', forceDNS=True) # &limit=0&category=Sport
+    links = oRequestHandler.request()
+    if not links.startswith('{'):
+        oGui.setEndOfDirectory()
+        return
+
+    links = json.loads(links)
 
     oInputParameterHandler = cInputParameterHandler()
     sGenreTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' ', '')
@@ -170,6 +176,7 @@ def showTV():
             if 'PPV' in sTitle:
                 continue
             
+            sTitle = sTitle.split('(')[0]
             sDesc = sTitle
             # EPG
 #             sDesc = epgs.get(sTitle)
@@ -191,9 +198,11 @@ def showTV():
 #                 epgs[sTitle] = sDesc
             
             sDisplayTitle = sTitle
-            source = channel.get('source', '')
+            # source = channel.get('source', '')
             quality = channel.get('quality', '')
-            sDisplayTitle += ' [%s %s]' % (source.capitalize() if source else '', quality if quality else '')
+            #sDisplayTitle += ' [%s %s]' % (source.capitalize() if source else '', quality if quality else '')
+            if quality:
+                sDisplayTitle += ' [%s]' % quality
             
             sHostUrl = 'stream/' + channel['id']
             sLogo = channel['logo']
@@ -270,7 +279,7 @@ def showLink():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(URL_API + 'sports?' + siteUrl)
+    oRequestHandler = cRequestHandler(URL_API + 'sports?' + siteUrl, forceDNS=True)
     links = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -297,8 +306,12 @@ def showHoster():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     links = getWithGrant(sUrl)
+    
     if 'proxy_url' in links:
         sHosterUrl = URL_MAIN[:-1] + links['proxy_url']
+        #oRequestHandler = cRequestHandler(sHosterUrl, forceDNS=True)
+        #links = oRequestHandler.request()
+        
         oHoster = oHosterGui.getHoster('lien_direct')
         if oHoster:
             sDisplayTitle = sMovieTitle
@@ -312,7 +325,7 @@ def showHoster():
 
 def getWithGrant(sUrl):
     data = ''
-    oRequestHandler = cRequestHandler(URL_API + 'play/ticket')
+    oRequestHandler = cRequestHandler(URL_API + 'play/ticket', forceDNS=True)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -323,7 +336,7 @@ def getWithGrant(sUrl):
 
     if 'ticket' in ret:
         sleep(2)
-        oRequestHandler = cRequestHandler(URL_API + 'play/grant')
+        oRequestHandler = cRequestHandler(URL_API + 'play/grant', forceDNS=True)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addJSONEntry('ticket', ret["ticket"])
@@ -333,7 +346,7 @@ def getWithGrant(sUrl):
             ret=''
 
         if ret:
-            oRequestHandler = cRequestHandler(URL_API + sUrl)
+            oRequestHandler = cRequestHandler(URL_API + sUrl, forceDNS=True)
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('X-Play-Grant', ret["grant"])

@@ -209,10 +209,10 @@
         },
         "rdlive": {
             "label": "RD Live",
-            "active": "True",
+            "active": "False",
             "url": "https://rdaily.live/",
             "url_flashcore": "https://1.newsoccers.one/2/x/feed/",
-            "url_link": "https://netanjahu.hls.st/t/%s/index.m3u8|Referer=https://iplayer.is/"
+            "url_link": "https://hls.st/bloop/%s.m3u8|Referer=https://hls.st/beta/"
         },
         "sitedarkibox": {
             "label": "darkiBox",
@@ -271,7 +271,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.studio/"
+            "url": "https://flemmix.run/"
         },
         "witv": {
             "label": "wiTV",

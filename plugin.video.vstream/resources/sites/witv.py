@@ -63,7 +63,7 @@ def showTV():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     siteUrl = URL_MAIN + siteUrl
-    oRequestHandler = cRequestHandler(siteUrl)
+    oRequestHandler = cRequestHandler(siteUrl, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
     
     # url title thumb
@@ -105,7 +105,7 @@ def showLink():
     if 'http' not in sUrl:
         sUrl = URL_MAIN + sUrl 
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl, forceDNS = True)
     sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, 'id="player\d" data-v="([^"]+)')
 
@@ -114,7 +114,7 @@ def showLink():
         return
         
     sUrlDecode = URL_MAIN + 'ajax_player.php'
-    oRequest = cRequestHandler(sUrlDecode)
+    oRequest = cRequestHandler(sUrlDecode, forceDNS = True)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
@@ -127,7 +127,8 @@ def showLink():
         urlsJson = json.loads(urlsJson, object_pairs_hook=OrderedDict)
         urls = urlsJson.values()
         for url in urls:
-            sourceUrls.append(url)
+            if url not in sourceUrls:
+                sourceUrls.append(url)
     else:
         for dataV in aResult[1]:
             fx_s = getFs(fx_k, _sl, _mu, _in, dataV)
@@ -137,7 +138,8 @@ def showLink():
             if ret.startswith('{'):
                 ret = json.loads(ret)
                 sHosterUrl = ret.get('u', '')
-                sourceUrls.append(sHosterUrl)
+                if sHosterUrl not in sourceUrls:
+                    sourceUrls.append(sHosterUrl)
 
     def collect_links(sourceUrl, onlyM3u):
         if not sourceUrl:
@@ -180,7 +182,7 @@ def showLink():
 def getHosterUrls(sourceUrl):
     oParser = cParser()
     timeNow = '&t=%d' % int(time.time() * 1000)
-    oRequestHandler = cRequestHandler(sourceUrl + timeNow)
+    oRequestHandler = cRequestHandler(sourceUrl + timeNow, forceDNS = True)
     oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
     oRequestHandler.addHeaderEntry('sec-fetch-site', 'same-origin')
     oRequestHandler.addHeaderEntry('User-Agent', PLAYER_USER_AGENT)
@@ -257,7 +259,7 @@ def _resolve_witv_candidate_worker(resultQueue, resultIndex, candidate):
 def _resolve_witv_candidate(candidate):
     sUrlPlayer, vavooId, resultUrl, playerReferer, playerCookies = candidate
     requestUrl = '%s%s%s&json=1' % (sUrlPlayer, vavooId, resultUrl)
-    requestHandler = cRequestHandler(requestUrl)
+    requestHandler = cRequestHandler(requestUrl, forceDNS = True)
     requestHandler.addHeaderEntry('Referer', playerReferer)
     requestHandler.addHeaderEntry('sec-fetch-site', 'same-origin')
     requestHandler.addHeaderEntry('User-Agent', PLAYER_USER_AGENT)
