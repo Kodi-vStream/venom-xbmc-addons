@@ -306,6 +306,7 @@ def showMovies(sSearch=''):
             sHtmlContent = oRequest.request()
             
         sPattern = "href='([^']+).+?src='([^']+).+?title *'>([^<]+)"
+        sPatternSeasons = "data-seasons='([^']+).+?src='([^']+).+?title *'>([^<]+)"
     else:
         for serieIN in ['-serie', 'serie-', '=series', '-drama', 's-tv', '-tv-', 's-vost', 'sries-', 'xx89']:
             if serieIN in sUrl:
@@ -326,16 +327,29 @@ def showMovies(sSearch=''):
             sHtmlContent = oRequestHandler.request()
         
         sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]+)'
+        sPatternSeasons = "data-seasons='([^']+).+?src='([^']+).+?title *'>([^<]+)"
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    aResultSeasons = oParser.parse(sHtmlContent, sPatternSeasons)
+    nNbSeries = len(aResultSeasons[1])
     seriesTitle = []
 
+    if aResult[0] and aResultSeasons[0]:
+        aResultSeasons[1].extend(aResult[1])
+        aResult = aResultSeasons
+    elif not aResult[0] and aResultSeasons[0]:
+        aResult = aResultSeasons
+
     if aResult[0]:
-            
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
+            if nNbSeries > 0:
+                json_parse = json.loads(aEntry[0])
+                sUrl2 = json_parse[0].get('l')
+                nNbSeries -= 1
+            else:
+                sUrl2 = aEntry[0]
+
             sThumb = aEntry[1].replace('/red.php?src=', '').replace('&.webp', '')
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
@@ -349,10 +363,10 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace('(%s)' % sYear, '')
 
             if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
-                if '- Saison' in sTitle:
+                if any(c in sTitle for c in ['- Saison', '- série']):
                     continue
             if bSearchSerie:
-                if '- Saison' not in sTitle:
+                if not any(c in sTitle for c in ['- Saison', '- série']):
                     continue
 
             # Filtre de recherche
