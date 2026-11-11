@@ -5,7 +5,7 @@
             "active": "True",
             "url": "https://www.adkami.com/"
         },
-        "alldebrid": {
+       "alldebrid": {
             "label": "AllDebrid",
             "active": "True"
         },
@@ -248,6 +248,7 @@
         "vavoo": {
             "label": "vavoo",
             "active": "True",
+            "url_catalogue": "https://geil.to/live/catalog/live/channels.json",
             "url": "https://geil.to/"
         },
         "vidzy": {
