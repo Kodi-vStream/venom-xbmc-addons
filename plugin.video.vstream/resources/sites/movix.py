@@ -245,8 +245,9 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
-#    sPattern = '<div class="relative group overflow-hidden">.+?<a href="([^"]+)">.+?data-src="([^"]+)".+?<span>([^<]+)</span>.+?>([^<]+)</h3>'
-    sPattern = 'overflow-hidden">.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?<span>([^<]+)<\/span> *<!--\[if ENDBLOCK\]><!\[endif\]--> *<\/div>.+?ml-auto">([^<>]+)'
+
+    # Regex strict : capture uniquement les liens contenant "/movie/" et une structure propre de film
+    sPattern = 'href="(https?://[^"]+/movie/[^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?<span>[^<]+<\/span>.*?<span>(\d{4})<\/span>.+?ml-auto">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)            
     if aResult[0]:
@@ -305,7 +306,10 @@ def showSeries(sSearch=''):
                 
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'overflow-hidden">.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?<span>([^<]+)<\/span> *<!--\[if ENDBLOCK\]><!\[endif\]--> *<\/div>.+?ml-auto">([^<>]+)'
+    
+    # Regex strict : cible uniquement les liens contenant "/tv-show/" pour ignorer les blocs de genres des pages suivantes
+    sPattern = 'href="(https?://[^"]+/tv-show/[^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?<span>(\d{4})<\/span>.+?ml-auto">([^<]+)'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if aResult[0]:
