@@ -359,6 +359,7 @@ def showSearchAlpha():
             if sUrlPlay:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrlPlay)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, sDesc, oOutputParameterHandler)
 
     except Exception:
