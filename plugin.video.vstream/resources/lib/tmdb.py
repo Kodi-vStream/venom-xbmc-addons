@@ -656,7 +656,7 @@ class cTMDb:
             return network
         return {}
 
-    def _format(self, meta, name, media_type=""):
+    def _format(self, meta, name='', media_type=""):
         _meta = {
             'imdb_id': meta.get('imdb_id', ""),
             'tmdb_id': meta.get('tmdb_id', "") if meta.get('tmdb_id') else meta.get('id'),
