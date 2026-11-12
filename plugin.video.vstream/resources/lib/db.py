@@ -510,7 +510,8 @@ class cDb(object):
 
     def get_bookmark(self):
 
-        sql_select = 'SELECT * FROM favorite order by addon_id desc'
+        # getBookmark recherchre la cat à la 6e position
+        sql_select = 'SELECT addon_id, title, siteurl, site, fav, cat, icon, fanart, tmdb_id FROM favorite order by addon_id desc'
 
         try:
             self.dbcur.execute(sql_select)
