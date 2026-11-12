@@ -21,8 +21,8 @@ class cRequestHandler:
         self.__sUrl = sUrl
         self.__sRealUrl = ''
         self.__cType = 0
-        self.__aParamaters = {}
-        self.__aParamatersLine = ''
+        self.__aParameters = {}
+        self.__aParametersLine = ''
         self.__aHeaderEntries = {}
         self.__Cookie = {}
         self.removeBreakLines(True)
@@ -106,16 +106,16 @@ class cRequestHandler:
 
     # Ajout un parametre dans la requete
     def addParameters(self, sParameterKey, mParameterValue):
-        self.__aParamaters[sParameterKey] = mParameterValue
+        self.__aParameters[sParameterKey] = mParameterValue
 
     # Ajoute une ligne de parametre
     def addParametersLine(self, mParameterValue):
-        self.__aParamatersLine = mParameterValue
+        self.__aParametersLine = mParameterValue
 
     # egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
     def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
-        self.__aParamatersLine = mpartdata[1]
+        self.__aParametersLine = mpartdata[1]
         self.addHeaderEntry('Content-Type', mpartdata[0])
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
@@ -161,10 +161,10 @@ class cRequestHandler:
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
 
-        if self.__aParamatersLine:
-            sParameters = self.__aParamatersLine
+        if self.__aParametersLine:
+            sParameters = self.__aParametersLine
         else:
-            sParameters = self.__aParamaters
+            sParameters = self.__aParameters
 
         if (paramGet and self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -323,8 +323,8 @@ class cRequestHandler:
                                     'cmd': 'request.%s' % method.lower(),
                                     'url': self.__sUrl
                                 }
-                                if 'postData' in self.__aParamaters:
-                                    paramJson['postData'] = self.__aParamaters['postData']
+                                if 'postData' in self.__aParameters:
+                                    paramJson['postData'] = self.__aParameters['postData']
                                 
                                 json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json=paramJson)
                                 if json_response:
