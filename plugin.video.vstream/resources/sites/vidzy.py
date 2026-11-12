@@ -8,6 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.tmdb import cTMDb
 
 SITE_IDENTIFIER = 'vidzy'
 SITE_NAME = 'Vidzy'
@@ -27,35 +28,63 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 def load():
     oGui = cGui()
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche film par ID TMDB', 'search.png')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche série par ID TMDB', 'search.png')
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'movie')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'tv')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche film par ID TMDB', 'search.png')
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'movie')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 def showMenuTv():
     oGui = cGui()
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche série par ID TMDB', 'search.png')
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'tv')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
-def showSearchMovie():
+def showSearch():
+    oInputParameterHandler = cInputParameterHandler()
+    sCat = oInputParameterHandler.getValue('siteUrl')
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText:
-        showMovies(sSearchText)
+    if not sSearchText:
         oGui.setEndOfDirectory()
         return
 
-def showSearchSerie():
     oGui = cGui()
-    sSearchText = oGui.showKeyBoard()
-    if sSearchText:
-        showSeries(sSearchText)
-        oGui.setEndOfDirectory()
-        return
+    oTMDb = cTMDb()
+    results = oTMDb.getUrl('search/' + sCat, term='query=' + sSearchText)
+
+    for item in results.get('results', []):
+        item = oTMDb._format(item)
+        tmdb_id = item.get('tmdb_id')
+        sDisplayTitle = sMovieTitle = item.get('title')
+        sThumb = item.get('poster_path')
+        sDesc = item.get('overview', '')
+        sYear = item.get('year')
+        if sYear:
+            sDisplayTitle += ' (%s)' % sYear
+        
+        sUrl = SEARCH_MOVIE % tmdb_id
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', tmdb_id)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        
+        if sCat == 'movie':
+            oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        else:
+            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
 
 
 def showMovies(searchId = None):
@@ -68,24 +97,23 @@ def showMovies(searchId = None):
     if not searchIdTMDB:
         return
 
-    oOutputParameterHandler = cOutputParameterHandler()
     sUrl = SEARCH_MOVIE % searchIdTMDB
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     data = oRequestHandler.request()
     
     aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
-    if not aResult[0]:
-        return  # pas d'URL
+    if aResult[0]:  # il existe une URL
+        aResult = oParser.parse(data, '<title>([^<]+)</title>')
+        if aResult[0]:
+            sMovieTitle = aResult[1][0]
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
 
-    aResult = oParser.parse(data, '<title>([^<]+)</title>')
-    if not aResult[0]:
-        return
-    sMovieTitle = aResult[1][0]
-    
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
-    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
+    if not searchId:
+        oGui.setEndOfDirectory()
 
 
 def showSeries(searchId = None):
@@ -103,21 +131,22 @@ def showSeries(searchId = None):
     data = oRequestHandler.request()
     
     aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
-    if not aResult[0]:
-        return
-    siteUrl = aResult[1][0]
+    if aResult[0]:
+        siteUrl = aResult[1][0]
+    
+        aResult = oParser.parse(data, '<title>([^<]+)</title>')
+        if aResult[0]:
+            sMovieTitle = aResult[1][0].split(' - ')[0]
+            sDisplayTitle = sMovieTitle 
+        
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
 
-    aResult = oParser.parse(data, '<title>([^<]+)</title>')
-    if not aResult[0]:
-        return
-    sMovieTitle = aResult[1][0].split(' - ')[0]
-    sDisplayTitle = sMovieTitle 
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
-    oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+    if not searchId:
+        oGui.setEndOfDirectory()
 
 
 def showSaisons():
@@ -237,6 +266,7 @@ def showHosters():
         data = oRequestHandler.request()
         aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
         if not aResult[0]:
+            oGui.setEndOfDirectory()
             return
         sUrl = aResult[1][0]
         if firstLink and firstLink == sUrl:
