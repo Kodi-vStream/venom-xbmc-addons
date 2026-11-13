@@ -2,12 +2,9 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #https://archive.org/details/logos_fr_tv
 import re
-import json
 import string
-import requests
-import uuid
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,7 +13,7 @@ from resources.lib.util import cUtil
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
 from resources.lib.comaddon import addon
-from resources.lib.comaddon import VSlog
+from resources.lib.handler.requestHandler import cRequestHandler
 
 
 SITE_IDENTIFIER = 'vavoo'
@@ -25,7 +22,8 @@ SITE_DESC = 'Chaines TV de vavoo'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_SEARCH = ('http://vavoo-search/%s', 'showLiveTV')
-URL_CATALOG = URL_MAIN + 'mediahubmx-catalog.json'
+URL_CATALOG = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_catalogue')
+
 
 SPORT_SPORTS = ('sport', 'showGenresTV')
 SPORT_TV = ('sport', 'showGenresTV')
@@ -37,65 +35,13 @@ KID_TV = ('kid', 'showGenresTV')
 TV_TV = (URL_MAIN, 'showMenuLiveTV')
 CHAINE_TV = (URL_MAIN, 'showMenuLiveTV')
 
-PING_URLS = [
-    "https://www.vypn.net/api/app/ping",
-    "https://cache.vypn.net/api/app/ping",
-]
-
-BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-              "AppleWebKit/537.36 (KHTML, like Gecko) "
-              "Chrome/124.0.0.0 Safari/537.36")
-
-_headers = {
-    "accept": "*/*",
-    "user-agent": BROWSER_UA,
-    "Accept-Encoding": "gzip, deflate",
-    "Connection": "close"
-}
-
-def _build_payload():
-    uid = str(uuid.uuid4())
-    ts  = int(time.time() * 1000)
-    return {
-        "reason": "app-focus", "locale": "en", "theme": "dark",
-        "metadata": {
-            "device":  {"type": "desktop", "uniqueId": uid},
-            "os":      {"name": "win32", "version": "Windows 10 Pro",
-                        "abis": ["x64"], "host": "Lenovo"},
-            "app":     {"platform": "electron"},
-            "version": {"package": "net.vypn.app", "binary": "3.1.0", "js": "3.1.0"},
-        },
-        "appFocusTime": 0, "playerActive": False, "playDuration": 0,
-        "devMode": False, "hasAddon": True, "castConnected": False,
-        "package": "net.vypn.app", "version": "3.1.0", "process": "app",
-        "firstAppStart": ts, "lastAppStart": ts, "ipLocation": None,
-        "adblockEnabled": True,
-        "proxy": {"supported": ["ss"], "engine": "Mu", "enabled": False, "autoServer": True},
-        "iap": {"supported": False},
-    }
-
-def getAuthSignature():
-    for url in PING_URLS:
-        for attempt in range(3):
-            try:
-                resp = requests.post(url, json=_build_payload(), headers=_headers, timeout=15, verify=False)
-                if resp.status_code == 200:
-                    req = resp.json()
-                    sig = (req.get("sig") or req.get("addonSig") or req.get("signature") or
-                           req.get("mediahubmxSignature") or req.get("mediahubmx-signature") or
-                           req.get("token") or "")
-                    if sig:
-                        return sig
-            except Exception:
-                pass
-    return ''
-
 
 def load():
     oGui = cGui()
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_CATALOG)
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', addons.VSlang(30076), 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_CATALOG)
@@ -121,6 +67,7 @@ def showMenuLiveTV():
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_CATALOG)
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', addons.VSlang(30076), 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_CATALOG)
@@ -144,9 +91,10 @@ def showSearch():
 def showGenresTV():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    if 'sport' in sUrl:
+    sMovieTitle = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_CATALOG
+
+    if 'sport' in sMovieTitle:
         chaines = [
             ('LIGUE 1', 'https://www.lequipe.fr/_medias/img-photo-jpg/ligue-1-quelle-offre-d-abonnement-est-faite-pour-vous/1500000002258913/24:0,1176:768-828-552-75/dc2b0.jpg'),
             ('DAZN', 'https://www.leparisien.fr/resizer/8FSAVEdo2q647CsIBSewbUcPFzs=/932x582/cloudfront-eu-central-1.images.arcpublishing.com/lpguideshopping/3JMT5WW2B5AKREOR43CLU36ZK4.jpg'),
@@ -169,7 +117,7 @@ def showGenresTV():
             ('EQUIPE', 'https://i.imgur.com/t35zhM9.png'),
             ('EQUIDIA', 'https://i.imgur.com/QPpbRcZ.png')
         ]
-    elif 'doc' in sUrl:               # Documentaires
+    elif 'doc' in sMovieTitle:               # Documentaires
         chaines = [
             ('ANIMAUX', 'https://i.imgur.com/FM9FVAG.png'),
             ('ARTE', 'https://archive.org/download/logostvfr/arte.png'),
@@ -185,6 +133,7 @@ def showGenresTV():
             ('RMC DECOUVERTE', 'https://archive.org/download/logostvfr/rmc-decouverte.png'),
             ('RMC STORY', 'https://archive.org/download/logostvfr/rmc-story.png'),
             ('SCIENCE & VIE', 'https://i.imgur.com/9ELsSMI.png'),
+            ('SEASONS', 'https://archive.org/download/logostvfr/seasons.png'),
             ('TREK', 'https://archive.org/download/logostvfr/trek.png'),
             ('USHUAIA', 'https://i.imgur.com/WjjlqbP.png'),
         ]
@@ -212,6 +161,7 @@ def showGenresTV():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sThumb in chaines:
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         sDisplayTitle = sTitle.replace('!', '')
         oGui.addLink(SITE_IDENTIFIER, 'showLiveTV', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
@@ -252,7 +202,8 @@ def showCountries():
 
 def showAlpha():
     oGui = cGui()
-    sUrl = "https://vavoo.to/mediahubmx-catalog.json"
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     for alpha in string.ascii_uppercase:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -364,45 +315,19 @@ def showSearchAlpha():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     alpha = oInputParameterHandler.getValue('sMovieTitle')
-    
-    payload = {
-        "language": "fr",
-        "region": "FR",
-        "catalogId": "iptv",
-        "id": "",
-        "adult": False,
-        "search": alpha,
-        "sort": "name",
-        "filter": {"group": "France"},
-        "cursor": None
-    }
-
-    headers = {
-        'Content-Type': 'application/json',
-        'User-Agent': 'MediaHubMX/2'
-    }
 
     try:
-        r = requests.post(sUrl, data=json.dumps(payload), headers=headers, timeout=10, verify=False)
-        data = r.json()
+        urlFr = sUrl + '?region=FR&language=fr&sort=name&filter%5Bgroup%5D=France&search=' + alpha
+        oRequestHandler = cRequestHandler(urlFr)
+        data = oRequestHandler.request(True)
         items = data['items']
 
         # récupération de toutes les chaines !
-        cursor = data.get('nextCursor', 0)
-        if cursor > 0:
-            payload = {
-                "language": "fr",
-                "region": "FR",
-                "catalogId": "iptv",
-                "id": "",
-                "adult": False,
-                "search": alpha,
-                "sort": "name",
-                "filter": {"group": "France"},
-                "cursor": cursor
-            }
-            r = requests.post(sUrl, data=json.dumps(payload), headers=headers, timeout=10, verify=False)
-            data2 = r.json()
+        cursor = data.get('nextCursor', None)
+        if cursor:
+            urlFr += '&cursor=%s' % cursor
+            oRequestHandler = cRequestHandler(urlFr)
+            data2 = oRequestHandler.request(True)
             items += data2['items']
 
         trouve = False
@@ -411,7 +336,7 @@ def showSearchAlpha():
 
             if not sTitle.startswith(alpha):
                 if trouve:
-                    break
+                    break       # on est passé à la lettre suivante
                 continue
 
             if 'A LA CARTE' in sTitle or 'CANAL PLAY' in sTitle or 'CANALPLAY' in sTitle:
@@ -419,9 +344,10 @@ def showSearchAlpha():
 
             trouve = True
             
-            sTitle = sTitle.split(' .')[0]
+            sTitle = sTitle.split('(')[0]
             sIcon = item.get('logo', '')
             sUrlPlay = item.get('url', '')
+            sDesc = getEPG(item)
 
             try:
                 custom_icon = getLogo(sTitle)
@@ -433,7 +359,8 @@ def showSearchAlpha():
             if sUrlPlay:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrlPlay)
-                oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, sDesc, oOutputParameterHandler)
 
     except Exception:
         pass
@@ -444,12 +371,10 @@ def showSearchAlpha():
 def showLiveTV(sSearch = ''):    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     
     sSearchTitle = False
-    if sSearch:
-        sUrl = URL_SEARCH[0]
-    else:
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    if not sSearch:
         sSearch = oInputParameterHandler.getValue('sMovieTitle')
         if sSearch:
             sSearch = sSearch.replace('&', '')
@@ -468,72 +393,24 @@ def showLiveTV(sSearch = ''):
     else:
         active_group = "France"
 
-    if active_group.upper() in ['ALL', 'ALL COUNTRIES', 'FALSE', 'NONE', '']:
-        filter_val = {}
-    else:
-        filter_val = {"group": active_group}
-
-    payload = {
-        "language": "fr",
-        "region": "FR",
-        "catalogId": "iptv",
-        "id": "",
-        "adult": False,
-        "search": sSearch,
-        "sort": 'name',
-        "filter": filter_val,
-        "cursor": sCursor if (sCursor and sCursor != False and sCursor != 'None') else None,
-        "clientVersion": "3.1.0"
-    }
-
-    target_url = "https://vavoo.to/mediahubmx-catalog.json"
-    
-    try:
-        session = requests.Session()
-        headers = {
-            "User-Agent": "MediaHubMX/2",
-            "Accept": "application/json",
-            "Content-Type": "application/json; charset=utf-8",
-            "Accept-Encoding": "gzip",
-            "mediahubmx-signature": getAuthSignature()
-        }
-        
-        response = session.post(
-            target_url,
-            json=payload,
-            headers=headers,
-            allow_redirects=True,
-            timeout=10,
-            verify=False
-        )
-        
-        if response.status_code != 200:
-            VSlog('[VAVOO] Erreur HTTP ' % response.status_code)
-            oGui.setEndOfDirectory()
-            return
-
-        data = response.json()
-
-    except Exception as e:
-        VSlog('[VAVOO] Erreur : '+ str(e))
-        oGui.setEndOfDirectory()
-        return
-
+    urlFr = sUrl + '?region=FR&language=fr&sort=name&filter%5Bgroup%5D=' + active_group
+    if sSearch:
+        urlFr += '&search=' + sSearch
+    if sCursor:
+        urlFr += '&cursor=' + sCursor
+    oRequestHandler = cRequestHandler(urlFr)
+    data = oRequestHandler.request(True)
     if data and 'items' in data:
-        try:
-            start_index = int(sCursor) + 1 if (sCursor and str(sCursor).isdigit()) else 1
-        except:
-            start_index = 1
-
         channels = data['items']
-        
-        for idx, item in enumerate(channels, start=start_index):
+        for item in channels:
             sUrlPlay = item.get('url', '')
             if not sUrlPlay:
                 continue
 
-            raw_title = item.get('name', 'Sans titre').split(' .')[0]
-            if 'A LA CARTE' in raw_title or 'CANAL PLAY' in raw_title or 'CANALPLAY' in raw_title:
+            raw_title = item.get('name', 'Sans titre').split(' .')[0].split('(')[0].strip()
+            if 'A LA CARTE' in raw_title or 'CANAL PLAY' in raw_title or 'CANALPLAY' in raw_title  or 'ORANGE' in raw_title or 'OFFICE' in raw_title or 'FILMRISE' in raw_title:
+                continue
+            if 'AMAZON PRIME' in raw_title and not 'LIVE' in raw_title:
                 continue
             
             if sSearchTitle:
@@ -544,73 +421,7 @@ def showLiveTV(sSearch = ''):
             sTitle = raw_title
             sIcon = item.get('logo', '')
             
-            # --- EPG & BARRE DE PROGRESSION ---
-            sDesc = ""
-            epg_data = item.get('epg')
-            
-            if epg_data and isinstance(epg_data, list) and len(epg_data) > 0:
-                try:
-                    curr = epg_data[0]
-                    now_title = curr.get('name') or curr.get('title') or ''
-                    if now_title and 'No Data' not in now_title:
-                        start_ts = curr.get('start') or curr.get('startTime') or curr.get('time')
-                        end_ts = curr.get('stop') or curr.get('endTime') or curr.get('end')
-                        prog_desc = curr.get('description') or curr.get('overview') or ''
-                        sDesc += '[COLOR darkgray]En cours :[/COLOR][CR][B]%s[/B]\n' % now_title
-                        if start_ts:
-                            try:
-                                s_time = float(start_ts)
-                                if s_time > 10000000000:
-                                    s_time /= 1000.0
-                                if end_ts:
-                                    e_time = float(end_ts)
-                                    if e_time > 10000000000:
-                                        e_time /= 1000.0
-                                else:
-                                    e_time = s_time + 3600
-                                    
-                                now_time = time.time()
-                                if e_time > s_time:
-                                    total_duration = e_time - s_time
-                                    elapsed = now_time - s_time
-                                    percent = int((elapsed / total_duration) * 100)
-                                    percent = max(0, min(100, percent))
-                                    filled = int(10 * percent / 100)
-                                    
-                                    bar_rouge = '▬' * filled
-                                    bar_grise = '▬' * (10 - filled)
-                                    
-                                    start_str = datetime.fromtimestamp(s_time).strftime('%H:%M')
-                                    end_str = datetime.fromtimestamp(e_time).strftime('%H:%M')
-                                    remaining_min = max(0, int((e_time - now_time) / 60))
-                                    
-                                    sDesc += '[COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR] [COLOR white][CR]%s - %s | Reste %s min[/COLOR]' % (bar_rouge, bar_grise, percent, start_str, end_str, remaining_min)
-                            except Exception:
-                                pass
-                                
-                    if prog_desc:
-                        sDesc += '[COLOR white]%s[/COLOR]' % prog_desc[:300]
-                
-                    if len(epg_data) > 1:
-                        next_item = epg_data[1]
-                        next_title = next_item.get('name') or next_item.get('title') or ''
-                        if next_title and 'No Data' not in next_title:
-                            next_start = next_item.get('start') or next_item.get('startTime') or next_item.get('time')
-                            next_time_str = ""
-                            if next_start:
-                                try:
-                                    ns_time = float(next_start)
-                                    if ns_time > 10000000000:
-                                        ns_time /= 1000.0
-                                    next_time_str = datetime.fromtimestamp(ns_time).strftime('%H:%M')
-                                except Exception:
-                                    pass
-                            sDesc += '[CR][COLOR grey]A suivre à %s :[/COLOR][CR]%s' % (next_time_str, next_title)
-                except Exception:
-                    pass
-            
-            if not sDesc:
-                sDesc = item.get('description', 'Aucun programme disponible')
+            sDesc = getEPG(item)
 
             try:
                 custom_icon = getLogo(raw_title, active_group)
@@ -628,14 +439,13 @@ def showLiveTV(sSearch = ''):
                 
                 oGui.addMisc(SITE_IDENTIFIER, 'playLiveTV', sTitle, sIcon, sIcon, sDesc, oOutputParameterHandler)
 
-        if not sCursor:
-            next_cursor = data.get('nextCursor', 0) or data.get('next')
-            if next_cursor and int(next_cursor) > 0:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('group', '' if sSearch else active_group)
-                oOutputParameterHandler.addParameter('cursor', str(next_cursor))
-                oGui.addNext(SITE_IDENTIFIER, 'showLiveTV', 'Suite', oOutputParameterHandler)
+        next_cursor = data.get('nextCursor', 0) or data.get('next')
+        if next_cursor and int(next_cursor) > 0:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('group', '' if sSearch else active_group)
+            oOutputParameterHandler.addParameter('cursor', str(next_cursor))
+            oGui.addNext(SITE_IDENTIFIER, 'showLiveTV', 'Suite', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -649,68 +459,98 @@ def playLiveTV():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     
-    try:
-        signature = getAuthSignature()
-    except Exception:
-        signature = ""
+    urlResolve = '%slive/resolve?url=%s' % (URL_MAIN, sUrl)
+    oRequestHandler = cRequestHandler(urlResolve)
+    data = oRequestHandler.request(True)
+    
+    stream_url = ""
 
-    headers = {
-        "user-agent": "MediaHubMX/2",
-        "accept": "application/json",
-        "content-type": "application/json; charset=utf-8",
-        "accept-encoding": "gzip",
-        "mediahubmx-signature": signature,
-        "Origin": "https://vavoo.to",
-        "Referer": "https://vavoo.to/"
-    }
-    
-    payload = {
-        "language": "fr",
-        "region": "FR",
-        "url": sUrl,
-        "clientVersion": "3.1.0"
-    }
-    
-    target_url = "https://vavoo.to/mediahubmx-resolve.json"
-    
-    try:
-        session = requests.Session()
-        response = session.post(
-            target_url, 
-            json=payload, 
-            headers=headers, 
-            timeout=10, 
-            verify=False
-        )
+    if isinstance(data, dict):
+        stream_url = data.get("url", "")
+    elif isinstance(data, list) and len(data) > 0:
+        stream_url = data[0].get("url", "")
         
-        if response.status_code == 200:
-            data = response.json()
-            stream_url = ""
+    if stream_url:
+        playable_url = stream_url #+ "|User-Agent=MediaHubMX/2"
 
-            if isinstance(data, list) and len(data) > 0:
-                stream_url = data[0].get("url", "")
-            elif isinstance(data, dict):
-                stream_url = data.get("url", "")
-                
-            if stream_url:
-                playable_url = stream_url + "|User-Agent=MediaHubMX/2"
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName("VavooLive")
+        oGuiElement.setDescription(sDesc)
+        oGuiElement.setTitle(sTitle if sTitle else "Live TV")
+        oGuiElement.setMediaUrl(playable_url)
+        if sThumb:
+            oGuiElement.setIcon(sThumb)
+            oGuiElement.setThumbnail(sThumb)
 
-                oGuiElement = cGuiElement()
-                oGuiElement.setSiteName("VavooLive")
-                oGuiElement.setDescription(sDesc)
-                oGuiElement.setTitle(sTitle if sTitle else "Live TV")
-                oGuiElement.setMediaUrl(playable_url)
-                if sThumb:
-                    oGuiElement.setIcon(sThumb)
-                    oGuiElement.setThumbnail(sThumb)
+        oPlayer = cPlayer()
+        oPlayer.clearPlayList()
+        oPlayer.addItemToPlaylist(oGuiElement)
+        oPlayer.startPlayer()
+        return
 
-                oPlayer = cPlayer()
-                oPlayer.clearPlayList()
-                oPlayer.addItemToPlaylist(oGuiElement)
-                oPlayer.startPlayer()
-                return
-
-    except Exception:
-        pass
-        
     oGui.setEndOfDirectory()
+
+
+# --- EPG & BARRE DE PROGRESSION ---
+def getEPG(item):
+    now_time = datetime.now().astimezone()
+    sDesc = ''
+    epg_data = item.get('epg')
+    if epg_data and isinstance(epg_data, list) and len(epg_data) > 0:
+        try:
+            curr = epg_data[0]
+            now_title = curr.get('name') or curr.get('title') or ''
+            prog_desc = curr.get('description') or curr.get('overview') or ''
+            if now_title and 'No Data' not in now_title:
+                start_ts = curr.get('start') or curr.get('startTime') or curr.get('time')
+                end_ts = curr.get('stop') or curr.get('endTime') or curr.get('end')
+                sDesc += '[COLOR darkgray]En cours :[/COLOR][CR][B]%s[/B]\n' % now_title
+                if start_ts and end_ts:
+                    try:
+                        s_time = datetime(*(time.strptime(start_ts, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
+                        e_time = datetime(*(time.strptime(end_ts, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
+                        s_time = s_time.replace(tzinfo=timezone.utc).astimezone()
+                        e_time = e_time.replace(tzinfo=timezone.utc).astimezone()
+                        if e_time > s_time:
+                            total_duration = e_time - s_time
+                            elapsed = now_time - s_time
+                            percent = int((elapsed / total_duration) * 100)
+                            percent = max(0, min(100, percent))
+                            filled = int(10 * percent / 100)
+                            bar_rouge = '▬' * filled
+                            bar_grise = '▬' * (10 - filled)
+                            start_str = s_time.strftime('%H:%M')
+                            end_str = e_time.strftime('%H:%M')
+                            if e_time > now_time:
+                                delta = e_time - now_time
+                                remaining_min = '%02d:%02d' % (delta.days * 24 + delta.seconds // 3600, (delta.seconds % 3600) // 60)
+                                sDesc += '[COLOR white]%s - %s | Reste %s min[/COLOR]' % (start_str, end_str, remaining_min)
+                            else:
+                                sDesc += '[COLOR white]%s - %s[/COLOR]' % (start_str, end_str)
+                            sDesc += '[CR][COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR]' % (bar_rouge, bar_grise, percent)
+                    except Exception:
+                        pass
+                        
+            if prog_desc:
+                sDesc += '[COLOR white]%s[/COLOR]' % prog_desc[:300]
+        
+            if len(epg_data) > 1:
+                next_item = epg_data[1]
+                next_title = next_item.get('name') or next_item.get('title') or ''
+                if next_title and 'No Data' not in next_title:
+                    next_start = next_item.get('start') or next_item.get('startTime') or next_item.get('time')
+                    next_time_str = ""
+                    if next_start:
+                        s_next = datetime(*(time.strptime(next_start, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
+                        s_next = s_next.replace(tzinfo=timezone.utc).astimezone()
+                        
+                        if s_next >= e_time: # si debut du programme suivant commence avant la fin du programme courant, alors il n'y a plus de programme
+                            next_time_str = s_next.strftime('%H:%M')
+                            sDesc += '[CR][COLOR grey]A suivre à %s :[/COLOR][CR]%s' % (next_time_str, next_title)
+        except Exception:
+            pass
+    
+    if not sDesc:
+        sDesc = item.get('description', 'Aucun programme disponible')
+    return sDesc
+    

@@ -245,8 +245,9 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
-#    sPattern = '<div class="relative group overflow-hidden">.+?<a href="([^"]+)">.+?data-src="([^"]+)".+?<span>([^<]+)</span>.+?>([^<]+)</h3>'
-    sPattern = 'overflow-hidden">.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?<span>([^<]+)<\/span> *<!--\[if ENDBLOCK\]><!\[endif\]--> *<\/div>.+?ml-auto">([^<>]+)'
+
+    # Regex strict : capture uniquement les liens contenant "/movie/" et une structure propre de film
+    sPattern = 'href="(https?://[^"]+/movie/[^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?<span>[^<]+<\/span>.*?<span>(\d{4})<\/span>.+?ml-auto">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)            
     if aResult[0]:
@@ -305,7 +306,10 @@ def showSeries(sSearch=''):
                 
     oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'overflow-hidden">.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?<span>([^<]+)<\/span> *<!--\[if ENDBLOCK\]><!\[endif\]--> *<\/div>.+?ml-auto">([^<>]+)'
+    
+    # Regex strict : cible uniquement les liens contenant "/tv-show/" pour ignorer les blocs de genres des pages suivantes
+    sPattern = 'href="(https?://[^"]+/tv-show/[^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?<span>(\d{4})<\/span>.+?ml-auto">([^<]+)'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if aResult[0]:
@@ -332,22 +336,22 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear) 
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
     elif sSearch:   # test si l'url direct de la série existe
-            sUrl2 = URL_MAIN + 'tv-show/' + sSearchText.replace(' ', '-')
-            oRequestHandler = cRequestHandler(sUrl2)
-            sHtmlContent = oRequestHandler.request()
-            sPattern = '"flex-1"> *<h3.+?>([^<]+).+?span>(\d+).+?img src="([^"]+)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                aEntry = aResult[1][0]
-                sTitle = aEntry[0]
-                sYear = aEntry[1]
-                sThumb = aEntry[2]
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sYear', sYear)
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
+        sUrl2 = URL_MAIN + 'tv-show/' + sSearchText.replace(' ', '-')
+        oRequestHandler = cRequestHandler(sUrl2)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = '"flex-1"> *<h3.+?>([^<]+).+?span>(\d+).+?img src="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            oOutputParameterHandler = cOutputParameterHandler()
+            aEntry = aResult[1][0]
+            sTitle = aEntry[0]
+            sYear = aEntry[1]
+            sThumb = aEntry[2]
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)            
 
     if not sSearch:
         if sPage:
@@ -443,6 +447,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
+        oHosterGui = cHosterGui()
         links = {}
         for sLang, sHosterUrl in aResult[1]:
             link = links.get(sLang, [])
@@ -453,10 +458,10 @@ def showHosters():
             hosters = links.get(sLang)
             for sHosterUrl in hosters:
                 sDisplayTitle = '%s  (%s)' % (sMovieTitle,  sLang)
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                oHoster = oHosterGui.checkHoster(sHosterUrl)
                 if oHoster:
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

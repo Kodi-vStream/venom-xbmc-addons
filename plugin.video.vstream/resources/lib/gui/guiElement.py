@@ -346,7 +346,10 @@ class cGuiElement:
             except:
                 pass
 
-        self.__sTitle = self.TraiteTitre(sTitle)
+        if self.__sMeta not in (0, 7, 8):
+            self.__sTitle = self.TraiteTitre(sTitle)
+        else:
+            self.__sCleanTitle = self.__sTitle = sTitle
 
     def getTitle(self):
         return self.__sTitle

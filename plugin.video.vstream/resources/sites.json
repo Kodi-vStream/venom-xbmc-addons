@@ -5,7 +5,7 @@
             "active": "True",
             "url": "https://www.adkami.com/"
         },
-        "alldebrid": {
+       "alldebrid": {
             "label": "AllDebrid",
             "active": "True"
         },
@@ -209,10 +209,10 @@
         },
         "rdlive": {
             "label": "RD Live",
-            "active": "True",
+            "active": "False",
             "url": "https://rdaily.live/",
             "url_flashcore": "https://1.newsoccers.one/2/x/feed/",
-            "url_link": "https://netanjahu.hls.st/t/%s/index.m3u8|Referer=https://iplayer.is/"
+            "url_link": "https://hls.st/bloop/%s.m3u8|Referer=https://hls.st/beta/"
         },
         "sitedarkibox": {
             "label": "darkiBox",
@@ -248,7 +248,13 @@
         "vavoo": {
             "label": "vavoo",
             "active": "True",
-            "url": "https://geil.to/"
+            "url_catalogue": "https://vavoo.cc/live/catalog/live/channels.json",
+            "url": "https://vavoo.cc/"
+        },
+        "vidzy": {
+            "label": "Vidzy",
+            "active": "True",
+            "url": "https://vidzy.org/"
         },
         "viki_com": {
             "label": "Viki",
@@ -266,7 +272,7 @@
             "active": "True",
             "cloudflare": "False",
             "site_info": "https://www.wiflix-nouvelle-adresse.site/",
-            "url": "https://flemmix.studio/"
+            "url": "https://flemmix.run/"
         },
         "witv": {
             "label": "wiTV",

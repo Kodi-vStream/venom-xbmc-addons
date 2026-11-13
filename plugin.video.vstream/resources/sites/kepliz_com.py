@@ -274,13 +274,14 @@ def showHosters():
         aResult = oParser.parse(data, sPattern)
 
         if aResult[0]:
+            oHosterGui = cHosterGui()
             for sLink2 in aResult[1]:
-                oHoster = cHosterGui().checkHoster(sLink2)
+                oHoster = oHosterGui.checkHoster(sLink2)
                 sLink2 += '|Referer=' + urlparse(sLink2).netloc
                 
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sLink2, sThumb)
+                    oHosterGui.showHoster(oGui, oHoster, sLink2, sThumb)
 
     oGui.setEndOfDirectory()
