@@ -30,23 +30,23 @@ def load():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
     oOutputParameterHandler.addParameter('siteUrl', 'tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Série', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 def showMenuTv():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Série', 'search.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -91,26 +91,28 @@ def showMovies(searchId = None):
     oGui = cGui()
     oParser = cParser()
 
-    searchIdTMDB = cInputParameterHandler().getValue('sTmdbId')
+    oInputParameterHandler = cInputParameterHandler()
+    searchIdTMDB = oInputParameterHandler.getValue('sTmdbId')
     if not searchIdTMDB:
         searchIdTMDB = searchId
     if not searchIdTMDB:
         return
 
-    sUrl = SEARCH_MOVIE % searchIdTMDB
-    oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
-    data = oRequestHandler.request()
-    
-    aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
-    if aResult[0]:  # il existe une URL
-        aResult = oParser.parse(data, '<title>([^<]+)</title>')
-        if aResult[0]:
-            sMovieTitle = aResult[1][0]
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
+    if searchIdTMDB.isdigit():
+        sUrl = SEARCH_MOVIE % searchIdTMDB
+        oRequestHandler = cRequestHandler(URL_MAIN + sUrl)
+        data = oRequestHandler.request()
+        
+        aResult = oParser.parse(data, '<iframe.+?src="([^"]+)')
+        if aResult[0]:  # il existe une URL
+            aResult = oParser.parse(data, '<title>([^<]+)</title>')
+            if aResult[0]:
+                sMovieTitle = aResult[1][0]
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sTmdbId', searchIdTMDB)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
 
     if not searchId:
         oGui.setEndOfDirectory()
