@@ -833,6 +833,14 @@ msgctxt "#30334"
 msgid "Premium Token"
 msgstr ""
 
+msgctxt "#30335"
+msgid "Get a token"
+msgstr ""
+
+msgctxt "#30336"
+msgid "Premium expired"
+msgstr ""
+
 msgctxt "#30339"
 msgid "Test"
 msgstr ""

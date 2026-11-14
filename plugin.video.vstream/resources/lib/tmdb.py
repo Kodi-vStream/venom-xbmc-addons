@@ -362,7 +362,7 @@ class cTMDb:
                 DIALOG.VSinfo(self.ADDON.VSlang(30000))
                 return
             else:
-                DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
+                DIALOG.VSerror('Erreur : ' + self.ADDON.VSlang(30000))
                 return
 
             # xbmc.executebuiltin('Container.Refresh')
