@@ -17,6 +17,10 @@ Retrouvez des tutos détaillés chez notre partenaire : **les alKODIQues** - Pre
 [![images](https://lesalkodiques.wiki/wp-content/uploads/2024/11/Les-alKODIques.png)](https://lesalkodiques.wiki/categorie/doc-vstream/)
 <br>https://lesalkodiques.wiki/categorie/doc-vstream/
 
+**À propos de Trakt :**
+
+vStream intègre le service Trakt pour permettre aux utilisateurs de synchroniser leur historique de visionnage entre plusieurs équipements, gérer leurs listes et suivre leur progression dans les films et séries. Trakt est un service tiers indépendant. vStream utilise Trakt, mais n'est ni approuvé ni certifié par Trakt. vStream uses Trakt but is not endorsed or certified by Trakt.
+
 
 ## Échanger !
 
