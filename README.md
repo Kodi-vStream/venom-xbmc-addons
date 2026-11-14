@@ -22,6 +22,9 @@ Retrouvez des tutos détaillés chez notre partenaire : **les alKODIQues** - Pre
 vStream intègre le service Trakt pour permettre aux utilisateurs de synchroniser leur historique de visionnage entre plusieurs équipements, gérer leurs listes et suivre leur progression dans les films et séries. Trakt est un service tiers indépendant. vStream utilise Trakt, mais n'est ni approuvé ni certifié par Trakt. vStream uses Trakt but is not endorsed or certified by Trakt.
 
 
+**Confidentialité :** [Politique de confidentialité de vStream](PRIVACY.md)
+
+
 ## Échanger !
 
 Pour des discussions techniques avec l'équipe vStream à propos de cet addon :<br>
