@@ -87,7 +87,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting type="sep"/>
         <setting id="hoster_alldebrid_premium" type="bool" label="30333" default="false"/>
         <setting id="hoster_alldebrid_token" type="text" label="30334" default=""/>
-        <setting label="30339" type="action" enable="eq(-2,true)" action="RunScript(plugin.video.vstream, testpremium, ?site=globalRun&amp;function=testpremium)"/>
+        <setting label="30339" type="action" enable="eq(-2,true)" action="RunScript(plugin.video.vstream, testpremiumAD, ?site=globalRun&amp;function=testpremiumAD)"/>
         <setting id="urlmain_alldebrid" type="text" label="31000" default=""/>
 
         <setting label="DarkiBox" type="lsep"/>
