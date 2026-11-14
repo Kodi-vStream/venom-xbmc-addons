@@ -6,7 +6,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Logging"
-msgstr "Logging"
+msgstr "Connexion"
 
 msgctxt "#30001"
 msgid "Videoplayer"
@@ -725,7 +725,7 @@ msgstr "Dossiers médias"
 
 msgctxt "#30304"
 msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
-msgstr "Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/COLOR]"
+msgstr "Rendez vous sur [COLOR khaki]%s[/COLOR] et entrer le code [COLOR khaki]%s[/COLOR][CR]Ou scanner ce QR code :"
 
 msgctxt "#30305"
 msgid "[COLOR khaki]Click here to login[/COLOR]"
@@ -733,7 +733,7 @@ msgstr "[COLOR khaki]Cliquez ici, pour vous connecter[/COLOR]"
 
 msgctxt "#30306"
 msgid "[COLOR khaki]Hello, %s[/COLOR]"
-msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
+msgstr "[COLOR khaki]Bonjour, %s[/COLOR]"
 
 msgctxt "#30308"
 msgid "Search history"
@@ -834,6 +834,14 @@ msgstr "Activer Premium"
 msgctxt "#30334"
 msgid "Premium Token"
 msgstr "Token Premium"
+
+msgctxt "#30335"
+msgid "Get a token"
+msgstr "Obtenir un token"
+
+msgctxt "#30336"
+msgid "Premium expired"
+msgstr "Premium - Compte expiré"
 
 msgctxt "#30339"
 msgid "Test"

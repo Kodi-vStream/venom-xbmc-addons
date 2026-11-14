@@ -7,7 +7,7 @@ import unicodedata
 import xbmc
 import json
 
-from resources.lib.comaddon import addon, dialog, addonManager, VSlog
+from resources.lib.comaddon import addon, dialog, addonManager, VSlog, VSPath
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'cTrakt'
 SITE_NAME = 'Trakt'
 
 URL_API = 'https://api.trakt.tv/'
-API_KEY = 'cwNb4W4MRHCdkvU_Ebd8q2c9twwNigmud-Yz2xIr7Co'
+API_KEY = '3Sl2Ka4eEBW31-Oupz18SrTwDgGKnkoIl7TY7K9dq-4'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
@@ -61,7 +61,7 @@ class cTrakt:
         if (total > 0):
             hasError = sHtmlContent.get('error', '')
             if hasError:
-                oDialog = self.DIALOG.VSerror(sHtmlContent.get('error_description', hasError))
+                self.DIALOG.VSerror(sHtmlContent.get('error_description', hasError))
                 return False
                 
             # Récupération sécurisée de l'URL de vérification
@@ -69,12 +69,15 @@ class cTrakt:
             sUserCode = sHtmlContent.get('user_code', '')
             sText = (self.ADDON.VSlang(30304)) % (sVerificationUrl, sUserCode)
 
-            oDialog = self.DIALOG.VSyesno(sText)
-            if (oDialog == 0):
-                return False
+            import qrcode
+            from resources.lib.librecaptcha.gui import cInputWindowYesNo
+            urlPay = 'https://trakt.tv/activate/' + sUserCode
+            qr = qrcode.make(urlPay)
+            qr.save(VSPath('special://home/userdata/addon_data/plugin.video.vstream/traktcnx.png'), scale=5)
+            oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/traktcnx.png', msg=sText, roundnum=1)
+            reponse = oSolver.get()
 
-            if (oDialog == 1):
-
+            if (reponse == 'Y'):
                 try:
                     oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
                     oRequestHandler.setRequestType(1)
@@ -108,8 +111,6 @@ class cTrakt:
                 except:
                     pass
 
-            return
-        return
 
     def refreshToken(self):
         """
