@@ -132,11 +132,11 @@ class cViewing:
                     oOutputParameterHandler.addParameter('isViewing', True)
 
                     # pourcentage de lecture
-                    meta = {}
-                    meta['titleWatched'] = sTitleWatched
-                    resumetime, totaltime = DB.get_resume(meta)
-                    oOutputParameterHandler.addParameter('ResumeTime', resumetime)
-                    oOutputParameterHandler.addParameter('TotalTime', totaltime)
+                    # meta = {}
+                    # meta['titleWatched'] = sTitleWatched
+                    # resumetime, totaltime = DB.get_resume(meta)
+                    # oOutputParameterHandler.addParameter('ResumeTime', resumetime)
+                    # oOutputParameterHandler.addParameter('TotalTime', totaltime)
 
                     # if sTmdbId and resumetime == 0:
                     #     if self.ADDON.getSetting('use_trakt_addon') == 'true':
