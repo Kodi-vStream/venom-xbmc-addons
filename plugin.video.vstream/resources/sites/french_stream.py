@@ -332,6 +332,7 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     aResultSeasons = oParser.parse(sHtmlContent, sPatternSeasons)
     nNbSeries = len(aResultSeasons[1])
+    list_TitleSeries = ['- Saison', '- série']
     seriesTitle = []
 
     if aResult[0] and aResultSeasons[0]:
@@ -363,10 +364,10 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace('(%s)' % sYear, '')
 
             if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
-                if any(c in sTitle for c in ['- Saison', '- série']):
+                if any(c in sTitle for c in list_TitleSeries):
                     continue
             if bSearchSerie:
-                if not any(c in sTitle for c in ['- Saison', '- série']):
+                if not any(c in sTitle for c in list_TitleSeries):
                     continue
 
             # Filtre de recherche
@@ -379,7 +380,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if bSearchSerie:
-                sTitle = sTitle.split('- Saison')[0]
+                for c in list_TitleSeries:
+                    if c in sTitle:
+                        sTitle = sTitle.split(c)[0]
+                        break
+
                 sUniqueTitle = oUtil.CleanName(sTitle)
                 if sUniqueTitle in seriesTitle:
                     continue        # une seule fois la série, on choisi la saison ensuite
