@@ -3,9 +3,8 @@
 #https://archive.org/details/logos_fr_tv
 import re
 import string
-import time
-from datetime import datetime, timezone
-from resources.lib.comaddon import siteManager
+from datetime import datetime
+from resources.lib.comaddon import siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -493,29 +492,27 @@ def playLiveTV():
 
 # --- EPG & BARRE DE PROGRESSION ---
 def getEPG(item):
-    now_time = datetime.now().astimezone()
+    now_time = datetime.now()
     sDesc = ''
     epg_data = item.get('epg')
     if epg_data and isinstance(epg_data, list) and len(epg_data) > 0:
         try:
+            oUtil = cUtil()
             curr = epg_data[0]
             now_title = curr.get('name') or curr.get('title') or ''
             prog_desc = curr.get('description') or curr.get('overview') or ''
             if now_title and 'No Data' not in now_title:
                 start_ts = curr.get('start') or curr.get('startTime') or curr.get('time')
                 end_ts = curr.get('stop') or curr.get('endTime') or curr.get('end')
-                sDesc += '[COLOR darkgray]En cours :[/COLOR][CR][B]%s[/B]\n' % now_title
+                sDesc += '[COLOR darkgray]En cours :[/COLOR][CR][B]%s[/B]' % now_title
                 if start_ts and end_ts:
                     try:
-                        s_time = datetime(*(time.strptime(start_ts, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
-                        e_time = datetime(*(time.strptime(end_ts, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
-                        s_time = s_time.replace(tzinfo=timezone.utc).astimezone()
-                        e_time = e_time.replace(tzinfo=timezone.utc).astimezone()
+                        s_time = oUtil.timestampToLocal(start_ts)
+                        e_time = oUtil.timestampToLocal(end_ts)
                         if e_time > s_time:
                             total_duration = e_time - s_time
                             elapsed = now_time - s_time
-                            percent = int((elapsed / total_duration) * 100)
-                            percent = max(0, min(100, percent))
+                            percent = max(0, min(100, int(elapsed.total_seconds() * 100 / total_duration.total_seconds())))
                             filled = int(10 * percent / 100)
                             bar_rouge = '▬' * filled
                             bar_grise = '▬' * (10 - filled)
@@ -524,11 +521,12 @@ def getEPG(item):
                             if e_time > now_time:
                                 delta = e_time - now_time
                                 remaining_min = '%02d:%02d' % (delta.days * 24 + delta.seconds // 3600, (delta.seconds % 3600) // 60)
-                                sDesc += '[COLOR white]%s - %s | Reste %s min[/COLOR]' % (start_str, end_str, remaining_min)
+                                sDesc += '[CR][COLOR white]%s - %s | Reste %s min[/COLOR]' % (start_str, end_str, remaining_min)
                             else:
-                                sDesc += '[COLOR white]%s - %s[/COLOR]' % (start_str, end_str)
-                            sDesc += '[CR][COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%s%%[/COLOR]' % (bar_rouge, bar_grise, percent)
-                    except Exception:
+                                sDesc += '[CR][COLOR white]%s - %s[/COLOR]' % (start_str, end_str)
+                            sDesc += '[CR][COLOR red]%s[/COLOR][COLOR darkgray]%s[/COLOR] [COLOR red]%d%%[/COLOR]' % (bar_rouge, bar_grise, percent)
+                    except Exception as e:
+                        VSlog(e)
                         pass
                         
             if prog_desc:
@@ -541,13 +539,12 @@ def getEPG(item):
                     next_start = next_item.get('start') or next_item.get('startTime') or next_item.get('time')
                     next_time_str = ""
                     if next_start:
-                        s_next = datetime(*(time.strptime(next_start, '%Y-%m-%dT%H:%M:%SZ')[0:6]))
-                        s_next = s_next.replace(tzinfo=timezone.utc).astimezone()
-                        
+                        s_next = oUtil.timestampToLocal(next_start)
                         if s_next >= e_time: # si debut du programme suivant commence avant la fin du programme courant, alors il n'y a plus de programme
                             next_time_str = s_next.strftime('%H:%M')
                             sDesc += '[CR][COLOR grey]A suivre à %s :[/COLOR][CR]%s' % (next_time_str, next_title)
-        except Exception:
+        except Exception as e:
+            VSlog(e)
             pass
     
     if not sDesc:

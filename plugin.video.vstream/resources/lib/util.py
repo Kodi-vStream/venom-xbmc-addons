@@ -14,6 +14,9 @@ except ImportError:     # python 3
 import unicodedata
 import re
 import string
+import calendar
+import time
+from datetime import datetime
 
 # permet d'ajuster l'heure affichée pour la diffusion du direct
 HEURE_HIVER = True
@@ -72,6 +75,11 @@ class cUtil:
             iMinutes = '0' + str(iMinutes)
 
         return str(iMinutes) + ':' + str(iSeconds)
+
+    def timestampToLocal(self, value):
+        value = value.rstrip('Z')
+        parsed = time.strptime(value, '%Y-%m-%dT%H:%M:%S')
+        return datetime.fromtimestamp(calendar.timegm(parsed))
 
     def formatUTF8(self, text):
         # test si nécessaire de convertir
