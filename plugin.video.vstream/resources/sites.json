@@ -5,13 +5,14 @@
             "active": "True",
             "url": "https://www.adkami.com/"
         },
-       "alldebrid": {
+        "alldebrid": {
             "label": "AllDebrid",
             "active": "True"
         },
         "animesama": {
             "label": "Anime Sama",
             "active": "True",
+            "url_api": "https://anime-sama.to/api/",
             "url": "https://anime-sama.to/"
         },
         "animeultime": {

@@ -124,11 +124,6 @@ class cGui:
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
-        resumeTime = oOutputParameterHandler.getValue('ResumeTime')
-        if resumeTime:
-            oGuiElement.setResumeTime(resumeTime)
-            oGuiElement.setTotalTime(oOutputParameterHandler.getValue('TotalTime'))
-
         # Lecture en cours
         isViewing = oOutputParameterHandler.getValue('isViewing')
         if isViewing:

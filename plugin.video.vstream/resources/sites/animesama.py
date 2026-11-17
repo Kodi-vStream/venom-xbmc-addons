@@ -15,6 +15,7 @@ SITE_NAME = 'Anime Sama'
 SITE_DESC = 'Animés - Films et séries'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+URL_API = siteManager().getDefaultProperty(SITE_IDENTIFIER, 'url_api')
 
 ANIM_ANIMS = (True, 'load')
 ANIM_GENRES = ('catalogue/?genre%5B%5D=%s', 'showGenres')
@@ -136,7 +137,7 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "Pagination.+?mt-5 bg-sky-900.+?<a href='\?.+?(\d+)\'"
+    sPattern = '/span> *<a class="pagi-num" href="[^"]+">(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     return aResult[1][0] if aResult[0] else False
 
@@ -217,34 +218,25 @@ def addEpisode(sUrl, sMovieTitle):
     sSaison = data[-2]
     sLang = data[-1].upper()
 
-    sPattern = '<script type="text/javascript" src=[\'"]([^\'"]+)[\'"] *defer'
+    sPattern = 'var eps\d = (\[.+?\]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-
-        sUrl += '/' + aResult[1][0]
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('Referer', sUrl)
-        sHtmlContent = oRequestHandler.request()
-        
-        sPattern = 'var eps\d = (\[.+?\]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            oOutputParameterHandler = cOutputParameterHandler()
-            episodes = eval(aResult[1][0])
-            for numEp in range (len(episodes)):
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sLang', sLang)
-                if 'saison' in sSaison:
-                    sDisplayTitle = sTitle = '%s %s E%d' % (sMovieTitle, sSaison, numEp + 1)
-                    sDisplayTitle += ' (%s)' % sLang
-                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sEpisode', numEp)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-                else:
-                    sDisplayTitle = sTitle = sMovieTitle
-                    sDisplayTitle += ' (%s)' % sLang
-                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', oOutputParameterHandler)
+        oOutputParameterHandler = cOutputParameterHandler()
+        episodes = eval(aResult[1][0])
+        for numEp in range (len(episodes)):
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            if 'saison' in sSaison:
+                sDisplayTitle = '%s %s E%d' % (sMovieTitle, sSaison, numEp + 1)
+                sDisplayTitle += ' (%s)' % sLang
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sEpisode', numEp)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            else:
+                sDisplayTitle = sMovieTitle
+                sDisplayTitle += ' (%s)' % sLang
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', oOutputParameterHandler)
 
 
 def showHosters():
@@ -258,20 +250,35 @@ def showHosters():
     oRequestHandler.addHeaderEntry('Referer', sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    # jeton
+    sPattern = 'var epsJeton = "([^"]+)'
     oParser = cParser()
-    sPattern = 'var eps\d = (\[.+?\]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        numEp = int(sEpisode)-1
-        for entry in aResult[1]:
-            episodes = eval(entry)
-            if numEp < len(episodes):
-                sHosterUrl = episodes[numEp]
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if oHoster:
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl)
+        sJeton = aResult[1][0]
+
+        sPattern = 'var eps\d = (\[.+?\]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            oHosterGui = cHosterGui()
+            numEp = int(sEpisode)-1
+            siteUrl = '%slien.php?j=%s&l=' % (URL_API, sJeton)
+            for entry in aResult[1]:
+                episodes = eval(entry)
+                if numEp < len(episodes):
+                    sIdHoster = episodes[numEp]
+                    if sIdHoster and 'lien:' in sIdHoster:
+                        sUrl = siteUrl + sIdHoster.split(':')[1]
+                        oRequestHandler = cRequestHandler(sUrl)
+                        oRequestHandler.addHeaderEntry('Referer', sUrl)
+                        data = oRequestHandler.request(jsonDecode=True)
+                        sHosterUrl = data.get('u', None)
+                        if sHosterUrl:
+                            oHoster = oHosterGui.checkHoster(sHosterUrl)
+                            if oHoster:
+                                oHoster.setDisplayName(sMovieTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                oHosterGui.showHoster(oGui, oHoster, sHosterUrl)
 
     oGui.setEndOfDirectory()
 

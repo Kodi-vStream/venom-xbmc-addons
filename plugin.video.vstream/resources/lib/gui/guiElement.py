@@ -17,6 +17,7 @@ from resources.lib.util import cUtil, QuoteSafe
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'library.png'
+    oUtil = cUtil()
 
     def __init__(self):
 
@@ -189,7 +190,7 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        self.__sFileName = cUtil().titleWatched(sFileName)
+        self.__sFileName = self.oUtil.titleWatched(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -309,11 +310,11 @@ class cGuiElement:
 
         # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
         if sTitle2: # série
-            tvshowtitle = cUtil().getSerieTitre(sTitle)
-            titleWatched = cUtil().titleWatched(tvshowtitle) + '_' + sTitle2
+            tvshowtitle = self.oUtil.getSerieTitre(sTitle)
+            titleWatched = self.oUtil.titleWatched(tvshowtitle) + '_' + sTitle2
             self.addItemValues('tvshowtitle', tvshowtitle)  # nom de la série
         else:
-            titleWatched = cUtil().titleWatched(self.__sCleanTitle)
+            titleWatched = self.oUtil.titleWatched(self.__sCleanTitle)
 
         self.__sTitleWatched = titleWatched.replace(' ', '')
         self.addItemValues('originaltitle', self.__sTitleWatched)
@@ -437,20 +438,28 @@ class cGuiElement:
             return
         return self.__aItemValues[sItemKey]
 
+    # Fonctionne pour marquer LU
     def getWatched(self):
+        titleWatched = self.getTitleWatched()
+        if not titleWatched:
+            return False
 
-        # Fonctionne pour marquer lus un dossier
-        if not self.getTitleWatched():
-            return 0
-
-        meta = {'titleWatched': self.getTitleWatched(),
+        meta = {'titleWatched': titleWatched,
                 'site': self.getSiteUrl(),
                 'cat': self.getCat()
                 }
 
+        ret = False
         with cDb() as db:
-            data = db.get_watched(meta)
-        return data
+            resumeTime, totalTime = db.get_resume(meta)
+            if resumeTime:
+                self.setResumeTime(resumeTime)
+                self.setTotalTime(totalTime)
+                ret = True
+            else:
+                ret = db.get_watched(meta)
+
+        return ret
 
     # reprendre les infos de la navigation précédente si elles ne sont pas fournies
     def getInfoLabel(self):
