@@ -10,6 +10,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 4.3.2 - 18/11/2026 ***
+- Avancement de lecture/VU : avancement visible dans tous les menus
+- AnimeSama : Retour des liens
+
 *** 4.3.1 - 14/11/2026 ***
 *** 4.3.0 - 13/11/2026 ***
 - Vidzy : Nouvelle source de films/séries
